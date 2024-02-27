@@ -3,13 +3,14 @@
 namespace Cspray\AnnotatedContainer\Definition;
 
 use Cspray\AnnotatedContainer\Exception\InvalidAlias;
+use Cspray\AnnotatedContainer\Profiles;
 use Cspray\Typiphy\ObjectType;
 
 final class ProfilesAwareContainerDefinition implements ContainerDefinition {
 
     public function __construct(
         private readonly ContainerDefinition $containerDefinition,
-        private readonly array $activeProfiles
+        private readonly Profiles $activeProfiles
     ) {
     }
 
@@ -81,7 +82,7 @@ final class ProfilesAwareContainerDefinition implements ContainerDefinition {
             return true;
         }
 
-        return count(array_intersect($this->activeProfiles, $definition->getProfiles())) >= 1;
+        return $this->activeProfiles->isAnyActive($definition->getProfiles());
     }
 
     private function getConfigurationDefinition(ObjectType $objectType) : ?ConfigurationDefinition {

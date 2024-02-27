@@ -4,6 +4,7 @@ namespace Cspray\AnnotatedContainer\Unit\LogicalConstraint\Check;
 
 use Cspray\AnnotatedContainer\LogicalConstraint\Check\NonPublicServicePrepare;
 use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraintViolationType;
+use Cspray\AnnotatedContainer\Profiles;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalyzer;
 use Cspray\AnnotatedContainerFixture\Fixtures;
@@ -29,7 +30,7 @@ final class NonPublicServicePrepareTest extends LogicalConstraintTestCase {
             )->build()
         );
 
-        $collection = $this->subject->getConstraintViolations($definition, ['default']);
+        $collection = $this->subject->getConstraintViolations($definition, Profiles::fromList(['default']));
 
         self::assertCount(0, $collection);
     }
@@ -41,7 +42,7 @@ final class NonPublicServicePrepareTest extends LogicalConstraintTestCase {
             )->build()
         );
 
-        $collection = $this->subject->getConstraintViolations($definition, ['default']);
+        $collection = $this->subject->getConstraintViolations($definition, Profiles::fromList(['default']));
 
         self::assertCount(1, $collection);
 
@@ -61,7 +62,7 @@ final class NonPublicServicePrepareTest extends LogicalConstraintTestCase {
             )->build()
         );
 
-        $collection = $this->subject->getConstraintViolations($definition, ['default']);
+        $collection = $this->subject->getConstraintViolations($definition, Profiles::fromList(['default']));
 
         self::assertCount(1, $collection);
 

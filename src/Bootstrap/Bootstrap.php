@@ -5,6 +5,7 @@ namespace Cspray\AnnotatedContainer\Bootstrap;
 use Auryn\Injector;
 use Cspray\AnnotatedContainer\AnnotatedContainer;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
+use Cspray\AnnotatedContainer\Profiles;
 use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalyzer;
 use Cspray\AnnotatedContainer\StaticAnalysis\CacheAwareContainerDefinitionAnalyzer;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptions;
@@ -17,7 +18,6 @@ use Cspray\AnnotatedContainer\ContainerFactory\ContainerFactoryOptionsBuilder;
 use Cspray\AnnotatedContainer\ContainerFactory\PhpDiContainerFactory;
 use Cspray\AnnotatedContainer\Exception\BackingContainerNotFound;
 use Cspray\AnnotatedContainer\Exception\InvalidBootstrapConfiguration;
-use Cspray\AnnotatedContainer\Profiles\ActiveProfiles;
 use Cspray\AnnotatedContainer\Serializer\ContainerDefinitionSerializer;
 use Cspray\AnnotatedTarget\PhpParserAnnotatedTargetParser;
 use Cspray\PrecisionStopwatch\Marker;
@@ -79,13 +79,8 @@ final class Bootstrap {
         $this->observers[] = $observer;
     }
 
-    /**
-     * @param list<non-empty-string> $profiles
-     * @throws BackingContainerNotFound
-     * @throws InvalidBootstrapConfiguration
-     */
     public function bootstrapContainer(
-        array $profiles = ['default'],
+        Profiles $profiles,
         string $configurationFile = 'annotated-container.xml'
     ) : AnnotatedContainer {
 
@@ -98,47 +93,23 @@ final class Bootstrap {
             $this->addObserver($observer);
         }
 
-        $activeProfiles = new class($profiles) implements ActiveProfiles {
-            public function __construct(
-                /** @var list<non-empty-string> */
-                private readonly array $profiles
-            ) {
-            }
-
-            public function getProfiles() : array {
-                trigger_error(
-                    'The ' . ActiveProfiles::class . ' interface is being removed in 3.0. Please use the new Profiles interface instead.',
-                    E_USER_DEPRECATED
-                );
-                return $this->profiles;
-            }
-
-            public function isActive(string $profile) : bool {
-                trigger_error(
-                    'The ' . ActiveProfiles::class . ' interface is being removed in 3.0. Please use the new Profiles interface instead.',
-                    E_USER_DEPRECATED
-                );
-                return in_array($profile, $this->profiles, true);
-            }
-        };
-
-        $this->notifyPreAnalysis($activeProfiles);
+        $this->notifyPreAnalysis($profiles);
 
         $analysisPrepped = $this->stopwatch->mark();
 
         $containerDefinition = $this->runStaticAnalysis($configuration, $analysisOptions);
-        $this->notifyPostAnalysis($activeProfiles, $containerDefinition);
+        $this->notifyPostAnalysis($profiles, $containerDefinition);
 
         $analysisCompleted = $this->stopwatch->mark();
 
         $container = $this->createContainer(
             $configuration,
-            $activeProfiles,
+            $profiles,
             $containerDefinition,
             $analysisOptions->getLogger()
         );
 
-        $this->notifyContainerCreated($activeProfiles, $containerDefinition, $container);
+        $this->notifyContainerCreated($profiles, $containerDefinition, $container);
 
         $metrics = $this->stopwatch->stop();
         $analytics = $this->createAnalytics($metrics, $analysisPrepped, $analysisCompleted);
@@ -175,7 +146,7 @@ final class Bootstrap {
     }
 
 
-    private function analysisOptions(BootstrappingConfiguration $configuration, array $activeProfiles) : ContainerDefinitionAnalysisOptions {
+    private function analysisOptions(BootstrappingConfiguration $configuration, Profiles $activeProfiles) : ContainerDefinitionAnalysisOptions {
         $scanPaths = [];
         foreach ($configuration->getScanDirectories() as $scanDirectory) {
             $scanPaths[] = $this->directoryResolver->getPathFromRoot($scanDirectory);
@@ -186,7 +157,7 @@ final class Bootstrap {
             $analysisOptions = $analysisOptions->withDefinitionProvider($containerDefinitionConsumer);
         }
 
-        $profilesAllowLogging = count(array_intersect($activeProfiles, $configuration->getLoggingExcludedProfiles())) === 0;
+        $profilesAllowLogging = count(array_intersect($activeProfiles->toArray(), $configuration->getLoggingExcludedProfiles())) === 0;
         $logger = $this->logger ?? $configuration->getLogger();
         if ($logger !== null && $profilesAllowLogging) {
             $analysisOptions = $analysisOptions->withLogger($logger);
@@ -195,7 +166,7 @@ final class Bootstrap {
         return $analysisOptions->build();
     }
 
-    private function notifyPreAnalysis(ActiveProfiles $activeProfiles) : void {
+    private function notifyPreAnalysis(Profiles $activeProfiles) : void {
         foreach ($this->observers as $observer) {
             if ($observer instanceof PreAnalysisObserver) {
                 $observer->notifyPreAnalysis($activeProfiles);
@@ -227,7 +198,7 @@ final class Bootstrap {
         return $compiler;
     }
 
-    private function notifyPostAnalysis(ActiveProfiles $activeProfiles, ContainerDefinition $containerDefinition) : void {
+    private function notifyPostAnalysis(Profiles $activeProfiles, ContainerDefinition $containerDefinition) : void {
         foreach ($this->observers as $observer) {
             if ($observer instanceof PostAnalysisObserver) {
                 $observer->notifyPostAnalysis($activeProfiles, $containerDefinition);
@@ -237,7 +208,7 @@ final class Bootstrap {
 
     private function createContainer(
         BootstrappingConfiguration $configuration,
-        ActiveProfiles $activeProfiles,
+        Profiles $activeProfiles,
         ContainerDefinition $containerDefinition,
         ?LoggerInterface $logger
     ) : AnnotatedContainer {
@@ -247,7 +218,7 @@ final class Bootstrap {
             $containerFactory->addParameterStore($parameterStore);
         }
 
-        $factoryOptions = ContainerFactoryOptionsBuilder::forActiveProfiles(...$activeProfiles->getProfiles());
+        $factoryOptions = ContainerFactoryOptionsBuilder::forProfiles($activeProfiles);
         if ($logger !== null) {
             $factoryOptions = $factoryOptions->withLogger($logger);
         }
@@ -272,7 +243,7 @@ final class Bootstrap {
     }
 
     private function notifyContainerCreated(
-        ActiveProfiles $activeProfiles,
+        Profiles $activeProfiles,
         ContainerDefinition $containerDefinition,
         AnnotatedContainer $container
     ) : void {

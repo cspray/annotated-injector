@@ -27,7 +27,7 @@ use Cspray\AnnotatedContainer\LogicalConstraint\Check\NonPublicServicePrepare;
 use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraint;
 use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraintValidator;
 use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraintViolationType;
-use Cspray\AnnotatedContainer\Profiles\ActiveProfiles;
+use Cspray\AnnotatedContainer\Profiles;
 use DI\Container;
 
 final class ValidateCommand implements Command {
@@ -134,21 +134,25 @@ TEXT;
         });
         $bootstrap->addObserver($infoCapturingObserver);
 
+        $inputProfiles = $input->getOption('profile') ?? ['default'];
+        if (is_string($inputProfiles)) {
+            $inputProfiles = [$inputProfiles];
+        }
+
+        $profiles = Profiles::fromList($inputProfiles);
+
         $bootstrap->bootstrapContainer(
+            profiles: $profiles,
             configurationFile: $configOption
         );
         assert($containerDefinition instanceof ContainerDefinition);
 
-        $profiles = $input->getOption('profile') ?? ['default'];
-        if (is_string($profiles)) {
-            $profiles = [$profiles];
-        }
         $results = $this->validator->validate($containerDefinition, $profiles);
 
         $output->stdout->write('Annotated Container Validation');
         $output->stdout->br();
         $output->stdout->write('Configuration file: ' . $configFile);
-        $output->stdout->write('Active Profiles: ' . implode(', ', $profiles));
+        $output->stdout->write('Active Profiles: ' . implode(', ', $profiles->toArray()));
         $output->stdout->br();
         $output->stdout->write('To view validations ran, execute "annotated-container validate --list-constraints"');
         $output->stdout->br();
@@ -227,7 +231,7 @@ TEXT;
             ) {
             }
 
-            public function notifyPostAnalysis(ActiveProfiles $activeProfiles, ContainerDefinition $containerDefinition) : void {
+            public function notifyPostAnalysis(Profiles $activeProfiles, ContainerDefinition $containerDefinition) : void {
                 ($this->closure)($containerDefinition);
             }
         };

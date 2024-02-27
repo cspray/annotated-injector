@@ -14,19 +14,19 @@ namespace Acme\Demo;
 use Cspray\AnnotatedContainer\Bootstrap\ContainerAnalytics;use Cspray\AnnotatedContainer\Bootstrap\ContainerAnalyticsObserver;use Cspray\AnnotatedContainer\Bootstrap\ContainerCreatedObserver;
 use Cspray\AnnotatedContainer\Bootstrap\PostAnalysisObserver;
 use Cspray\AnnotatedContainer\Bootstrap\PreAnalysisObserver;
-use Cspray\AnnotatedContainer\Profiles\ActiveProfiles;
+use Cspray\AnnotatedContainer\Profiles;
 
 final class MyContainerObserver implements PreAnalysisObserver, PostAnalysisObserver, ContainerCreatedObserver, ContainerAnalyticsObserver {
 
-    public function notifyPreAnalysis(ActiveProfiles $profiles) : void {
+    public function notifyPreAnalysis(Profiles $profiles) : void {
         // do something before the configured directories are statically analyzed
     }
 
-    public function notifyPostAnalysis(ActiveProfiles $profiles, ContainerDefinition $containerDefinition) : void {
+    public function notifyPostAnalysis(Profiles $profiles, ContainerDefinition $containerDefinition) : void {
         // do something after the source is analyzed and there's a ContainerDefinition
     }
 
-    public function notifyContainerCreated(ActiveProfiles $profiles, ContainerDefinition $containerDefinition, AnnotatedContainer $container) : void {
+    public function notifyContainerCreated(Profiles $profiles, ContainerDefinition $containerDefinition, AnnotatedContainer $container) : void {
         // do something after the AnnotatedContainer has been created based off of the given ContainerDefinition 
     }
     

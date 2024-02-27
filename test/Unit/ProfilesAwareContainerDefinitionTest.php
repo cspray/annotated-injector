@@ -9,6 +9,7 @@ use Cspray\AnnotatedContainer\Definition\InjectDefinitionBuilder;
 use Cspray\AnnotatedContainer\Definition\ProfilesAwareContainerDefinition;
 use Cspray\AnnotatedContainer\Definition\ServiceDefinitionBuilder;
 use Cspray\AnnotatedContainer\Exception\InvalidAlias;
+use Cspray\AnnotatedContainer\Profiles;
 use Cspray\AnnotatedContainerFixture\Fixtures;
 use PHPUnit\Framework\TestCase;
 use function Cspray\Typiphy\stringType;
@@ -32,7 +33,7 @@ class ProfilesAwareContainerDefinitionTest extends TestCase {
             ->withServiceDefinition($serviceDefinition3)
             ->build();
 
-        $subject = new ProfilesAwareContainerDefinition($containerDefinition, ['foo']);
+        $subject = new ProfilesAwareContainerDefinition($containerDefinition, Profiles::fromList(['foo']));
 
         self::assertSame([$serviceDefinition1, $serviceDefinition3], $subject->getServiceDefinitions());
     }
@@ -50,7 +51,7 @@ class ProfilesAwareContainerDefinitionTest extends TestCase {
             ->withAliasDefinition($alias)
             ->build();
 
-        $subject = new ProfilesAwareContainerDefinition($containerDefinition, ['default']);
+        $subject = new ProfilesAwareContainerDefinition($containerDefinition, Profiles::fromList(['default']));
 
         self::assertCount(0, $subject->getAliasDefinitions());
     }
@@ -69,7 +70,7 @@ class ProfilesAwareContainerDefinitionTest extends TestCase {
             ->withAliasDefinition($alias)
             ->build();
 
-        $subject = new ProfilesAwareContainerDefinition($containerDefinition, ['default']);
+        $subject = new ProfilesAwareContainerDefinition($containerDefinition, Profiles::fromList(['default']));
 
         self::assertCount(0, $subject->getAliasDefinitions());
     }
@@ -86,7 +87,7 @@ class ProfilesAwareContainerDefinitionTest extends TestCase {
             ->withAliasDefinition($alias)
             ->build();
 
-        $subject = new ProfilesAwareContainerDefinition($containerDefinition, ['default']);
+        $subject = new ProfilesAwareContainerDefinition($containerDefinition, Profiles::fromList(['default']));
 
         self::assertCount(1, $subject->getAliasDefinitions());
     }
@@ -102,7 +103,7 @@ class ProfilesAwareContainerDefinitionTest extends TestCase {
             ->withAliasDefinition($alias)
             ->build();
 
-        $subject = new ProfilesAwareContainerDefinition($containerDefinition, ['default']);
+        $subject = new ProfilesAwareContainerDefinition($containerDefinition, Profiles::fromList(['default']));
 
         self::expectException(InvalidAlias::class);
         self::expectExceptionMessage(sprintf(
@@ -124,7 +125,7 @@ class ProfilesAwareContainerDefinitionTest extends TestCase {
             ->withAliasDefinition($alias)
             ->build();
 
-        $subject = new ProfilesAwareContainerDefinition($containerDefinition, ['default']);
+        $subject = new ProfilesAwareContainerDefinition($containerDefinition, Profiles::fromList(['default']));
 
         self::expectException(InvalidAlias::class);
         self::expectExceptionMessage(sprintf(
@@ -141,7 +142,7 @@ class ProfilesAwareContainerDefinitionTest extends TestCase {
             ->method('getServicePrepareDefinitions')
             ->willReturn([]);
 
-        $subject = new ProfilesAwareContainerDefinition($containerDefinition, ['default']);
+        $subject = new ProfilesAwareContainerDefinition($containerDefinition, Profiles::fromList(['default']));
 
         self::assertSame([], $subject->getServicePrepareDefinitions());
     }
@@ -152,7 +153,7 @@ class ProfilesAwareContainerDefinitionTest extends TestCase {
             ->method('getServiceDelegateDefinitions')
             ->willReturn([]);
 
-        $subject = new ProfilesAwareContainerDefinition($containerDefinition, ['default']);
+        $subject = new ProfilesAwareContainerDefinition($containerDefinition, Profiles::fromList(['default']));
 
         self::assertSame([], $subject->getServiceDelegateDefinitions());
     }
@@ -163,12 +164,12 @@ class ProfilesAwareContainerDefinitionTest extends TestCase {
             ->method('getConfigurationDefinitions')
             ->willReturn([]);
 
-        $subject = new ProfilesAwareContainerDefinition($containerDefinition, ['default']);
+        $subject = new ProfilesAwareContainerDefinition($containerDefinition, Profiles::fromList(['default']));
 
         self::assertSame([], $subject->getConfigurationDefinitions());
     }
 
-    public function testGetInjectDefinitionsRespectActiveProfiles() : void {
+    public function testGetInjectDefinitionsRespectProfiles() : void {
         $service = ServiceDefinitionBuilder::forConcrete(Fixtures::injectConstructorServices()->injectProfilesStringService())
             ->build();
         $injectDefinition1 = InjectDefinitionBuilder::forService($service->getType())
@@ -188,7 +189,7 @@ class ProfilesAwareContainerDefinitionTest extends TestCase {
             ->withInjectDefinition($injectDefinition2)
             ->build();
 
-        $subject = new ProfilesAwareContainerDefinition($containerDefinition, ['prod']);
+        $subject = new ProfilesAwareContainerDefinition($containerDefinition, Profiles::fromList(['prod']));
 
         $expected = [$injectDefinition2];
         self::assertSame($expected, $subject->getInjectDefinitions());

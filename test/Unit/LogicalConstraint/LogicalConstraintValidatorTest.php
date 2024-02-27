@@ -7,6 +7,7 @@ use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraintValidator;
 use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraintViolation;
 use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraintViolationCollection;
 use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraintViolationType;
+use Cspray\AnnotatedContainer\Profiles;
 use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalyzer;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalyzer;
@@ -33,14 +34,16 @@ class LogicalConstraintValidatorTest extends TestCase {
             )->build()
         );
 
+        $profiles = Profiles::fromList(['default']);
+
         $mock = $this->getMockBuilder(LogicalConstraint::class)->getMock();
         $mock->expects($this->once())
             ->method('getConstraintViolations')
-            ->with($definition, ['default'])
+            ->with($definition, $profiles)
             ->willReturn(new LogicalConstraintViolationCollection());
 
         $subject = new LogicalConstraintValidator($mock);
-        $results = $subject->validate($definition, ['default']);
+        $results = $subject->validate($definition, $profiles);
 
         self::assertCount(0, $results);
     }
@@ -52,12 +55,14 @@ class LogicalConstraintValidatorTest extends TestCase {
             )->build()
         );
 
+        $profiles = Profiles::fromList(['default']);
+
         $coll1 = new LogicalConstraintViolationCollection();
         $coll1->add(LogicalConstraintViolation::critical('message one'));
         $mock1 = $this->getMockBuilder(LogicalConstraint::class)->getMock();
         $mock1->expects($this->once())
             ->method('getConstraintViolations')
-            ->with($definition, ['default'])
+            ->with($definition, $profiles)
             ->willReturn($coll1);
 
         $coll2 = new LogicalConstraintViolationCollection();
@@ -65,11 +70,11 @@ class LogicalConstraintValidatorTest extends TestCase {
         $mock2 = $this->getMockBuilder(LogicalConstraint::class)->getMock();
         $mock2->expects($this->once())
             ->method('getConstraintViolations')
-            ->with($definition, ['default'])
+            ->with($definition, $profiles)
             ->willReturn($coll2);
 
         $subject = new LogicalConstraintValidator($mock1, $mock2);
-        $results = $subject->validate($definition, ['default']);
+        $results = $subject->validate($definition, $profiles);
 
         self::assertCount(2, $results);
         self::assertSame('message one', $results->get(0)->message);

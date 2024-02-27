@@ -3,6 +3,7 @@
 namespace Cspray\AnnotatedContainer\LogicalConstraint;
 
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
+use Cspray\AnnotatedContainer\Profiles;
 
 /**
  * Represents a check on a ContainerDefinition to ensure that the configured Container would behave according to the
@@ -15,11 +16,11 @@ interface LogicalConstraint {
      * collection with each violation that the implemented constraint checks.
      *
      * @param ContainerDefinition $containerDefinition
-     * @param list<non-empty-string> $profiles
+     * @param Profiles $profiles
      * @return LogicalConstraintViolationCollection
      */
     public function getConstraintViolations(
         ContainerDefinition $containerDefinition,
-        array $profiles
+        Profiles $profiles
     ) : LogicalConstraintViolationCollection;
 }

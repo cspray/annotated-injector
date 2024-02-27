@@ -8,10 +8,11 @@ use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraint;
 use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraintViolation;
 use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraintViolationCollection;
 use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraintViolationType;
+use Cspray\AnnotatedContainer\Profiles;
 
 final class DuplicateServiceName implements LogicalConstraint {
 
-    public function getConstraintViolations(ContainerDefinition $containerDefinition, array $profiles) : LogicalConstraintViolationCollection {
+    public function getConstraintViolations(ContainerDefinition $containerDefinition, Profiles $profiles) : LogicalConstraintViolationCollection {
         $containerDefinition = new ProfilesAwareContainerDefinition($containerDefinition, $profiles);
         $violations = new LogicalConstraintViolationCollection();
 

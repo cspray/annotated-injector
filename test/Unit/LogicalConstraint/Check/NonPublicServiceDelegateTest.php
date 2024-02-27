@@ -4,6 +4,7 @@ namespace Cspray\AnnotatedContainer\Unit\LogicalConstraint\Check;
 
 use Cspray\AnnotatedContainer\LogicalConstraint\Check\NonPublicServiceDelegate;
 use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraintViolationType;
+use Cspray\AnnotatedContainer\Profiles;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalyzer;
 use Cspray\AnnotatedContainerFixture\Fixtures;
@@ -28,7 +29,7 @@ final class NonPublicServiceDelegateTest extends LogicalConstraintTestCase {
 
         $definition = $this->analyzer->analyze($options);
 
-        $violations = $this->subject->getConstraintViolations($definition, ['default']);
+        $violations = $this->subject->getConstraintViolations($definition, Profiles::fromList(['default']));
 
         self::assertCount(0, $violations);
     }
@@ -40,7 +41,7 @@ final class NonPublicServiceDelegateTest extends LogicalConstraintTestCase {
 
         $definition = $this->analyzer->analyze($options);
 
-        $violations = $this->subject->getConstraintViolations($definition, ['default']);
+        $violations = $this->subject->getConstraintViolations($definition, Profiles::fromList(['default']));
 
         self::assertCount(1, $violations);
         self::assertSame(LogicalConstraintViolationType::Critical, $violations->get(0)->violationType);
@@ -57,7 +58,7 @@ final class NonPublicServiceDelegateTest extends LogicalConstraintTestCase {
 
         $definition = $this->analyzer->analyze($options);
 
-        $violations = $this->subject->getConstraintViolations($definition, ['default']);
+        $violations = $this->subject->getConstraintViolations($definition, Profiles::fromList(['default']));
 
         self::assertCount(1, $violations);
         self::assertSame(LogicalConstraintViolationType::Critical, $violations->get(0)->violationType);

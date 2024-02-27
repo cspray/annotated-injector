@@ -16,7 +16,7 @@ use Cspray\AnnotatedContainer\Bootstrap\ServiceGatherer;
 use Cspray\AnnotatedContainer\Bootstrap\ServiceWiringObserver;
 use Cspray\AnnotatedContainer\ContainerFactory\ContainerFactory;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
-use Cspray\AnnotatedContainer\Profiles\ActiveProfiles;
+use Cspray\AnnotatedContainer\Profiles;
 use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProvider;
 use Cspray\AnnotatedContainer\ContainerFactory\ParameterStore;
 use Cspray\AnnotatedContainer\Unit\Helper\FixtureBootstrappingDirectoryResolver;
@@ -61,7 +61,7 @@ XML;
             ->at($this->vfs);
 
         $bootstrap = new Bootstrap(directoryResolver: $directoryResolver);
-        $container = $bootstrap->bootstrapContainer();
+        $container = $bootstrap->bootstrapContainer(Profiles::fromList(['default']));
 
         $service = $container->get(Fixtures::singleConcreteService()->fooImplementation()->getName());
 
@@ -94,7 +94,7 @@ XML;
             ->at($this->vfs);
 
         $bootstrap = new Bootstrap(directoryResolver: $directoryResolver);
-        $bootstrap->bootstrapContainer();
+        $bootstrap->bootstrapContainer(Profiles::fromList(['default']));
         $expected = md5(Fixtures::singleConcreteService()->getPath());
 
         self::assertFileExists('vfs://root/.annotated-container-cache/' . $expected);
@@ -122,7 +122,7 @@ XML;
             ->at($this->vfs);
 
         $bootstrap = new Bootstrap(directoryResolver: $directoryResolver);
-        $container = $bootstrap->bootstrapContainer();
+        $container = $bootstrap->bootstrapContainer(Profiles::fromList(['default']));
 
         $service = $container->get(Fixtures::thirdPartyServices()->fooInterface()->getName());
         self::assertInstanceOf(Fixtures::thirdPartyServices()->fooImplementation()->getName(), $service);
@@ -150,7 +150,7 @@ XML;
             ->at($this->vfs);
 
         $bootstrap = new Bootstrap(directoryResolver: $directoryResolver);
-        $container = $bootstrap->bootstrapContainer();
+        $container = $bootstrap->bootstrapContainer(Profiles::fromList(['default']));
 
         $service = $container->get(Fixtures::injectCustomStoreServices()->scalarInjector()->getName());
         self::assertInstanceOf(Fixtures::injectCustomStoreServices()->scalarInjector()->getName(), $service);
@@ -176,7 +176,7 @@ XML;
             ->at($this->vfs);
 
         $bootstrap = new Bootstrap(directoryResolver: $directoryResolver);
-        $container = $bootstrap->bootstrapContainer(profiles: ['default', 'dev']);
+        $container = $bootstrap->bootstrapContainer(profiles: Profiles::fromList(['default', 'dev']));
         $service = $container->get(Fixtures::profileResolvedServices()->fooInterface()->getName());
         self::assertInstanceOf(Fixtures::profileResolvedServices()->devImplementation()->getName(), $service);
     }
@@ -200,7 +200,7 @@ XML;
             ->at($this->vfs);
 
         $bootstrap = new Bootstrap(directoryResolver: $directoryResolver);
-        $container = $bootstrap->bootstrapContainer(configurationFile: 'my-container.xml.dist');
+        $container = $bootstrap->bootstrapContainer(profiles: Profiles::fromList(['default']), configurationFile: 'my-container.xml.dist');
 
         $service = $container->get(Fixtures::singleConcreteService()->fooImplementation()->getName());
 
@@ -231,7 +231,7 @@ XML;
             ->withContent($xml)
             ->at($this->vfs);
 
-        $container = (new Bootstrap(directoryResolver: $directoryResolver))->bootstrapContainer();
+        $container = (new Bootstrap(directoryResolver: $directoryResolver))->bootstrapContainer(Profiles::fromList(['default']));
 
         self::assertFileExists('vfs://root/annotated-container.log');
         $logContents = file_get_contents('vfs://root/annotated-container.log');
@@ -267,7 +267,7 @@ XML;
             ->withContent($xml)
             ->at($this->vfs);
 
-        (new Bootstrap(directoryResolver: $directoryResolver))->bootstrapContainer(['default', 'test']);
+        (new Bootstrap(directoryResolver: $directoryResolver))->bootstrapContainer(Profiles::fromList(['default', 'test']));
 
         self::assertFileExists('vfs://root/annotated-container.log');
         $logContents = file_get_contents('vfs://root/annotated-container.log');
@@ -296,7 +296,7 @@ XML;
             ->at($this->vfs);
 
         $logger = new TestLogger();
-        (new Bootstrap(directoryResolver: $directoryResolver, logger: $logger))->bootstrapContainer();
+        (new Bootstrap(directoryResolver: $directoryResolver, logger: $logger))->bootstrapContainer(Profiles::fromList(['default']));
 
         self::assertStringEqualsFile('vfs://root/annotated-container.log', '');
         self::assertGreaterThan(1, count($logger->getLogsForLevel(LogLevel::INFO)));
@@ -334,7 +334,7 @@ XML;
             }
         };
 
-        $container = (new Bootstrap(directoryResolver: $directoryResolver, definitionProviderFactory: $factory))->bootstrapContainer();
+        $container = (new Bootstrap(directoryResolver: $directoryResolver, definitionProviderFactory: $factory))->bootstrapContainer(Profiles::fromList(['default']));
 
         $service = $container->get(Fixtures::thirdPartyServices()->fooInterface()->getName());
 
@@ -373,7 +373,7 @@ XML;
             }
         };
 
-        $container = (new Bootstrap(directoryResolver: $directoryResolver, parameterStoreFactory: $factory))->bootstrapContainer();
+        $container = (new Bootstrap(directoryResolver: $directoryResolver, parameterStoreFactory: $factory))->bootstrapContainer(Profiles::fromList(['default']));
 
         $service = $container->get(Fixtures::injectCustomStoreServices()->scalarInjector()->getName());
 
@@ -402,7 +402,7 @@ XML;
 
         $bootstrap->addObserver($subject = new StubBootstrapObserver());
 
-        $bootstrap->bootstrapContainer();
+        $bootstrap->bootstrapContainer(Profiles::fromList(['default']));
 
         self::assertCount(3, $subject->getInvokedMethods());
         self::assertSame([
@@ -436,7 +436,7 @@ XML;
         $bootstrap->addObserver($two = new StubBootstrapObserver());
         $bootstrap->addObserver($three = new StubBootstrapObserver());
 
-        $bootstrap->bootstrapContainer();
+        $bootstrap->bootstrapContainer(Profiles::fromList(['default']));
 
         self::assertCount(3, $one->getInvokedMethods());
         self::assertCount(3, $two->getInvokedMethods());
@@ -465,7 +465,7 @@ XML;
             ->at($this->vfs);
 
         $bootstrap = new Bootstrap(directoryResolver: $directoryResolver);
-        $bootstrap->bootstrapContainer();
+        $bootstrap->bootstrapContainer(Profiles::fromList(['default']));
 
         $observers = (new \ReflectionObject($bootstrap))->getProperty('observers')->getValue($bootstrap);
 
@@ -514,7 +514,7 @@ XML;
         };
         $bootstrap->addObserver($observer);
 
-        $container = $bootstrap->bootstrapContainer();
+        $container = $bootstrap->bootstrapContainer(Profiles::fromList(['default']));
 
         $actual = $observer->getServices();
 
@@ -570,7 +570,7 @@ XML;
         };
         $bootstrap->addObserver($observer);
 
-        $container = $bootstrap->bootstrapContainer(['default', 'test']);
+        $container = $bootstrap->bootstrapContainer(Profiles::fromList(['default', 'test']));
 
         $actual = $observer->getServices();
         $actualServices = array_map(fn(ServiceFromServiceDefinition $fromServiceDefinition) => $fromServiceDefinition->getService(), $actual);
@@ -621,7 +621,7 @@ XML;
         };
         $bootstrap->addObserver($observer);
 
-        $container = $bootstrap->bootstrapContainer(['default', 'prod']);
+        $container = $bootstrap->bootstrapContainer(Profiles::fromList(['default', 'prod']));
 
         $actual = $observer->getServices();
 
@@ -676,7 +676,7 @@ XML;
         $bootstrap->addObserver($observer);
 
         // The Repository is only active under 'test' profile and should not be included
-        $container = $bootstrap->bootstrapContainer(['default', 'dev']);
+        $container = $bootstrap->bootstrapContainer(Profiles::fromList(['default', 'dev']));
 
         self::assertSame($container, $observer->getAnnotatedContainer());
         self::assertEmpty($observer->getServices());
@@ -712,7 +712,7 @@ XML;
         (new Bootstrap(
             directoryResolver: $directoryResolver,
             observerFactory: $observerFactory
-        ))->bootstrapContainer();
+        ))->bootstrapContainer(Profiles::fromList(['default']));
     }
 
     public function testContainerAnalyticsObserverNotifiedAfterContainerCreated() : void {
@@ -740,7 +740,7 @@ XML;
                 $this->calls[] = __FUNCTION__;
             }
 
-            public function notifyContainerCreated(ActiveProfiles $activeProfiles, ContainerDefinition $containerDefinition, AnnotatedContainer $container) : void {
+            public function notifyContainerCreated(Profiles $activeProfiles, ContainerDefinition $containerDefinition, AnnotatedContainer $container) : void {
                 $this->calls[] = __FUNCTION__;
             }
 
@@ -752,7 +752,7 @@ XML;
         $subject = new Bootstrap($directoryResolver);
         $subject->addObserver($observer);
 
-        $subject->bootstrapContainer();
+        $subject->bootstrapContainer(Profiles::fromList(['default']));
 
         self::assertSame(['notifyContainerCreated', 'notifyAnalytics'], $observer->getCalls());
     }
@@ -793,7 +793,7 @@ XML;
         );
         $subject->addObserver($observer);
 
-        $subject->bootstrapContainer();
+        $subject->bootstrapContainer(Profiles::fromList(['default']));
 
         $analytics = $observer->getAnalytics();
         self::assertNotNull($analytics);
@@ -829,7 +829,7 @@ XML;
             stopwatch: new Stopwatch(new KnownIncrementingPreciseTime())
         );
 
-        $subject->bootstrapContainer();
+        $subject->bootstrapContainer(Profiles::fromList(['default']));
 
         $logs = $logger->getLogsForLevel(LogLevel::INFO);
         self::assertContainsEquals([
@@ -870,7 +870,7 @@ XML;
 
         StubAnalyticsObserver::$analytics = null;
 
-        $subject->bootstrapContainer();
+        $subject->bootstrapContainer(Profiles::fromList(['default']));
 
         self::assertNotNull(StubAnalyticsObserver::$analytics);
     }
@@ -903,7 +903,7 @@ XML;
             containerFactory: $containerFactory
         );
 
-        $actual = $subject->bootstrapContainer();
+        $actual = $subject->bootstrapContainer(Profiles::fromList(['default']));
 
         self::assertSame($container, $actual);
     }

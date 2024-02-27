@@ -2,18 +2,12 @@
 
 namespace Cspray\AnnotatedContainer\Bootstrap;
 
-use Cspray\AnnotatedContainer\ArchitecturalDecisionRecords\DeprecateObserversInFavorOfEventSystem;
-use Cspray\AnnotatedContainer\Profiles\ActiveProfiles;
-use JetBrains\PhpStorm\Deprecated;
+use Cspray\AnnotatedContainer\Profiles;
 
 /**
  * @deprecated
  */
-#[
-    DeprecateObserversInFavorOfEventSystem,
-    Deprecated('Please see DeprecateObserversInFavorOfEventSystem ADR')
-]
 interface PreAnalysisObserver {
 
-    public function notifyPreAnalysis(ActiveProfiles $activeProfiles) : void;
+    public function notifyPreAnalysis(Profiles $activeProfiles) : void;
 }

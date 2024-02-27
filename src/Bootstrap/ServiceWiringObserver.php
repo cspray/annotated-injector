@@ -3,27 +3,17 @@
 namespace Cspray\AnnotatedContainer\Bootstrap;
 
 use Cspray\AnnotatedContainer\AnnotatedContainer;
-use Cspray\AnnotatedContainer\ArchitecturalDecisionRecords\DeprecateObserversInFavorOfEventSystem;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 use Cspray\AnnotatedContainer\Definition\ProfilesAwareContainerDefinition;
 use Cspray\AnnotatedContainer\Definition\ServiceDefinition;
-use Cspray\AnnotatedContainer\Profiles\ActiveProfiles;
-use JetBrains\PhpStorm\Deprecated;
+use Cspray\AnnotatedContainer\Profiles;
 
 /**
  * @deprecated
  */
-#[
-    DeprecateObserversInFavorOfEventSystem,
-    Deprecated('Please see DeprecateObserversInFavorOfEventSystem ADR')
-]
 abstract class ServiceWiringObserver implements ContainerCreatedObserver {
 
-    final public function notifyContainerCreated(ActiveProfiles $activeProfiles, ContainerDefinition $containerDefinition, AnnotatedContainer $container) : void {
-        trigger_error(
-            'The ' . ServiceWiringObserver::class . ' is being removed in 3.0. Corresponding functionality will be available using a new Event system. Please be prepared to update this code when upgrading Annotated Container to 3+.',
-            E_USER_DEPRECATED
-        );
+    final public function notifyContainerCreated(Profiles $activeProfiles, ContainerDefinition $containerDefinition, AnnotatedContainer $container) : void {
         $serviceGatherer = new class($containerDefinition, $container) implements ServiceGatherer {
 
             private readonly ContainerDefinition $containerDefinition;
@@ -32,9 +22,9 @@ abstract class ServiceWiringObserver implements ContainerCreatedObserver {
                 ContainerDefinition $containerDefinition,
                 private readonly AnnotatedContainer $container
             ) {
-                $activeProfiles = $container->get(ActiveProfiles::class);
-                assert($activeProfiles instanceof ActiveProfiles);
-                $this->containerDefinition = new ProfilesAwareContainerDefinition($containerDefinition, $activeProfiles->getProfiles());
+                $activeProfiles = $container->get(Profiles::class);
+                assert($activeProfiles instanceof Profiles);
+                $this->containerDefinition = new ProfilesAwareContainerDefinition($containerDefinition, $activeProfiles);
             }
 
             public function getServicesForType(string $type) : array {

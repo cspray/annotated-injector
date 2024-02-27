@@ -15,7 +15,7 @@ use Cspray\AnnotatedContainer\Definition\ServiceDefinition;
 use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinition;
 use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinition;
 use Cspray\AnnotatedContainer\Exception\ParameterStoreNotFound;
-use Cspray\AnnotatedContainer\Profiles\ActiveProfiles;
+use Cspray\AnnotatedContainer\Profiles;
 use DI\Container;
 use Cspray\AnnotatedContainer\Exception\ServiceNotFound;
 use Cspray\Typiphy\ObjectType;
@@ -118,7 +118,7 @@ final class PhpDiContainerFactory extends AbstractContainerFactory implements Co
         $state->autowireService($definition->getClass()->getName());
     }
 
-    protected function createAnnotatedContainer(ContainerFactoryState $state, ActiveProfiles $activeProfiles) : AnnotatedContainer {
+    protected function createAnnotatedContainer(ContainerFactoryState $state, Profiles $activeProfiles) : AnnotatedContainer {
         assert($state instanceof PhpDiContainerFactoryState);
         $containerBuilder = new ContainerBuilder();
 
@@ -159,11 +159,11 @@ final class PhpDiContainerFactory extends AbstractContainerFactory implements Co
             public function __construct(
                 private readonly Container $container,
                 private readonly array $serviceTypes,
-                ActiveProfiles $activeProfiles
+                Profiles $activeProfiles
             ) {
                 $this->container->set(AutowireableFactory::class, $this);
                 $this->container->set(AutowireableInvoker::class, $this);
-                $this->container->set(ActiveProfiles::class, $activeProfiles);
+                $this->container->set(Profiles::class, $activeProfiles);
             }
 
             public function make(string $classType, AutowireableParameterSet $parameters = null) : object {

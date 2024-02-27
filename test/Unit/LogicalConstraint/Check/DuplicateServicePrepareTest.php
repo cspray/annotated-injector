@@ -5,6 +5,7 @@ namespace Cspray\AnnotatedContainer\Unit\LogicalConstraint\Check;
 use Cspray\AnnotatedContainer\Attribute\ServicePrepare;
 use Cspray\AnnotatedContainer\LogicalConstraint\Check\DuplicateServicePrepare;
 use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraintViolationType;
+use Cspray\AnnotatedContainer\Profiles;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalyzer;
 use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProvider;
@@ -31,7 +32,7 @@ final class DuplicateServicePrepareTest extends LogicalConstraintTestCase {
             )->build()
         );
 
-        $results = $this->subject->getConstraintViolations($definition, ['default']);
+        $results = $this->subject->getConstraintViolations($definition, Profiles::fromList(['default']));
 
         self::assertCount(0, $results);
     }
@@ -43,7 +44,7 @@ final class DuplicateServicePrepareTest extends LogicalConstraintTestCase {
             )->build()
         );
 
-        $results = $this->subject->getConstraintViolations($definition, ['default']);
+        $results = $this->subject->getConstraintViolations($definition, Profiles::fromList(['default']));
 
         self::assertCount(1, $results);
 
@@ -89,7 +90,7 @@ TEXT;
             )->build()
         );
 
-        $results = $this->subject->getConstraintViolations($definition, ['default']);
+        $results = $this->subject->getConstraintViolations($definition, Profiles::fromList(['default']));
 
         self::assertCount(1, $results);
 

@@ -38,10 +38,6 @@
   </file>
   <file src="src/Bootstrap/Bootstrap.php">
     <DeprecatedInterface>
-      <code><![CDATA[ActiveProfiles]]></code>
-      <code><![CDATA[ActiveProfiles]]></code>
-      <code><![CDATA[ActiveProfiles]]></code>
-      <code><![CDATA[ActiveProfiles]]></code>
       <code><![CDATA[PreAnalysisObserver|PostAnalysisObserver|ContainerCreatedObserver|ContainerAnalyticsObserver $observer]]></code>
       <code><![CDATA[PreAnalysisObserver|PostAnalysisObserver|ContainerCreatedObserver|ContainerAnalyticsObserver $observer]]></code>
       <code><![CDATA[PreAnalysisObserver|PostAnalysisObserver|ContainerCreatedObserver|ContainerAnalyticsObserver $observer]]></code>
@@ -50,7 +46,6 @@
       <code><![CDATA[array]]></code>
       <code><![CDATA[array]]></code>
       <code><![CDATA[array]]></code>
-      <code><![CDATA[class($profiles) implements ActiveProfiles {]]></code>
       <code><![CDATA[private]]></code>
       <code><![CDATA[private array $observers = [];]]></code>
       <code><![CDATA[private array $observers = [];]]></code>
@@ -66,9 +61,6 @@
       <code><![CDATA[withLogger]]></code>
       <code><![CDATA[withLogger]]></code>
     </DeprecatedMethod>
-    <InvalidScalarArgument>
-      <code><![CDATA[$activeProfiles->getProfiles()]]></code>
-    </InvalidScalarArgument>
     <PossiblyUnusedReturnValue>
       <code><![CDATA[AnnotatedContainer]]></code>
     </PossiblyUnusedReturnValue>
@@ -104,11 +96,6 @@
       <code><![CDATA[ComposerJsonScanningThirdPartyInitializerProvider]]></code>
     </UnusedClass>
   </file>
-  <file src="src/Bootstrap/ContainerCreatedObserver.php">
-    <DeprecatedInterface>
-      <code><![CDATA[ActiveProfiles]]></code>
-    </DeprecatedInterface>
-  </file>
   <file src="src/Bootstrap/DelegatedParameterStoreFactory.php">
     <UnusedClass>
       <code><![CDATA[DelegatedParameterStoreFactory]]></code>
@@ -119,16 +106,6 @@
       <code><![CDATA[PreAnalysisObserver|PostAnalysisObserver|ContainerCreatedObserver]]></code>
       <code><![CDATA[PreAnalysisObserver|PostAnalysisObserver|ContainerCreatedObserver]]></code>
       <code><![CDATA[PreAnalysisObserver|PostAnalysisObserver|ContainerCreatedObserver]]></code>
-    </DeprecatedInterface>
-  </file>
-  <file src="src/Bootstrap/PostAnalysisObserver.php">
-    <DeprecatedInterface>
-      <code><![CDATA[ActiveProfiles]]></code>
-    </DeprecatedInterface>
-  </file>
-  <file src="src/Bootstrap/PreAnalysisObserver.php">
-    <DeprecatedInterface>
-      <code><![CDATA[ActiveProfiles]]></code>
     </DeprecatedInterface>
   </file>
   <file src="src/Bootstrap/ServiceFromServiceDefinition.php">
@@ -145,7 +122,6 @@
   </file>
   <file src="src/Bootstrap/ServiceWiringObserver.php">
     <DeprecatedInterface>
-      <code><![CDATA[ActiveProfiles]]></code>
       <code><![CDATA[ServiceWiringObserver]]></code>
     </DeprecatedInterface>
     <LessSpecificReturnStatement>
@@ -158,6 +134,9 @@
     <MoreSpecificReturnType>
       <code><![CDATA[array]]></code>
     </MoreSpecificReturnType>
+    <UnusedClass>
+      <code><![CDATA[ServiceWiringObserver]]></code>
+    </UnusedClass>
   </file>
   <file src="src/Bootstrap/ThirdPartyInitializer.php">
     <PossiblyUnusedMethod>
@@ -289,11 +268,7 @@
     </UnusedClass>
   </file>
   <file src="src/Cli/Command/ValidateCommand.php">
-    <ArgumentTypeCoercion>
-      <code><![CDATA[$profiles]]></code>
-    </ArgumentTypeCoercion>
     <DeprecatedInterface>
-      <code><![CDATA[ActiveProfiles]]></code>
       <code><![CDATA[PostAnalysisObserver]]></code>
       <code><![CDATA[PostAnalysisObserver]]></code>
       <code><![CDATA[class($closure) implements PostAnalysisObserver {]]></code>
@@ -301,7 +276,7 @@
     <PossiblyInvalidArgument>
       <code><![CDATA[$configOption]]></code>
       <code><![CDATA[$configOption]]></code>
-      <code><![CDATA[$profiles]]></code>
+      <code><![CDATA[$inputProfiles]]></code>
     </PossiblyInvalidArgument>
     <PossiblyInvalidCast>
       <code><![CDATA[$configOption]]></code>
@@ -352,13 +327,9 @@
   </file>
   <file src="src/ContainerFactory/AbstractContainerFactory.php">
     <DeprecatedInterface>
-      <code><![CDATA[ActiveProfiles]]></code>
-      <code><![CDATA[ActiveProfiles]]></code>
-      <code><![CDATA[ActiveProfiles]]></code>
       <code><![CDATA[ConfigurationDefinition]]></code>
       <code><![CDATA[ConfigurationDefinition]]></code>
       <code><![CDATA[ConfigurationDefinition]]></code>
-      <code><![CDATA[class($profiles) implements ActiveProfiles {]]></code>
     </DeprecatedInterface>
     <DeprecatedMethod>
       <code><![CDATA[getLogger]]></code>
@@ -373,9 +344,11 @@
       <code><![CDATA[logServiceNamed]]></code>
       <code><![CDATA[logServicePrepare]]></code>
       <code><![CDATA[logServiceShared]]></code>
-      <code><![CDATA[logServicesNotMatchingProfiles]]></code>
       <code><![CDATA[setLoggerFromOptions]]></code>
     </DeprecatedMethod>
+    <InvalidDocblock>
+      <code><![CDATA[final protected function logServicesNotMatchingProfiles(]]></code>
+    </InvalidDocblock>
     <MixedArgument>
       <code><![CDATA[$inject->getValue()]]></code>
       <code><![CDATA[$inject->getValue()]]></code>
@@ -384,9 +357,6 @@
       <code><![CDATA[$value]]></code>
       <code><![CDATA[$value]]></code>
     </MixedArgument>
-    <MixedArgumentTypeCoercion>
-      <code><![CDATA[$activeProfiles]]></code>
-    </MixedArgumentTypeCoercion>
     <MixedAssignment>
       <code><![CDATA[$value]]></code>
       <code><![CDATA[$value]]></code>
@@ -399,8 +369,6 @@
       <code><![CDATA[$method]]></code>
     </ArgumentTypeCoercion>
     <DeprecatedInterface>
-      <code><![CDATA[ActiveProfiles]]></code>
-      <code><![CDATA[ActiveProfiles]]></code>
       <code><![CDATA[ConfigurationDefinition]]></code>
     </DeprecatedInterface>
     <MixedArgument>
@@ -442,12 +410,6 @@
     </MixedAssignment>
   </file>
   <file src="src/ContainerFactory/ContainerFactoryOptionsBuilder.php">
-    <LessSpecificReturnStatement>
-      <code><![CDATA[$this->activeProfiles]]></code>
-    </LessSpecificReturnStatement>
-    <MoreSpecificReturnType>
-      <code><![CDATA[array]]></code>
-    </MoreSpecificReturnType>
     <PropertyNotSetInConstructor>
       <code><![CDATA[$activeProfiles]]></code>
     </PropertyNotSetInConstructor>
@@ -469,7 +431,6 @@
       <code><![CDATA[$method]]></code>
     </ArgumentTypeCoercion>
     <DeprecatedInterface>
-      <code><![CDATA[ActiveProfiles]]></code>
       <code><![CDATA[ConfigurationDefinition]]></code>
     </DeprecatedInterface>
     <MissingClosureParamType>
@@ -563,8 +524,6 @@
   </file>
   <file src="src/ContainerFactory/PhpDiContainerFactory.php">
     <DeprecatedInterface>
-      <code><![CDATA[ActiveProfiles]]></code>
-      <code><![CDATA[ActiveProfiles]]></code>
       <code><![CDATA[ConfigurationDefinition]]></code>
     </DeprecatedInterface>
     <MissingClosureReturnType>
@@ -686,6 +645,9 @@
       <code><![CDATA[?ConfigurationDefinition]]></code>
       <code><![CDATA[ServiceDefinition|InjectDefinition|ConfigurationDefinition $definition]]></code>
     </DeprecatedInterface>
+    <InvalidArgument>
+      <code><![CDATA[$definition->getProfiles()]]></code>
+    </InvalidArgument>
   </file>
   <file src="src/Definition/ServiceDefinitionBuilder.php">
     <PropertyNotSetInConstructor>
@@ -769,37 +731,10 @@
       <code><![CDATA[get]]></code>
     </PossiblyUnusedMethod>
   </file>
-  <file src="src/Profiles/ActiveProfiles.php">
+  <file src="src/Profiles.php">
     <PossiblyUnusedMethod>
       <code><![CDATA[isActive]]></code>
     </PossiblyUnusedMethod>
-  </file>
-  <file src="src/Profiles/ActiveProfilesBuilder.php">
-    <PossiblyUnusedMethod>
-      <code><![CDATA[addAllIf]]></code>
-      <code><![CDATA[addIf]]></code>
-      <code><![CDATA[build]]></code>
-      <code><![CDATA[hasDefault]]></code>
-    </PossiblyUnusedMethod>
-    <PropertyTypeCoercion>
-      <code><![CDATA[[...$this->profiles, ...$profiles]]]></code>
-    </PropertyTypeCoercion>
-  </file>
-  <file src="src/Profiles/ActiveProfilesParser.php">
-    <PossiblyUnusedMethod>
-      <code><![CDATA[parse]]></code>
-    </PossiblyUnusedMethod>
-  </file>
-  <file src="src/Profiles/CsvActiveProfilesParser.php">
-    <DeprecatedInterface>
-      <code><![CDATA[CsvActiveProfilesParser]]></code>
-    </DeprecatedInterface>
-    <RiskyTruthyFalsyComparison>
-      <code><![CDATA[empty($parsedProfiles)]]></code>
-    </RiskyTruthyFalsyComparison>
-    <UnusedClass>
-      <code><![CDATA[CsvActiveProfilesParser]]></code>
-    </UnusedClass>
   </file>
   <file src="src/Serializer/ContainerDefinitionSerializer.php">
     <ArgumentTypeCoercion>

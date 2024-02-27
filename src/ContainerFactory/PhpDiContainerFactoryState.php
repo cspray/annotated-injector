@@ -5,11 +5,9 @@ namespace Cspray\AnnotatedContainer\ContainerFactory;
 use Cspray\AnnotatedContainer\Autowire\AutowireableFactory;
 use Cspray\AnnotatedContainer\Autowire\AutowireableInvoker;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
-use Cspray\AnnotatedContainer\Profiles\ActiveProfiles;
 use DI\Container;
-use DI\Definition\ArrayDefinition;
-use DI\Definition\ObjectDefinition;
 use DI\Definition\Reference;
+use Cspray\AnnotatedContainer\Profiles;
 use function DI\autowire;
 use function DI\factory;
 use function DI\get;
@@ -31,7 +29,7 @@ final class PhpDiContainerFactoryState implements ContainerFactoryState {
     ) {
         $this->services[] = AutowireableFactory::class;
         $this->services[] = AutowireableInvoker::class;
-        $this->services[] = ActiveProfiles::class;
+        $this->services[] = Profiles::class;
     }
 
     /**

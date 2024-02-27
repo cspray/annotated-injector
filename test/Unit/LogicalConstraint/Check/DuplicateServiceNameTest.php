@@ -4,6 +4,7 @@ namespace Cspray\AnnotatedContainer\Unit\LogicalConstraint\Check;
 
 use Cspray\AnnotatedContainer\LogicalConstraint\Check\DuplicateServiceName;
 use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraintViolationType;
+use Cspray\AnnotatedContainer\Profiles;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalyzer;
 use Cspray\AnnotatedContainerFixture\Fixtures;
@@ -29,7 +30,7 @@ final class DuplicateServiceNameTest extends LogicalConstraintTestCase {
 
         $definition = $this->analyzer->analyze($options);
 
-        $violations = $this->subject->getConstraintViolations($definition, ['default']);
+        $violations = $this->subject->getConstraintViolations($definition, Profiles::fromList(['default']));
 
         $barService = BarService::class;
         $fooService = FooService::class;
@@ -62,7 +63,7 @@ TEXT;
 
         $definition = $this->getAnalyzer()->analyze($options);
 
-        $violations = $this->subject->getConstraintViolations($definition, [$profile]);
+        $violations = $this->subject->getConstraintViolations($definition, Profiles::fromList([$profile]));
 
         self::assertCount(0, $violations);
     }

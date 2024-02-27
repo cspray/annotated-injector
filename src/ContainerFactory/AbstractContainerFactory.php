@@ -7,7 +7,6 @@ use Cspray\AnnotatedContainer\AnnotatedContainer;
 use Cspray\AnnotatedContainer\ContainerFactory\AliasResolution\AliasDefinitionResolution;
 use Cspray\AnnotatedContainer\ContainerFactory\AliasResolution\AliasDefinitionResolver;
 use Cspray\AnnotatedContainer\ContainerFactory\AliasResolution\StandardAliasDefinitionResolver;
-use Cspray\AnnotatedContainer\Definition\AliasDefinition;
 use Cspray\AnnotatedContainer\Definition\ConfigurationDefinition;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 use Cspray\AnnotatedContainer\Definition\InjectDefinition;
@@ -16,7 +15,7 @@ use Cspray\AnnotatedContainer\Definition\ServiceDefinition;
 use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinition;
 use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinition;
 use Cspray\AnnotatedContainer\Exception\ParameterStoreNotFound;
-use Cspray\AnnotatedContainer\Profiles\ActiveProfiles;
+use Cspray\AnnotatedContainer\Profiles;
 use Cspray\Typiphy\ObjectType;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -46,7 +45,7 @@ abstract class AbstractContainerFactory implements ContainerFactory {
 
     final public function createContainer(ContainerDefinition $containerDefinition, ContainerFactoryOptions $containerFactoryOptions = null) : AnnotatedContainer {
         $this->setLoggerFromOptions($containerFactoryOptions);
-        $activeProfiles = $containerFactoryOptions?->getActiveProfiles() ?? ['default'];
+        $activeProfiles = $containerFactoryOptions?->getProfiles() ?? Profiles::fromList(['default']);
         $containerType = $this->getBackingContainerType();
 
         $this->logCreatingContainer($containerType, $activeProfiles);
@@ -57,14 +56,14 @@ abstract class AbstractContainerFactory implements ContainerFactory {
 
         $state = $this->createContainerState($containerDefinition, $activeProfiles);
 
-        $container = $this->createAnnotatedContainer($state, $this->createActiveProfilesService($activeProfiles));
+        $container = $this->createAnnotatedContainer($state, $activeProfiles);
 
         $this->logFinishedCreatingContainer($containerType, $activeProfiles);
 
         return $container;
     }
 
-    private function createContainerState(ContainerDefinition $containerDefinition, array $activeProfiles) : ContainerFactoryState {
+    private function createContainerState(ContainerDefinition $containerDefinition, Profiles $activeProfiles) : ContainerFactoryState {
         $definition = new ProfilesAwareContainerDefinition($containerDefinition, $activeProfiles);
         $state = $this->getContainerFactoryState($definition);
 
@@ -111,36 +110,6 @@ abstract class AbstractContainerFactory implements ContainerFactory {
         }
 
         return $state;
-    }
-
-    /**
-     * @param list<non-empty-string> $profiles
-     * @return ActiveProfiles
-     */
-    private function createActiveProfilesService(array $profiles) : ActiveProfiles {
-        return new class($profiles) implements ActiveProfiles {
-            public function __construct(
-                /** @var list<non-empty-string> */
-                private readonly array $profiles
-            ) {
-            }
-
-            public function getProfiles() : array {
-                trigger_error(
-                    'The ' . ActiveProfiles::class . ' interface is being removed in 3.0. Please use the new Profiles interface instead.',
-                    E_USER_DEPRECATED
-                );
-                return $this->profiles;
-            }
-
-            public function isActive(string $profile) : bool {
-                trigger_error(
-                    'The ' . ActiveProfiles::class . ' interface is being removed in 3.0. Please use the new Profiles interface instead.',
-                    E_USER_DEPRECATED
-                );
-                return in_array($profile, $this->profiles, true);
-            }
-        };
     }
 
     /**
@@ -193,16 +162,16 @@ abstract class AbstractContainerFactory implements ContainerFactory {
     /**
      * @deprecated
      */
-    final protected function logCreatingContainer(ObjectType $backingImplementation, array $activeProfiles) : void {
+    final protected function logCreatingContainer(ObjectType $backingImplementation, Profiles $activeProfiles) : void {
         $this->logger->info(
             sprintf(
                 'Started wiring AnnotatedContainer with %s backing implementation and "%s" active profiles.',
                 $backingImplementation->getName(),
-                implode(', ', $activeProfiles)
+                implode(', ', $activeProfiles->toArray())
             ),
             [
                 'backingImplementation' => $backingImplementation->getName(),
-                'activeProfiles' => $activeProfiles
+                'activeProfiles' => $activeProfiles->toArray()
             ]
         );
     }
@@ -210,12 +179,12 @@ abstract class AbstractContainerFactory implements ContainerFactory {
     /**
      * @deprecated
      */
-    final protected function logFinishedCreatingContainer(ObjectType $backingImplementation, array $activeProfiles) : void {
+    final protected function logFinishedCreatingContainer(ObjectType $backingImplementation, Profiles $activeProfiles) : void {
         $this->logger->info(
             'Finished wiring AnnotatedContainer.',
             [
                 'backingImplementation' => $backingImplementation->getName(),
-                'activeProfiles' => $activeProfiles
+                'activeProfiles' => $activeProfiles->toArray()
             ]
         );
     }
@@ -496,17 +465,20 @@ abstract class AbstractContainerFactory implements ContainerFactory {
     }
 
     /**
+<<<<<<< HEAD
      * @param ContainerDefinition $definition
      * @param list<string> $profiles
      * @return void
+=======
+>>>>>>> bb2f3a9 (Replace ActiveProfiles concept with new value object (#352))
      * @deprecated
      */
     final protected function logServicesNotMatchingProfiles(
         ContainerDefinition $definition,
-        array $profiles
-    ) {
+        Profiles $profiles
+    ) : void {
         foreach ($definition->getServiceDefinitions() as $serviceDefinition) {
-            if (count(array_intersect($profiles, $serviceDefinition->getProfiles())) >= 1) {
+            if (count(array_intersect($profiles->toArray(), $serviceDefinition->getProfiles())) >= 1) {
                 continue;
             }
 
@@ -539,5 +511,5 @@ abstract class AbstractContainerFactory implements ContainerFactory {
 
     abstract protected function handleConfigurationDefinition(ContainerFactoryState $state, ConfigurationDefinition $definition) : void;
 
-    abstract protected function createAnnotatedContainer(ContainerFactoryState $state, ActiveProfiles $activeProfiles) : AnnotatedContainer;
+    abstract protected function createAnnotatedContainer(ContainerFactoryState $state, Profiles $activeProfiles) : AnnotatedContainer;
 }

@@ -15,7 +15,7 @@ use Cspray\AnnotatedContainer\Definition\ServiceDefinition;
 use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinition;
 use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinition;
 use Cspray\AnnotatedContainer\Exception\ServiceNotFound;
-use Cspray\AnnotatedContainer\Profiles\ActiveProfiles;
+use Cspray\AnnotatedContainer\Profiles;
 use Cspray\Typiphy\ObjectType;
 use Illuminate\Contracts\Container\Container;
 use function Cspray\Typiphy\arrayType;
@@ -110,7 +110,7 @@ final class IlluminateContainerFactory extends AbstractContainerFactory {
         }
     }
 
-    protected function createAnnotatedContainer(ContainerFactoryState $state, ActiveProfiles $activeProfiles) : AnnotatedContainer {
+    protected function createAnnotatedContainer(ContainerFactoryState $state, Profiles $activeProfiles) : AnnotatedContainer {
         assert($state instanceof IlluminateContainerFactoryState);
         $container = $state->container;
 
@@ -205,7 +205,7 @@ final class IlluminateContainerFactory extends AbstractContainerFactory {
             $container->singletonIf($abstractService);
         }
 
-        $container->instance(ActiveProfiles::class, $activeProfiles);
+        $container->instance(Profiles::class, $activeProfiles);
 
         return new class($state) implements AnnotatedContainer {
 

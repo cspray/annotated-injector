@@ -3,19 +3,13 @@
 namespace Cspray\AnnotatedContainer\Bootstrap;
 
 use Cspray\AnnotatedContainer\AnnotatedContainer;
-use Cspray\AnnotatedContainer\ArchitecturalDecisionRecords\DeprecateObserversInFavorOfEventSystem;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
-use Cspray\AnnotatedContainer\Profiles\ActiveProfiles;
-use JetBrains\PhpStorm\Deprecated;
+use Cspray\AnnotatedContainer\Profiles;
 
 /**
  * @deprecated
  */
-#[
-    DeprecateObserversInFavorOfEventSystem,
-    Deprecated('Please see DeprecateObserversInFavorOfEventSystem ADR')
-]
 interface ContainerCreatedObserver {
 
-    public function notifyContainerCreated(ActiveProfiles $activeProfiles, ContainerDefinition $containerDefinition, AnnotatedContainer $container) : void;
+    public function notifyContainerCreated(Profiles $activeProfiles, ContainerDefinition $containerDefinition, AnnotatedContainer $container) : void;
 }

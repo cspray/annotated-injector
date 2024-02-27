@@ -10,22 +10,16 @@ use Cspray\AnnotatedContainer\Autowire\AutowireableInvoker;
 use Cspray\AnnotatedContainer\Autowire\AutowireableParameter;
 use Cspray\AnnotatedContainer\Autowire\AutowireableParameterSet;
 use Cspray\AnnotatedContainer\ContainerFactory\AliasResolution\AliasDefinitionResolution;
-use Cspray\AnnotatedContainer\Definition\AliasDefinition;
 use Cspray\AnnotatedContainer\Definition\ConfigurationDefinition;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 use Cspray\AnnotatedContainer\Definition\InjectDefinition;
-use Cspray\AnnotatedContainer\Definition\ProfilesAwareContainerDefinition;
 use Cspray\AnnotatedContainer\Definition\ServiceDefinition;
 use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinition;
 use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinition;
 use Cspray\AnnotatedContainer\Exception\ContainerException;
-use Cspray\AnnotatedContainer\Exception\InvalidAlias;
-use Cspray\AnnotatedContainer\Exception\ParameterStoreNotFound;
 use Cspray\AnnotatedContainer\Exception\ServiceNotFound;
-use Cspray\AnnotatedContainer\Profiles\ActiveProfiles;
+use Cspray\AnnotatedContainer\Profiles;
 use Cspray\Typiphy\ObjectType;
-use stdClass;
-use UnitEnum;
 use function Cspray\Typiphy\objectType;
 
 // @codeCoverageIgnoreStart
@@ -125,7 +119,7 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
         }
     }
 
-    protected function createAnnotatedContainer(ContainerFactoryState $state, ActiveProfiles $activeProfiles) : AnnotatedContainer {
+    protected function createAnnotatedContainer(ContainerFactoryState $state, Profiles $activeProfiles) : AnnotatedContainer {
         assert($state instanceof AurynContainerFactoryState);
 
         foreach ($state->getMethodInject() as $service => $methods) {
@@ -154,11 +148,11 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
 
             public function __construct(
                 private readonly AurynContainerFactoryState $state,
-                ActiveProfiles $activeProfiles
+                Profiles $activeProfiles
             ) {
                 $state->injector->delegate(AutowireableFactory::class, fn() => $this);
                 $state->injector->delegate(AutowireableInvoker::class, fn() => $this);
-                $state->injector->delegate(ActiveProfiles::class, fn() => $activeProfiles);
+                $state->injector->delegate(Profiles::class, fn() => $activeProfiles);
             }
 
             public function get(string $id) {

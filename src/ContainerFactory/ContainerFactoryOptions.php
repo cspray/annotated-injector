@@ -2,6 +2,7 @@
 
 namespace Cspray\AnnotatedContainer\ContainerFactory;
 
+use Cspray\AnnotatedContainer\Profiles;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -14,9 +15,9 @@ interface ContainerFactoryOptions {
     /**
      * A list of profiles that should be considered active.
      *
-     * @return list<non-empty-string>
+     * @return Profiles
      */
-    public function getActiveProfiles() : array;
+    public function getProfiles() : Profiles;
 
     /**
      * @deprecated
