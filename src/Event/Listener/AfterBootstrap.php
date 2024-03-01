@@ -9,7 +9,7 @@ use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 
 interface AfterBootstrap {
 
-    public function handle(
+    public function handleAfterBootstrap(
         BootstrappingConfiguration $bootstrappingConfiguration,
         ContainerDefinition $containerDefinition,
         AnnotatedContainer $container,

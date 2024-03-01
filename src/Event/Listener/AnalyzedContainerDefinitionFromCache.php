@@ -6,6 +6,6 @@ use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 
 interface AnalyzedContainerDefinitionFromCache {
 
-    public function handle(ContainerDefinition $containerDefinition, string $cacheFile) : void;
+    public function handleAnalyzedContainerDefinitionFromCache(ContainerDefinition $containerDefinition, string $cacheFile) : void;
 
 }

@@ -6,6 +6,6 @@ use Cspray\AnnotatedContainer\Bootstrap\BootstrappingConfiguration;
 
 interface BeforeBootstrap {
 
-    public function handle(BootstrappingConfiguration $bootstrappingConfiguration) : void;
+    public function handleBeforeBootstrap(BootstrappingConfiguration $bootstrappingConfiguration) : void;
 
 }

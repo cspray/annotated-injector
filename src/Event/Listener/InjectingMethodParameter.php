@@ -7,6 +7,6 @@ use Cspray\AnnotatedContainer\Profiles;
 
 interface InjectingMethodParameter {
 
-    public function handle(Profiles $profiles, InjectDefinition $definition) : void;
+    public function handleInjectingMethodParameter(Profiles $profiles, InjectDefinition $definition) : void;
 
 }

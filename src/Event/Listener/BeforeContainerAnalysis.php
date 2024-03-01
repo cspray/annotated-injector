@@ -6,6 +6,6 @@ use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptions;
 
 interface BeforeContainerAnalysis {
 
-    public function handle(ContainerDefinitionAnalysisOptions $analysisOptions) : void;
+    public function handleBeforeContainerAnalysis(ContainerDefinitionAnalysisOptions $analysisOptions) : void;
 
 }

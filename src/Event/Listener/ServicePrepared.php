@@ -7,6 +7,6 @@ use Cspray\AnnotatedContainer\Profiles;
 
 interface ServicePrepared {
 
-    public function handle(Profiles $profiles, ServicePrepareDefinition $definition) : void;
+    public function handleServicePrepared(Profiles $profiles, ServicePrepareDefinition $definition) : void;
 
 }

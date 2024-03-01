@@ -8,6 +8,6 @@ use Cspray\AnnotatedContainer\Profiles;
 
 interface AfterContainerCreation {
 
-    public function handle(Profiles $profiles, ContainerDefinition $containerDefinition, AnnotatedContainer $container) : void;
+    public function handleAfterContainerCreation(Profiles $profiles, ContainerDefinition $containerDefinition, AnnotatedContainer $container) : void;
 
 }

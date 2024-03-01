@@ -7,6 +7,6 @@ use Cspray\AnnotatedTarget\AnnotatedTarget;
 
 interface AnalyzedInjectDefinitionFromAttribute {
 
-    public function handle(AnnotatedTarget $annotatedTarget, InjectDefinition $injectDefinition) : void;
+    public function handleAnalyzedInjectDefinitionFromAttribute(AnnotatedTarget $annotatedTarget, InjectDefinition $injectDefinition) : void;
 
 }

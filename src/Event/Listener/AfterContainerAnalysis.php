@@ -7,6 +7,6 @@ use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptions;
 
 interface AfterContainerAnalysis {
 
-    public function handle(ContainerDefinitionAnalysisOptions $analysisOptions, ContainerDefinition $containerDefinition) : void;
+    public function handleAfterContainerAnalysis(ContainerDefinitionAnalysisOptions $analysisOptions, ContainerDefinition $containerDefinition) : void;
 
 }

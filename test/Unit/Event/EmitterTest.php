@@ -270,7 +270,7 @@ final class EmitterTest extends TestCase {
         $args = $handleArgs->call($this);
 
         $listener->expects($this->once())
-            ->method('handle')
+            ->method('handle' . (new \ReflectionClass($listenerClass))->getShortName())
             ->with(...$args);
 
         $addListener->call($this, $listener);

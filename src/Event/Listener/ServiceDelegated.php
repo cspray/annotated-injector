@@ -7,6 +7,6 @@ use Cspray\AnnotatedContainer\Profiles;
 
 interface ServiceDelegated {
 
-    public function handle(Profiles $profiles, ServiceDelegateDefinition $definition) : void;
+    public function handleServiceDelegated(Profiles $profiles, ServiceDelegateDefinition $definition) : void;
 
 }

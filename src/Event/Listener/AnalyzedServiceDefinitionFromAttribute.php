@@ -7,6 +7,6 @@ use Cspray\AnnotatedTarget\AnnotatedTarget;
 
 interface AnalyzedServiceDefinitionFromAttribute {
 
-    public function handle(AnnotatedTarget $annotatedTarget, ServiceDefinition $serviceDefinition) : void;
+    public function handleAnalyzedServiceDefinitionFromAttribute(AnnotatedTarget $annotatedTarget, ServiceDefinition $serviceDefinition) : void;
 
 }

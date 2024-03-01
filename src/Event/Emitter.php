@@ -203,109 +203,109 @@ final class Emitter implements AnalysisEmitter, BootstrapEmitter, ContainerFacto
 
     public function emitBeforeContainerAnalysis(ContainerDefinitionAnalysisOptions $analysisOptions) : void {
         foreach ($this->beforeContainerAnalysis as $beforeContainerAnalysis) {
-            $beforeContainerAnalysis->handle($analysisOptions);
+            $beforeContainerAnalysis->handleBeforeContainerAnalysis($analysisOptions);
         }
     }
 
     public function emitAnalyzedServiceDefinitionFromAttribute(AnnotatedTarget $annotatedTarget, ServiceDefinition $serviceDefinition,) : void {
         foreach ($this->analyzedServiceDefinitionFromAttributes as $analyzedServiceDefinitionFromAttribute) {
-            $analyzedServiceDefinitionFromAttribute->handle($annotatedTarget, $serviceDefinition);
+            $analyzedServiceDefinitionFromAttribute->handleAnalyzedServiceDefinitionFromAttribute($annotatedTarget, $serviceDefinition);
         }
     }
 
     public function emitAnalyzedServicePrepareDefinitionFromAttribute(AnnotatedTarget $annotatedTarget, ServicePrepareDefinition $servicePrepareDefinition,) : void {
         foreach ($this->analyzedServicePrepareDefinitionFromAttributes as $analyzedServicePrepareDefinitionFromAttribute) {
-            $analyzedServicePrepareDefinitionFromAttribute->handle($annotatedTarget, $servicePrepareDefinition);
+            $analyzedServicePrepareDefinitionFromAttribute->handleAnalyzedServicePrepareDefinitionFromAttribute($annotatedTarget, $servicePrepareDefinition);
         }
     }
 
     public function emitAnalyzedServiceDelegateDefinitionFromAttribute(AnnotatedTarget $annotatedTarget, ServiceDelegateDefinition $serviceDelegateDefinition,) : void {
         foreach ($this->analyzedServiceDelegateDefinitionFromAttributes as $analyzedServiceDelegateDefinitionFromAttribute) {
-            $analyzedServiceDelegateDefinitionFromAttribute->handle($annotatedTarget, $serviceDelegateDefinition);
+            $analyzedServiceDelegateDefinitionFromAttribute->handleAnalyzedServiceDelegateDefinitionFromAttribute($annotatedTarget, $serviceDelegateDefinition);
         }
     }
 
     public function emitAnalyzedInjectDefinitionFromAttribute(AnnotatedTarget $annotatedTarget, InjectDefinition $injectDefinition) : void {
         foreach ($this->analyzedInjectDefinitionFromAttributes as $analyzedInjectDefinitionFromAttribute) {
-            $analyzedInjectDefinitionFromAttribute->handle($annotatedTarget, $injectDefinition);
+            $analyzedInjectDefinitionFromAttribute->handleAnalyzedInjectDefinitionFromAttribute($annotatedTarget, $injectDefinition);
         }
     }
 
     public function emitAnalyzedContainerDefinitionFromCache(ContainerDefinition $definition, string $cacheFile) : void {
         foreach ($this->analyzedContainerDefinitionFromCaches as $analyzedContainerDefinitionFromCache) {
-            $analyzedContainerDefinitionFromCache->handle($definition, $cacheFile);
+            $analyzedContainerDefinitionFromCache->handleAnalyzedContainerDefinitionFromCache($definition, $cacheFile);
         }
     }
 
     public function emitAfterContainerAnalysis(ContainerDefinitionAnalysisOptions $analysisOptions, ContainerDefinition $containerDefinition,) : void {
         foreach ($this->afterContainerAnalysis as $afterContainerAnalysis) {
-            $afterContainerAnalysis->handle($analysisOptions, $containerDefinition);
+            $afterContainerAnalysis->handleAfterContainerAnalysis($analysisOptions, $containerDefinition);
         }
     }
 
     public function emitBeforeBootstrap(BootstrappingConfiguration $bootstrappingConfiguration) : void {
         foreach ($this->beforeBootstraps as $beforeBootstrap) {
-            $beforeBootstrap->handle($bootstrappingConfiguration);
+            $beforeBootstrap->handleBeforeBootstrap($bootstrappingConfiguration);
         }
     }
 
     public function emitAfterBootstrap(BootstrappingConfiguration $bootstrappingConfiguration, ContainerDefinition $containerDefinition, AnnotatedContainer $container, ContainerAnalytics $containerAnalytics,) : void {
         foreach ($this->afterBootstraps as $afterBootstrap) {
-            $afterBootstrap->handle($bootstrappingConfiguration, $containerDefinition, $container, $containerAnalytics);
+            $afterBootstrap->handleAfterBootstrap($bootstrappingConfiguration, $containerDefinition, $container, $containerAnalytics);
         }
     }
 
     public function emitBeforeContainerCreation(Profiles $profiles, ContainerDefinition $containerDefinition) : void {
         foreach ($this->beforeContainerCreations as $beforeContainerCreation) {
-            $beforeContainerCreation->handle($profiles, $containerDefinition);
+            $beforeContainerCreation->handleBeforeContainerCreation($profiles, $containerDefinition);
         }
     }
 
     public function emitServiceFilteredDueToProfiles(Profiles $profiles, ServiceDefinition $serviceDefinition) : void {
         foreach ($this->serviceFilteredDueToProfiles as $serviceFilteredDueToProfile) {
-            $serviceFilteredDueToProfile->handle($profiles, $serviceDefinition);
+            $serviceFilteredDueToProfile->handleServiceFilteredDueToProfiles($profiles, $serviceDefinition);
         }
     }
 
     public function emitServiceShared(Profiles $profiles, ServiceDefinition $serviceDefinition) : void {
         foreach ($this->serviceShared as $serviceShared) {
-            $serviceShared->handle($profiles, $serviceDefinition);
+            $serviceShared->handleServiceShared($profiles, $serviceDefinition);
         }
     }
 
     public function emitInjectingMethodParameter(Profiles $profiles, InjectDefinition $injectDefinition) : void {
         foreach ($this->injectingMethodParameters as $injectingMethodParameter) {
-            $injectingMethodParameter->handle($profiles, $injectDefinition);
+            $injectingMethodParameter->handleInjectingMethodParameter($profiles, $injectDefinition);
         }
     }
 
     public function emitInjectingProperty(Profiles $profiles, InjectDefinition $injectDefinition) : void {
         foreach ($this->injectingProperties as $injectingProperty) {
-            $injectingProperty->handle($profiles, $injectDefinition);
+            $injectingProperty->handleInjectingProperty($profiles, $injectDefinition);
         }
     }
 
     public function emitServicePrepared(Profiles $profiles, ServicePrepareDefinition $servicePrepareDefinition) : void {
         foreach ($this->servicePrepareds as $servicePrepared) {
-            $servicePrepared->handle($profiles, $servicePrepareDefinition);
+            $servicePrepared->handleServicePrepared($profiles, $servicePrepareDefinition);
         }
     }
 
     public function emitServiceDelegated(Profiles $profiles, ServiceDelegateDefinition $serviceDelegateDefinition) : void {
         foreach ($this->serviceDelegateds as $serviceDelegated) {
-            $serviceDelegated->handle($profiles, $serviceDelegateDefinition);
+            $serviceDelegated->handleServiceDelegated($profiles, $serviceDelegateDefinition);
         }
     }
 
     public function emitServiceAliasResolution(Profiles $profiles, AliasDefinition $aliasDefinition, AliasResolutionReason $resolutionReason) : void {
         foreach ($this->serviceAliasResolutions as $serviceAliasResolution) {
-            $serviceAliasResolution->handle($profiles, $aliasDefinition, $resolutionReason);
+            $serviceAliasResolution->handleServiceAliasResolution($profiles, $aliasDefinition, $resolutionReason);
         }
     }
 
     public function emitAfterContainerCreation(Profiles $profiles, ContainerDefinition $containerDefinition, AnnotatedContainer $container) : void {
         foreach ($this->afterContainerCreation as $afterContainerCreation) {
-            $afterContainerCreation->handle($profiles, $containerDefinition, $container);
+            $afterContainerCreation->handleAfterContainerCreation($profiles, $containerDefinition, $container);
         }
     }
 }

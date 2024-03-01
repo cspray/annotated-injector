@@ -7,6 +7,6 @@ use Cspray\AnnotatedContainer\Profiles;
 
 interface ServiceFilteredDueToProfiles {
 
-    public function handle(Profiles $profiles, ServiceDefinition $serviceDefinition) : void;
+    public function handleServiceFilteredDueToProfiles(Profiles $profiles, ServiceDefinition $serviceDefinition) : void;
 
 }
