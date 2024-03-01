@@ -1,0 +1,12 @@
+<?php declare(strict_types=1);
+
+namespace Cspray\AnnotatedContainer\Event\Listener;
+
+use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinition;
+use Cspray\AnnotatedTarget\AnnotatedTarget;
+
+interface AnalyzedServicePrepareDefinitionFromAttribute {
+
+    public function handle(AnnotatedTarget $annotatedTarget, ServicePrepareDefinition $definition) : void;
+
+}
