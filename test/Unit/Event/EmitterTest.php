@@ -25,6 +25,10 @@ use Cspray\AnnotatedContainer\Event\Listener\ContainerFactory\ServiceFilteredDue
 use Cspray\AnnotatedContainer\Event\Listener\ContainerFactory\ServicePrepared;
 use Cspray\AnnotatedContainer\Event\Listener\ContainerFactory\ServiceShared;
 use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AddedAliasDefinition;
+use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AddedInjectDefinitionFromApi;
+use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AddedServiceDefinitionFromApi;
+use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AddedServiceDelegateDefinitionFromApi;
+use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AddedServicePrepareDefinitionFromApi;
 use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AfterContainerAnalysis;
 use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AnalyzedContainerDefinitionFromCache;
 use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AnalyzedInjectDefinitionFromAttribute;
@@ -118,6 +122,46 @@ final class EmitterTest extends TestCase {
                     $this->subject->addAddedAliasDefinitionListener($listener),
                 fn(AliasDefinition $aliasDefinition) =>
                     $this->subject->emitAddedAliasDefinition($aliasDefinition)
+            ],
+            AddedInjectDefinitionFromApi::class => [
+                AddedInjectDefinitionFromApi::class,
+                fn() => [
+                    $this->getMockBuilder(InjectDefinition::class)->getMock()
+                ],
+                fn(AddedInjectDefinitionFromApi $listener) =>
+                    $this->subject->addAddedInjectDefinitionFromApiListener($listener),
+                fn(InjectDefinition $injectDefinition) =>
+                    $this->subject->emitAddedInjectDefinitionFromApi($injectDefinition)
+            ],
+            AddedServiceDefinitionFromApi::class => [
+                AddedServiceDefinitionFromApi::class,
+                fn() => [
+                    $this->getMockBuilder(ServiceDefinition::class)->getMock()
+                ],
+                fn(AddedServiceDefinitionFromApi $listener) =>
+                    $this->subject->addAddedServiceDefinitionFromApiListener($listener),
+                fn(ServiceDefinition $serviceDefinition) =>
+                    $this->subject->emitAddedServiceDefinitionFromApi($serviceDefinition)
+            ],
+            AddedServiceDelegateDefinitionFromApi::class => [
+                AddedServiceDelegateDefinitionFromApi::class,
+                fn() => [
+                    $this->getMockBuilder(ServiceDelegateDefinition::class)->getMock()
+                ],
+                fn(AddedServiceDelegateDefinitionFromApi $listener) =>
+                    $this->subject->addAddedServiceDelegateDefinitionFromApiListener($listener),
+                fn(ServiceDelegateDefinition $serviceDelegateDefinition) =>
+                    $this->subject->emitAddedServiceDelegateDefinitionFromApi($serviceDelegateDefinition)
+            ],
+            AddedServicePrepareDefinitionFromApi::class => [
+                AddedServicePrepareDefinitionFromApi::class,
+                fn() => [
+                    $this->getMockBuilder(ServicePrepareDefinition::class)->getMock()
+                ],
+                fn(AddedServicePrepareDefinitionFromApi $listener) =>
+                    $this->subject->addAddedServicePrepareDefinitionFromApiListener($listener),
+                fn(ServicePrepareDefinition $servicePrepareDefinition) =>
+                    $this->subject->emitAddedServicePrepareDefinitionFromApi($servicePrepareDefinition)
             ],
             AnalyzedContainerDefinitionFromCache::class => [
                 AnalyzedContainerDefinitionFromCache::class,

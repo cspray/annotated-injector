@@ -2,17 +2,20 @@
 
 namespace Cspray\AnnotatedContainer\Unit;
 
+use Cspray\AnnotatedContainer\Definition\AliasDefinition;
+use Cspray\AnnotatedContainer\Definition\InjectDefinition;
+use Cspray\AnnotatedContainer\Definition\ServiceDefinition;
+use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinition;
+use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinition;
 use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProviderContext;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinitionBuilder;
 use Cspray\AnnotatedContainerFixture\Fixtures;
 use PHPUnit\Framework\TestCase;
 use function Cspray\AnnotatedContainer\alias;
 use function Cspray\AnnotatedContainer\injectMethodParam;
-use function Cspray\AnnotatedContainer\injectProperty;
 use function Cspray\AnnotatedContainer\serviceDelegate;
 use function Cspray\AnnotatedContainer\servicePrepare;
 use function Cspray\Typiphy\intType;
-use function Cspray\Typiphy\stringType;
 use function Cspray\AnnotatedContainer\service;
 
 class ThirdPartyFunctionsTest extends TestCase {
@@ -30,8 +33,24 @@ class ThirdPartyFunctionsTest extends TestCase {
                 return $this->builder;
             }
 
-            public function setBuilder(ContainerDefinitionBuilder $containerDefinitionBuilder) : void {
-                $this->builder = $containerDefinitionBuilder;
+            public function addServiceDefinition(ServiceDefinition $serviceDefinition) : void {
+                $this->builder = $this->builder->withServiceDefinition($serviceDefinition);
+            }
+
+            public function addServicePrepareDefinition(ServicePrepareDefinition $servicePrepareDefinition) : void {
+                $this->builder = $this->builder->withServicePrepareDefinition($servicePrepareDefinition);
+            }
+
+            public function addServiceDelegateDefinition(ServiceDelegateDefinition $serviceDelegateDefinition) : void {
+                $this->builder = $this->builder->withServiceDelegateDefinition($serviceDelegateDefinition);
+            }
+
+            public function addInjectDefinition(InjectDefinition $injectDefinition) : void {
+                $this->builder = $this->builder->withInjectDefinition($injectDefinition);
+            }
+
+            public function addAliasDefinition(AliasDefinition $aliasDefinition) : void {
+                $this->builder = $this->builder->withAliasDefinition($aliasDefinition);
             }
         };
     }

@@ -2,7 +2,12 @@
 
 namespace Cspray\AnnotatedContainer\StaticAnalysis;
 
+use Cspray\AnnotatedContainer\Definition\AliasDefinition;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinitionBuilder;
+use Cspray\AnnotatedContainer\Definition\InjectDefinition;
+use Cspray\AnnotatedContainer\Definition\ServiceDefinition;
+use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinition;
+use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinition;
 
 /**
  * An object that allows the functional API for creating definition instances to work with the immutable
@@ -20,12 +25,14 @@ interface DefinitionProviderContext {
      */
     public function getBuilder() : ContainerDefinitionBuilder;
 
-    /**
-     * Change the current builder; this should be called after the functional API has adjusted the existing builder and
-     * a new immutable instance has been created.
-     *
-     * @param ContainerDefinitionBuilder $containerDefinitionBuilder
-     * @return void
-     */
-    public function setBuilder(ContainerDefinitionBuilder $containerDefinitionBuilder) : void;
+    public function addServiceDefinition(ServiceDefinition $serviceDefinition) : void;
+
+    public function addServicePrepareDefinition(ServicePrepareDefinition $servicePrepareDefinition) : void;
+
+    public function addServiceDelegateDefinition(ServiceDelegateDefinition $serviceDelegateDefinition) : void;
+
+    public function addInjectDefinition(InjectDefinition $injectDefinition) : void;
+
+    public function addAliasDefinition(AliasDefinition $aliasDefinition) : void;
+
 }

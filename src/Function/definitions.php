@@ -50,25 +50,25 @@ function service(DefinitionProviderContext $context, ObjectType $type, ?string $
     $serviceDefinitionBuilder = $serviceDefinitionBuilder->withProfiles($profiles);
 
     $serviceDefinition = $serviceDefinitionBuilder->build();
-    $context->setBuilder($context->getBuilder()->withServiceDefinition($serviceDefinition));
+    $context->addServiceDefinition($serviceDefinition);
     return $serviceDefinition;
 }
 
 function alias(DefinitionProviderContext $context, ObjectType $abstract, ObjectType $concrete) : AliasDefinition {
     $aliasDefinition = AliasDefinitionBuilder::forAbstract($abstract)->withConcrete($concrete)->build();
-    $context->setBuilder($context->getBuilder()->withAliasDefinition($aliasDefinition));
+    $context->addAliasDefinition($aliasDefinition);
     return $aliasDefinition;
 }
 
 function serviceDelegate(DefinitionProviderContext $context, ObjectType $service, ObjectType $factoryClass, string $factoryMethod) : ServiceDelegateDefinition {
     $serviceDelegateDefinition = ServiceDelegateDefinitionBuilder::forService($service)->withDelegateMethod($factoryClass, $factoryMethod)->build();
-    $context->setBuilder($context->getBuilder()->withServiceDelegateDefinition($serviceDelegateDefinition));
+    $context->addServiceDelegateDefinition($serviceDelegateDefinition);
     return $serviceDelegateDefinition;
 }
 
 function servicePrepare(DefinitionProviderContext $context, ObjectType $service, string $method) : ServicePrepareDefinition {
     $servicePrepareDefinition = ServicePrepareDefinitionBuilder::forMethod($service, $method)->build();
-    $context->setBuilder($context->getBuilder()->withServicePrepareDefinition($servicePrepareDefinition));
+    $context->addServicePrepareDefinition($servicePrepareDefinition);
     return $servicePrepareDefinition;
 }
 
@@ -86,6 +86,6 @@ function injectMethodParam(DefinitionProviderContext $context, ObjectType $servi
     }
 
     $injectDefinition = $injectDefinitionBuilder->build();
-    $context->setBuilder($context->getBuilder()->withInjectDefinition($injectDefinition));
+    $context->addInjectDefinition($injectDefinition);
     return $injectDefinition;
 }

@@ -36,13 +36,20 @@ interface StaticAnalysisEmitter {
         InjectDefinition $injectDefinition,
     ) : void;
 
+    public function emitAddedInjectDefinitionFromApi(InjectDefinition $injectDefinition) : void;
+
+    public function emitAddedServiceDefinitionFromApi(ServiceDefinition $serviceDefinition) : void;
+
+    public function emitAddedServiceDelegateDefinitionFromApi(ServiceDelegateDefinition $serviceDelegateDefinition) : void;
+
+    public function emitAddedServicePrepareDefinitionFromApi(ServicePrepareDefinition $servicePrepareDefinition) : void;
+
     public function emitAddedAliasDefinition(AliasDefinition $aliasDefinition) : void;
 
     public function emitAnalyzedContainerDefinitionFromCache(
         ContainerDefinition $definition,
         string $cacheFile
     ) : void;
-
 
     public function emitAfterContainerAnalysis(
         ContainerDefinitionAnalysisOptions $analysisOptions,

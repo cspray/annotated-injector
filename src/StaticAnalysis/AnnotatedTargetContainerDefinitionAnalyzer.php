@@ -2,6 +2,7 @@
 
 namespace Cspray\AnnotatedContainer\StaticAnalysis;
 
+use Cspray\AnnotatedContainer\Definition\AliasDefinition;
 use Cspray\AnnotatedContainer\Definition\AliasDefinitionBuilder;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinitionBuilder;
@@ -218,16 +219,40 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
     ) : ContainerDefinitionBuilder {
         $definitionProvider = $compileOptions->getDefinitionProvider();
         if ($definitionProvider !== null) {
-            $context = new class($builder) implements DefinitionProviderContext {
-                public function __construct(private ContainerDefinitionBuilder $builder) {
-                }
+            $context = new class($builder, $this->emitter) implements DefinitionProviderContext {
+                public function __construct(
+                    private ContainerDefinitionBuilder $builder,
+                    private ?StaticAnalysisEmitter $analysisEmitter = null
+                ) {}
 
                 public function getBuilder() : ContainerDefinitionBuilder {
                     return $this->builder;
                 }
 
-                public function setBuilder(ContainerDefinitionBuilder $containerDefinitionBuilder) : void {
-                    $this->builder = $containerDefinitionBuilder;
+                public function addServiceDefinition(ServiceDefinition $serviceDefinition) : void {
+                    $this->builder = $this->builder->withServiceDefinition($serviceDefinition);
+                    $this->analysisEmitter?->emitAddedServiceDefinitionFromApi($serviceDefinition);
+                }
+
+                public function addServicePrepareDefinition(ServicePrepareDefinition $servicePrepareDefinition) : void {
+                    $this->builder = $this->builder->withServicePrepareDefinition($servicePrepareDefinition);
+                    $this->analysisEmitter?->emitAddedServicePrepareDefinitionFromApi($servicePrepareDefinition);
+                }
+
+                public function addServiceDelegateDefinition(ServiceDelegateDefinition $serviceDelegateDefinition) : void {
+                    $this->builder = $this->builder->withServiceDelegateDefinition($serviceDelegateDefinition);
+                    $this->analysisEmitter?->emitAddedServiceDelegateDefinitionFromApi($serviceDelegateDefinition);
+                }
+
+                public function addInjectDefinition(InjectDefinition $injectDefinition) : void {
+                    $this->builder = $this->builder->withInjectDefinition($injectDefinition);
+                    $this->analysisEmitter?->emitAddedInjectDefinitionFromApi($injectDefinition);
+                }
+
+                public function addAliasDefinition(AliasDefinition $aliasDefinition) : void {
+                    $this->builder = $this->builder->withAliasDefinition($aliasDefinition);
+                    // We do not emit adding an alias definition here, it is handled by the analyzer after all services
+                    // are added or parsed
                 }
             };
             $definitionProvider->consume($context);

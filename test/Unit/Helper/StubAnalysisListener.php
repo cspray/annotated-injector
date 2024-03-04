@@ -9,6 +9,10 @@ use Cspray\AnnotatedContainer\Definition\ServiceDefinition;
 use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinition;
 use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinition;
 use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AddedAliasDefinition;
+use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AddedInjectDefinitionFromApi;
+use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AddedServiceDefinitionFromApi;
+use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AddedServiceDelegateDefinitionFromApi;
+use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AddedServicePrepareDefinitionFromApi;
 use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AfterContainerAnalysis;
 use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AnalyzedContainerDefinitionFromCache;
 use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AnalyzedInjectDefinitionFromAttribute;
@@ -26,6 +30,10 @@ class StubAnalysisListener implements BeforeContainerAnalysis,
     AnalyzedInjectDefinitionFromAttribute,
     AnalyzedContainerDefinitionFromCache,
     AddedAliasDefinition,
+    AddedInjectDefinitionFromApi,
+    AddedServiceDefinitionFromApi,
+    AddedServiceDelegateDefinitionFromApi,
+    AddedServicePrepareDefinitionFromApi,
     AfterContainerAnalysis {
 
     private readonly AnalysisEventCollection $triggeredEvents;
@@ -70,4 +78,19 @@ class StubAnalysisListener implements BeforeContainerAnalysis,
         $this->triggeredEvents->add(AnalysisEvent::AfterContainerAnalysis);
     }
 
+    public function handleAddedInjectDefinitionFromApi(InjectDefinition $injectDefinition) : void {
+        $this->triggeredEvents->add(AnalysisEvent::AddedInjectDefinitionFromApi);
+    }
+
+    public function handleAddedServiceDefinitionFromApi(ServiceDefinition $serviceDefinition) : void {
+        $this->triggeredEvents->add(AnalysisEvent::AddedServiceDefinitionFromApi);
+    }
+
+    public function handleAddedServiceDelegateDefinitionFromApi(ServiceDelegateDefinition $serviceDelegateDefinition) : void {
+        $this->triggeredEvents->add(AnalysisEvent::AddedServiceDelegateDefinitionFromApi);
+    }
+
+    public function handleAddedServicePrepareDefinitionFromApi(ServicePrepareDefinition $servicePrepareDefinition) : void {
+        $this->triggeredEvents->add(AnalysisEvent::AddedServicePrepareDefinitionFromApi);
+    }
 }

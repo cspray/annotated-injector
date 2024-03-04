@@ -90,8 +90,9 @@ class ThirdPartyServicesTest extends AnnotatedTargetContainerDefinitionAnalyzerT
     }
 
     protected function assertEmittedEvents(AnalysisEventCollection $analysisEventCollection) : void {
-        self::assertCount(4, $analysisEventCollection);
+        self::assertCount(5, $analysisEventCollection);
         self::assertSame(AnalysisEvent::BeforeContainerAnalysis, $analysisEventCollection->first());
+        self::assertCount(1, $analysisEventCollection->filter(AnalysisEvent::AddedServiceDefinitionFromApi));
         self::assertCount(1, $analysisEventCollection->filter(AnalysisEvent::AnalyzedServiceDefinitionFromAttribute));
         self::assertCount(1, $analysisEventCollection->filter(AnalysisEvent::AddedAliasDefinition));
         self::assertSame(AnalysisEvent::AfterContainerAnalysis, $analysisEventCollection->last());

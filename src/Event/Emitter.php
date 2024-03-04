@@ -24,6 +24,10 @@ use Cspray\AnnotatedContainer\Event\Listener\ContainerFactory\ServiceFilteredDue
 use Cspray\AnnotatedContainer\Event\Listener\ContainerFactory\ServicePrepared;
 use Cspray\AnnotatedContainer\Event\Listener\ContainerFactory\ServiceShared;
 use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AddedAliasDefinition;
+use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AddedInjectDefinitionFromApi;
+use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AddedServiceDefinitionFromApi;
+use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AddedServiceDelegateDefinitionFromApi;
+use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AddedServicePrepareDefinitionFromApi;
 use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AfterContainerAnalysis;
 use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AnalyzedContainerDefinitionFromCache;
 use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AnalyzedInjectDefinitionFromAttribute;
@@ -74,6 +78,26 @@ final class Emitter implements StaticAnalysisEmitter, BootstrapEmitter, Containe
      * @var list<AddedAliasDefinition>
      */
     private array $addedAliasDefinitions = [];
+
+    /**
+     * @var list<AddedInjectDefinitionFromApi>
+     */
+    private array $addedInjectDefinitions = [];
+
+    /**
+     * @var list<AddedServiceDefinitionFromApi>
+     */
+    private array $addedServiceDefinitions = [];
+
+    /**
+     * @var list<AddedServiceDelegateDefinitionFromApi>
+     */
+    private array $addedServiceDelegateDefinitions = [];
+
+    /**
+     * @var list<AddedServicePrepareDefinitionFromApi>
+     */
+    private array $addedServicePrepareDefinitions = [];
 
     /**
      * @var list<AnalyzedContainerDefinitionFromCache>
@@ -165,6 +189,22 @@ final class Emitter implements StaticAnalysisEmitter, BootstrapEmitter, Containe
 
     public function addAddedAliasDefinitionListener(AddedAliasDefinition $listener) : void {
         $this->addedAliasDefinitions[] = $listener;
+    }
+
+    public function addAddedInjectDefinitionFromApiListener(AddedInjectDefinitionFromApi $listener) : void {
+        $this->addedInjectDefinitions[] = $listener;
+    }
+
+    public function addAddedServiceDefinitionFromApiListener(AddedServiceDefinitionFromApi $listener) : void {
+        $this->addedServiceDefinitions[] = $listener;
+    }
+
+    public function addAddedServiceDelegateDefinitionFromApiListener(AddedServiceDelegateDefinitionFromApi $listener) : void {
+        $this->addedServiceDelegateDefinitions[] = $listener;
+    }
+
+    public function addAddedServicePrepareDefinitionFromApiListener(AddedServicePrepareDefinitionFromApi $listener) : void {
+        $this->addedServicePrepareDefinitions[] = $listener;
     }
 
     public function addAfterContainerAnalysisListener(AfterContainerAnalysis $listener) : void {
@@ -325,4 +365,27 @@ final class Emitter implements StaticAnalysisEmitter, BootstrapEmitter, Containe
         }
     }
 
+    public function emitAddedInjectDefinitionFromApi(InjectDefinition $injectDefinition) : void {
+        foreach ($this->addedInjectDefinitions as $addedInjectDefinition) {
+            $addedInjectDefinition->handleAddedInjectDefinitionFromApi($injectDefinition);
+        }
+    }
+
+    public function emitAddedServiceDefinitionFromApi(ServiceDefinition $serviceDefinition) : void {
+        foreach ($this->addedServiceDefinitions as $addedServiceDefinition) {
+            $addedServiceDefinition->handleAddedServiceDefinitionFromApi($serviceDefinition);
+        }
+    }
+
+    public function emitAddedServiceDelegateDefinitionFromApi(ServiceDelegateDefinition $serviceDelegateDefinition) : void {
+        foreach ($this->addedServiceDelegateDefinitions as $addedServiceDelegateDefinition) {
+            $addedServiceDelegateDefinition->handleAddedServiceDelegateDefinitionFromApi($serviceDelegateDefinition);
+        }
+    }
+
+    public function emitAddedServicePrepareDefinitionFromApi(ServicePrepareDefinition $servicePrepareDefinition) : void {
+        foreach ($this->addedServicePrepareDefinitions as $addedServicePrepareDefinition) {
+            $addedServicePrepareDefinition->handleAddedServicePrepareDefinitionFromApi($servicePrepareDefinition);
+        }
+    }
 }

@@ -45,6 +45,10 @@ abstract class AnnotatedTargetContainerDefinitionAnalyzerTestCase extends TestCa
         $emitter->addAnalyzedServiceDelegateDefinitionFromAttributeListener($this->stubAnalysisListener);
         $emitter->addAnalyzedServicePrepareDefinitionFromAttributeListener($this->stubAnalysisListener);
         $emitter->addAddedAliasDefinitionListener($this->stubAnalysisListener);
+        $emitter->addAddedInjectDefinitionFromApiListener($this->stubAnalysisListener);
+        $emitter->addAddedServiceDefinitionFromApiListener($this->stubAnalysisListener);
+        $emitter->addAddedServiceDelegateDefinitionFromApiListener($this->stubAnalysisListener);
+        $emitter->addAddedServicePrepareDefinitionFromApiListener($this->stubAnalysisListener);
         $emitter->addAfterContainerAnalysisListener($this->stubAnalysisListener);
 
         $this->analyzer = new AnnotatedTargetContainerDefinitionAnalyzer(

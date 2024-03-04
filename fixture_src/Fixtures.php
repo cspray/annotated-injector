@@ -162,4 +162,8 @@ final class Fixtures {
         return new InjectServiceDomainCollectionFixture();
     }
 
+    public static function thirdPartyKitchenSink() : ThirdPartyKitchenSinkFixture {
+        return new ThirdPartyKitchenSinkFixture();
+    }
+
 }
