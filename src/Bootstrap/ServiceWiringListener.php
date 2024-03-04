@@ -6,14 +6,14 @@ use Cspray\AnnotatedContainer\AnnotatedContainer;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 use Cspray\AnnotatedContainer\Definition\ProfilesAwareContainerDefinition;
 use Cspray\AnnotatedContainer\Definition\ServiceDefinition;
+use Cspray\AnnotatedContainer\Event\Listener\ContainerFactory\AfterContainerCreation;
 use Cspray\AnnotatedContainer\Profiles;
 
-/**
- * @deprecated
- */
-abstract class ServiceWiringObserver implements ContainerCreatedObserver {
+abstract class ServiceWiringListener implements AfterContainerCreation {
 
-    final public function notifyContainerCreated(Profiles $activeProfiles, ContainerDefinition $containerDefinition, AnnotatedContainer $container) : void {
+    abstract protected function wireServices(AnnotatedContainer $container, ServiceGatherer $gatherer) : void;
+
+    public function handleAfterContainerCreation(Profiles $profiles, ContainerDefinition $containerDefinition, AnnotatedContainer $container) : void {
         $serviceGatherer = new class($containerDefinition, $container) implements ServiceGatherer {
 
             private readonly ContainerDefinition $containerDefinition;
@@ -27,8 +27,12 @@ abstract class ServiceWiringObserver implements ContainerCreatedObserver {
                 $this->containerDefinition = new ProfilesAwareContainerDefinition($containerDefinition, $activeProfiles);
             }
 
+            /**
+             * @param class-string $type
+             * @return list<ServiceFromServiceDefinition>
+             */
             public function getServicesForType(string $type) : array {
-                /** @var array<array-key, object> $services */
+                /** @var list<ServiceFromServiceDefinition> $services */
                 $services = [];
                 foreach ($this->containerDefinition->getServiceDefinitions() as $serviceDefinition) {
                     if ($serviceDefinition->isAbstract()) {
@@ -86,5 +90,4 @@ abstract class ServiceWiringObserver implements ContainerCreatedObserver {
         $this->wireServices($container, $serviceGatherer);
     }
 
-    abstract protected function wireServices(AnnotatedContainer $container, ServiceGatherer $gatherer) : void;
 }

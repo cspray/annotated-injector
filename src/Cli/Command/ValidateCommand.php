@@ -6,7 +6,9 @@ use Closure;
 use Cspray\AnnotatedContainer\AnnotatedContainer;
 use Cspray\AnnotatedContainer\Autowire\AutowireableParameterSet;
 use Cspray\AnnotatedContainer\Bootstrap\Bootstrap;
+use Cspray\AnnotatedContainer\Bootstrap\BootstrappingConfiguration;
 use Cspray\AnnotatedContainer\Bootstrap\BootstrappingDirectoryResolver;
+use Cspray\AnnotatedContainer\Bootstrap\ContainerAnalytics;
 use Cspray\AnnotatedContainer\Bootstrap\PostAnalysisObserver;
 use Cspray\AnnotatedContainer\Cli\Command;
 use Cspray\AnnotatedContainer\Cli\Exception\ConfigurationNotFound;
@@ -16,6 +18,8 @@ use Cspray\AnnotatedContainer\ContainerFactory\ContainerFactory;
 use Cspray\AnnotatedContainer\ContainerFactory\ContainerFactoryOptions;
 use Cspray\AnnotatedContainer\ContainerFactory\ParameterStore;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
+use Cspray\AnnotatedContainer\Event\Emitter;
+use Cspray\AnnotatedContainer\Event\Listener\Bootstrap\AfterBootstrap;
 use Cspray\AnnotatedContainer\Exception\UnsupportedOperation;
 use Cspray\AnnotatedContainer\LogicalConstraint\Check\DuplicateServiceDelegate;
 use Cspray\AnnotatedContainer\LogicalConstraint\Check\DuplicateServiceName;
@@ -122,17 +126,21 @@ TEXT;
             throw ConfigurationNotFound::fromMissingFile($configFile);
         }
 
+        $emitter = new Emitter();
+
         $bootstrap = new Bootstrap(
+            emitter: $emitter,
             directoryResolver: $this->directoryResolver,
             containerFactory: $this->noOpContainerFactory()
         );
 
         $containerDefinition = null;
 
-        $infoCapturingObserver = $this->infoCapturingObserver(static function(ContainerDefinition $definition) use(&$containerDefinition) {
+        $infoCapturingListener = $this->infoCapturingListener(static function(ContainerDefinition $definition) use(&$containerDefinition) {
             $containerDefinition = $definition;
         });
-        $bootstrap->addObserver($infoCapturingObserver);
+
+        $emitter->addAfterBootstrapListener($infoCapturingListener);
 
         $inputProfiles = $input->getOption('profile') ?? ['default'];
         if (is_string($inputProfiles)) {
@@ -191,23 +199,23 @@ TEXT;
                 return new class implements AnnotatedContainer {
 
                     public function getBackingContainer() : object {
-                        throw UnsupportedOperation::fromMethodNotSupported(__METHOD__);
+                        throw new \RuntimeException(__METHOD__);
                     }
 
                     public function make(string $classType, AutowireableParameterSet $parameters = null) : object {
-                        throw UnsupportedOperation::fromMethodNotSupported(__METHOD__);
+                        throw new \RuntimeException(__METHOD__);
                     }
 
                     public function invoke(callable $callable, AutowireableParameterSet $parameters = null) : mixed {
-                        throw UnsupportedOperation::fromMethodNotSupported(__METHOD__);
+                        throw new \RuntimeException(__METHOD__);
                     }
 
                     public function get(string $id) {
-                        throw UnsupportedOperation::fromMethodNotSupported(__METHOD__);
+                        throw new \RuntimeException(__METHOD__);
                     }
 
                     public function has(string $id) : bool {
-                        throw UnsupportedOperation::fromMethodNotSupported(__METHOD__);
+                        throw new \RuntimeException(__METHOD__);
                     }
                 };
             }
@@ -219,10 +227,10 @@ TEXT;
 
     /**
      * @param Closure(ContainerDefinition):void $closure
-     * @return PostAnalysisObserver
+     * @return AfterBootstrap
      */
-    private function infoCapturingObserver(Closure $closure) : PostAnalysisObserver {
-        return new class($closure) implements PostAnalysisObserver {
+    private function infoCapturingListener(Closure $closure) : AfterBootstrap {
+        return new class($closure) implements AfterBootstrap {
             /**
              * @param Closure(ContainerDefinition):void $closure
              */
@@ -231,7 +239,7 @@ TEXT;
             ) {
             }
 
-            public function notifyPostAnalysis(Profiles $activeProfiles, ContainerDefinition $containerDefinition) : void {
+            public function handleAfterBootstrap(BootstrappingConfiguration $bootstrappingConfiguration, ContainerDefinition $containerDefinition, AnnotatedContainer $container, ContainerAnalytics $containerAnalytics) : void {
                 ($this->closure)($containerDefinition);
             }
         };

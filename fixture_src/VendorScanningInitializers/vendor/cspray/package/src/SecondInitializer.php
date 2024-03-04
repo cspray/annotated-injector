@@ -12,10 +12,6 @@ final class SecondInitializer extends ThirdPartyInitializer {
         return [];
     }
 
-    public function getObserverClasses() : array {
-        return [];
-    }
-
     public function getDefinitionProviderClass() : string {
         return DependencyDefinitionProvider::class;
     }

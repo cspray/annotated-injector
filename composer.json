@@ -50,7 +50,6 @@
     },
     "files": [
       "fixture_src/VendorScanningInitializers/vendor/cspray/package/other_src/DependencyDefinitionProvider.php",
-      "fixture_src/VendorScanningInitializers/vendor/cspray/package/src/DependencyObserver.php",
       "fixture_src/VendorScanningInitializers/vendor/cspray/package/src/FirstInitializer.php",
       "fixture_src/VendorScanningInitializers/vendor/cspray/package/src/SecondInitializer.php",
       "fixture_src/VendorScanningInitializers/vendor/cspray/package/src/SomeService.php",

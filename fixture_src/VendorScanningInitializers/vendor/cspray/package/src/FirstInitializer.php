@@ -15,10 +15,6 @@ final class FirstInitializer extends ThirdPartyInitializer {
         ];
     }
 
-    public function getObserverClasses() : array {
-        return [];
-    }
-
     public function getDefinitionProviderClass() : ?string {
         return null;
     }

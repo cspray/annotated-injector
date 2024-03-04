@@ -12,6 +12,7 @@ use Cspray\AnnotatedContainer\Definition\ProfilesAwareContainerDefinition;
 use Cspray\AnnotatedContainer\Definition\ServiceDefinition;
 use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinition;
 use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinition;
+use Cspray\AnnotatedContainer\Event\ContainerFactoryEmitter;
 use Cspray\AnnotatedContainer\Exception\ParameterStoreNotFound;
 use Cspray\AnnotatedContainer\Profiles;
 use Cspray\Typiphy\ObjectType;
@@ -21,6 +22,7 @@ abstract class AbstractContainerFactory implements ContainerFactory {
 
     protected readonly AliasDefinitionResolver $aliasDefinitionResolver;
 
+    private readonly ?ContainerFactoryEmitter $emitter;
 
     /**
      * @var ParameterStore[]
@@ -28,21 +30,28 @@ abstract class AbstractContainerFactory implements ContainerFactory {
     private array $parameterStores = [];
 
     public function __construct(
-        AliasDefinitionResolver $aliasDefinitionResolver = null
+        ContainerFactoryEmitter $emitter = null,
+        AliasDefinitionResolver $aliasDefinitionResolver = null,
     ) {
         // Injecting environment variables is something we have supported since early versions.
         // We don't require adding this parameter store explicitly to continue providing this functionality
         // without the end-user having to change how they construct their ContainerFactory.
         $this->addParameterStore(new EnvironmentParameterStore());
         $this->aliasDefinitionResolver = $aliasDefinitionResolver ?? new StandardAliasDefinitionResolver();
+        $this->emitter = $emitter;
     }
 
     final public function createContainer(ContainerDefinition $containerDefinition, ContainerFactoryOptions $containerFactoryOptions = null) : AnnotatedContainer {
         $activeProfiles = $containerFactoryOptions?->getProfiles() ?? Profiles::fromList(['default']);
 
-        $state = $this->createContainerState($containerDefinition, $activeProfiles);
+        $this->emitter?->emitBeforeContainerCreation($activeProfiles, $containerDefinition);
 
-        $container = $this->createAnnotatedContainer($state, $activeProfiles);
+        $container = $this->createAnnotatedContainer(
+            $this->createContainerState($containerDefinition, $activeProfiles),
+            $activeProfiles
+        );
+
+        $this->emitter?->emitAfterContainerCreation($activeProfiles, $containerDefinition, $container);
 
         return $container;
     }

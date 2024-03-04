@@ -341,17 +341,6 @@ SHELL;
             }
         }
 
-        /** @var string|array|null $observers */
-        $observers = $input->getOption('observer');
-        $observersNode = $root->appendChild($dom->createElementNS(self::XML_SCHEMA, 'observers'));
-        if ($observers !== null) {
-            $observers = is_string($observers) ? [$observers] : $observers;
-            /** @var string $observer */
-            foreach ($observers as $observer) {
-                $observersNode->appendChild($dom->createElementNS(self::XML_SCHEMA, 'observer', $observer));
-            }
-        }
-
         $vendor = $scanDirectories->appendChild(
             $dom->createElementNS(self::XML_SCHEMA, 'vendor')
         );
@@ -380,12 +369,6 @@ SHELL;
             if ($providerClass !== null) {
                 $definitionProvidersNode->appendChild(
                     $dom->createElementNS(self::XML_SCHEMA, 'definitionProvider', $providerClass)
-                );
-            }
-
-            foreach ($thirdPartyInitializer->getObserverClasses() as $observerClass) {
-                $observersNode->appendChild(
-                    $dom->createElementNS(self::XML_SCHEMA, 'observer', $observerClass)
                 );
             }
         }

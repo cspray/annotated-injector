@@ -10,12 +10,6 @@ class ThirdInitializer extends ThirdPartyInitializer {
         return [];
     }
 
-    public function getObserverClasses() : array {
-        return [
-            DependencyObserver::class
-        ];
-    }
-
     public function getDefinitionProviderClass() : ?string {
         return null;
     }

@@ -14,11 +14,5 @@ abstract class ThirdPartyInitializer {
      */
     abstract public function getRelativeScanDirectories() : array;
 
-    /**
-     * @return list<non-empty-string>
-     * @deprecated
-     */
-    abstract public function getObserverClasses() : array;
-
     abstract public function getDefinitionProviderClass() : ?string;
 }

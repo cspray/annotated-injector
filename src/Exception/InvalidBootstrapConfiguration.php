@@ -38,14 +38,4 @@ final class InvalidBootstrapConfiguration extends Exception {
         return new self($message);
     }
 
-    public static function fromConfiguredObserverWrongType(string $class) : self {
-        return new self(sprintf(
-            'The entry %s in observers does not implement one of the following interfaces %s, %s, %s or %s',
-            $class,
-            PreAnalysisObserver::class,
-            PostAnalysisObserver::class,
-            ContainerCreatedObserver::class,
-            ContainerAnalyticsObserver::class
-        ));
-    }
 }

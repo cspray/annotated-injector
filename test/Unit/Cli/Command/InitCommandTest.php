@@ -293,9 +293,6 @@ SHELL;
   <definitionProviders>
     <definitionProvider>Cspray\AnnotatedContainerFixture\VendorScanningInitializers\DependencyDefinitionProvider</definitionProvider>
   </definitionProviders>
-  <observers>
-    <observer>Cspray\AnnotatedContainerFixture\VendorScanningInitializers\DependencyObserver</observer>
-  </observers>
   <cacheDir>.annotated-container-cache</cacheDir>
 </annotatedContainer>
 
@@ -353,7 +350,6 @@ XML;
     <vendor/>
   </scanDirectories>
   <definitionProviders/>
-  <observers/>
   <cacheDir>.annotated-container-cache</cacheDir>
 </annotatedContainer>
 
@@ -397,7 +393,6 @@ XML;
     <vendor/>
   </scanDirectories>
   <definitionProviders/>
-  <observers/>
   <cacheDir>.annotated-container-cache</cacheDir>
 </annotatedContainer>
 
@@ -459,7 +454,6 @@ XML;
     <vendor/>
   </scanDirectories>
   <definitionProviders/>
-  <observers/>
   <cacheDir>.annotated-container-cache</cacheDir>
 </annotatedContainer>
 
@@ -500,7 +494,6 @@ XML;
     <vendor/>
   </scanDirectories>
   <definitionProviders/>
-  <observers/>
   <cacheDir>my-cache-dir</cacheDir>
 </annotatedContainer>
 
@@ -542,7 +535,6 @@ XML;
     <vendor/>
   </scanDirectories>
   <definitionProviders/>
-  <observers/>
   <cacheDir>path/cache/my-cache-dir</cacheDir>
 </annotatedContainer>
 
@@ -578,7 +570,6 @@ XML;
   <definitionProviders>
     <definitionProvider>ConsumerClass</definitionProvider>
   </definitionProviders>
-  <observers/>
   <cacheDir>.annotated-container-cache</cacheDir>
 </annotatedContainer>
 
@@ -614,7 +605,6 @@ XML;
   <parameterStores>
     <parameterStore>MyParameterStoreClass</parameterStore>
   </parameterStores>
-  <observers/>
   <cacheDir>.annotated-container-cache</cacheDir>
 </annotatedContainer>
 
@@ -651,85 +641,12 @@ XML;
     <parameterStore>MyParameterStoreClassOne</parameterStore>
     <parameterStore>MyParameterStoreClassTwo</parameterStore>
   </parameterStores>
-  <observers/>
   <cacheDir>.annotated-container-cache</cacheDir>
 </annotatedContainer>
 
 XML;
         self::assertStringEqualsFile('vfs://root/annotated-container.xml', $expected);
     }
-
-    public function testSingleObserverRespected() : void {
-        VirtualFilesystem::newFile('composer.json')
-            ->withContent(json_encode([
-                'autoload' => [
-                    'psr-0' => [
-                        'Namespace\\' => 'src'
-                    ]
-                ],
-            ], JSON_THROW_ON_ERROR))->at($this->vfs);
-
-        $input = new StubInput(['observer' => 'MyObserverClass'], ['init']);
-        $exitCode = $this->subject->handle($input, $this->output);
-
-        self::assertSame(0, $exitCode);
-
-        $expected = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
-  <scanDirectories>
-    <source>
-      <dir>src</dir>
-    </source>
-    <vendor/>
-  </scanDirectories>
-  <definitionProviders/>
-  <observers>
-    <observer>MyObserverClass</observer>
-  </observers>
-  <cacheDir>.annotated-container-cache</cacheDir>
-</annotatedContainer>
-
-XML;
-        self::assertStringEqualsFile('vfs://root/annotated-container.xml', $expected);
-    }
-
-    public function testMultipleObserversRespected() : void {
-        VirtualFilesystem::newFile('composer.json')
-            ->withContent(json_encode([
-                'autoload' => [
-                    'psr-0' => [
-                        'Namespace\\' => 'src'
-                    ]
-                ],
-            ], JSON_THROW_ON_ERROR))->at($this->vfs);
-
-        $input = new StubInput(['observer' => ['MyObserverClassOne', 'MyObserverClassTwo']], ['init']);
-        $exitCode = $this->subject->handle($input, $this->output);
-
-        self::assertSame(0, $exitCode);
-
-        $expected = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
-  <scanDirectories>
-    <source>
-      <dir>src</dir>
-    </source>
-    <vendor/>
-  </scanDirectories>
-  <definitionProviders/>
-  <observers>
-    <observer>MyObserverClassOne</observer>
-    <observer>MyObserverClassTwo</observer>
-  </observers>
-  <cacheDir>.annotated-container-cache</cacheDir>
-</annotatedContainer>
-
-XML;
-        self::assertStringEqualsFile('vfs://root/annotated-container.xml', $expected);
-    }
-
 
     public function testConfigFileBooleanThrowsException() : void {
         $this->expectException(InvalidOptionType::class);
