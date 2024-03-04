@@ -10,7 +10,6 @@ use Cspray\AnnotatedContainer\Autowire\AutowireableInvoker;
 use Cspray\AnnotatedContainer\Autowire\AutowireableParameter;
 use Cspray\AnnotatedContainer\Autowire\AutowireableParameterSet;
 use Cspray\AnnotatedContainer\ContainerFactory\AliasResolution\AliasDefinitionResolution;
-use Cspray\AnnotatedContainer\Definition\ConfigurationDefinition;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 use Cspray\AnnotatedContainer\Definition\InjectDefinition;
 use Cspray\AnnotatedContainer\Definition\ServiceDefinition;
@@ -85,38 +84,11 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
     protected function handleInjectDefinition(ContainerFactoryState $state, InjectDefinition $definition) : void {
         assert($state instanceof AurynContainerFactoryState);
         $injectTargetType = $definition->getTargetIdentifier()->getClass()->getName();
+        $method = $definition->getTargetIdentifier()->getMethodName();
+        $parameterName = $definition->getTargetIdentifier()->getName();
+        $value = $this->getInjectDefinitionValue($definition);
 
-        if ($definition->getTargetIdentifier()->isMethodParameter()) {
-            $method = $definition->getTargetIdentifier()->getMethodName();
-            $parameterName = $definition->getTargetIdentifier()->getName();
-            $value = $this->getInjectDefinitionValue($definition);
-            $state->addMethodInject($injectTargetType, $method, $parameterName, $value);
-        } else {
-            $property = $definition->getTargetIdentifier()->getName();
-            $value = $this->getInjectDefinitionValue($definition);
-            $state->addPropertyInject($injectTargetType, $property, $value);
-        }
-    }
-
-    protected function handleConfigurationDefinition(ContainerFactoryState $state, ConfigurationDefinition $definition) : void {
-        assert($state instanceof AurynContainerFactoryState);
-        $state->injector->share($definition->getClass()->getName());
-        if ($definition->getName() !== null) {
-            $state->addNameType($definition->getName(), $definition->getClass());
-        }
-
-        if (!method_exists($definition->getClass()->getName(), '__construct')) {
-            $state->injector->delegate($definition->getClass()->getName(), static function() use($definition, $state) {
-                $configReflection = (new \ReflectionClass($definition->getClass()->getName()));
-                $configInstance = $configReflection->newInstanceWithoutConstructor();
-                $properties = $state->propertiesToInject($definition->getClass()->getName());
-                foreach ($properties as $prop => $value) {
-                    $reflectionProperty = $configReflection->getProperty($prop);
-                    $reflectionProperty->setValue($configInstance, $value);
-                }
-                return $configInstance;
-            });
-        }
+        $state->addMethodInject($injectTargetType, $method, $parameterName, $value);
     }
 
     protected function createAnnotatedContainer(ContainerFactoryState $state, Profiles $activeProfiles) : AnnotatedContainer {

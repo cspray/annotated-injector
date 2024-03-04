@@ -24,8 +24,7 @@
     "cspray/typiphy": "^0.3",
     "nikic/php-parser": "^4.10",
     "ocramius/package-versions": "^2.7",
-    "psr/container": "^2.0",
-    "psr/log": "^2 || ^3"
+    "psr/container": "^2.0"
   },
   "require-dev": {
     "illuminate/container": "^10.11",

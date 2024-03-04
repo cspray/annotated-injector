@@ -4,7 +4,6 @@ namespace Cspray\AnnotatedContainer\Serializer;
 
 use Cspray\AnnotatedContainer\AnnotatedContainerVersion;
 use Cspray\AnnotatedContainer\Definition\AliasDefinitionBuilder;
-use Cspray\AnnotatedContainer\Definition\ConfigurationDefinitionBuilder;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinitionBuilder;
 use Cspray\AnnotatedContainer\Definition\InjectDefinition;
@@ -43,7 +42,6 @@ final class ContainerDefinitionSerializer {
 
         $this->addServiceDefinitionsToDom($root, $containerDefinition);
         $this->addAliasDefinitionsToDom($root, $containerDefinition);
-        $this->addConfigurationDefinitionsToDom($root, $containerDefinition);
         $this->addServicePrepareDefinitionsToDom($root, $containerDefinition);
         $this->addServiceDelegateDefinitionsToDom($root, $containerDefinition);
         $this->addInjectDefinitionsToDom($root, $containerDefinition);
@@ -127,43 +125,6 @@ final class ContainerDefinitionSerializer {
             $aliasDefinitionNode->appendChild(
                 $dom->createElementNS(self::XML_SCHEMA, 'concreteService', $aliasDefinition->getConcreteService()->getName())
             );
-        }
-    }
-
-    private function addConfigurationDefinitionsToDom(DOMElement $root, ContainerDefinition $containerDefinition) : void {
-        $dom = $root->ownerDocument;
-        assert($dom instanceof DOMDocument);
-
-        $root->appendChild(
-            $configurationDefinitionsNode = $dom->createElementNS(self::XML_SCHEMA, 'configurationDefinitions')
-        );
-
-        foreach ($containerDefinition->getConfigurationDefinitions() as $configurationDefinition) {
-            $configurationDefinitionsNode->appendChild(
-                $configurationDefinitionNode = $dom->createElementNS(self::XML_SCHEMA, 'configurationDefinition')
-            );
-
-            $configurationDefinitionNode->appendChild(
-                $dom->createElementNS(self::XML_SCHEMA, 'type', $configurationDefinition->getClass()->getName())
-            );
-
-            $configurationDefinitionNode->appendChild(
-                $nameNode = $dom->createElementNS(self::XML_SCHEMA, 'name')
-            );
-
-            $configurationDefinitionNode->appendChild(
-                $attrNode = $dom->createElementNS(self::XML_SCHEMA, 'attribute')
-            );
-
-            $name = $configurationDefinition->getName();
-            if ($name !== null) {
-                $nameNode->nodeValue = $name;
-            }
-
-            $attr = $configurationDefinition->getAttribute();
-            if ($attr !== null) {
-                $attrNode->nodeValue = base64_encode(serialize($attr));
-            }
         }
     }
 
@@ -364,7 +325,6 @@ final class ContainerDefinitionSerializer {
         $builder = $this->addServicePrepareDefinitionsToBuilder($builder, $xpath);
         $builder = $this->addServiceDelegateDefinitionsToBuilder($builder, $xpath);
         $builder = $this->addInjectDefinitionsToBuilder($builder, $xpath);
-        $builder = $this->addConfigurationDefinitionsToBuilder($builder, $xpath);
 
         return $builder->build();
     }
@@ -525,28 +485,4 @@ final class ContainerDefinitionSerializer {
         return $builder;
     }
 
-    private function addConfigurationDefinitionsToBuilder(ContainerDefinitionBuilder $builder, DOMXPath $xpath) : ContainerDefinitionBuilder {
-        $configurationDefinitions = $xpath->query('/cd:annotatedContainerDefinition/cd:configurationDefinitions/cd:configurationDefinition');
-        assert($configurationDefinitions instanceof DOMNodeList);
-
-        foreach ($configurationDefinitions as $configurationDefinition) {
-            $type = $xpath->query('cd:type/text()', $configurationDefinition)[0]->nodeValue;
-            $name = $xpath->query('cd:name/text()', $configurationDefinition)[0]?->nodeValue;
-            $attr = $xpath->query('cd:attribute/text()', $configurationDefinition)[0]?->nodeValue;
-            $configBuilder = ConfigurationDefinitionBuilder::forClass(objectType($type));
-            if ($name !== null) {
-                $configBuilder = $configBuilder->withName($name);
-            }
-
-            if ($attr !== null) {
-                $configBuilder = $configBuilder->withAttribute(unserialize(base64_decode($attr)));
-            }
-
-            $builder = $builder->withConfigurationDefinition(
-                $configBuilder->build()
-            );
-        }
-
-        return $builder;
-    }
 }

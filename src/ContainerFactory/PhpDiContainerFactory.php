@@ -90,32 +90,12 @@ final class PhpDiContainerFactory extends AbstractContainerFactory implements Co
 
     public function handleInjectDefinition(ContainerFactoryState $state, InjectDefinition $definition) : void {
         assert($state instanceof PhpDiContainerFactoryState);
-        if ($definition->getTargetIdentifier()->isMethodParameter()) {
-            $state->addMethodInject(
-                $definition->getTargetIdentifier()->getClass()->getName(),
-                $definition->getTargetIdentifier()->getMethodName(),
-                $definition->getTargetIdentifier()->getName(),
-                $this->getInjectDefinitionValue($definition)
-            );
-        } else {
-            $state->addPropertyInject(
-                $definition->getTargetIdentifier()->getClass()->getName(),
-                $definition->getTargetIdentifier()->getName(),
-                $this->getInjectDefinitionValue($definition)
-            );
-        }
-    }
-
-    public function handleConfigurationDefinition(ContainerFactoryState $state, ConfigurationDefinition $definition) : void {
-        assert($state instanceof PhpDiContainerFactoryState);
-        $configName = is_null($definition->getName()) ? $definition->getClass()->getName() : $definition->getName();
-        $state->addService($definition->getClass()->getName());
-        if (!is_null($definition->getName())) {
-            $state->addService($definition->getName());
-            $state->referenceService($definition->getName(), $definition->getClass()->getName());
-        }
-        assert(!is_null($configName));
-        $state->autowireService($definition->getClass()->getName());
+        $state->addMethodInject(
+            $definition->getTargetIdentifier()->getClass()->getName(),
+            $definition->getTargetIdentifier()->getMethodName(),
+            $definition->getTargetIdentifier()->getName(),
+            $this->getInjectDefinitionValue($definition)
+        );
     }
 
     protected function createAnnotatedContainer(ContainerFactoryState $state, Profiles $activeProfiles) : AnnotatedContainer {
@@ -131,12 +111,6 @@ final class PhpDiContainerFactory extends AbstractContainerFactory implements Co
                         $definitions[$service]->constructorParameter($param, $value);
                     }
                 }
-            }
-        }
-
-        foreach ($state->getPropertyInject() as $service => $properties) {
-            foreach ($properties as $property => $value) {
-                $definitions[$service]->property($property, $value);
             }
         }
 

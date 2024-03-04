@@ -30,27 +30,20 @@ final class CacheAwareContainerDefinitionAnalyzer implements ContainerDefinition
      *
      * Please see bin/annotated-container compile --help for more information on pre-generating the cached ContainerDefinition.
      *
-     * @param ContainerDefinitionAnalysisOptions $containerDefinitionCompileOptions
+     * @param ContainerDefinitionAnalysisOptions $containerDefinitionAnalysisOptions
      * @return ContainerDefinition
      * @throws InvalidCache
      */
-    public function analyze(ContainerDefinitionAnalysisOptions $containerDefinitionCompileOptions): ContainerDefinition {
-        $cacheFile = $this->getCacheFile($containerDefinitionCompileOptions->getScanDirectories());
+    public function analyze(ContainerDefinitionAnalysisOptions $containerDefinitionAnalysisOptions): ContainerDefinition {
+        $cacheFile = $this->getCacheFile($containerDefinitionAnalysisOptions->getScanDirectories());
         if (is_file($cacheFile)) {
             $containerDefinition = $this->containerDefinitionSerializer->deserialize(file_get_contents($cacheFile));
             if ($containerDefinition instanceof ContainerDefinition) {
-                $logger = $containerDefinitionCompileOptions->getLogger();
-                if ($logger !== null) {
-                    $logger->info(sprintf(
-                        'Skipping Annotated Container compiling. Using cached definition from %s.',
-                        $cacheFile
-                    ));
-                }
                 return $containerDefinition;
             }
         }
 
-        $containerDefinition = $this->containerDefinitionCompiler->analyze($containerDefinitionCompileOptions);
+        $containerDefinition = $this->containerDefinitionCompiler->analyze($containerDefinitionAnalysisOptions);
         $serialized = $this->containerDefinitionSerializer->serialize($containerDefinition);
         $contentWritten = @file_put_contents($cacheFile, $serialized);
         if (!$contentWritten) {

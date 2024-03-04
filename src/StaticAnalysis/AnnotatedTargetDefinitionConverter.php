@@ -2,15 +2,11 @@
 
 namespace Cspray\AnnotatedContainer\StaticAnalysis;
 
-use Cspray\AnnotatedContainer\Attribute\ConfigurationAttribute;
 use Cspray\AnnotatedContainer\Attribute\InjectAttribute;
 use Cspray\AnnotatedContainer\Attribute\Service;
 use Cspray\AnnotatedContainer\Attribute\ServiceAttribute;
 use Cspray\AnnotatedContainer\Attribute\ServiceDelegateAttribute;
-use Cspray\AnnotatedContainer\Attribute\ServicePrepare;
 use Cspray\AnnotatedContainer\Attribute\ServicePrepareAttribute;
-use Cspray\AnnotatedContainer\Definition\ConfigurationDefinition;
-use Cspray\AnnotatedContainer\Definition\ConfigurationDefinitionBuilder;
 use Cspray\AnnotatedContainer\Definition\InjectDefinition;
 use Cspray\AnnotatedContainer\Definition\InjectDefinitionBuilder;
 use Cspray\AnnotatedContainer\Definition\ServiceDefinition;
@@ -25,7 +21,6 @@ use Cspray\Typiphy\ObjectType;
 use Cspray\Typiphy\Type;
 use Cspray\Typiphy\TypeIntersect;
 use Cspray\Typiphy\TypeUnion;
-use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use ReflectionClass;
 use ReflectionIntersectionType;
@@ -49,12 +44,6 @@ use function Cspray\Typiphy\typeUnion;
  */
 final class AnnotatedTargetDefinitionConverter {
 
-    private readonly LoggerInterface $logger;
-
-    public function __construct(LoggerInterface $logger = null) {
-        $this->logger = $logger ?? new NullLogger();
-    }
-
     /**
      * Parse the information from the provided $target and return a corresponding definition object.
      *
@@ -64,16 +53,12 @@ final class AnnotatedTargetDefinitionConverter {
      * to perform any operations on the resultant definition.
      *
      * @param AnnotatedTarget $target
-     * @return ServiceDefinition|ServicePrepareDefinition|ServiceDelegateDefinition|InjectDefinition|ConfigurationDefinition
+     * @return ServiceDefinition|ServicePrepareDefinition|ServiceDelegateDefinition|InjectDefinition
      */
-    public function convert(AnnotatedTarget $target) : ServiceDefinition|ServicePrepareDefinition|ServiceDelegateDefinition|InjectDefinition|ConfigurationDefinition {
+    public function convert(AnnotatedTarget $target) : ServiceDefinition|ServicePrepareDefinition|ServiceDelegateDefinition|InjectDefinition {
         $attrInstance = $target->getAttributeInstance();
         if ($attrInstance instanceof ServiceAttribute) {
             return $this->buildServiceDefinition($target);
-        }
-
-        if ($attrInstance instanceof ConfigurationAttribute) {
-            return $this->buildConfigurationDefinition($target);
         }
 
         if ($attrInstance instanceof InjectAttribute) {
@@ -132,22 +117,16 @@ final class AnnotatedTargetDefinitionConverter {
 
         $returnType = $reflection->getReturnType();
         if ($returnType instanceof ReflectionIntersectionType) {
-            $exception = InvalidServiceDelegate::factoryMethodReturnsIntersectionType($delegateType, $delegateMethod);
-            $this->logger->error($exception->getMessage());
-            throw $exception;
+            throw InvalidServiceDelegate::factoryMethodReturnsIntersectionType($delegateType, $delegateMethod);
         }
 
         if ($returnType instanceof ReflectionUnionType) {
-            $exception = InvalidServiceDelegate::factoryMethodReturnsUnionType($delegateType, $delegateMethod);
-            $this->logger->error($exception->getMessage());
-            throw $exception;
+            throw InvalidServiceDelegate::factoryMethodReturnsUnionType($delegateType, $delegateMethod);
         }
 
         if ($returnType instanceof ReflectionNamedType) {
             if (!class_exists($returnType->getName()) && !interface_exists($returnType->getName())) {
-                $exception = InvalidServiceDelegate::factoryMethodReturnsScalarType($delegateType, $delegateMethod);
-                $this->logger->error($exception->getMessage());
-                throw $exception;
+                throw InvalidServiceDelegate::factoryMethodReturnsScalarType($delegateType, $delegateMethod);
             }
             return ServiceDelegateDefinitionBuilder::forService(objectType($returnType->getName()))
                 ->withDelegateMethod(objectType($delegateType), $delegateMethod)
@@ -155,9 +134,7 @@ final class AnnotatedTargetDefinitionConverter {
                 ->build();
         }
 
-        $exception = InvalidServiceDelegate::factoryMethodDoesNotDeclareService($delegateType, $delegateMethod);
-        $this->logger->error($exception->getMessage());
-        throw $exception;
+        throw InvalidServiceDelegate::factoryMethodDoesNotDeclareService($delegateType, $delegateMethod);
     }
 
     private function buildServicePrepareDefinition(AnnotatedTarget $target) : ServicePrepareDefinition {
@@ -171,21 +148,6 @@ final class AnnotatedTargetDefinitionConverter {
         return ServicePrepareDefinitionBuilder::forMethod(objectType($prepareType), $method)
             ->withAttribute($attribute)
             ->build();
-    }
-
-    private function buildConfigurationDefinition(AnnotatedTarget $target) : ConfigurationDefinition {
-        trigger_error(
-            'The #[Configuration] Attribute and related functionality will be removed in 3.0. Please use a normal #[Service] attribute instead.',
-            E_USER_DEPRECATED,
-        );
-        $builder = ConfigurationDefinitionBuilder::forClass(objectType($target->getTargetReflection()->getName()));
-        $attributeInstance = $target->getAttributeInstance();
-        assert($attributeInstance instanceof ConfigurationAttribute);
-        $name = $attributeInstance->getName();
-        if ($name !== null) {
-            $builder = $builder->withName($name);
-        }
-        return $builder->withAttribute($attributeInstance)->build();
     }
 
     private function buildInjectDefinition(AnnotatedTarget $target) : InjectDefinition {

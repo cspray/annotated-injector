@@ -27,7 +27,6 @@
     <xs:all>
       <xs:element name="serviceDefinitions" type="serviceDefinitionsType" />
       <xs:element name="aliasDefinitions" type="aliasDefinitionsType" />
-      <xs:element name="configurationDefinitions" type="configurationDefinitionsType" />
       <xs:element name="servicePrepareDefinitions" type="servicePrepareDefinitionsType" />
       <xs:element name="serviceDelegateDefinitions" type="serviceDelegateDefinitionsType" />
       <xs:element name="injectDefinitions" type="injectDefinitionsType" />
@@ -62,20 +61,6 @@
     <xs:all>
       <xs:element name="abstractService" type="xs:token" />
       <xs:element name="concreteService" type="xs:token" />
-    </xs:all>
-  </xs:complexType>
-
-  <xs:complexType name="configurationDefinitionsType">
-    <xs:sequence minOccurs="0" maxOccurs="unbounded">
-      <xs:element name="configurationDefinition" type="configurationDefinitionType" />
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="configurationDefinitionType">
-    <xs:all>
-      <xs:element name="type" type="xs:token" />
-      <xs:element name="name" type="xs:token" />
-      <xs:element name="attribute" type="xs:string" />
     </xs:all>
   </xs:complexType>
 

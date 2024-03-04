@@ -24,7 +24,7 @@ use ReflectionProperty;
 
 abstract class AnnotatedTargetDefinitionConverterTestCase extends TestCase {
 
-    protected ServiceDefinition|ServiceDelegateDefinition|ServicePrepareDefinition|InjectDefinition|ConfigurationDefinition $definition;
+    protected ServiceDefinition|ServiceDelegateDefinition|ServicePrepareDefinition|InjectDefinition $definition;
 
     protected function setUp() : void {
         $subject = new AnnotatedTargetDefinitionConverter();
@@ -49,7 +49,7 @@ abstract class AnnotatedTargetDefinitionConverterTestCase extends TestCase {
                 return $this->reflection->getAttributes($this->attributeType->value, ReflectionAttribute::IS_INSTANCEOF)[$this->attributeIndex];
             }
 
-            public function getAttributeInstance(): Service|ServicePrepare|ServiceDelegate|Configuration|Inject {
+            public function getAttributeInstance(): Service|ServicePrepare|ServiceDelegate|Inject {
                 return $this->getAttributeReflection()->newInstance();
             }
         };

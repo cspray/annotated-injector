@@ -296,33 +296,4 @@ SHELL;
         self::assertSame($expected, $this->stdout->getContentsAsString());
     }
 
-    public function testRespectsConfigurationLogging() : void {
-        $config = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
-  <scanDirectories>
-    <source>
-      <dir>SingleConcreteService</dir>
-    </source>
-  </scanDirectories>
-  <cacheDir>.annotated-container-cache</cacheDir>
-  <logging>
-    <file>annotated-container.log</file>
-  </logging>
-</annotatedContainer>
-XML;
-
-        VirtualFilesystem::newFile('annotated-container.xml')
-            ->withContent($config)
-            ->at($this->vfs);
-
-        VirtualFilesystem::newDirectory('.annotated-container-cache')->at($this->vfs);
-
-        $input = new StubInput([], ['build']);
-        $exitCode = $this->subject->handle($input, $this->output);
-
-        self::assertSame(0, $exitCode);
-        self::assertFileExists('vfs://root/annotated-container.log');
-        self::assertStringContainsString('Annotated Container compiling started.', file_get_contents('vfs://root/annotated-container.log'));
-    }
 }

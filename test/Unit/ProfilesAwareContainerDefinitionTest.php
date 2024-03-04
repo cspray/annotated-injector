@@ -158,17 +158,6 @@ class ProfilesAwareContainerDefinitionTest extends TestCase {
         self::assertSame([], $subject->getServiceDelegateDefinitions());
     }
 
-    public function testGetConfigurationDefinitionsDelegatesToInjectedContainerDefinition() : void {
-        $containerDefinition = $this->getMockBuilder(ContainerDefinition::class)->getMock();
-        $containerDefinition->expects($this->once())
-            ->method('getConfigurationDefinitions')
-            ->willReturn([]);
-
-        $subject = new ProfilesAwareContainerDefinition($containerDefinition, Profiles::fromList(['default']));
-
-        self::assertSame([], $subject->getConfigurationDefinitions());
-    }
-
     public function testGetInjectDefinitionsRespectProfiles() : void {
         $service = ServiceDefinitionBuilder::forConcrete(Fixtures::injectConstructorServices()->injectProfilesStringService())
             ->build();

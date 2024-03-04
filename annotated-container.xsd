@@ -34,7 +34,6 @@
       <xs:element name="definitionProviders" type="definitionProvidersType" minOccurs="0" maxOccurs="1" />
       <xs:element name="parameterStores" type="parameterStoresType" minOccurs="0" maxOccurs="1" />
       <xs:element name="observers" type="observersType" minOccurs="0" maxOccurs="1" />
-      <xs:element name="logging" type="loggingType" minOccurs="0" maxOccurs="1" />
     </xs:all>
   </xs:complexType>
 
@@ -85,26 +84,6 @@
   <xs:complexType name="definitionProvidersType">
     <xs:sequence minOccurs="0" maxOccurs="unbounded">
       <xs:element name="definitionProvider" type="xs:token" />
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="loggingType">
-    <xs:all>
-      <xs:element name="file" type="xs:token" minOccurs="0" maxOccurs="1" />
-      <xs:element name="stdout" type="stdoutType" minOccurs="0" maxOccurs="1" />
-      <xs:element name="exclude" type="excludeType" minOccurs="0" maxOccurs="1" />
-    </xs:all>
-  </xs:complexType>
-
-  <xs:complexType name="stdoutType">
-    <xs:simpleContent>
-      <xs:extension base="xs:string" />
-    </xs:simpleContent>
-  </xs:complexType>
-
-  <xs:complexType name="excludeType">
-    <xs:sequence>
-      <xs:element name="profile" type="xs:token" minOccurs="1" maxOccurs="unbounded" />
     </xs:sequence>
   </xs:complexType>
 

@@ -13,28 +13,30 @@ use Cspray\AnnotatedContainer\Definition\ServiceDefinition;
 use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinition;
 use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinition;
 use Cspray\AnnotatedContainer\Event\Emitter;
-use Cspray\AnnotatedContainer\Event\Listener\AfterBootstrap;
-use Cspray\AnnotatedContainer\Event\Listener\AfterContainerAnalysis;
-use Cspray\AnnotatedContainer\Event\Listener\AfterContainerCreation;
-use Cspray\AnnotatedContainer\Event\Listener\AnalyzedContainerDefinitionFromCache;
-use Cspray\AnnotatedContainer\Event\Listener\AnalyzedInjectDefinitionFromAttribute;
-use Cspray\AnnotatedContainer\Event\Listener\AnalyzedServiceDefinitionFromAttribute;
-use Cspray\AnnotatedContainer\Event\Listener\AnalyzedServiceDelegateDefinitionFromAttribute;
-use Cspray\AnnotatedContainer\Event\Listener\AnalyzedServicePrepareDefinitionFromAttribute;
-use Cspray\AnnotatedContainer\Event\Listener\BeforeBootstrap;
-use Cspray\AnnotatedContainer\Event\Listener\BeforeContainerAnalysis;
-use Cspray\AnnotatedContainer\Event\Listener\BeforeContainerCreation;
-use Cspray\AnnotatedContainer\Event\Listener\InjectingMethodParameter;
-use Cspray\AnnotatedContainer\Event\Listener\InjectingProperty;
-use Cspray\AnnotatedContainer\Event\Listener\ServiceAliasResolution;
-use Cspray\AnnotatedContainer\Event\Listener\ServiceDelegated;
-use Cspray\AnnotatedContainer\Event\Listener\ServiceFilteredDueToProfiles;
-use Cspray\AnnotatedContainer\Event\Listener\ServicePrepared;
-use Cspray\AnnotatedContainer\Event\Listener\ServiceShared;
+use Cspray\AnnotatedContainer\Event\Listener\Bootstrap\AfterBootstrap;
+use Cspray\AnnotatedContainer\Event\Listener\Bootstrap\BeforeBootstrap;
+use Cspray\AnnotatedContainer\Event\Listener\ContainerFactory\AfterContainerCreation;
+use Cspray\AnnotatedContainer\Event\Listener\ContainerFactory\BeforeContainerCreation;
+use Cspray\AnnotatedContainer\Event\Listener\ContainerFactory\InjectingMethodParameter;
+use Cspray\AnnotatedContainer\Event\Listener\ContainerFactory\InjectingProperty;
+use Cspray\AnnotatedContainer\Event\Listener\ContainerFactory\ServiceAliasResolution;
+use Cspray\AnnotatedContainer\Event\Listener\ContainerFactory\ServiceDelegated;
+use Cspray\AnnotatedContainer\Event\Listener\ContainerFactory\ServiceFilteredDueToProfiles;
+use Cspray\AnnotatedContainer\Event\Listener\ContainerFactory\ServicePrepared;
+use Cspray\AnnotatedContainer\Event\Listener\ContainerFactory\ServiceShared;
+use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AddedAliasDefinition;
+use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AfterContainerAnalysis;
+use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AnalyzedContainerDefinitionFromCache;
+use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AnalyzedInjectDefinitionFromAttribute;
+use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AnalyzedServiceDefinitionFromAttribute;
+use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AnalyzedServiceDelegateDefinitionFromAttribute;
+use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AnalyzedServicePrepareDefinitionFromAttribute;
+use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\BeforeContainerAnalysis;
 use Cspray\AnnotatedContainer\Profiles;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptions;
 use Cspray\AnnotatedTarget\AnnotatedTarget;
 use Cspray\PrecisionStopwatch\Duration;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class EmitterTest extends TestCase {
@@ -106,6 +108,16 @@ final class EmitterTest extends TestCase {
                     $this->subject->addAnalyzedInjectDefinitionFromAttributeListener($listener),
                 fn(AnnotatedTarget $target, InjectDefinition $injectDefinition) =>
                     $this->subject->emitAnalyzedInjectDefinitionFromAttribute($target, $injectDefinition)
+            ],
+            AddedAliasDefinition::class => [
+                AddedAliasDefinition::class,
+                fn() => [
+                    $this->getMockBuilder(AliasDefinition::class)->getMock(),
+                ],
+                fn(AddedAliasDefinition $listener) =>
+                    $this->subject->addAddedAliasDefinitionListener($listener),
+                fn(AliasDefinition $aliasDefinition) =>
+                    $this->subject->emitAddedAliasDefinition($aliasDefinition)
             ],
             AnalyzedContainerDefinitionFromCache::class => [
                 AnalyzedContainerDefinitionFromCache::class,
@@ -257,8 +269,8 @@ final class EmitterTest extends TestCase {
      * @param \Closure $addListener
      * @param \Closure $emitEvent
      * @return void
-     * @dataProvider listenerData
      */
+    #[DataProvider('listenerData')]
     public function testAddedListenerInvokedWithCorrectParameters(
         string $listenerClass,
         \Closure $handleArgs,

@@ -33,7 +33,7 @@ final class ProfilesAwareContainerDefinition implements ContainerDefinition {
                 throw InvalidAlias::fromAbstractNotService($aliasDefinition->getAbstractService()->getName());
             }
 
-            $concrete = $this->getServiceDefinition($aliasDefinition->getConcreteService()) ?? $this->getConfigurationDefinition($aliasDefinition->getConcreteService());
+            $concrete = $this->getServiceDefinition($aliasDefinition->getConcreteService());
             if ($concrete === null) {
                 throw InvalidAlias::fromConcreteNotService($aliasDefinition->getConcreteService()->getName());
             }
@@ -63,10 +63,6 @@ final class ProfilesAwareContainerDefinition implements ContainerDefinition {
         return $filtered;
     }
 
-    public function getConfigurationDefinitions() : array {
-        return $this->containerDefinition->getConfigurationDefinitions();
-    }
-
     private function getServiceDefinition(ObjectType $objectType) : ?ServiceDefinition {
         foreach ($this->containerDefinition->getServiceDefinitions() as $serviceDefinition) {
             if ($serviceDefinition->getType() === $objectType) {
@@ -77,21 +73,8 @@ final class ProfilesAwareContainerDefinition implements ContainerDefinition {
         return null;
     }
 
-    private function hasActiveProfile(ServiceDefinition|InjectDefinition|ConfigurationDefinition $definition) : bool {
-        if ($definition instanceof ConfigurationDefinition) {
-            return true;
-        }
-
+    private function hasActiveProfile(ServiceDefinition|InjectDefinition $definition) : bool {
         return $this->activeProfiles->isAnyActive($definition->getProfiles());
     }
 
-    private function getConfigurationDefinition(ObjectType $objectType) : ?ConfigurationDefinition {
-        foreach ($this->getConfigurationDefinitions() as $configurationDefinition) {
-            if ($configurationDefinition->getClass() === $objectType) {
-                return $configurationDefinition;
-            }
-        }
-
-        return null;
-    }
 }

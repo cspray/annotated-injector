@@ -7,17 +7,11 @@ use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProvider;
 use Cspray\AnnotatedContainer\ContainerFactory\ParameterStore;
 use Cspray\AnnotatedContainer\Exception\InvalidBootstrapConfiguration;
 use Cspray\AnnotatedContainer\ArchitecturalDecisionRecords\SingleEntrypointDefinitionProvider;
-use Cspray\AnnotatedContainer\Internal\CompositeLogger;
-use Cspray\AnnotatedContainer\Internal\FileLogger;
-use Cspray\AnnotatedContainer\Internal\StdoutLogger;
-use DateTimeImmutable;
 use DOMDocument;
 use DOMElement;
-use DOMNode;
 use DOMNodeList;
 use DOMXPath;
 
-use Psr\Log\LoggerInterface;
 use function libxml_use_internal_errors;
 
 final class XmlBootstrappingConfiguration implements BootstrappingConfiguration {
@@ -28,8 +22,6 @@ final class XmlBootstrappingConfiguration implements BootstrappingConfiguration 
     private readonly array $directories;
     private readonly ?DefinitionProvider $definitionProvider;
     private readonly ?string $cacheDir;
-    private readonly ?LoggerInterface $logger;
-    private readonly array $excludedProfiles;
 
     /**
      * @var list<ParameterStore>
@@ -43,7 +35,6 @@ final class XmlBootstrappingConfiguration implements BootstrappingConfiguration 
 
     public function __construct(
         private readonly string $xmlFile,
-        private readonly BootstrappingDirectoryResolver $directoryResolver,
         private readonly ?ParameterStoreFactory $parameterStoreFactory = null,
         private readonly ?ObserverFactory $observerFactory = null,
         private readonly ?DefinitionProviderFactory $definitionProviderFactory = null
@@ -173,50 +164,11 @@ final class XmlBootstrappingConfiguration implements BootstrappingConfiguration 
                 $cache = $cacheDirNodes[0]->textContent;
             }
 
-            $loggingFileNodes = $xpath->query('/ac:annotatedContainer/ac:logging/ac:file/text()');
-            $loggingStdoutNodes = $xpath->query('/ac:annotatedContainer/ac:logging/ac:stdout');
-            $logger = null;
-
-            $hasLoggingFile = $loggingFileNodes instanceof DOMNodeList && count($loggingFileNodes) === 1;
-            $hasStdoutFile = $loggingStdoutNodes instanceof DOMNodeList && count($loggingStdoutNodes) === 1;
-
-            $dateTimeProvider = fn() : DateTimeImmutable => new DateTimeImmutable();
-
-            if ($hasLoggingFile && $hasStdoutFile) {
-                $loggingFilePath = $this->directoryResolver->getLogPath($loggingFileNodes[0]->nodeValue);
-                $fileLogger = new FileLogger($dateTimeProvider, $loggingFilePath);
-                $stdoutLogger = new StdoutLogger($dateTimeProvider);
-                $logger = new CompositeLogger($fileLogger, $stdoutLogger);
-            } elseif ($hasLoggingFile) {
-                $loggingFilePath = $this->directoryResolver->getLogPath($loggingFileNodes[0]->nodeValue);
-                $logger = new FileLogger($dateTimeProvider, $loggingFilePath);
-            } elseif ($hasStdoutFile) {
-                $logger = new StdoutLogger($dateTimeProvider);
-            }
-
-            if ($logger !== null) {
-                trigger_error(
-                    'There is logging set in your configuration. In 3.0 logging has been moved to its own library using the new Event system. Please see cspray/annotated-container-logging to emulate this functionality.',
-                    E_USER_DEPRECATED
-                );
-            }
-
-            $excludedProfilesNodes = $xpath->query('/ac:annotatedContainer/ac:logging/ac:exclude/ac:profile/text()');
-            $excludedProfiles = [];
-
-            if ($excludedProfilesNodes instanceof DOMNodeList) {
-                foreach ($excludedProfilesNodes as $node) {
-                    $excludedProfiles[] = $node->nodeValue;
-                }
-            }
-
             $this->directories = $scanDirectories;
             $this->definitionProvider = $definitionProvider;
             $this->cacheDir = $cache;
             $this->parameterStores = $parameterStores;
             $this->observers = $observers;
-            $this->logger = $logger;
-            $this->excludedProfiles = $excludedProfiles;
         } finally {
             libxml_clear_errors();
             libxml_use_internal_errors(false);
@@ -252,20 +204,6 @@ final class XmlBootstrappingConfiguration implements BootstrappingConfiguration 
 
     public function getCacheDirectory() : ?string {
         return $this->cacheDir;
-    }
-
-    /**
-     * @deprecated
-     */
-    public function getLogger() : ?LoggerInterface {
-        return $this->logger;
-    }
-
-    /**
-     * @deprecated
-     */
-    public function getLoggingExcludedProfiles() : array {
-        return $this->excludedProfiles;
     }
 
     /**

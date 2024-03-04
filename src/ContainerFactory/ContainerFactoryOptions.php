@@ -3,7 +3,6 @@
 namespace Cspray\AnnotatedContainer\ContainerFactory;
 
 use Cspray\AnnotatedContainer\Profiles;
-use Psr\Log\LoggerInterface;
 
 /**
  * A set of options used by a ContainerFactory when creating your Container.
@@ -19,8 +18,4 @@ interface ContainerFactoryOptions {
      */
     public function getProfiles() : Profiles;
 
-    /**
-     * @deprecated
-     */
-    public function getLogger() : ?LoggerInterface;
 }

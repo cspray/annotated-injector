@@ -10,7 +10,7 @@ use Illuminate\Contracts\Container\Container;
  */
 final class IlluminateContainerFactoryState implements ContainerFactoryState {
 
-    use HasMethodInjectState, HasPropertyInjectState, HasServicePrepareState;
+    use HasMethodInjectState, HasServicePrepareState;
 
     /**
      * @var array<class-string, array{delegateType: class-string, delegateMethod: non-empty-string, isStatic: bool}>

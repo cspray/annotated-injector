@@ -10,7 +10,6 @@ use Cspray\AnnotatedContainer\Definition\InjectDefinition;
 use Cspray\AnnotatedContainer\Definition\ServiceDefinition;
 use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinition;
 use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinition;
-use Cspray\AnnotatedContainer\Event\Listener\ServiceShared;
 use Cspray\AnnotatedContainer\Profiles;
 
 interface ContainerFactoryEmitter {

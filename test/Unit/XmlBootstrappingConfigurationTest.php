@@ -5,7 +5,6 @@ namespace Cspray\AnnotatedContainer\Unit;
 use Cspray\AnnotatedContainer\Bootstrap\ContainerAnalyticsObserver;
 use Cspray\AnnotatedContainer\Bootstrap\ContainerCreatedObserver;
 use Cspray\AnnotatedContainer\Bootstrap\DefinitionProviderFactory;
-use Cspray\AnnotatedContainer\Bootstrap\Observer;
 use Cspray\AnnotatedContainer\Bootstrap\ObserverFactory;
 use Cspray\AnnotatedContainer\Bootstrap\ParameterStoreFactory;
 use Cspray\AnnotatedContainer\Bootstrap\PostAnalysisObserver;
@@ -15,9 +14,6 @@ use Cspray\AnnotatedContainer\StaticAnalysis\CompositeDefinitionProvider;
 use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProvider;
 use Cspray\AnnotatedContainer\ContainerFactory\ParameterStore;
 use Cspray\AnnotatedContainer\Exception\InvalidBootstrapConfiguration;
-use Cspray\AnnotatedContainer\Internal\CompositeLogger;
-use Cspray\AnnotatedContainer\Internal\FileLogger;
-use Cspray\AnnotatedContainer\Internal\StdoutLogger;
 use Cspray\AnnotatedContainer\Unit\Helper\FixtureBootstrappingDirectoryResolver;
 use Cspray\AnnotatedContainer\Unit\Helper\StubBootstrapObserverWithDependencies;
 use Cspray\AnnotatedContainer\Unit\Helper\StubDefinitionProvider;
@@ -52,7 +48,6 @@ XML;
         );
         new XmlBootstrappingConfiguration(
             'vfs://root/annotated-container.xml',
-            new FixtureBootstrappingDirectoryResolver()
         );
     }
 
@@ -74,7 +69,6 @@ XML;
             ->at($this->vfs);
         $configuration = new XmlBootstrappingConfiguration(
             'vfs://root/annotated-container.xml',
-            new FixtureBootstrappingDirectoryResolver()
         );
 
         self::assertSame(
@@ -103,7 +97,6 @@ XML;
 
         $configuration = new XmlBootstrappingConfiguration(
             'vfs://root/annotated-container.xml',
-            new FixtureBootstrappingDirectoryResolver()
         );
         $provider = $configuration->getContainerDefinitionProvider();
         self::assertInstanceOf(
@@ -142,7 +135,6 @@ XML;
 
         new XmlBootstrappingConfiguration(
             'vfs://root/annotated-container.xml',
-            new FixtureBootstrappingDirectoryResolver()
         );
     }
 
@@ -172,7 +164,6 @@ XML;
 
         new XmlBootstrappingConfiguration(
             'vfs://root/annotated-container.xml',
-            new FixtureBootstrappingDirectoryResolver()
         );
     }
 
@@ -194,7 +185,6 @@ XML;
 
         $config = new XmlBootstrappingConfiguration(
             'vfs://root/annotated-container.xml',
-            new FixtureBootstrappingDirectoryResolver()
         );
 
         self::assertNull($config->getContainerDefinitionProvider());
@@ -218,7 +208,6 @@ XML;
 
         $config = new XmlBootstrappingConfiguration(
             'vfs://root/annotated-container.xml',
-            new FixtureBootstrappingDirectoryResolver()
         );
         self::assertNull($config->getCacheDirectory());
     }
@@ -242,7 +231,6 @@ XML;
 
         $config = new XmlBootstrappingConfiguration(
             'vfs://root/annotated-container.xml',
-            new FixtureBootstrappingDirectoryResolver()
         );
         self::assertSame('cache', $config->getCacheDirectory());
     }
@@ -268,7 +256,6 @@ XML;
 
         $config = new XmlBootstrappingConfiguration(
             'vfs://root/annotated-container.xml',
-            new FixtureBootstrappingDirectoryResolver()
         );
 
         self::assertCount(1, $config->getParameterStores());
@@ -300,7 +287,6 @@ XML;
         );
         new XmlBootstrappingConfiguration(
             'vfs://root/annotated-container.xml',
-            new FixtureBootstrappingDirectoryResolver()
         );
     }
 
@@ -329,7 +315,6 @@ XML;
         );
         new XmlBootstrappingConfiguration(
             'vfs://root/annotated-container.xml',
-            new FixtureBootstrappingDirectoryResolver()
         );
     }
 
@@ -365,7 +350,6 @@ XML;
 
         $config = new XmlBootstrappingConfiguration(
             'vfs://root/annotated-container.xml',
-            new FixtureBootstrappingDirectoryResolver(),
             $parameterStoreFactory
         );
 
@@ -400,147 +384,12 @@ XML;
 
         $config = new XmlBootstrappingConfiguration(
             'vfs://root/annotated-container.xml',
-            new FixtureBootstrappingDirectoryResolver(),
             definitionProviderFactory: $consumerFactory
         );
 
         $provider = $config->getContainerDefinitionProvider();
         self::assertInstanceOf(CompositeDefinitionProvider::class, $provider);
         self::assertContainsOnlyInstancesOf(StubDefinitionProviderWithDependencies::class, $provider->getDefinitionProviders());
-    }
-
-    public function testLoggingFileConfigurationReturnsCorrectLogger() : void {
-        $xml = <<<XML
-<?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
-  <scanDirectories>
-    <source>
-      <dir>src</dir>
-    </source>
-  </scanDirectories>
-  <logging>
-    <file>logs/annotated-container.log</file>
-  </logging>
-</annotatedContainer>
-XML;
-
-        VirtualFilesystem::newDirectory('logs')->at($this->vfs);
-        VirtualFilesystem::newFile('annotated-container.xml')
-            ->withContent($xml)
-            ->at($this->vfs);
-
-        self::assertFileDoesNotExist('vfs://root/logs/annotated-container.log');
-
-        $config = new XmlBootstrappingConfiguration(
-            'vfs://root/annotated-container.xml',
-            new FixtureBootstrappingDirectoryResolver()
-        );
-
-        self::assertInstanceOf(FileLogger::class, $config->getLogger());
-        self::assertFileExists('vfs://root/logs/annotated-container.log');
-    }
-
-    public function testLoggingFileConfigurationReturnsCorrectStdoutLogger() : void {
-        $xml = <<<XML
-<?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
-  <scanDirectories>
-    <source>
-      <dir>src</dir>
-    </source>
-  </scanDirectories>
-  <logging>
-    <stdout />
-  </logging>
-</annotatedContainer>
-XML;
-
-        VirtualFilesystem::newDirectory('logs')->at($this->vfs);
-        VirtualFilesystem::newFile('annotated-container.xml')
-            ->withContent($xml)
-            ->at($this->vfs);
-
-        self::assertFileDoesNotExist('vfs://root/logs/annotated-container.log');
-
-        $config = new XmlBootstrappingConfiguration(
-            'vfs://root/annotated-container.xml',
-            new FixtureBootstrappingDirectoryResolver()
-        );
-
-        self::assertInstanceOf(StdoutLogger::class, $config->getLogger());
-        self::assertFileDoesNotExist('vfs://root/logs/annotated-container.log');
-    }
-
-    public function testLoggingFileAndStdoutConfigurationReturnsCorrectLogger() : void {
-        $xml = <<<XML
-<?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
-  <scanDirectories>
-    <source>
-      <dir>src</dir>
-    </source>
-  </scanDirectories>
-  <logging>
-    <file>logs/annotated-container.log</file>
-    <stdout />
-  </logging>
-</annotatedContainer>
-XML;
-
-        VirtualFilesystem::newDirectory('logs')->at($this->vfs);
-        VirtualFilesystem::newFile('annotated-container.xml')
-            ->withContent($xml)
-            ->at($this->vfs);
-
-        self::assertFileDoesNotExist('vfs://root/logs/annotated-container.log');
-
-        $config = new XmlBootstrappingConfiguration(
-            'vfs://root/annotated-container.xml',
-            new FixtureBootstrappingDirectoryResolver()
-        );
-        $logger = $config->getLogger();
-
-        self::assertInstanceOf(CompositeLogger::class, $logger);
-        self::assertCount(2, $logger->getLoggers());
-
-        self::assertInstanceOf(FileLogger::class, $logger->getLoggers()[0]);
-        self::assertInstanceOf(StdoutLogger::class, $logger->getLoggers()[1]);
-    }
-
-    public function testLoggingFileAndStdoutConfigurationReturnsCorrectExcludedLoggingProfiles() : void {
-        $xml = <<<XML
-<?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
-  <scanDirectories>
-    <source>
-      <dir>src</dir>
-    </source>
-  </scanDirectories>
-  <logging>
-    <file>logs/annotated-container.log</file>
-    <stdout />
-    <exclude>
-      <profile>foo</profile>
-      <profile>bar</profile>
-      <profile>baz</profile>
-    </exclude>
-  </logging>
-</annotatedContainer>
-XML;
-
-        VirtualFilesystem::newDirectory('logs')->at($this->vfs);
-        VirtualFilesystem::newFile('annotated-container.xml')
-            ->withContent($xml)
-            ->at($this->vfs);
-
-        self::assertFileDoesNotExist('vfs://root/logs/annotated-container.log');
-
-        $config = new XmlBootstrappingConfiguration(
-            'vfs://root/annotated-container.xml',
-            new FixtureBootstrappingDirectoryResolver()
-        );
-
-        self::assertSame(['foo', 'bar', 'baz'], $config->getLoggingExcludedProfiles());
     }
 
     public function testObserversContainsNonClassThrowsException() : void {
@@ -572,7 +421,6 @@ XML;
         ));
         new XmlBootstrappingConfiguration(
             'vfs://root/annotated-container.xml',
-            new FixtureBootstrappingDirectoryResolver()
         );
     }
 
@@ -605,7 +453,6 @@ XML;
         ));
         new XmlBootstrappingConfiguration(
             'vfs://root/annotated-container.xml',
-            new FixtureBootstrappingDirectoryResolver()
         );
     }
 
@@ -636,7 +483,6 @@ XML;
 
         $config = new XmlBootstrappingConfiguration(
             'vfs://root/annotated-container.xml',
-            new FixtureBootstrappingDirectoryResolver(),
             observerFactory: $observerFactory
         );
 
@@ -677,7 +523,6 @@ XML;
             ->at($this->vfs);
         $configuration = new XmlBootstrappingConfiguration(
             'vfs://root/annotated-container.xml',
-            new FixtureBootstrappingDirectoryResolver()
         );
 
         self::assertSame(
@@ -692,7 +537,6 @@ XML;
 
         new XmlBootstrappingConfiguration(
             'vfs://root/not-found',
-            new FixtureBootstrappingDirectoryResolver()
         );
     }
 }

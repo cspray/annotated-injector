@@ -89,21 +89,3 @@ function injectMethodParam(DefinitionProviderContext $context, ObjectType $servi
     $context->setBuilder($context->getBuilder()->withInjectDefinition($injectDefinition));
     return $injectDefinition;
 }
-
-function injectProperty(DefinitionProviderContext $context, ObjectType $service, string $property, Type|TypeUnion|TypeIntersect $type, mixed $value, array $profiles = [], string $from = null) : InjectDefinition {
-    $injectDefinitionBuilder = InjectDefinitionBuilder::forService($service)
-        ->withProperty($type, $property)
-        ->withValue($value);
-
-    if (!empty($profiles)) {
-        $injectDefinitionBuilder = $injectDefinitionBuilder->withProfiles(...$profiles);
-    }
-
-    if (isset($from)) {
-        $injectDefinitionBuilder = $injectDefinitionBuilder->withStore($from);
-    }
-
-    $injectDefinition = $injectDefinitionBuilder->build();
-    $context->setBuilder($context->getBuilder()->withInjectDefinition($injectDefinition));
-    return $injectDefinition;
-}

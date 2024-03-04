@@ -121,38 +121,6 @@ class CacheAwareContainerDefinitionCompilerTest extends TestCase {
         $subject->analyze(ContainerDefinitionAnalysisOptionsBuilder::scanDirectories($dir)->build());
     }
 
-    public function testFileDoesExistLogsOutput() {
-        $dir = Fixtures::implicitAliasedServices()->getPath();
-        $containerDefinition = $this->phpParserContainerDefinitionCompiler->analyze(
-            ContainerDefinitionAnalysisOptionsBuilder::scanDirectories($dir)
-                ->build()
-        );
-        $serialized = $this->containerDefinitionSerializer->serialize($containerDefinition);
-
-        vfsStream::newFile(md5($dir))->at($this->root)->setContent($serialized);
-
-        $mock = $this->getMockBuilder(ContainerDefinitionAnalyzer::class)->getMock();
-        $mock->expects($this->never())->method('analyze');
-        $subject = new CacheAwareContainerDefinitionAnalyzer(
-            $mock,
-            $this->containerDefinitionSerializer,
-            'vfs://root'
-        );
-
-        $logger = new TestLogger();
-        $subject->analyze(
-            ContainerDefinitionAnalysisOptionsBuilder::scanDirectories($dir)
-                ->withLogger($logger)
-                ->build()
-        );
-
-        $expected = [
-            'message' => 'Skipping Annotated Container compiling. Using cached definition from vfs://root/' . md5($dir) . '.',
-            'context' => []
-        ];
-        self::assertContains($expected, $logger->getLogsForLevel(LogLevel::INFO));
-    }
-
     public function testCacheFileVersionMismatchRecompiles() : void {
         $attrVal = base64_encode(serialize(new Service()));
         $dir = Fixtures::singleConcreteService()->getPath();
@@ -171,7 +139,6 @@ class CacheAwareContainerDefinitionCompilerTest extends TestCase {
     </serviceDefinition>
   </serviceDefinitions>
   <aliasDefinitions/>
-  <configurationDefinitions/>
   <servicePrepareDefinitions/>
   <serviceDelegateDefinitions/>
   <injectDefinitions/>
@@ -201,7 +168,6 @@ XML;
     </serviceDefinition>
   </serviceDefinitions>
   <aliasDefinitions/>
-  <configurationDefinitions/>
   <servicePrepareDefinitions/>
   <serviceDelegateDefinitions/>
   <injectDefinitions/>

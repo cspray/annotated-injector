@@ -12,24 +12,25 @@ use Cspray\AnnotatedContainer\Definition\InjectDefinition;
 use Cspray\AnnotatedContainer\Definition\ServiceDefinition;
 use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinition;
 use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinition;
-use Cspray\AnnotatedContainer\Event\Listener\AfterBootstrap;
-use Cspray\AnnotatedContainer\Event\Listener\AfterContainerAnalysis;
-use Cspray\AnnotatedContainer\Event\Listener\AfterContainerCreation;
-use Cspray\AnnotatedContainer\Event\Listener\AnalyzedContainerDefinitionFromCache;
-use Cspray\AnnotatedContainer\Event\Listener\AnalyzedInjectDefinitionFromAttribute;
-use Cspray\AnnotatedContainer\Event\Listener\AnalyzedServiceDefinitionFromAttribute;
-use Cspray\AnnotatedContainer\Event\Listener\AnalyzedServiceDelegateDefinitionFromAttribute;
-use Cspray\AnnotatedContainer\Event\Listener\AnalyzedServicePrepareDefinitionFromAttribute;
-use Cspray\AnnotatedContainer\Event\Listener\BeforeBootstrap;
-use Cspray\AnnotatedContainer\Event\Listener\BeforeContainerAnalysis;
-use Cspray\AnnotatedContainer\Event\Listener\BeforeContainerCreation;
-use Cspray\AnnotatedContainer\Event\Listener\InjectingMethodParameter;
-use Cspray\AnnotatedContainer\Event\Listener\InjectingProperty;
-use Cspray\AnnotatedContainer\Event\Listener\ServiceAliasResolution;
-use Cspray\AnnotatedContainer\Event\Listener\ServiceDelegated;
-use Cspray\AnnotatedContainer\Event\Listener\ServiceFilteredDueToProfiles;
-use Cspray\AnnotatedContainer\Event\Listener\ServicePrepared;
-use Cspray\AnnotatedContainer\Event\Listener\ServiceShared;
+use Cspray\AnnotatedContainer\Event\Listener\Bootstrap\AfterBootstrap;
+use Cspray\AnnotatedContainer\Event\Listener\Bootstrap\BeforeBootstrap;
+use Cspray\AnnotatedContainer\Event\Listener\ContainerFactory\AfterContainerCreation;
+use Cspray\AnnotatedContainer\Event\Listener\ContainerFactory\BeforeContainerCreation;
+use Cspray\AnnotatedContainer\Event\Listener\ContainerFactory\InjectingMethodParameter;
+use Cspray\AnnotatedContainer\Event\Listener\ContainerFactory\InjectingProperty;
+use Cspray\AnnotatedContainer\Event\Listener\ContainerFactory\ServiceAliasResolution;
+use Cspray\AnnotatedContainer\Event\Listener\ContainerFactory\ServiceDelegated;
+use Cspray\AnnotatedContainer\Event\Listener\ContainerFactory\ServiceFilteredDueToProfiles;
+use Cspray\AnnotatedContainer\Event\Listener\ContainerFactory\ServicePrepared;
+use Cspray\AnnotatedContainer\Event\Listener\ContainerFactory\ServiceShared;
+use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AddedAliasDefinition;
+use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AfterContainerAnalysis;
+use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AnalyzedContainerDefinitionFromCache;
+use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AnalyzedInjectDefinitionFromAttribute;
+use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AnalyzedServiceDefinitionFromAttribute;
+use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AnalyzedServiceDelegateDefinitionFromAttribute;
+use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AnalyzedServicePrepareDefinitionFromAttribute;
+use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\BeforeContainerAnalysis;
 use Cspray\AnnotatedContainer\Profiles;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptions;
 use Cspray\AnnotatedTarget\AnnotatedTarget;
@@ -37,7 +38,7 @@ use Cspray\AnnotatedTarget\AnnotatedTarget;
 /**
  * @psalm-type Listeners = BeforeBootstrap|BeforeContainerAnalysis
  */
-final class Emitter implements AnalysisEmitter, BootstrapEmitter, ContainerFactoryEmitter {
+final class Emitter implements StaticAnalysisEmitter, BootstrapEmitter, ContainerFactoryEmitter {
 
     /**
      * @var list<BeforeBootstrap>
@@ -68,6 +69,11 @@ final class Emitter implements AnalysisEmitter, BootstrapEmitter, ContainerFacto
      * @var list<AnalyzedInjectDefinitionFromAttribute>
      */
     private array $analyzedInjectDefinitionFromAttributes = [];
+
+    /**
+     * @var list<AddedAliasDefinition>
+     */
+    private array $addedAliasDefinitions = [];
 
     /**
      * @var list<AnalyzedContainerDefinitionFromCache>
@@ -157,6 +163,10 @@ final class Emitter implements AnalysisEmitter, BootstrapEmitter, ContainerFacto
         $this->analyzedContainerDefinitionFromCaches[] = $listener;
     }
 
+    public function addAddedAliasDefinitionListener(AddedAliasDefinition $listener) : void {
+        $this->addedAliasDefinitions[] = $listener;
+    }
+
     public function addAfterContainerAnalysisListener(AfterContainerAnalysis $listener) : void {
         $this->afterContainerAnalysis[] = $listener;
     }
@@ -228,6 +238,12 @@ final class Emitter implements AnalysisEmitter, BootstrapEmitter, ContainerFacto
     public function emitAnalyzedInjectDefinitionFromAttribute(AnnotatedTarget $annotatedTarget, InjectDefinition $injectDefinition) : void {
         foreach ($this->analyzedInjectDefinitionFromAttributes as $analyzedInjectDefinitionFromAttribute) {
             $analyzedInjectDefinitionFromAttribute->handleAnalyzedInjectDefinitionFromAttribute($annotatedTarget, $injectDefinition);
+        }
+    }
+
+    public function emitAddedAliasDefinition(AliasDefinition $aliasDefinition) : void {
+        foreach ($this->addedAliasDefinitions as $addedAliasDefinition) {
+            $addedAliasDefinition->handleAddedAliasDefinition($aliasDefinition);
         }
     }
 
@@ -308,4 +324,5 @@ final class Emitter implements AnalysisEmitter, BootstrapEmitter, ContainerFacto
             $afterContainerCreation->handleAfterContainerCreation($profiles, $containerDefinition, $container);
         }
     }
+
 }

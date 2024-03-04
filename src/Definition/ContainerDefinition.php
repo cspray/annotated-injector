@@ -54,11 +54,4 @@ interface ContainerDefinition {
      */
     public function getInjectDefinitions() : array;
 
-    /**
-     * Returns a set of ConfigurationDefinition that determine what Configuration instances are available in the
-     * container.
-     *
-     * @return list<ConfigurationDefinition>
-     */
-    public function getConfigurationDefinitions() : array;
 }

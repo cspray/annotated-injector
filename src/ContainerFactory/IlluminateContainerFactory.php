@@ -85,29 +85,12 @@ final class IlluminateContainerFactory extends AbstractContainerFactory {
 
     protected function handleInjectDefinition(ContainerFactoryState $state, InjectDefinition $definition) : void {
         assert($state instanceof IlluminateContainerFactoryState);
-        if ($definition->getTargetIdentifier()->isMethodParameter()) {
-            $state->addMethodInject(
-                $definition->getTargetIdentifier()->getClass()->getName(),
-                $definition->getTargetIdentifier()->getMethodName(),
-                $definition->getTargetIdentifier()->getName(),
-                $this->getInjectDefinitionValue($definition)
-            );
-        } else {
-            $state->addPropertyInject(
-                $definition->getTargetIdentifier()->getClass()->getName(),
-                $definition->getTargetIdentifier()->getName(),
-                $this->getInjectDefinitionValue($definition)
-            );
-        }
-    }
-
-    protected function handleConfigurationDefinition(ContainerFactoryState $state, ConfigurationDefinition $definition) : void {
-        assert($state instanceof IlluminateContainerFactoryState);
-        $state->addConcreteService($definition->getClass()->getName());
-        $name = $definition->getName();
-        if ($name !== null) {
-            $state->addNamedService($definition->getClass()->getName(), $name);
-        }
+        $state->addMethodInject(
+            $definition->getTargetIdentifier()->getClass()->getName(),
+            $definition->getTargetIdentifier()->getMethodName(),
+            $definition->getTargetIdentifier()->getName(),
+            $this->getInjectDefinitionValue($definition)
+        );
     }
 
     protected function createAnnotatedContainer(ContainerFactoryState $state, Profiles $activeProfiles) : AnnotatedContainer {
@@ -150,13 +133,6 @@ final class IlluminateContainerFactory extends AbstractContainerFactory {
                         $container->call([$created, $method], $params);
                     }
                     break;
-                }
-            }
-
-            foreach ($state->getPropertyInject() as $service => $properties) {
-                foreach ($properties as $property => $value) {
-                    $reflectionProperty = new \ReflectionProperty($service, $property);
-                    $reflectionProperty->setValue($created, $value);
                 }
             }
         });

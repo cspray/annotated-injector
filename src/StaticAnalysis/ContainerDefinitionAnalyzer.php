@@ -18,7 +18,7 @@ interface ContainerDefinitionAnalyzer {
      * Throw an InvalidAnnotationException if some source code is annotated in such a way that a compilation error
      * occurs.
      *
-     * @param ContainerDefinitionAnalysisOptions $containerDefinitionCompileOptions
+     * @param ContainerDefinitionAnalysisOptions $containerDefinitionAnalysisOptions
      * @return ContainerDefinition
      */
     public function analyze(ContainerDefinitionAnalysisOptions $containerDefinitionCompileOptions) : ContainerDefinition;

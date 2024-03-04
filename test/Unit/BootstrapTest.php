@@ -16,11 +16,13 @@ use Cspray\AnnotatedContainer\Bootstrap\ServiceGatherer;
 use Cspray\AnnotatedContainer\Bootstrap\ServiceWiringObserver;
 use Cspray\AnnotatedContainer\ContainerFactory\ContainerFactory;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
+use Cspray\AnnotatedContainer\Event\Emitter;
 use Cspray\AnnotatedContainer\Profiles;
 use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProvider;
 use Cspray\AnnotatedContainer\ContainerFactory\ParameterStore;
 use Cspray\AnnotatedContainer\Unit\Helper\FixtureBootstrappingDirectoryResolver;
 use Cspray\AnnotatedContainer\Unit\Helper\StubAnalyticsObserver;
+use Cspray\AnnotatedContainer\Unit\Helper\StubBootstrapListener;
 use Cspray\AnnotatedContainer\Unit\Helper\StubBootstrapObserver;
 use Cspray\AnnotatedContainer\Unit\Helper\StubDefinitionProviderWithDependencies;
 use Cspray\AnnotatedContainer\Unit\Helper\StubParameterStoreWithDependencies;
@@ -208,98 +210,6 @@ XML;
             Fixtures::singleConcreteService()->fooImplementation()->getName(),
             $service
         );
-    }
-
-    public function testBootstrapWithLogging() : void {
-        $directoryResolver = new FixtureBootstrappingDirectoryResolver();
-
-        $xml = <<<XML
-<?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
-    <scanDirectories>
-        <source>
-            <dir>SingleConcreteService</dir>
-        </source>
-    </scanDirectories>
-    <logging>
-      <file>annotated-container.log</file>
-    </logging>
-</annotatedContainer>
-XML;
-
-        VirtualFilesystem::newFile('annotated-container.xml')
-            ->withContent($xml)
-            ->at($this->vfs);
-
-        $container = (new Bootstrap(directoryResolver: $directoryResolver))->bootstrapContainer(Profiles::fromList(['default']));
-
-        self::assertFileExists('vfs://root/annotated-container.log');
-        $logContents = file_get_contents('vfs://root/annotated-container.log');
-        self::assertStringContainsString('Annotated Container compiling started.', $logContents);
-        self::assertStringContainsString(
-            sprintf(
-                'Started wiring AnnotatedContainer with %s backing implementation and "default" active profiles.',
-                $container->getBackingContainer()::class,
-            ),
-            $logContents
-        );
-    }
-
-    public function testBootstrapWithLoggingProfileExcluded() : void {
-        $directoryResolver = new FixtureBootstrappingDirectoryResolver();
-
-        $xml = <<<XML
-<?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
-    <scanDirectories>
-        <source>
-            <dir>SingleConcreteService</dir>
-        </source>
-    </scanDirectories>
-    <logging>
-      <file>annotated-container.log</file>
-      <exclude><profile>test</profile></exclude>
-    </logging>
-</annotatedContainer>
-XML;
-
-        VirtualFilesystem::newFile('annotated-container.xml')
-            ->withContent($xml)
-            ->at($this->vfs);
-
-        (new Bootstrap(directoryResolver: $directoryResolver))->bootstrapContainer(Profiles::fromList(['default', 'test']));
-
-        self::assertFileExists('vfs://root/annotated-container.log');
-        $logContents = file_get_contents('vfs://root/annotated-container.log');
-        self::assertSame('', $logContents);
-    }
-
-    public function testBootstrapWithLoggerPassedOverridesConfiguration() : void {
-        $directoryResolver = new FixtureBootstrappingDirectoryResolver();
-
-        $xml = <<<XML
-<?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
-    <scanDirectories>
-        <source>
-            <dir>SingleConcreteService</dir>
-        </source>
-    </scanDirectories>
-    <logging>
-      <file>annotated-container.log</file>
-    </logging>
-</annotatedContainer>
-XML;
-
-        VirtualFilesystem::newFile('annotated-container.xml')
-            ->withContent($xml)
-            ->at($this->vfs);
-
-        $logger = new TestLogger();
-        (new Bootstrap(directoryResolver: $directoryResolver, logger: $logger))->bootstrapContainer(Profiles::fromList(['default']));
-
-        self::assertStringEqualsFile('vfs://root/annotated-container.log', '');
-        self::assertGreaterThan(1, count($logger->getLogsForLevel(LogLevel::INFO)));
     }
 
     public function testBoostrapDefinitionProviderFactoryPassedToConfiguration() : void {
@@ -749,7 +659,7 @@ XML;
             }
         };
 
-        $subject = new Bootstrap($directoryResolver);
+        $subject = new Bootstrap(directoryResolver: $directoryResolver);
         $subject->addObserver($observer);
 
         $subject->bootstrapContainer(Profiles::fromList(['default']));
@@ -802,45 +712,6 @@ XML;
         self::assertSame(1, $analytics->timePreppingForAnalysis->timeTakenInNanoseconds());
         self::assertSame(1, $analytics->timeTakenForAnalysis->timeTakenInNanoseconds());
         self::assertSame(1, $analytics->timeTakenCreatingContainer->timeTakenInNanoseconds());
-    }
-
-    public function testTimeTakenInMillisecondsLoggedIfLoggerPresent() : void {
-        $directoryResolver = new FixtureBootstrappingDirectoryResolver();
-
-        $goodXml = <<<XML
-<?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
-    <scanDirectories>
-        <source>
-            <dir>SingleConcreteService</dir>
-        </source>
-    </scanDirectories>
-</annotatedContainer>
-XML;
-
-        VirtualFilesystem::newFile('annotated-container.xml')
-            ->withContent($goodXml)
-            ->at($this->vfs);
-
-        $logger = new TestLogger();
-        $subject = new Bootstrap(
-            directoryResolver: $directoryResolver,
-            logger: $logger,
-            stopwatch: new Stopwatch(new KnownIncrementingPreciseTime())
-        );
-
-        $subject->bootstrapContainer(Profiles::fromList(['default']));
-
-        $logs = $logger->getLogsForLevel(LogLevel::INFO);
-        self::assertContainsEquals([
-            'message' => 'Took 0.000003ms to analyze and create your container. 0.000001ms was spent preparing for analysis. 0.000001ms was spent statically analyzing your codebase. 0.000001ms was spent wiring your container.',
-            'context' => [
-                'total_time_in_ms' => 3.0e-6,
-                'pre_analysis_time_in_ms' => 1.0e-6,
-                'post_analysis_time_in_ms' => 1.0e-6,
-                'container_wired_time_in_ms' => 1.0e-6
-            ]
-        ], $logs);
     }
 
     public function testContainerAnalyticsObserverInConfigurationRespected() : void {
@@ -907,4 +778,37 @@ XML;
 
         self::assertSame($container, $actual);
     }
+
+    public function testBootstrapEventsTriggeredInCorrectOrder() : void {
+        $emitter = new Emitter();
+        $directoryResolver = new FixtureBootstrappingDirectoryResolver();
+
+        $goodXml = <<<XML
+<?xml version="1.0" encoding="UTF-8" ?>
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+    <scanDirectories>
+        <source>
+            <dir>SingleConcreteService</dir>
+        </source>
+    </scanDirectories>
+</annotatedContainer>
+XML;
+
+        VirtualFilesystem::newFile('annotated-container.xml')
+            ->withContent($goodXml)
+            ->at($this->vfs);
+
+        $listener = new StubBootstrapListener();
+        $emitter->addBeforeBootstrapListener($listener);
+        $emitter->addAfterBootstrapListener($listener);
+
+        $bootstrap = new Bootstrap(emitter: $emitter, directoryResolver: $directoryResolver);
+        $bootstrap->bootstrapContainer(Profiles::fromList(['default']));
+
+        self::assertSame(
+            [StubBootstrapListener::class . '::handleBeforeBootstrap', StubBootstrapListener::class . '::handleAfterBootstrap'],
+            $listener->getTriggeredEvents()
+        );
+    }
+
 }

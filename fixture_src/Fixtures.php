@@ -90,24 +90,12 @@ final class Fixtures {
         return new MultiplePrepareServicesFixture();
     }
 
-    public static function configurationServices() : ConfigurationServicesFixture {
-        return new ConfigurationServicesFixture();
-    }
-
-    public static function namedConfigurationServices() : NamedConfigurationServicesFixture {
-        return new NamedConfigurationServicesFixture();
-    }
-
     public static function autowireableFactoryServices() : AutowireableFactoryServicesFixture {
         return new AutowireableFactoryServicesFixture();
     }
 
     public static function injectNamedServices() : InjectNamedServicesFixture {
         return new InjectNamedServicesFixture();
-    }
-
-    public static function multiPropConfigurationServices() : MultiPropConfigurationServicesFixture {
-        return new MultiPropConfigurationServicesFixture();
     }
 
     public static function injectServiceIntersectConstructorServices() : InjectServiceIntersectConstructorServicesFixture {
@@ -126,10 +114,6 @@ final class Fixtures {
         return new NamedProfileResolvedServicesFixture();
     }
 
-    public static function configurationMissingStore() : ConfigurationMissingStoreFixture {
-        return new ConfigurationMissingStoreFixture();
-    }
-
     public static function implicitServiceDelegateType() : ImplicitServiceDelegateTypeFixture {
         return new ImplicitServiceDelegateTypeFixture();
     }
@@ -138,24 +122,8 @@ final class Fixtures {
         return new ImplicitServiceDelegateUnionTypeFixture();
     }
 
-    public static function configurationWithEnum() : ConfigurationWithEnumFixture {
-        return new ConfigurationWithEnumFixture();
-    }
-
-    public static function configurationWithArrayEnum() : ConfigurationWithArrayEnumFixture {
-        return new ConfigurationWithArrayEnumFixture();
-    }
-
-    public static function configurationWithAssocArrayEnum() : ConfigurationWithAssocArrayEnumFixture {
-        return new ConfigurationWithAssocArrayEnumFixture();
-    }
-
     public static function injectEnumConstructorServices() : InjectEnumConstructorServicesFixture {
         return new InjectEnumConstructorServicesFixture();
-    }
-
-    public static function configurationInjectServiceFixture() : ConfigurationInjectContainerServiceFixture {
-        return new ConfigurationInjectContainerServiceFixture();
     }
 
     public static function thirdPartyDelegatedServices() : ThirdPartyDelegatedServicesFixture {
@@ -168,14 +136,6 @@ final class Fixtures {
 
     public static function injectListOfScalarsFixture() : InjectListOfScalarsFixture {
         return new InjectListOfScalarsFixture();
-    }
-
-    public static function constructorPromotedConfigurationFixture() : ConstructorPromotedConfigurationFixture {
-        return new ConstructorPromotedConfigurationFixture();
-    }
-
-    public static function aliasedConfigurationFixture() : AliasedConfigurationFixture {
-        return new AliasedConfigurationFixture();
     }
 
     public static function duplicateNamedServiceDifferentProfiles() : DuplicateNamedServiceDifferentProfilesFixture {

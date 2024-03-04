@@ -3,7 +3,6 @@
 namespace Cspray\AnnotatedContainer\StaticAnalysis;
 
 use Cspray\AnnotatedContainer\ArchitecturalDecisionRecords\SingleEntrypointDefinitionProvider;
-use Psr\Log\LoggerInterface;
 
 /**
  * The preferred method for constructing ContainerDefinitionCompileOptions
@@ -14,8 +13,6 @@ final class ContainerDefinitionAnalysisOptionsBuilder {
     private array $directories = [];
 
     private ?DefinitionProvider $consumer = null;
-
-    private ?LoggerInterface $logger = null;
 
     private function __construct() {
     }
@@ -45,25 +42,14 @@ final class ContainerDefinitionAnalysisOptionsBuilder {
         return $instance;
     }
 
-    /**
-     * @deprecated
-     */
-    public function withLogger(LoggerInterface $logger) : self {
-        $instance = clone $this;
-        $instance->logger = $logger;
-        return $instance;
-    }
-
     public function build() : ContainerDefinitionAnalysisOptions {
         return new class(
             $this->directories,
             $this->consumer,
-            $this->logger
         ) implements ContainerDefinitionAnalysisOptions {
             public function __construct(
                 private readonly array               $directories,
                 private readonly ?DefinitionProvider $consumer,
-                private readonly ?LoggerInterface    $logger
             ) {
             }
 
@@ -73,10 +59,6 @@ final class ContainerDefinitionAnalysisOptionsBuilder {
 
             public function getDefinitionProvider(): ?DefinitionProvider {
                 return $this->consumer;
-            }
-
-            public function getLogger() : ?LoggerInterface {
-                return $this->logger;
             }
         };
     }

@@ -3,7 +3,6 @@
 namespace Cspray\AnnotatedContainer\StaticAnalysis;
 
 use Cspray\AnnotatedContainer\ArchitecturalDecisionRecords\SingleEntrypointDefinitionProvider;
-use Psr\Log\LoggerInterface;
 
 /**
  * Represents configurable details for the compilation of a ContainerDefinition.
@@ -27,13 +26,4 @@ interface ContainerDefinitionAnalysisOptions {
     #[SingleEntrypointDefinitionProvider]
     public function getDefinitionProvider() : ?DefinitionProvider;
 
-    /**
-     * If a LoggerInterface is returned information about the compilation and container creation process will be logged
-     * to it.
-     *
-     * @return LoggerInterface|null
-     *
-     * @deprecated
-     */
-    public function getLogger() : ?LoggerInterface;
 }

@@ -5,7 +5,6 @@ namespace Cspray\AnnotatedContainer\Bootstrap;
 use Cspray\AnnotatedContainer\ArchitecturalDecisionRecords\SingleEntrypointDefinitionProvider;
 use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProvider;
 use Cspray\AnnotatedContainer\ContainerFactory\ParameterStore;
-use Psr\Log\LoggerInterface;
 
 interface BootstrappingConfiguration {
 
@@ -30,15 +29,4 @@ interface BootstrappingConfiguration {
      */
     public function getObservers() : array;
 
-    /**
-     * @return LoggerInterface|null
-     * @deprecated
-     */
-    public function getLogger() : ?LoggerInterface;
-
-    /**
-     * @return list<string>
-     * @deprecated
-     */
-    public function getLoggingExcludedProfiles() : array;
 }

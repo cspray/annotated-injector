@@ -8,7 +8,7 @@ use Cspray\Typiphy\ObjectType;
 
 final class AurynContainerFactoryState implements ContainerFactoryState {
 
-    use HasMethodInjectState, HasPropertyInjectState, HasServicePrepareState {
+    use HasMethodInjectState, HasServicePrepareState {
         HasMethodInjectState::addMethodInject as addResolvedMethodInject;
     }
 
