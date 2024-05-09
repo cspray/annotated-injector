@@ -29,6 +29,7 @@ final class DuplicateServiceName implements LogicalConstraint {
 
         foreach ($namedServiceMap as $name => $services) {
             if (count($services) > 1) {
+                sort($services);
                 $services = implode(
                     '- ',
                     array_map(static fn(string $type) => $type . PHP_EOL, $services)
