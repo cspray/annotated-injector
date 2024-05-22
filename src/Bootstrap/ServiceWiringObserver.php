@@ -3,14 +3,20 @@
 namespace Cspray\AnnotatedContainer\Bootstrap;
 
 use Cspray\AnnotatedContainer\AnnotatedContainer;
+use Cspray\AnnotatedContainer\ArchitecturalDecisionRecords\DeprecateObserversInFavorOfEventSystem;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 use Cspray\AnnotatedContainer\Definition\ProfilesAwareContainerDefinition;
 use Cspray\AnnotatedContainer\Definition\ServiceDefinition;
 use Cspray\AnnotatedContainer\Profiles\ActiveProfiles;
+use JetBrains\PhpStorm\Deprecated;
 
 /**
  * @deprecated
  */
+#[
+    DeprecateObserversInFavorOfEventSystem,
+    Deprecated('Please see DeprecateObserversInFavorOfEventSystem ADR')
+]
 abstract class ServiceWiringObserver implements ContainerCreatedObserver {
 
     final public function notifyContainerCreated(ActiveProfiles $activeProfiles, ContainerDefinition $containerDefinition, AnnotatedContainer $container) : void {

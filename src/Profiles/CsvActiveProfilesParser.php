@@ -2,11 +2,16 @@
 
 namespace Cspray\AnnotatedContainer\Profiles;
 
+use Cspray\AnnotatedContainer\ArchitecturalDecisionRecords\DeprecateActiveProfilesInFavorOfConcreteValueObject;
+use JetBrains\PhpStorm\Deprecated;
+
 /**
  * An ActiveProfilesParser that will take a comma-separated string and turn it into a list of active profiles.
- *
- * @deprecated
  */
+#[
+    DeprecateActiveProfilesInFavorOfConcreteValueObject,
+    Deprecated('Please see DeprecateActiveProfilesInFavorOfConcreteValueObject ADR')
+]
 final class CsvActiveProfilesParser implements ActiveProfilesParser {
 
     /**

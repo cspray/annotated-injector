@@ -1,6 +1,6 @@
 <?php
 
-namespace Cspray\AnnotatedContainer\Unit\LogicalErrorApps\ServiceDelegateNotService;
+namespace Cspray\AnnotatedContainerFixture\BeanLikeConfigConcrete;
 
 use Cspray\AnnotatedContainer\Attribute\ServiceDelegate;
 

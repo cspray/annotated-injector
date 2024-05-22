@@ -2,11 +2,14 @@
 
 namespace Cspray\AnnotatedContainer\Profiles;
 
+use Cspray\AnnotatedContainer\ArchitecturalDecisionRecords\DeprecateActiveProfilesInFavorOfConcreteValueObject;
 use InvalidArgumentException;
+use JetBrains\PhpStorm\Deprecated;
 
-/**
- * @deprecated
- */
+#[
+    DeprecateActiveProfilesInFavorOfConcreteValueObject,
+    Deprecated('Please see DeprecateActiveProfilesInFavorOfConcreteValueObject ADR')
+]
 final class ActiveProfilesBuilder {
 
     /**

@@ -96,7 +96,7 @@ class BlobStorageFactory {
 
     public function __construct(private BlobStorageEventEmitter $emitter) {}
 
-    #[ServiceDelegate(BlobStorage::class)]
+    #[ServiceDelegate]
     public function create() : BlobStorage {
         $this->emitter->onStore(fn() { doSomething() });
         $this->emitter->onRetrieve(fn() { doSomethingElse() });

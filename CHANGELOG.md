@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v2.3.0](https://github.com/cspray/annotated-container/tree/v2.3.0) - 2024-05-09
+
+### Changed
+
+- Changed static analysis step to no longer throw an error if a ServiceDelegate is encountered without an explicitly
+defined Service. Now, a ServiceDefinition will be implicitly added as if the corresponding class was added with all 
+default parameters using the functional API.
+
+### Deprecated
+
+- All observers have been deprecated. They will be replaced in 3.0.0. Please see our ADR document for more details.
+- All implementations in Cspray\AnnotatedContainer\Profiles have been deprecated. They will be replaced with a single 
+value object in 3.0.0. Please see our ADR document for more details.
+
 ## [v2.2.0](https://github.com/cspray/annotated-container/tree/v2.2.0) - 2023-05-29
 
 ### Added
