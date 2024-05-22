@@ -9,6 +9,7 @@ use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinitionBuilder;
 use Cspray\AnnotatedContainer\Definition\InjectDefinition;
 use Cspray\AnnotatedContainer\Definition\ServiceDefinition;
+use Cspray\AnnotatedContainer\Definition\ServiceDefinitionBuilder;
 use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinition;
 use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinition;
 use Cspray\AnnotatedContainer\Exception\InvalidScanDirectories;
@@ -391,11 +392,13 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
         foreach ($consumer['serviceDelegateDefinitions'] as $serviceDelegateDefinition) {
             $serviceDef = $this->getServiceDefinition($containerDefinitionBuilder, $serviceDelegateDefinition->getServiceType());
             if ($serviceDef === null) {
-                throw InvalidServiceDelegate::factoryMethodDoesNotCreateService(
-                    $serviceDelegateDefinition->getServiceType()->getName(),
-                    $serviceDelegateDefinition->getDelegateType()->getName(),
-                    $serviceDelegateDefinition->getDelegateMethod()
-                );
+                $reflection = new ReflectionClass($serviceDelegateDefinition->getServiceType()->getName());
+                if ($reflection->isInterface() || $reflection->isAbstract()) {
+                    $serviceDef = ServiceDefinitionBuilder::forAbstract($serviceDelegateDefinition->getServiceType())->build();
+                } else {
+                    $serviceDef = ServiceDefinitionBuilder::forConcrete($serviceDelegateDefinition->getServiceType())->build();
+                }
+                $containerDefinitionBuilder = $containerDefinitionBuilder->withServiceDefinition($serviceDef);
             }
             $containerDefinitionBuilder = $containerDefinitionBuilder->withServiceDelegateDefinition($serviceDelegateDefinition);
         }

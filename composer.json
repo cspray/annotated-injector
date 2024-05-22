@@ -17,8 +17,8 @@
     "ext-libxml": "*",
     "composer-runtime-api": "^2",
     "brick/varexporter": "^0.3.7",
-    "cspray/annotated-container-adr": "^2",
-    "cspray/annotated-container-attribute": "^1.1",
+    "cspray/annotated-container-adr": "^3",
+    "cspray/annotated-container-attribute": "^1.3",
     "cspray/annotated-target": "^v0.3",
     "cspray/precision-stopwatch": "^0.2.0",
     "cspray/typiphy": "^0.3",
@@ -35,7 +35,8 @@
     "rdlowrey/auryn": "^1.4",
     "roave/security-advisories": "dev-latest",
     "vimeo/psalm": "^4.24",
-    "illuminate/container": "^10.11"
+    "illuminate/container": "^10.11",
+    "jetbrains/phpstorm-attributes": "^1.1"
   },
   "bin": ["bin/annotated-container"],
   "autoload": {
@@ -64,8 +65,9 @@
     ]
   },
   "suggest": {
-    "rdlowrey/auryn": "Install to use Auryn\\Injector as the backing container.",
-    "php-di/php-di": "Install 7.0+ to use DI\\Container as the backing container."
+    "illuminate/container": "Install to use Illuminate\\Container\\Container as the backing container.",
+    "php-di/php-di": "Install 7.0+ to use DI\\Container as the backing container.",
+    "rdlowrey/auryn": "Install to use Auryn\\Injector as the backing container."
   },
   "extra": {
     "$architecturalDecision": {

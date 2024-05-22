@@ -29,6 +29,7 @@ final class MultiplePrimaryForAbstractService implements LogicalConstraint {
 
         foreach ($abstractPrimaryMap as $abstract => $concreteServices) {
             if (count($concreteServices) > 1) {
+                sort($concreteServices);
                 $types = trim(implode('- ', $concreteServices));
                 $message = <<<TEXT
 The abstract service "$abstract" has multiple concrete services marked primary!

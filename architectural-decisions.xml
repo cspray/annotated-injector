@@ -1,5 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <architecturalDecisions xmlns="https://architectural-decision.cspray.io/schema/architectural-decision.xsd">
+  <architecturalDecision id="ConfigurationCannotBeAssignedProfiles" attribute="Cspray\AnnotatedContainer\ArchitecturalDecisionRecords\ConfigurationCannotBeAssignedProfiles">
+    <date>2022-08-10</date>
+    <status>Superseded</status>
+    <contents><![CDATA[# Configuration instances cannot be assigned profiles
+
+## Context
+
+Configuration instances are classes with properties that can have arbitrary values injected into them with the
+#[Inject] Attribute. Like a Service, Configuration instances are shared with the Container. Unlike a Service,
+Configuration cannot be assigned an explicit profile.
+
+## Decision
+
+We explicitly do no allow setting a profile on a Configuration. The Configuration is meant to use #[Inject] Attributes
+to define values. Any value that should only be injected when certain profiles are active should have that reflected
+in the #[Inject] Attribute. This way just 1 Configuration instance is required and any profile-specific values are
+defined on the value itself.]]></contents>
+    <codeAnnotations>
+      <codeAnnotation>
+        <class>Cspray\AnnotatedContainer\Definition\ConfigurationDefinition</class>
+      </codeAnnotation>
+      <codeAnnotation>
+        <class>Cspray\AnnotatedContainer\Attribute\Configuration</class>
+      </codeAnnotation>
+    </codeAnnotations>
+    <meta>
+      <author>
+        <name>Charles Sprayberry</name>
+        <website>https://cspray.io</website>
+        <githubProfile>https://github.com/cspray</githubProfile>
+      </author>
+      <supersededBy>DeprecateConfigurationInFavorOfCustomServiceAttribute</supersededBy>
+    </meta>
+  </architecturalDecision>
   <architecturalDecision id="SingleEntrypointDefinitionProvider" attribute="Cspray\AnnotatedContainer\ArchitecturalDecisionRecords\SingleEntrypointDefinitionProvider">
     <date>2022-07-19</date>
     <status>Accepted</status>
@@ -26,14 +60,8 @@ you know precisely what code is determining the services for your application.]]
     <codeAnnotations>
       <codeAnnotation>
         <classMethod>
-          <class>Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptions</class>
-          <method>getDefinitionProvider</method>
-        </classMethod>
-      </codeAnnotation>
-      <codeAnnotation>
-        <classMethod>
-          <class>Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder</class>
-          <method>withDefinitionProvider</method>
+          <class>Cspray\AnnotatedContainer\Bootstrap\XmlBootstrappingConfiguration</class>
+          <method>getContainerDefinitionProvider</method>
         </classMethod>
       </codeAnnotation>
       <codeAnnotation>
@@ -44,8 +72,14 @@ you know precisely what code is determining the services for your application.]]
       </codeAnnotation>
       <codeAnnotation>
         <classMethod>
-          <class>Cspray\AnnotatedContainer\Bootstrap\XmlBootstrappingConfiguration</class>
-          <method>getContainerDefinitionProvider</method>
+          <class>Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder</class>
+          <method>withDefinitionProvider</method>
+        </classMethod>
+      </codeAnnotation>
+      <codeAnnotation>
+        <classMethod>
+          <class>Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptions</class>
+          <method>getDefinitionProvider</method>
         </classMethod>
       </codeAnnotation>
     </codeAnnotations>
@@ -55,6 +89,143 @@ you know precisely what code is determining the services for your application.]]
         <website>https://cspray.io</website>
         <githubProfile>https://github.com/cspray</githubProfile>
       </author>
+    </meta>
+  </architecturalDecision>
+  <architecturalDecision id="ImplicitServiceCreationFromServiceDelegate" attribute="Cspray\AnnotatedContainer\ArchitecturalDecisionRecords\ImplicitServiceCreationFromServiceDelegate">
+    <date>2024-05-09</date>
+    <status>Accepted</status>
+    <contents><![CDATA[# ServiceDelegate Implicitly Creates ServiceDefinition if necessary
+
+## Context
+
+In versions 2.2.0 and below, if a ServiceDelegateAttribute was defined the type it creates MUST be defined as a
+Service; either with the Attribute API or using low-level functions in a DefinitionProvider. The thought process
+behind this decision was to make you be explicit about what services you define. However, there are valid designs
+where this limitation leads to unnecessary boilerplate.
+
+## Decision
+
+In versions 2.3.0 and higher, if a ServiceDelegateAttribute is defined to create a type that is not already a
+Service definition it will be added to the ContainerDefinition instead of an exception being thrown. This is
+to make sure we're still doing all the other stuff we might do with services in the ContainerFactory and other
+analysis tools that are expecting these values to be present. This will allow for a more varied usage of
+Annotated Container instead of forcing down a more opinionated path.]]></contents>
+    <meta>
+      <author>
+        <name>Charles Sprayberry</name>
+        <website>https://cspray.io</website>
+        <githubProfile>https://github.com/cspray</githubProfile>
+      </author>
+    </meta>
+  </architecturalDecision>
+  <architecturalDecision id="DeprecateActiveProfilesInFavorOfConcreteValueObject" attribute="Cspray\AnnotatedContainer\ArchitecturalDecisionRecords\DeprecateActiveProfilesInFavorOfConcreteValueObject">
+    <date>2025-05-21</date>
+    <status>Accepted</status>
+    <contents><![CDATA[# Deprecate ActiveProfiles for Concrete Value Object
+
+## Context
+
+Profiles play a critically important role in Annotated Container. They define what services and parameters might
+get injected and allows for a great amount of flexibility when wiring your services for a variety of environments
+and runtimes. It might be important to programmatically know which profiles are active at any given time. As of 2.3.0,
+that is handled by the Cspray\AnnotatedContainer\Profiles\ActiveProfiles interface.
+
+This interface has been somewhat problematic from the get-go. Because of various bootstrapping concerns the ActiveProfiles
+implementation is actually created a few times in duplication. This duplication extends into each ContainerFactory.
+In addition, having a separate implementation for parsing profiles from a string leads to a general feeling of the
+ActiveProfiles design being over-engineered.
+
+## Decision
+
+To simplify the amount of code being duplicated and to make profiles easier to reason about in internal code, the
+existing implementations in the Cspray\AnnotatedContainer\Profiles namespace have been deprecated. They will be
+replaced with a value object that has static constructors for creating a set of profiles in a variety of standardized
+ways. This value object will also continue to provide the same functionality as the ActiveProfiles interface.
+
+The deprecation of these implementations in 2.3 is meant to serve as a warning they will be removed in 3.0. For the
+most part, transitioning from ActiveProfiles to Profiles in your code should be straightforward. You should only need
+to adjust the type declaration to be the new type.]]></contents>
+    <codeAnnotations>
+      <codeAnnotation>
+        <class>Cspray\AnnotatedContainer\Profiles\ActiveProfilesBuilder</class>
+      </codeAnnotation>
+      <codeAnnotation>
+        <class>Cspray\AnnotatedContainer\Profiles\CsvActiveProfilesParser</class>
+      </codeAnnotation>
+      <codeAnnotation>
+        <class>Cspray\AnnotatedContainer\Profiles\ActiveProfiles</class>
+      </codeAnnotation>
+      <codeAnnotation>
+        <class>Cspray\AnnotatedContainer\Profiles\ActiveProfilesParser</class>
+      </codeAnnotation>
+    </codeAnnotations>
+    <meta>
+      <author>
+        <name>Charles Sprayberry</name>
+        <website>https://cspray.io</website>
+        <githubProfile>https://github.com/cspray</githubProfile>
+      </author>
+      <deprecation>
+        <since>2.3.0</since>
+        <scheduledForRemoval>3.0.0</scheduledForRemoval>
+      </deprecation>
+    </meta>
+  </architecturalDecision>
+  <architecturalDecision id="DeprecateObserversInFavorOfEventSystem" attribute="Cspray\AnnotatedContainer\ArchitecturalDecisionRecords\DeprecateObserversInFavorOfEventSystem">
+    <date>2024-05-15</date>
+    <status>Accepted</status>
+    <contents><![CDATA[# Deprecate Observers for Events
+
+## Context
+
+In 2.0 the Bootstrap Observer system was added. This system allows your integrating library or application to
+perform some actions when a limited set of events occur within Annotated Container's provided bootstrapping. The
+design was primarily geared toward providing the functionality found in
+Cspray\AnnotatedContainer\Bootstrap\ServiceWiringObserver.
+
+As part of Annotated Container 3.0 improvements, it was decided that the way logging is handled should be made
+more test friendly and easier for you to be explicit about enabling that logging without being overly burdensome. It
+would be ideal to put logging into an Observer implementation, however the limited amount of Observers available is
+not sufficient to replace the existing logging output.
+
+## Decision
+
+A comprehensive, granular event system will be implemented as part of Annotated Container 3.0 that will resolve the
+hurdles with using the existing Observer system. The existing Observer system will become obsolete and no longer
+necessary. The deprecation of this system in 2.3 is meant to act as a warning that in 3.0 you'll need to update
+your Observer implementations to use the corresponding Event. In practice this should be a relatively straight-forward
+operation requiring implementation of a new interface, renaming a method, and perhaps adjusting a method signature.
+All the data made available through the Observer system will also be made available through the Event system.]]></contents>
+    <codeAnnotations>
+      <codeAnnotation>
+        <class>Cspray\AnnotatedContainer\Bootstrap\ObserverFactory</class>
+      </codeAnnotation>
+      <codeAnnotation>
+        <class>Cspray\AnnotatedContainer\Bootstrap\PostAnalysisObserver</class>
+      </codeAnnotation>
+      <codeAnnotation>
+        <class>Cspray\AnnotatedContainer\Bootstrap\ServiceWiringObserver</class>
+      </codeAnnotation>
+      <codeAnnotation>
+        <class>Cspray\AnnotatedContainer\Bootstrap\ContainerCreatedObserver</class>
+      </codeAnnotation>
+      <codeAnnotation>
+        <class>Cspray\AnnotatedContainer\Bootstrap\ContainerAnalyticsObserver</class>
+      </codeAnnotation>
+      <codeAnnotation>
+        <class>Cspray\AnnotatedContainer\Bootstrap\PreAnalysisObserver</class>
+      </codeAnnotation>
+    </codeAnnotations>
+    <meta>
+      <author>
+        <name>Charles Sprayberry</name>
+        <website>https://cspray.io</website>
+        <githubProfile>https://github.com/cspray</githubProfile>
+      </author>
+      <deprecation>
+        <since>2.3.0</since>
+        <scheduledForRemoval>3.0.0</scheduledForRemoval>
+      </deprecation>
     </meta>
   </architecturalDecision>
   <architecturalDecision id="DeprecateConfigurationInFavorOfCustomServiceAttribute" attribute="Cspray\AnnotatedContainer\ArchitecturalDecisionRecords\DeprecateConfigurationInFavorOfCustomServiceAttribute">
@@ -89,10 +260,10 @@ functionality, you should implement your own custom ServiceAttribute.]]></conten
         <class>Cspray\AnnotatedContainer\Definition\ConfigurationDefinitionBuilder</class>
       </codeAnnotation>
       <codeAnnotation>
-        <class>Cspray\AnnotatedContainer\Attribute\Configuration</class>
+        <class>Cspray\AnnotatedContainer\Attribute\ConfigurationAttribute</class>
       </codeAnnotation>
       <codeAnnotation>
-        <class>Cspray\AnnotatedContainer\Attribute\ConfigurationAttribute</class>
+        <class>Cspray\AnnotatedContainer\Attribute\Configuration</class>
       </codeAnnotation>
     </codeAnnotations>
     <meta>
@@ -105,40 +276,6 @@ functionality, you should implement your own custom ServiceAttribute.]]></conten
         <since>2.1.0</since>
         <scheduledForRemoval>3.0.0</scheduledForRemoval>
       </deprecation>
-    </meta>
-  </architecturalDecision>
-  <architecturalDecision id="ConfigurationCannotBeAssignedProfiles" attribute="Cspray\AnnotatedContainer\ArchitecturalDecisionRecords\ConfigurationCannotBeAssignedProfiles">
-    <date>2022-08-10</date>
-    <status>Superseded</status>
-    <contents><![CDATA[# Configuration instances cannot be assigned profiles
-
-## Context
-
-Configuration instances are classes with properties that can have arbitrary values injected into them with the
-#[Inject] Attribute. Like a Service, Configuration instances are shared with the Container. Unlike a Service,
-Configuration cannot be assigned an explicit profile.
-
-## Decision
-
-We explicitly do no allow setting a profile on a Configuration. The Configuration is meant to use #[Inject] Attributes
-to define values. Any value that should only be injected when certain profiles are active should have that reflected
-in the #[Inject] Attribute. This way just 1 Configuration instance is required and any profile-specific values are
-defined on the value itself.]]></contents>
-    <codeAnnotations>
-      <codeAnnotation>
-        <class>Cspray\AnnotatedContainer\Definition\ConfigurationDefinition</class>
-      </codeAnnotation>
-      <codeAnnotation>
-        <class>Cspray\AnnotatedContainer\Attribute\Configuration</class>
-      </codeAnnotation>
-    </codeAnnotations>
-    <meta>
-      <author>
-        <name>Charles Sprayberry</name>
-        <website>https://cspray.io</website>
-        <githubProfile>https://github.com/cspray</githubProfile>
-      </author>
-      <supersededBy>DeprecateConfigurationInFavorOfCustomServiceAttribute</supersededBy>
     </meta>
   </architecturalDecision>
 </architecturalDecisions>

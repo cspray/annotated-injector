@@ -7,11 +7,6 @@ use Cspray\AnnotatedContainer\Attribute\Inject;
 use Cspray\AnnotatedContainer\Attribute\Service;
 use Cspray\AnnotatedContainer\Attribute\ServiceDelegate;
 use Cspray\AnnotatedContainer\Attribute\ServicePrepare;
-use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalyzer;
-use Cspray\AnnotatedContainer\StaticAnalysis\CompositeDefinitionProvider;
-use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
-use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetDefinitionConverter;
-use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProvider;
 use Cspray\AnnotatedContainer\Definition\ConfigurationDefinition;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 use Cspray\AnnotatedContainer\Definition\InjectDefinition;
@@ -21,6 +16,11 @@ use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinition;
 use Cspray\AnnotatedContainer\Exception\InvalidScanDirectories;
 use Cspray\AnnotatedContainer\Exception\InvalidServiceDelegate;
 use Cspray\AnnotatedContainer\Exception\InvalidServicePrepare;
+use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalyzer;
+use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetDefinitionConverter;
+use Cspray\AnnotatedContainer\StaticAnalysis\CompositeDefinitionProvider;
+use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
+use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProvider;
 use Cspray\AnnotatedContainer\Unit\Helper\AnotherDefinitionProvider;
 use Cspray\AnnotatedContainer\Unit\Helper\StubDefinitionProvider;
 use Cspray\AnnotatedContainer\Unit\Helper\TestLogger;
@@ -525,16 +525,55 @@ class AnnotatedTargetContainerDefinitionAnalyzerTest extends TestCase {
         );
     }
 
-    public function testServiceDelegateNotServiceThrowsException() : void {
-        $message = sprintf(
-            'Service delegation defined on %s::create declares a type, %s, that is not a service.',
-            LogicalErrorApps\ServiceDelegateNotService\ServiceFactory::class,
-            LogicalErrorApps\ServiceDelegateNotService\FooService::class
-        );
-        self::expectException(InvalidServiceDelegate::class);
-        self::expectExceptionMessage($message);
+    public function testServiceDelegateNotServiceAddsImplicitConcreteService() : void {
+        $containerDef = $this->runAnalysisDirectory(Fixtures::beanLikeConfigConcrete()->getPath());
 
-        $this->runAnalysisDirectory(__DIR__ . '/LogicalErrorApps/ServiceDelegateNotService');
+        $serviceDef = $this->getServiceDefinition(
+            $containerDef->getServiceDefinitions(),
+            Fixtures::beanLikeConfigConcrete()->fooService()->getName()
+        );
+
+        self::assertNotNull($serviceDef);
+        self::assertSame($serviceDef->getType(), Fixtures::beanLikeConfigConcrete()->fooService());
+        self::assertSame(['default'], $serviceDef->getProfiles());
+        self::assertNull($serviceDef->getName());
+        self::assertFalse($serviceDef->isPrimary());
+        self::assertTrue($serviceDef->isConcrete());
+        self::assertFalse($serviceDef->isAbstract());
+    }
+
+    public function testServiceDelegateNotServiceAddsImplicitAbstractInterfaceService() : void {
+        $containerDef = $this->runAnalysisDirectory(Fixtures::beanLikeConfigInterface()->getPath());
+
+        $serviceDef = $this->getServiceDefinition(
+            $containerDef->getServiceDefinitions(),
+            Fixtures::beanLikeConfigInterface()->fooInterface()->getName()
+        );
+
+        self::assertNotNull($serviceDef);
+        self::assertSame($serviceDef->getType(), Fixtures::beanLikeConfigInterface()->fooInterface());
+        self::assertSame(['default'], $serviceDef->getProfiles());
+        self::assertNull($serviceDef->getName());
+        self::assertFalse($serviceDef->isPrimary());
+        self::assertFalse($serviceDef->isConcrete());
+        self::assertTrue($serviceDef->isAbstract());
+    }
+
+    public function testServiceDelegateNotServiceAddsImplicitAbstractClassService() : void {
+        $containerDef = $this->runAnalysisDirectory(Fixtures::beanLikeConfigAbstract()->getPath());
+
+        $serviceDef = $this->getServiceDefinition(
+            $containerDef->getServiceDefinitions(),
+            Fixtures::beanLikeConfigAbstract()->abstractFooService()->getName()
+        );
+
+        self::assertNotNull($serviceDef);
+        self::assertSame($serviceDef->getType(), Fixtures::beanLikeConfigAbstract()->abstractFooService());
+        self::assertSame(['default'], $serviceDef->getProfiles());
+        self::assertNull($serviceDef->getName());
+        self::assertFalse($serviceDef->isPrimary());
+        self::assertFalse($serviceDef->isConcrete());
+        self::assertTrue($serviceDef->isAbstract());
     }
 
     public function testLogCustomAttribute() : void {

@@ -182,4 +182,16 @@ final class Fixtures {
         return new DuplicateNamedServiceDifferentProfilesFixture();
     }
 
+    public static function beanLikeConfigConcrete() : BeanLikeConfigConcreteFixture {
+        return new BeanLikeConfigConcreteFixture();
+    }
+
+    public static function beanLikeConfigInterface() : BeanLikeConfigInterfaceFixture {
+        return new BeanLikeConfigInterfaceFixture();
+    }
+
+    public static function beanLikeConfigAbstract() : BeanLikeConfigAbstractFixture {
+        return new BeanLikeConfigAbstractFixture();
+    }
+
 }
