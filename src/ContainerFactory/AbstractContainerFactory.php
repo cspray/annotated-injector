@@ -25,6 +25,8 @@ use Psr\Log\NullLogger;
 use stdClass;
 use Throwable;
 use UnitEnum;
+use function Cspray\Typiphy\arrayType;
+use function Cspray\Typiphy\objectType;
 
 abstract class AbstractContainerFactory implements ContainerFactory {
 
@@ -70,23 +72,13 @@ abstract class AbstractContainerFactory implements ContainerFactory {
 
     private function createContainerState(ContainerDefinition $containerDefinition, array $activeProfiles) : ContainerFactoryState {
         $definition = new ProfilesAwareContainerDefinition($containerDefinition, $activeProfiles);
-        $state = $this->getContainerFactoryState();
+        $state = $this->getContainerFactoryState($definition);
 
         foreach ($definition->getServiceDefinitions() as $serviceDefinition) {
             $this->handleServiceDefinition($state, $serviceDefinition);
             $this->logServiceShared($serviceDefinition);
             if ($serviceDefinition->getName() !== null) {
                 $this->logServiceNamed($serviceDefinition);
-            }
-        }
-
-        // We're doing inject definitions first because these could influence the way a service is created
-        foreach ($definition->getInjectDefinitions() as $injectDefinition) {
-            $this->handleInjectDefinition($state, $injectDefinition);
-            if ($injectDefinition->getTargetIdentifier()->isMethodParameter()) {
-                $this->logInjectingMethodParameter($injectDefinition);
-            } else {
-                $this->logInjectingProperty($injectDefinition);
             }
         }
 
@@ -112,6 +104,16 @@ abstract class AbstractContainerFactory implements ContainerFactory {
             $resolution = $this->aliasDefinitionResolver->resolveAlias($definition, $aliasDefinition->getAbstractService());
             $this->handleAliasDefinition($state, $resolution);
             $this->logAliasingService($resolution, $aliasDefinition->getAbstractService());
+        }
+
+        // We're doing inject definitions first because these could influence the way a service is created
+        foreach ($definition->getInjectDefinitions() as $injectDefinition) {
+            $this->handleInjectDefinition($state, $injectDefinition);
+            if ($injectDefinition->getTargetIdentifier()->isMethodParameter()) {
+                $this->logInjectingMethodParameter($injectDefinition);
+            } else {
+                $this->logInjectingProperty($injectDefinition);
+            }
         }
 
         return $state;
@@ -172,7 +174,13 @@ abstract class AbstractContainerFactory implements ContainerFactory {
         }
 
         $type = $definition->getType();
-        if ($type instanceof ObjectType && !is_a($definition->getType()->getName(), UnitEnum::class, true)) {
+        if ($value instanceof ListOf) {
+            $value = new ServiceCollectorReference(
+                $value,
+                $value->type(),
+                $type
+            );
+        } else if ($type instanceof ObjectType && !is_a($definition->getType()->getName(), UnitEnum::class, true)) {
             $value = new ContainerReference($value, $type);
         }
 
@@ -355,7 +363,7 @@ abstract class AbstractContainerFactory implements ContainerFactory {
                         'value' => $inject->getValue()
                     ]
                 );
-            } else if ($inject->getType() instanceof ObjectType) {
+            } else if ($inject->getType() instanceof ObjectType && !($inject->getValue() instanceof ListOf)) {
                 $this->logger->info(
                     sprintf(
                         'Injecting service %s from Container into %s::%s($%s).',
@@ -514,7 +522,7 @@ abstract class AbstractContainerFactory implements ContainerFactory {
 
     abstract protected function getBackingContainerType() : ObjectType;
 
-    abstract protected function getContainerFactoryState() : ContainerFactoryState;
+    abstract protected function getContainerFactoryState(ContainerDefinition $containerDefinition) : ContainerFactoryState;
 
     abstract protected function handleServiceDefinition(ContainerFactoryState $state, ServiceDefinition $definition) : void;
 

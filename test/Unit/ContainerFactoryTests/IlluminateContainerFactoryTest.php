@@ -19,4 +19,8 @@ class IlluminateContainerFactoryTest extends ContainerFactoryTestCase {
     protected function getBackingContainerInstanceOf() : ObjectType {
         return objectType(Container::class);
     }
+
+    protected function supportsInjectingMultipleNamedServices() : bool {
+        return false;
+    }
 }

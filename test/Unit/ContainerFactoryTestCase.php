@@ -4,7 +4,6 @@ namespace Cspray\AnnotatedContainer\Unit;
 
 use Cspray\AnnotatedContainer\Autowire\AutowireableFactory;
 use Cspray\AnnotatedContainer\Autowire\AutowireableInvoker;
-use Cspray\AnnotatedContainer\ContainerFactory\IlluminateContainerFactory;
 use Cspray\AnnotatedContainer\Exception\InvalidAlias;
 use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalyzer;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
@@ -18,7 +17,6 @@ use Cspray\AnnotatedContainer\Definition\AliasDefinitionBuilder;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinitionBuilder;
 use Cspray\AnnotatedContainer\Definition\ServiceDefinitionBuilder;
-use Cspray\AnnotatedContainer\Exception\ContainerException;
 use Cspray\AnnotatedContainer\Exception\ParameterStoreNotFound;
 use Cspray\AnnotatedContainer\Profiles\ActiveProfiles;
 use Cspray\AnnotatedContainer\Serializer\ContainerDefinitionSerializer;
@@ -54,6 +52,10 @@ abstract class ContainerFactoryTestCase extends TestCase {
     abstract protected function getContainerFactory(ActiveProfiles $activeProfiles) : ContainerFactory;
 
     abstract protected function getBackingContainerInstanceOf() : ObjectType;
+
+    protected function supportsInjectingMultipleNamedServices() : bool {
+        return true;
+    }
 
     private function getContainerDefinitionCompiler() : ContainerDefinitionAnalyzer {
         return new AnnotatedTargetContainerDefinitionAnalyzer(
@@ -377,9 +379,9 @@ abstract class ContainerFactoryTestCase extends TestCase {
     }
 
     public function testInjectingNamedServices() : void {
-        if ($this->getBackingContainerInstanceOf()->getName() === Container::class) {
+        if (!$this->supportsInjectingMultipleNamedServices()) {
             $this->markTestSkipped(
-                IlluminateContainerFactory::class . ' does not support injecting multiple named services.'
+                $this->getBackingContainerInstanceOf()->getName() . ' does not support injecting multiple named services.'
             );
         }
 
@@ -987,5 +989,29 @@ abstract class ContainerFactoryTestCase extends TestCase {
 
         self::assertInstanceOf(Fixtures::aliasedConfigurationFixture()->myAppConfig()->getName(), $configuration);
         self::assertSame('my-app-name', $configuration->getAppName());
+    }
+
+    public function testCreatingServiceWithInjectServiceCollection() : void {
+        $container = $this->getContainer(Fixtures::injectServiceCollection()->getPath());
+
+        $collectionInjector = $container->get(Fixtures::injectServiceCollection()->collectionInjector()->getName());
+
+        self::assertCount(3, $collectionInjector->services);
+        self::assertContainsOnlyInstancesOf(
+            Fixtures::injectServiceCollection()->fooInterface()->getName(),
+            $collectionInjector->services
+        );
+    }
+
+    public function testCreatingServiceWithInjectServiceDomainCollection() : void {
+        $container = $this->getContainer(Fixtures::injectServiceDomainCollection()->getPath());
+
+        $collectionInjector = $container->get(Fixtures::injectServiceDomainCollection()->collectionInjector()->getName());
+
+        self::assertCount(3, $collectionInjector->collection->services);
+        self::assertContainsOnlyInstancesOf(
+            Fixtures::injectServiceDomainCollection()->fooInterface()->getName(),
+            $collectionInjector->collection->services
+        );
     }
 }

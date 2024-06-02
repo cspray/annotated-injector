@@ -2,6 +2,7 @@
 
 namespace Cspray\AnnotatedContainer\ContainerFactory;
 
+use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 use Illuminate\Contracts\Container\Container;
 
 /**
@@ -37,7 +38,8 @@ final class IlluminateContainerFactoryState implements ContainerFactoryState {
     private array $namedServices = [];
 
     public function __construct(
-        public readonly Container $container
+        public readonly Container $container,
+        public readonly ContainerDefinition $containerDefinition
     ) {}
 
     /**
