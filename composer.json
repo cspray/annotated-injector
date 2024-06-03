@@ -31,7 +31,6 @@
     "cspray/phinal": "^1.0",
     "mikey179/vfsstream": "^1.6",
     "php-di/php-di": "^7.0",
-    "phpunit/phpunit": "^9.5",
     "rdlowrey/auryn": "^1.4",
     "roave/security-advisories": "dev-latest",
     "vimeo/psalm": "^4.24",
