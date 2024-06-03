@@ -1,615 +1,930 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="4.30.0@d0bc6e25d89f649e4f36a534f330f8bb4643dd69">
+<files psalm-version="5.24.0@462c80e31c34e58cc4f750c656be3927e80e550e">
+  <file src="src/AnnotatedContainer.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[getBackingContainer]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/AnnotatedContainerVersion.php">
+    <UnusedConstructor>
+      <code><![CDATA[__construct]]></code>
+    </UnusedConstructor>
+  </file>
+  <file src="src/ArchitecturalDecisions/Initializer.php">
+    <UnusedClass>
+      <code><![CDATA[Initializer]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Autowire/AutowireableFactory.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[make]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Autowire/AutowireableInvoker.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[invoke]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Autowire/AutowireableParameterSet.php">
+    <InvalidDocblock>
+      <code><![CDATA[interface AutowireableParameterSet extends Countable, IteratorAggregate {]]></code>
+    </InvalidDocblock>
+    <MissingTemplateParam>
+      <code><![CDATA[IteratorAggregate]]></code>
+    </MissingTemplateParam>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[get]]></code>
+    </PossiblyUnusedMethod>
+  </file>
   <file src="src/Bootstrap/Bootstrap.php">
-    <DeprecatedClass occurrences="9">
-      <code>?ObserverFactory</code>
-      <code>ActiveProfiles</code>
-      <code>ActiveProfiles</code>
-      <code>ActiveProfiles</code>
-      <code>ActiveProfiles</code>
-      <code>ObserverFactory</code>
-      <code>PreAnalysisObserver|PostAnalysisObserver|ContainerCreatedObserver|ContainerAnalyticsObserver $observer</code>
-      <code>array</code>
-      <code>private array $observers = [];</code>
-    </DeprecatedClass>
-    <DeprecatedInterface occurrences="1">
-      <code>class($profiles) implements ActiveProfiles {</code>
+    <DeprecatedInterface>
+      <code><![CDATA[?ObserverFactory]]></code>
+      <code><![CDATA[ActiveProfiles]]></code>
+      <code><![CDATA[ActiveProfiles]]></code>
+      <code><![CDATA[ActiveProfiles]]></code>
+      <code><![CDATA[ActiveProfiles]]></code>
+      <code><![CDATA[ObserverFactory]]></code>
+      <code><![CDATA[PreAnalysisObserver|PostAnalysisObserver|ContainerCreatedObserver|ContainerAnalyticsObserver $observer]]></code>
+      <code><![CDATA[PreAnalysisObserver|PostAnalysisObserver|ContainerCreatedObserver|ContainerAnalyticsObserver $observer]]></code>
+      <code><![CDATA[PreAnalysisObserver|PostAnalysisObserver|ContainerCreatedObserver|ContainerAnalyticsObserver $observer]]></code>
+      <code><![CDATA[PreAnalysisObserver|PostAnalysisObserver|ContainerCreatedObserver|ContainerAnalyticsObserver $observer]]></code>
+      <code><![CDATA[array]]></code>
+      <code><![CDATA[array]]></code>
+      <code><![CDATA[array]]></code>
+      <code><![CDATA[array]]></code>
+      <code><![CDATA[class($profiles) implements ActiveProfiles {]]></code>
+      <code><![CDATA[private array $observers = [];]]></code>
+      <code><![CDATA[private array $observers = [];]]></code>
+      <code><![CDATA[private array $observers = [];]]></code>
+      <code><![CDATA[private array $observers = [];]]></code>
     </DeprecatedInterface>
-    <DeprecatedMethod occurrences="7">
-      <code>getLogger</code>
-      <code>getLogger</code>
-      <code>getLogger</code>
-      <code>getLoggingExcludedProfiles</code>
-      <code>getObservers</code>
-      <code>withLogger</code>
-      <code>withLogger</code>
+    <DeprecatedMethod>
+      <code><![CDATA[getLogger]]></code>
+      <code><![CDATA[getLogger]]></code>
+      <code><![CDATA[getLogger]]></code>
+      <code><![CDATA[getLoggingExcludedProfiles]]></code>
+      <code><![CDATA[getObservers]]></code>
+      <code><![CDATA[withLogger]]></code>
+      <code><![CDATA[withLogger]]></code>
     </DeprecatedMethod>
-    <DeprecatedProperty occurrences="2">
-      <code>$this-&gt;logger</code>
-      <code>$this-&gt;logger</code>
+    <DeprecatedProperty>
+      <code><![CDATA[$this->logger]]></code>
+      <code><![CDATA[$this->logger]]></code>
     </DeprecatedProperty>
+    <InvalidScalarArgument>
+      <code><![CDATA[$activeProfiles->getProfiles()]]></code>
+    </InvalidScalarArgument>
+    <PossiblyUnusedReturnValue>
+      <code><![CDATA[AnnotatedContainer]]></code>
+    </PossiblyUnusedReturnValue>
   </file>
   <file src="src/Bootstrap/BootstrappingConfiguration.php">
-    <DeprecatedClass occurrences="1">
-      <code>list&lt;PreAnalysisObserver|PostAnalysisObserver|ContainerCreatedObserver|ContainerAnalyticsObserver&gt;</code>
-    </DeprecatedClass>
+    <DeprecatedInterface>
+      <code><![CDATA[list<PreAnalysisObserver|PostAnalysisObserver|ContainerCreatedObserver|ContainerAnalyticsObserver>]]></code>
+      <code><![CDATA[list<PreAnalysisObserver|PostAnalysisObserver|ContainerCreatedObserver|ContainerAnalyticsObserver>]]></code>
+      <code><![CDATA[list<PreAnalysisObserver|PostAnalysisObserver|ContainerCreatedObserver|ContainerAnalyticsObserver>]]></code>
+      <code><![CDATA[list<PreAnalysisObserver|PostAnalysisObserver|ContainerCreatedObserver|ContainerAnalyticsObserver>]]></code>
+    </DeprecatedInterface>
   </file>
   <file src="src/Bootstrap/ComposerJsonScanningThirdPartyInitializerProvider.php">
-    <MixedArrayAccess occurrences="1">
-      <code>$composerData['extra']</code>
+    <MixedArrayAccess>
+      <code><![CDATA[$composerData['extra']]]></code>
+      <code><![CDATA[$composerData['extra']['$annotatedContainer']]]></code>
+      <code><![CDATA[$composerData['extra']['$annotatedContainer']['initializers']]]></code>
     </MixedArrayAccess>
-    <MixedAssignment occurrences="4">
-      <code>$composerData</code>
-      <code>$initializers[]</code>
-      <code>$packageInitializer</code>
-      <code>$packageInitializers</code>
+    <MixedAssignment>
+      <code><![CDATA[$composerData]]></code>
+      <code><![CDATA[$initializers[]]]></code>
+      <code><![CDATA[$packageInitializer]]></code>
+      <code><![CDATA[$packageInitializers]]></code>
     </MixedAssignment>
-    <MixedReturnTypeCoercion occurrences="2">
-      <code>$initializers</code>
-      <code>list&lt;class-string&lt;ThirdPartyInitializer&gt;&gt;</code>
+    <MixedReturnTypeCoercion>
+      <code><![CDATA[$initializers]]></code>
+      <code><![CDATA[list<class-string<ThirdPartyInitializer>>]]></code>
     </MixedReturnTypeCoercion>
-    <UndefinedMethod occurrences="1">
-      <code>isDot</code>
+    <UndefinedMethod>
+      <code><![CDATA[isDot]]></code>
     </UndefinedMethod>
+    <UnusedClass>
+      <code><![CDATA[ComposerJsonScanningThirdPartyInitializerProvider]]></code>
+    </UnusedClass>
   </file>
   <file src="src/Bootstrap/ContainerCreatedObserver.php">
-    <DeprecatedClass occurrences="1">
-      <code>ActiveProfiles</code>
-    </DeprecatedClass>
+    <DeprecatedInterface>
+      <code><![CDATA[ActiveProfiles]]></code>
+    </DeprecatedInterface>
+  </file>
+  <file src="src/Bootstrap/DelegatedParameterStoreFactory.php">
+    <UnusedClass>
+      <code><![CDATA[DelegatedParameterStoreFactory]]></code>
+    </UnusedClass>
   </file>
   <file src="src/Bootstrap/ObserverFactory.php">
-    <DeprecatedClass occurrences="1">
-      <code>PreAnalysisObserver|PostAnalysisObserver|ContainerCreatedObserver</code>
-    </DeprecatedClass>
+    <DeprecatedInterface>
+      <code><![CDATA[PreAnalysisObserver|PostAnalysisObserver|ContainerCreatedObserver]]></code>
+      <code><![CDATA[PreAnalysisObserver|PostAnalysisObserver|ContainerCreatedObserver]]></code>
+      <code><![CDATA[PreAnalysisObserver|PostAnalysisObserver|ContainerCreatedObserver]]></code>
+    </DeprecatedInterface>
   </file>
   <file src="src/Bootstrap/PostAnalysisObserver.php">
-    <DeprecatedClass occurrences="1">
-      <code>ActiveProfiles</code>
-    </DeprecatedClass>
+    <DeprecatedInterface>
+      <code><![CDATA[ActiveProfiles]]></code>
+    </DeprecatedInterface>
   </file>
   <file src="src/Bootstrap/PreAnalysisObserver.php">
-    <DeprecatedClass occurrences="1">
-      <code>ActiveProfiles</code>
-    </DeprecatedClass>
+    <DeprecatedInterface>
+      <code><![CDATA[ActiveProfiles]]></code>
+    </DeprecatedInterface>
+  </file>
+  <file src="src/Bootstrap/ServiceFromServiceDefinition.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[getDefinition]]></code>
+      <code><![CDATA[getService]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Bootstrap/ServiceGatherer.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[getServicesForType]]></code>
+      <code><![CDATA[getServicesWithAttribute]]></code>
+    </PossiblyUnusedMethod>
   </file>
   <file src="src/Bootstrap/ServiceWiringObserver.php">
-    <DeprecatedClass occurrences="1">
-      <code>ActiveProfiles</code>
-    </DeprecatedClass>
-    <DeprecatedInterface occurrences="1">
-      <code>ServiceWiringObserver</code>
+    <DeprecatedInterface>
+      <code><![CDATA[ActiveProfiles]]></code>
+      <code><![CDATA[ServiceWiringObserver]]></code>
     </DeprecatedInterface>
-    <LessSpecificReturnStatement occurrences="1">
-      <code>$services</code>
+    <LessSpecificReturnStatement>
+      <code><![CDATA[$services]]></code>
     </LessSpecificReturnStatement>
-    <MoreSpecificReturnType occurrences="1">
-      <code>array</code>
+    <MissingTemplateParam>
+      <code><![CDATA[ServiceFromServiceDefinition]]></code>
+      <code><![CDATA[ServiceGatherer]]></code>
+    </MissingTemplateParam>
+    <MoreSpecificReturnType>
+      <code><![CDATA[array]]></code>
     </MoreSpecificReturnType>
+    <UnusedClass>
+      <code><![CDATA[ServiceWiringObserver]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Bootstrap/ThirdPartyInitializer.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[__construct]]></code>
+    </PossiblyUnusedMethod>
   </file>
   <file src="src/Bootstrap/XmlBootstrappingConfiguration.php">
-    <DeprecatedClass occurrences="8">
-      <code>array</code>
-      <code>list&lt;PreAnalysisObserver|PostAnalysisObserver|ContainerCreatedObserver|ContainerAnalyticsObserver&gt;</code>
-      <code>new CompositeLogger($fileLogger, $stdoutLogger)</code>
-      <code>new FileLogger($dateTimeProvider, $loggingFilePath)</code>
-      <code>new FileLogger($dateTimeProvider, $loggingFilePath)</code>
-      <code>new StdoutLogger($dateTimeProvider)</code>
-      <code>new StdoutLogger($dateTimeProvider)</code>
-      <code>private</code>
+    <DeprecatedClass>
+      <code><![CDATA[new CompositeLogger($fileLogger, $stdoutLogger)]]></code>
+      <code><![CDATA[new FileLogger($dateTimeProvider, $loggingFilePath)]]></code>
+      <code><![CDATA[new FileLogger($dateTimeProvider, $loggingFilePath)]]></code>
+      <code><![CDATA[new StdoutLogger($dateTimeProvider)]]></code>
+      <code><![CDATA[new StdoutLogger($dateTimeProvider)]]></code>
     </DeprecatedClass>
-    <DeprecatedMethod occurrences="2">
-      <code>getLogPath</code>
-      <code>getLogPath</code>
+    <DeprecatedInterface>
+      <code><![CDATA[array]]></code>
+      <code><![CDATA[array]]></code>
+      <code><![CDATA[array]]></code>
+      <code><![CDATA[array]]></code>
+      <code><![CDATA[list<PreAnalysisObserver|PostAnalysisObserver|ContainerCreatedObserver|ContainerAnalyticsObserver>]]></code>
+      <code><![CDATA[list<PreAnalysisObserver|PostAnalysisObserver|ContainerCreatedObserver|ContainerAnalyticsObserver>]]></code>
+      <code><![CDATA[list<PreAnalysisObserver|PostAnalysisObserver|ContainerCreatedObserver|ContainerAnalyticsObserver>]]></code>
+      <code><![CDATA[list<PreAnalysisObserver|PostAnalysisObserver|ContainerCreatedObserver|ContainerAnalyticsObserver>]]></code>
+      <code><![CDATA[private]]></code>
+    </DeprecatedInterface>
+    <DeprecatedMethod>
+      <code><![CDATA[getLogPath]]></code>
+      <code><![CDATA[getLogPath]]></code>
     </DeprecatedMethod>
-    <InvalidStringClass occurrences="1">
-      <code>new $observerClass()</code>
+    <InvalidStringClass>
+      <code><![CDATA[new $observerClass()]]></code>
     </InvalidStringClass>
-    <MixedReturnTypeCoercion occurrences="2">
-      <code>$this-&gt;excludedProfiles</code>
-      <code>array</code>
-    </MixedReturnTypeCoercion>
-    <PropertyTypeCoercion occurrences="1">
-      <code>$observers</code>
+    <LessSpecificReturnStatement>
+      <code><![CDATA[$this->excludedProfiles]]></code>
+    </LessSpecificReturnStatement>
+    <MixedAssignment>
+      <code><![CDATA[$scanDirectories[]]]></code>
+    </MixedAssignment>
+    <MixedPropertyTypeCoercion>
+      <code><![CDATA[$scanDirectories]]></code>
+    </MixedPropertyTypeCoercion>
+    <MoreSpecificReturnType>
+      <code><![CDATA[array]]></code>
+    </MoreSpecificReturnType>
+    <PropertyTypeCoercion>
+      <code><![CDATA[$observers]]></code>
     </PropertyTypeCoercion>
+    <UndefinedPropertyFetch>
+      <code><![CDATA[$scanDirectory->textContent]]></code>
+    </UndefinedPropertyFetch>
+    <UnusedProperty>
+      <code><![CDATA[$definitionProviderFactory]]></code>
+      <code><![CDATA[$directoryResolver]]></code>
+      <code><![CDATA[$observerFactory]]></code>
+      <code><![CDATA[$parameterStoreFactory]]></code>
+      <code><![CDATA[$xmlFile]]></code>
+    </UnusedProperty>
   </file>
   <file src="src/Cli/Command/BuildCommand.php">
-    <DeprecatedMethod occurrences="2">
-      <code>getLogger</code>
-      <code>withLogger</code>
+    <DeprecatedMethod>
+      <code><![CDATA[getLogger]]></code>
+      <code><![CDATA[withLogger]]></code>
     </DeprecatedMethod>
-    <MixedArrayAccess occurrences="1">
-      <code>$composer['extra']['annotatedContainer']['configFile']</code>
+    <MixedArrayAccess>
+      <code><![CDATA[$composer['extra']['annotatedContainer']['configFile']]]></code>
     </MixedArrayAccess>
-    <MixedAssignment occurrences="1">
-      <code>$configName</code>
+    <MixedAssignment>
+      <code><![CDATA[$configName]]></code>
     </MixedAssignment>
+    <UnusedClass>
+      <code><![CDATA[BuildCommand]]></code>
+    </UnusedClass>
   </file>
   <file src="src/Cli/Command/CacheClearCommand.php">
-    <MixedArgument occurrences="1">
-      <code>$configName</code>
+    <MixedArgument>
+      <code><![CDATA[$configName]]></code>
     </MixedArgument>
-    <MixedArrayAccess occurrences="1">
-      <code>$composer['extra']</code>
+    <MixedArrayAccess>
+      <code><![CDATA[$composer['extra']]]></code>
+      <code><![CDATA[$composer['extra']['annotatedContainer']]]></code>
+      <code><![CDATA[$composer['extra']['annotatedContainer']['configFile']]]></code>
     </MixedArrayAccess>
-    <MixedAssignment occurrences="2">
-      <code>$composer</code>
-      <code>$configName</code>
+    <MixedAssignment>
+      <code><![CDATA[$composer]]></code>
+      <code><![CDATA[$configName]]></code>
     </MixedAssignment>
+    <UnusedClass>
+      <code><![CDATA[CacheClearCommand]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Cli/Command/HelpCommand.php">
+    <UnusedClass>
+      <code><![CDATA[HelpCommand]]></code>
+    </UnusedClass>
   </file>
   <file src="src/Cli/Command/InitCommand.php">
-    <DeprecatedMethod occurrences="1">
-      <code>getObserverClasses</code>
+    <DeprecatedMethod>
+      <code><![CDATA[getObserverClasses]]></code>
     </DeprecatedMethod>
-    <MixedArgument occurrences="3">
-      <code>$composer</code>
-      <code>$configName</code>
-      <code>$parameterStore</code>
+    <InvalidOperand>
+      <code><![CDATA[$autoloadDevPsr0]]></code>
+      <code><![CDATA[$autoloadDevPsr4]]></code>
+      <code><![CDATA[$autoloadPsr0]]></code>
+      <code><![CDATA[$autoloadPsr4]]></code>
+    </InvalidOperand>
+    <MixedArgument>
+      <code><![CDATA[$composer]]></code>
+      <code><![CDATA[$configName]]></code>
+      <code><![CDATA[$parameterStore]]></code>
     </MixedArgument>
-    <MixedArrayAccess occurrences="1">
-      <code>$composer['extra']</code>
+    <MixedArrayAccess>
+      <code><![CDATA[$composer['extra']]]></code>
+      <code><![CDATA[$composer['extra']['annotatedContainer']]]></code>
+      <code><![CDATA[$composer['extra']['annotatedContainer']['configFile']]]></code>
     </MixedArrayAccess>
-    <MixedAssignment occurrences="9">
-      <code>$autoloadDevPsr0</code>
-      <code>$autoloadDevPsr4</code>
-      <code>$autoloadPsr0</code>
-      <code>$autoloadPsr4</code>
-      <code>$composer</code>
-      <code>$composerDevDir</code>
-      <code>$composerDir</code>
-      <code>$configName</code>
-      <code>$parameterStore</code>
+    <MixedAssignment>
+      <code><![CDATA[$autoloadDevPsr0]]></code>
+      <code><![CDATA[$autoloadDevPsr4]]></code>
+      <code><![CDATA[$autoloadPsr0]]></code>
+      <code><![CDATA[$autoloadPsr4]]></code>
+      <code><![CDATA[$composer]]></code>
+      <code><![CDATA[$composerDevDir]]></code>
+      <code><![CDATA[$composerDir]]></code>
+      <code><![CDATA[$configName]]></code>
+      <code><![CDATA[$parameterStore]]></code>
     </MixedAssignment>
+    <UnusedClass>
+      <code><![CDATA[InitCommand]]></code>
+    </UnusedClass>
   </file>
   <file src="src/Cli/Command/ValidateCommand.php">
-    <ArgumentTypeCoercion occurrences="1">
-      <code>$profiles</code>
+    <ArgumentTypeCoercion>
+      <code><![CDATA[$profiles]]></code>
     </ArgumentTypeCoercion>
-    <DeprecatedClass occurrences="3">
-      <code>ActiveProfiles</code>
-      <code>PostAnalysisObserver</code>
-      <code>PostAnalysisObserver</code>
-    </DeprecatedClass>
-    <DeprecatedInterface occurrences="1">
-      <code>class($closure) implements PostAnalysisObserver {</code>
+    <DeprecatedInterface>
+      <code><![CDATA[ActiveProfiles]]></code>
+      <code><![CDATA[PostAnalysisObserver]]></code>
+      <code><![CDATA[PostAnalysisObserver]]></code>
+      <code><![CDATA[class($closure) implements PostAnalysisObserver {]]></code>
     </DeprecatedInterface>
-    <PossiblyInvalidArgument occurrences="3">
-      <code>$configOption</code>
-      <code>$configOption</code>
-      <code>$profiles</code>
+    <PossiblyInvalidArgument>
+      <code><![CDATA[$configOption]]></code>
+      <code><![CDATA[$configOption]]></code>
+      <code><![CDATA[$profiles]]></code>
     </PossiblyInvalidArgument>
-    <PossiblyInvalidCast occurrences="2">
-      <code>$configOption</code>
-      <code>$configOption</code>
+    <PossiblyInvalidCast>
+      <code><![CDATA[$configOption]]></code>
+      <code><![CDATA[$configOption]]></code>
     </PossiblyInvalidCast>
+    <UnusedClass>
+      <code><![CDATA[ValidateCommand]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Cli/CommandExecutor.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[execute]]></code>
+      <code><![CDATA[setDefaultCommand]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Cli/Exception/CommandNotFound.php">
+    <UnusedClass>
+      <code><![CDATA[CommandNotFound]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Cli/Input.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[getOptions]]></code>
+      <code><![CDATA[requireOption]]></code>
+    </PossiblyUnusedMethod>
   </file>
   <file src="src/Cli/InputParser.php">
-    <ArgumentTypeCoercion occurrences="1">
-      <code>$arguments</code>
+    <ArgumentTypeCoercion>
+      <code><![CDATA[$arguments]]></code>
+      <code><![CDATA[$options]]></code>
     </ArgumentTypeCoercion>
-    <MixedArgument occurrences="1">
-      <code>$options</code>
-    </MixedArgument>
+    <RedundantConditionGivenDocblockType>
+      <code><![CDATA[assert(is_array($options))]]></code>
+      <code><![CDATA[is_array($options)]]></code>
+    </RedundantConditionGivenDocblockType>
+    <UnusedClass>
+      <code><![CDATA[InputParser]]></code>
+    </UnusedClass>
   </file>
   <file src="src/Cli/TerminalOutput.php">
-    <MixedArgument occurrences="2">
-      <code>$this-&gt;tagCodes['codes']</code>
-      <code>$this-&gt;tagCodes['tags']</code>
+    <MixedArgument>
+      <code><![CDATA[$this->tagCodes['codes']]]></code>
+      <code><![CDATA[$this->tagCodes['tags']]]></code>
     </MixedArgument>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[__construct]]></code>
+    </PossiblyUnusedMethod>
   </file>
   <file src="src/ContainerFactory/AbstractContainerFactory.php">
-    <DeprecatedClass occurrences="6">
-      <code>ActiveProfiles</code>
-      <code>ActiveProfiles</code>
-      <code>ActiveProfiles</code>
-      <code>ConfigurationDefinition</code>
-      <code>ConfigurationDefinition</code>
-      <code>ConfigurationDefinition</code>
-    </DeprecatedClass>
-    <DeprecatedInterface occurrences="1">
-      <code>class($profiles) implements ActiveProfiles {</code>
+    <DeprecatedInterface>
+      <code><![CDATA[ActiveProfiles]]></code>
+      <code><![CDATA[ActiveProfiles]]></code>
+      <code><![CDATA[ActiveProfiles]]></code>
+      <code><![CDATA[ConfigurationDefinition]]></code>
+      <code><![CDATA[ConfigurationDefinition]]></code>
+      <code><![CDATA[ConfigurationDefinition]]></code>
+      <code><![CDATA[class($profiles) implements ActiveProfiles {]]></code>
     </DeprecatedInterface>
-    <DeprecatedMethod occurrences="14">
-      <code>getLogger</code>
-      <code>logAliasingService</code>
-      <code>logConfigurationNamed</code>
-      <code>logConfigurationShared</code>
-      <code>logCreatingContainer</code>
-      <code>logFinishedCreatingContainer</code>
-      <code>logInjectingMethodParameter</code>
-      <code>logInjectingProperty</code>
-      <code>logServiceDelegate</code>
-      <code>logServiceNamed</code>
-      <code>logServicePrepare</code>
-      <code>logServiceShared</code>
-      <code>logServicesNotMatchingProfiles</code>
-      <code>setLoggerFromOptions</code>
+    <DeprecatedMethod>
+      <code><![CDATA[getLogger]]></code>
+      <code><![CDATA[logAliasingService]]></code>
+      <code><![CDATA[logConfigurationNamed]]></code>
+      <code><![CDATA[logConfigurationShared]]></code>
+      <code><![CDATA[logCreatingContainer]]></code>
+      <code><![CDATA[logFinishedCreatingContainer]]></code>
+      <code><![CDATA[logInjectingMethodParameter]]></code>
+      <code><![CDATA[logInjectingProperty]]></code>
+      <code><![CDATA[logServiceDelegate]]></code>
+      <code><![CDATA[logServiceNamed]]></code>
+      <code><![CDATA[logServicePrepare]]></code>
+      <code><![CDATA[logServiceShared]]></code>
+      <code><![CDATA[logServicesNotMatchingProfiles]]></code>
+      <code><![CDATA[setLoggerFromOptions]]></code>
     </DeprecatedMethod>
-    <MixedArgument occurrences="6">
-      <code>$inject-&gt;getValue()</code>
-      <code>$inject-&gt;getValue()</code>
-      <code>$inject-&gt;getValue()</code>
-      <code>$inject-&gt;getValue()</code>
-      <code>$value</code>
-      <code>$value</code>
+    <MixedArgument>
+      <code><![CDATA[$inject->getValue()]]></code>
+      <code><![CDATA[$inject->getValue()]]></code>
+      <code><![CDATA[$inject->getValue()]]></code>
+      <code><![CDATA[$inject->getValue()]]></code>
+      <code><![CDATA[$value]]></code>
+      <code><![CDATA[$value]]></code>
     </MixedArgument>
-    <MixedArgumentTypeCoercion occurrences="1">
-      <code>$activeProfiles</code>
+    <MixedArgumentTypeCoercion>
+      <code><![CDATA[$activeProfiles]]></code>
     </MixedArgumentTypeCoercion>
-    <MixedAssignment occurrences="2">
-      <code>$value</code>
-      <code>$value</code>
+    <MixedAssignment>
+      <code><![CDATA[$value]]></code>
+      <code><![CDATA[$value]]></code>
     </MixedAssignment>
   </file>
   <file src="src/ContainerFactory/AurynContainerFactory.php">
-    <ArgumentTypeCoercion occurrences="3">
-      <code>$id</code>
-      <code>$id</code>
-      <code>$method</code>
+    <ArgumentTypeCoercion>
+      <code><![CDATA[$id]]></code>
+      <code><![CDATA[$id]]></code>
+      <code><![CDATA[$method]]></code>
     </ArgumentTypeCoercion>
-    <DeprecatedClass occurrences="3">
-      <code>ActiveProfiles</code>
-      <code>ActiveProfiles</code>
-      <code>ConfigurationDefinition</code>
-    </DeprecatedClass>
-    <MixedArgument occurrences="1">
-      <code>$definitions</code>
+    <DeprecatedInterface>
+      <code><![CDATA[ActiveProfiles]]></code>
+      <code><![CDATA[ActiveProfiles]]></code>
+      <code><![CDATA[ConfigurationDefinition]]></code>
+    </DeprecatedInterface>
+    <MixedArgument>
+      <code><![CDATA[$definitions]]></code>
     </MixedArgument>
-    <MixedArgumentTypeCoercion occurrences="1">
-      <code>$prop</code>
+    <MixedArgumentTypeCoercion>
+      <code><![CDATA[$prop]]></code>
     </MixedArgumentTypeCoercion>
-    <MixedAssignment occurrences="5">
-      <code>$definitions</code>
-      <code>$params[$name]</code>
-      <code>$value</code>
-      <code>$value</code>
-      <code>$value</code>
+    <MixedAssignment>
+      <code><![CDATA[$definitions]]></code>
+      <code><![CDATA[$params[$name]]]></code>
+      <code><![CDATA[$value]]></code>
+      <code><![CDATA[$value]]></code>
+      <code><![CDATA[$value]]></code>
     </MixedAssignment>
-    <MixedInferredReturnType occurrences="1">
-      <code>object</code>
+    <MixedInferredReturnType>
+      <code><![CDATA[object]]></code>
     </MixedInferredReturnType>
-    <MixedMethodCall occurrences="1">
-      <code>getName</code>
+    <MixedMethodCall>
+      <code><![CDATA[getName]]></code>
     </MixedMethodCall>
-    <MixedReturnStatement occurrences="1"/>
-    <PossiblyNullArgument occurrences="2">
-      <code>$definition-&gt;getName()</code>
-      <code>$method</code>
+    <MixedReturnStatement>
+      <code><![CDATA[$this->state->injector->make(
+                    $classType,
+                    $this->convertAutowireableParameterSet($parameters)
+                )]]></code>
+    </MixedReturnStatement>
+    <PossiblyNullArgument>
+      <code><![CDATA[$definition->getName()]]></code>
+      <code><![CDATA[$method]]></code>
     </PossiblyNullArgument>
   </file>
   <file src="src/ContainerFactory/AurynContainerFactoryState.php">
-    <MissingClosureReturnType occurrences="1">
-      <code>static fn() =&gt; $value-&gt;listOf-&gt;toCollection($values)</code>
+    <MissingClosureReturnType>
+      <code><![CDATA[static fn() => $value->listOf->toCollection($values)]]></code>
     </MissingClosureReturnType>
-    <MixedAssignment occurrences="1">
-      <code>$values[]</code>
+    <MixedAssignment>
+      <code><![CDATA[$values[]]]></code>
     </MixedAssignment>
   </file>
   <file src="src/ContainerFactory/ContainerFactoryOptionsBuilder.php">
-    <MixedReturnTypeCoercion occurrences="2">
-      <code>$this-&gt;activeProfiles</code>
-      <code>array</code>
-    </MixedReturnTypeCoercion>
+    <LessSpecificReturnStatement>
+      <code><![CDATA[$this->activeProfiles]]></code>
+    </LessSpecificReturnStatement>
+    <MoreSpecificReturnType>
+      <code><![CDATA[array]]></code>
+    </MoreSpecificReturnType>
+    <PropertyNotSetInConstructor>
+      <code><![CDATA[$activeProfiles]]></code>
+    </PropertyNotSetInConstructor>
   </file>
   <file src="src/ContainerFactory/HasPropertyInjectState.php">
-    <PropertyTypeCoercion occurrences="2">
-      <code>$this-&gt;propertyInject</code>
-      <code>$this-&gt;propertyInject</code>
+    <PropertyTypeCoercion>
+      <code><![CDATA[$this->propertyInject]]></code>
+      <code><![CDATA[$this->propertyInject]]></code>
     </PropertyTypeCoercion>
   </file>
   <file src="src/ContainerFactory/HasServicePrepareState.php">
-    <PropertyTypeCoercion occurrences="2">
-      <code>$this-&gt;servicePrepares</code>
-      <code>$this-&gt;servicePrepares</code>
+    <PropertyTypeCoercion>
+      <code><![CDATA[$this->servicePrepares]]></code>
+      <code><![CDATA[$this->servicePrepares]]></code>
     </PropertyTypeCoercion>
   </file>
   <file src="src/ContainerFactory/IlluminateContainerFactory.php">
-    <ArgumentTypeCoercion occurrences="1">
-      <code>$method</code>
+    <ArgumentTypeCoercion>
+      <code><![CDATA[$method]]></code>
     </ArgumentTypeCoercion>
-    <DeprecatedClass occurrences="2">
-      <code>ActiveProfiles</code>
-      <code>ConfigurationDefinition</code>
-    </DeprecatedClass>
-    <InternalProperty occurrences="8">
-      <code>$this-&gt;state-&gt;container</code>
-      <code>$this-&gt;state-&gt;container</code>
-      <code>$this-&gt;state-&gt;container</code>
-      <code>$this-&gt;state-&gt;container</code>
-      <code>$this-&gt;state-&gt;container</code>
-      <code>$this-&gt;state-&gt;container</code>
-      <code>$this-&gt;state-&gt;container</code>
-      <code>$this-&gt;state-&gt;container</code>
-    </InternalProperty>
-    <MissingClosureParamType occurrences="1">
-      <code>$created</code>
+    <DeprecatedInterface>
+      <code><![CDATA[ActiveProfiles]]></code>
+      <code><![CDATA[ConfigurationDefinition]]></code>
+    </DeprecatedInterface>
+    <MissingClosureParamType>
+      <code><![CDATA[$created]]></code>
     </MissingClosureParamType>
-    <MissingClosureReturnType occurrences="2">
-      <code>function() use($state, $container, $value) {</code>
-      <code>static fn(Container $container) =&gt; $container-&gt;call([$target, $delegateInfo['delegateMethod']])</code>
+    <MissingClosureReturnType>
+      <code><![CDATA[function() use($state, $container, $value) {]]></code>
+      <code><![CDATA[static fn(Container $container) => $container->call([$target, $delegateInfo['delegateMethod']])]]></code>
     </MissingClosureReturnType>
-    <MixedArgument occurrences="9">
-      <code>$abstractService</code>
-      <code>$concrete</code>
-      <code>$created</code>
-      <code>$method</code>
-      <code>$name</code>
-      <code>$service</code>
-      <code>$value</code>
-      <code>$value-&gt;getName()</code>
-      <code>$value-&gt;getName()</code>
+    <MixedArgument>
+      <code><![CDATA[$abstractService]]></code>
+      <code><![CDATA[$concrete]]></code>
+      <code><![CDATA[$created]]></code>
+      <code><![CDATA[$method]]></code>
+      <code><![CDATA[$name]]></code>
+      <code><![CDATA[$service]]></code>
+      <code><![CDATA[$value]]></code>
+      <code><![CDATA[$value->getName()]]></code>
+      <code><![CDATA[$value->getName()]]></code>
     </MixedArgument>
-    <MixedArgumentTypeCoercion occurrences="3">
-      <code>$abstract</code>
-      <code>$service</code>
-      <code>$service</code>
+    <MixedArgumentTypeCoercion>
+      <code><![CDATA[$abstract]]></code>
+      <code><![CDATA[$service]]></code>
+      <code><![CDATA[$service]]></code>
     </MixedArgumentTypeCoercion>
-    <MixedArrayOffset occurrences="2">
-      <code>$params[$parameter-&gt;getName()]</code>
-      <code>$params[$parameter-&gt;getName()]</code>
+    <MixedArrayOffset>
+      <code><![CDATA[$params[$parameter->getName()]]]></code>
+      <code><![CDATA[$params[$parameter->getName()]]]></code>
     </MixedArrayOffset>
-    <MixedAssignment occurrences="20">
-      <code>$abstractService</code>
-      <code>$concrete</code>
-      <code>$method</code>
-      <code>$methods</code>
-      <code>$name</code>
-      <code>$parameter</code>
-      <code>$parameter</code>
-      <code>$params[$param]</code>
-      <code>$params[$parameter-&gt;getName()]</code>
-      <code>$params[$parameter-&gt;getName()]</code>
-      <code>$service</code>
-      <code>$target</code>
-      <code>$value</code>
-      <code>$value</code>
-      <code>$value</code>
-      <code>$value</code>
-      <code>$value</code>
-      <code>$value</code>
-      <code>$value</code>
-      <code>$values[]</code>
+    <MixedAssignment>
+      <code><![CDATA[$abstractService]]></code>
+      <code><![CDATA[$concrete]]></code>
+      <code><![CDATA[$method]]></code>
+      <code><![CDATA[$methods]]></code>
+      <code><![CDATA[$name]]></code>
+      <code><![CDATA[$parameter]]></code>
+      <code><![CDATA[$parameter]]></code>
+      <code><![CDATA[$params[$param]]]></code>
+      <code><![CDATA[$params[$parameter->getName()]]]></code>
+      <code><![CDATA[$params[$parameter->getName()]]]></code>
+      <code><![CDATA[$service]]></code>
+      <code><![CDATA[$target]]></code>
+      <code><![CDATA[$value]]></code>
+      <code><![CDATA[$value]]></code>
+      <code><![CDATA[$value]]></code>
+      <code><![CDATA[$value]]></code>
+      <code><![CDATA[$value]]></code>
+      <code><![CDATA[$value]]></code>
+      <code><![CDATA[$value]]></code>
+      <code><![CDATA[$values[]]]></code>
     </MixedAssignment>
-    <MixedInferredReturnType occurrences="1">
-      <code>object</code>
+    <MixedInferredReturnType>
+      <code><![CDATA[object]]></code>
     </MixedInferredReturnType>
-    <MixedMethodCall occurrences="8">
-      <code>getName</code>
-      <code>getName</code>
-      <code>getName</code>
-      <code>getName</code>
-      <code>getValue</code>
-      <code>getValue</code>
-      <code>isServiceIdentifier</code>
-      <code>isServiceIdentifier</code>
+    <MixedMethodCall>
+      <code><![CDATA[getName]]></code>
+      <code><![CDATA[getName]]></code>
+      <code><![CDATA[getName]]></code>
+      <code><![CDATA[getName]]></code>
+      <code><![CDATA[getValue]]></code>
+      <code><![CDATA[getValue]]></code>
+      <code><![CDATA[isServiceIdentifier]]></code>
+      <code><![CDATA[isServiceIdentifier]]></code>
     </MixedMethodCall>
-    <MixedReturnStatement occurrences="1">
-      <code>$this-&gt;state-&gt;container-&gt;make($classType, $params)</code>
+    <MixedReturnStatement>
+      <code><![CDATA[$this->state->container->make($classType, $params)]]></code>
     </MixedReturnStatement>
-    <PossiblyNullArgument occurrences="1">
-      <code>$definition-&gt;getTargetIdentifier()-&gt;getMethodName()</code>
+    <PossiblyNullArgument>
+      <code><![CDATA[$definition->getTargetIdentifier()->getMethodName()]]></code>
     </PossiblyNullArgument>
+    <UnusedClass>
+      <code><![CDATA[IlluminateContainerFactory]]></code>
+    </UnusedClass>
   </file>
   <file src="src/ContainerFactory/IlluminateContainerFactoryState.php">
-    <PropertyTypeCoercion occurrences="5">
-      <code>$this-&gt;abstractServices</code>
-      <code>$this-&gt;aliases</code>
-      <code>$this-&gt;concreteServices</code>
-      <code>$this-&gt;delegates</code>
-      <code>$this-&gt;namedServices</code>
+    <PropertyTypeCoercion>
+      <code><![CDATA[$this->abstractServices]]></code>
+      <code><![CDATA[$this->aliases]]></code>
+      <code><![CDATA[$this->concreteServices]]></code>
+      <code><![CDATA[$this->delegates]]></code>
+      <code><![CDATA[$this->namedServices]]></code>
     </PropertyTypeCoercion>
   </file>
   <file src="src/ContainerFactory/ListOfAsArray.php">
-    <MoreSpecificImplementedParamType occurrences="1">
-      <code>$servicesOfType</code>
+    <MoreSpecificImplementedParamType>
+      <code><![CDATA[$servicesOfType]]></code>
     </MoreSpecificImplementedParamType>
+    <UnusedClass>
+      <code><![CDATA[ListOfAsArray]]></code>
+    </UnusedClass>
   </file>
   <file src="src/ContainerFactory/PhpDiContainerFactory.php">
-    <DeprecatedClass occurrences="3">
-      <code>ActiveProfiles</code>
-      <code>ActiveProfiles</code>
-      <code>ConfigurationDefinition</code>
-    </DeprecatedClass>
-    <MissingClosureReturnType occurrences="1">
-      <code>static fn(Container $container) =&gt; $container-&gt;call(</code>
+    <DeprecatedInterface>
+      <code><![CDATA[ActiveProfiles]]></code>
+      <code><![CDATA[ActiveProfiles]]></code>
+      <code><![CDATA[ConfigurationDefinition]]></code>
+    </DeprecatedInterface>
+    <MissingClosureReturnType>
+      <code><![CDATA[static fn(Container $container) => $container->call(]]></code>
     </MissingClosureReturnType>
-    <MixedArgument occurrences="2">
-      <code>$method</code>
-      <code>$parameter-&gt;getValue()-&gt;getName()</code>
+    <MixedArgument>
+      <code><![CDATA[$method]]></code>
+      <code><![CDATA[$parameter->getValue()->getName()]]></code>
     </MixedArgument>
-    <MixedAssignment occurrences="5">
-      <code>$method</code>
-      <code>$methods</code>
-      <code>$params[$parameter-&gt;getName()]</code>
-      <code>$value</code>
-      <code>$value</code>
+    <MixedAssignment>
+      <code><![CDATA[$method]]></code>
+      <code><![CDATA[$methods]]></code>
+      <code><![CDATA[$params[$parameter->getName()]]]></code>
+      <code><![CDATA[$value]]></code>
+      <code><![CDATA[$value]]></code>
     </MixedAssignment>
-    <MixedInferredReturnType occurrences="1">
-      <code>object</code>
+    <MixedInferredReturnType>
+      <code><![CDATA[object]]></code>
     </MixedInferredReturnType>
-    <MixedMethodCall occurrences="3">
-      <code>constructorParameter</code>
-      <code>getName</code>
-      <code>property</code>
+    <MixedMethodCall>
+      <code><![CDATA[constructorParameter]]></code>
+      <code><![CDATA[getName]]></code>
+      <code><![CDATA[property]]></code>
     </MixedMethodCall>
-    <MixedReturnStatement occurrences="1"/>
-    <PossiblyNullArgument occurrences="4">
-      <code>$definition-&gt;getName()</code>
-      <code>$definition-&gt;getName()</code>
-      <code>$definition-&gt;getTargetIdentifier()-&gt;getMethodName()</code>
-      <code>$state-&gt;getServiceKey($aliasDefinition-&gt;getAbstractService()-&gt;getName())</code>
+    <MixedReturnStatement>
+      <code><![CDATA[$this->container->make(
+                    $classType,
+                    $this->convertAutowireableParameterSet($parameters)
+                )]]></code>
+    </MixedReturnStatement>
+    <PossiblyNullArgument>
+      <code><![CDATA[$definition->getName()]]></code>
+      <code><![CDATA[$definition->getName()]]></code>
+      <code><![CDATA[$definition->getTargetIdentifier()->getMethodName()]]></code>
+      <code><![CDATA[$state->getServiceKey($aliasDefinition->getAbstractService()->getName())]]></code>
     </PossiblyNullArgument>
   </file>
   <file src="src/ContainerFactory/PhpDiContainerFactoryState.php">
-    <MissingClosureReturnType occurrences="1">
-      <code>function(Container $container) use ($values, $value) {</code>
+    <MissingClosureReturnType>
+      <code><![CDATA[function(Container $container) use ($values, $value) {]]></code>
     </MissingClosureReturnType>
-    <MixedAssignment occurrences="1">
-      <code>$resolvedValues[]</code>
+    <MixedAssignment>
+      <code><![CDATA[$resolvedValues[]]]></code>
     </MixedAssignment>
-    <MixedInferredReturnType occurrences="1">
-      <code>?string</code>
+    <MixedInferredReturnType>
+      <code><![CDATA[?string]]></code>
     </MixedInferredReturnType>
-    <MixedReturnStatement occurrences="1">
-      <code>$this-&gt;serviceKeys[$serviceType] ?? null</code>
+    <MixedReturnStatement>
+      <code><![CDATA[$this->serviceKeys[$serviceType] ?? null]]></code>
+      <code><![CDATA[$this->serviceKeys[$serviceType] ?? null]]></code>
     </MixedReturnStatement>
-    <UnnecessaryVarAnnotation occurrences="1">
-      <code>Reference</code>
+    <UnnecessaryVarAnnotation>
+      <code><![CDATA[Reference]]></code>
     </UnnecessaryVarAnnotation>
   </file>
+  <file src="src/Definition/AliasDefinitionBuilder.php">
+    <PropertyNotSetInConstructor>
+      <code><![CDATA[$abstractType]]></code>
+      <code><![CDATA[$concreteType]]></code>
+    </PropertyNotSetInConstructor>
+  </file>
   <file src="src/Definition/ConfigurationDefinition.php">
-    <DeprecatedClass occurrences="1">
-      <code>?ConfigurationAttribute</code>
-    </DeprecatedClass>
+    <DeprecatedInterface>
+      <code><![CDATA[?ConfigurationAttribute]]></code>
+    </DeprecatedInterface>
   </file>
   <file src="src/Definition/ConfigurationDefinitionBuilder.php">
-    <DeprecatedClass occurrences="5">
-      <code>?ConfigurationAttribute</code>
-      <code>?ConfigurationAttribute</code>
-      <code>ConfigurationAttribute</code>
-      <code>ConfigurationDefinition</code>
-      <code>private</code>
-    </DeprecatedClass>
-    <DeprecatedInterface occurrences="1">
-      <code>class($this-&gt;classType, $this-&gt;name, $this-&gt;attribute) implements ConfigurationDefinition {</code>
+    <DeprecatedInterface>
+      <code><![CDATA[?ConfigurationAttribute]]></code>
+      <code><![CDATA[?ConfigurationAttribute]]></code>
+      <code><![CDATA[ConfigurationAttribute]]></code>
+      <code><![CDATA[ConfigurationDefinition]]></code>
+      <code><![CDATA[class($this->classType, $this->name, $this->attribute) implements ConfigurationDefinition {]]></code>
+      <code><![CDATA[private]]></code>
     </DeprecatedInterface>
-    <LessSpecificReturnStatement occurrences="1">
-      <code>$this-&gt;name</code>
+    <LessSpecificReturnStatement>
+      <code><![CDATA[$this->name]]></code>
     </LessSpecificReturnStatement>
-    <MoreSpecificReturnType occurrences="1">
-      <code>?string</code>
+    <MoreSpecificReturnType>
+      <code><![CDATA[?string]]></code>
     </MoreSpecificReturnType>
+    <PropertyNotSetInConstructor>
+      <code><![CDATA[$classType]]></code>
+    </PropertyNotSetInConstructor>
   </file>
   <file src="src/Definition/ContainerDefinition.php">
-    <DeprecatedClass occurrences="1">
-      <code>list&lt;ConfigurationDefinition&gt;</code>
-    </DeprecatedClass>
+    <DeprecatedInterface>
+      <code><![CDATA[list<ConfigurationDefinition>]]></code>
+    </DeprecatedInterface>
   </file>
   <file src="src/Definition/ContainerDefinitionBuilder.php">
-    <DeprecatedClass occurrences="5">
-      <code>ConfigurationDefinition</code>
-      <code>ConfigurationDefinition[]</code>
-      <code>array</code>
-      <code>list&lt;ConfigurationDefinition&gt;</code>
-      <code>private array $configurationDefinitions = [];</code>
-    </DeprecatedClass>
+    <DeprecatedInterface>
+      <code><![CDATA[ConfigurationDefinition]]></code>
+      <code><![CDATA[ConfigurationDefinition[]]]></code>
+      <code><![CDATA[array]]></code>
+      <code><![CDATA[list<ConfigurationDefinition>]]></code>
+      <code><![CDATA[private array $configurationDefinitions = [];]]></code>
+    </DeprecatedInterface>
   </file>
   <file src="src/Definition/InjectDefinitionBuilder.php">
-    <LessSpecificReturnStatement occurrences="1">
-      <code>$this-&gt;store</code>
+    <LessSpecificReturnStatement>
+      <code><![CDATA[$this->store]]></code>
     </LessSpecificReturnStatement>
-    <MoreSpecificReturnType occurrences="1">
-      <code>?string</code>
+    <MoreSpecificReturnType>
+      <code><![CDATA[?string]]></code>
     </MoreSpecificReturnType>
+    <PropertyNotSetInConstructor>
+      <code><![CDATA[$method]]></code>
+      <code><![CDATA[$paramName]]></code>
+      <code><![CDATA[$property]]></code>
+      <code><![CDATA[$service]]></code>
+      <code><![CDATA[$type]]></code>
+    </PropertyNotSetInConstructor>
+    <RedundantCondition>
+      <code><![CDATA[assert(isset($this->property))]]></code>
+    </RedundantCondition>
+  </file>
+  <file src="src/Definition/InjectTargetIdentifier.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[isClassProperty]]></code>
+    </PossiblyUnusedMethod>
   </file>
   <file src="src/Definition/ProfilesAwareContainerDefinition.php">
-    <DeprecatedClass occurrences="2">
-      <code>?ConfigurationDefinition</code>
-      <code>ServiceDefinition|InjectDefinition|ConfigurationDefinition $definition</code>
-    </DeprecatedClass>
+    <DeprecatedInterface>
+      <code><![CDATA[?ConfigurationDefinition]]></code>
+      <code><![CDATA[ServiceDefinition|InjectDefinition|ConfigurationDefinition $definition]]></code>
+    </DeprecatedInterface>
+  </file>
+  <file src="src/Definition/ServiceDefinitionBuilder.php">
+    <PropertyNotSetInConstructor>
+      <code><![CDATA[$isAbstract]]></code>
+      <code><![CDATA[$type]]></code>
+    </PropertyNotSetInConstructor>
   </file>
   <file src="src/Definition/ServiceDelegateDefinitionBuilder.php">
-    <LessSpecificReturnStatement occurrences="1">
-      <code>$this-&gt;delegateMethod</code>
+    <LessSpecificReturnStatement>
+      <code><![CDATA[$this->delegateMethod]]></code>
     </LessSpecificReturnStatement>
-    <MoreSpecificReturnType occurrences="1">
-      <code>string</code>
+    <MoreSpecificReturnType>
+      <code><![CDATA[string]]></code>
     </MoreSpecificReturnType>
+    <PropertyNotSetInConstructor>
+      <code><![CDATA[$delegateMethod]]></code>
+      <code><![CDATA[$delegateType]]></code>
+      <code><![CDATA[$service]]></code>
+    </PropertyNotSetInConstructor>
+  </file>
+  <file src="src/Definition/ServicePrepareDefinitionBuilder.php">
+    <PropertyNotSetInConstructor>
+      <code><![CDATA[$method]]></code>
+      <code><![CDATA[$service]]></code>
+    </PropertyNotSetInConstructor>
+  </file>
+  <file src="src/Exception/InvalidServiceDelegate.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[factoryMethodDoesNotCreateService]]></code>
+    </PossiblyUnusedMethod>
   </file>
   <file src="src/Function/definitions.php">
-    <ArgumentTypeCoercion occurrences="1">
-      <code>$name</code>
+    <ArgumentTypeCoercion>
+      <code><![CDATA[$name]]></code>
     </ArgumentTypeCoercion>
-    <MixedArgument occurrences="2">
-      <code>$profiles</code>
-      <code>$profiles</code>
+    <MixedArgument>
+      <code><![CDATA[$profiles]]></code>
+      <code><![CDATA[$profiles]]></code>
+      <code><![CDATA[$profiles]]></code>
+      <code><![CDATA[$profiles]]></code>
     </MixedArgument>
   </file>
+  <file src="src/Internal/CompositeLogger.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[getLoggers]]></code>
+    </PossiblyUnusedMethod>
+    <PropertyTypeCoercion>
+      <code><![CDATA[[$logger, ...$additionalLoggers]]]></code>
+    </PropertyTypeCoercion>
+  </file>
   <file src="src/Internal/MethodParameterInjectTargetIdentifier.php">
-    <LessSpecificReturnStatement occurrences="2">
-      <code>$this-&gt;methodName</code>
-      <code>$this-&gt;name</code>
+    <LessSpecificReturnStatement>
+      <code><![CDATA[$this->methodName]]></code>
+      <code><![CDATA[$this->name]]></code>
     </LessSpecificReturnStatement>
-    <MoreSpecificReturnType occurrences="2">
-      <code>string</code>
-      <code>string</code>
+    <MoreSpecificReturnType>
+      <code><![CDATA[string]]></code>
+      <code><![CDATA[string]]></code>
     </MoreSpecificReturnType>
   </file>
   <file src="src/Internal/PropertyInjectTargetIdentifier.php">
-    <LessSpecificReturnStatement occurrences="1">
-      <code>$this-&gt;name</code>
+    <LessSpecificReturnStatement>
+      <code><![CDATA[$this->name]]></code>
     </LessSpecificReturnStatement>
-    <MoreSpecificReturnType occurrences="1">
-      <code>string</code>
+    <MoreSpecificReturnType>
+      <code><![CDATA[string]]></code>
     </MoreSpecificReturnType>
   </file>
+  <file src="src/Internal/SerializerInjectValueParser.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$types]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="src/LogicalConstraint/LogicalConstraintViolation.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[notice]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/LogicalConstraint/LogicalConstraintViolationCollection.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[get]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Profiles/ActiveProfiles.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[isActive]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Profiles/ActiveProfilesBuilder.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[addAllIf]]></code>
+      <code><![CDATA[addIf]]></code>
+      <code><![CDATA[build]]></code>
+      <code><![CDATA[hasDefault]]></code>
+    </PossiblyUnusedMethod>
+    <PropertyTypeCoercion>
+      <code><![CDATA[[...$this->profiles, ...$profiles]]]></code>
+    </PropertyTypeCoercion>
+  </file>
+  <file src="src/Profiles/ActiveProfilesParser.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[parse]]></code>
+    </PossiblyUnusedMethod>
+  </file>
   <file src="src/Profiles/CsvActiveProfilesParser.php">
-    <DeprecatedInterface occurrences="1">
-      <code>CsvActiveProfilesParser</code>
+    <DeprecatedInterface>
+      <code><![CDATA[CsvActiveProfilesParser]]></code>
     </DeprecatedInterface>
+    <RiskyTruthyFalsyComparison>
+      <code><![CDATA[empty($parsedProfiles)]]></code>
+    </RiskyTruthyFalsyComparison>
+    <UnusedClass>
+      <code><![CDATA[CsvActiveProfilesParser]]></code>
+    </UnusedClass>
   </file>
   <file src="src/Serializer/ContainerDefinitionSerializer.php">
-    <ArgumentTypeCoercion occurrences="2">
-      <code>$name</code>
-      <code>$serializedDefinition</code>
+    <ArgumentTypeCoercion>
+      <code><![CDATA[$name]]></code>
     </ArgumentTypeCoercion>
-    <DeprecatedClass occurrences="1">
-      <code>ConfigurationDefinitionBuilder::forClass(objectType($type))</code>
+    <DeprecatedClass>
+      <code><![CDATA[ConfigurationDefinitionBuilder::forClass(objectType($type))]]></code>
     </DeprecatedClass>
-    <InvalidArgument occurrences="1">
-      <code>$serviceProfiles</code>
+    <InvalidArgument>
+      <code><![CDATA[$serviceProfiles]]></code>
     </InvalidArgument>
-    <MixedArgument occurrences="5">
-      <code>unserialize(base64_decode($attr))</code>
-      <code>unserialize(base64_decode($attr))</code>
-      <code>unserialize(base64_decode($attr))</code>
-      <code>unserialize(base64_decode($attr))</code>
-      <code>unserialize(base64_decode($attr))</code>
+    <InvalidScalarArgument>
+      <code><![CDATA[$injectProfiles]]></code>
+    </InvalidScalarArgument>
+    <MixedArgument>
+      <code><![CDATA[unserialize(base64_decode($attr))]]></code>
+      <code><![CDATA[unserialize(base64_decode($attr))]]></code>
+      <code><![CDATA[unserialize(base64_decode($attr))]]></code>
+      <code><![CDATA[unserialize(base64_decode($attr))]]></code>
+      <code><![CDATA[unserialize(base64_decode($attr))]]></code>
     </MixedArgument>
-    <MixedAssignment occurrences="2">
-      <code>$isPrimary</code>
-      <code>$value</code>
+    <MixedAssignment>
+      <code><![CDATA[$isPrimary]]></code>
+      <code><![CDATA[$value]]></code>
     </MixedAssignment>
-    <PossiblyNullArgument occurrences="1">
-      <code>$injectProfiles</code>
+    <PossiblyNullArgument>
+      <code><![CDATA[$injectProfiles]]></code>
     </PossiblyNullArgument>
-    <UndefinedPropertyFetch occurrences="1">
-      <code>$xpath-&gt;query('@isPrimary', $serviceDefinition)[0]?-&gt;value</code>
+    <RedundantCondition>
+      <code><![CDATA[assert($dom instanceof DOMDocument)]]></code>
+      <code><![CDATA[assert($dom instanceof DOMDocument)]]></code>
+      <code><![CDATA[assert($dom instanceof DOMDocument)]]></code>
+      <code><![CDATA[assert($dom instanceof DOMDocument)]]></code>
+      <code><![CDATA[assert($dom instanceof DOMDocument)]]></code>
+      <code><![CDATA[assert($dom instanceof DOMDocument)]]></code>
+      <code><![CDATA[assert($dom instanceof DOMDocument)]]></code>
+      <code><![CDATA[assert($dom instanceof DOMDocument)]]></code>
+      <code><![CDATA[assert($dom instanceof DOMDocument)]]></code>
+    </RedundantCondition>
+    <UndefinedPropertyFetch>
+      <code><![CDATA[$xpath->query('@isPrimary', $serviceDefinition)[0]?->value]]></code>
+      <code><![CDATA[$xpath->query('@isPrimary', $serviceDefinition)[0]?->value]]></code>
     </UndefinedPropertyFetch>
   </file>
   <file src="src/StaticAnalysis/AnnotatedTargetContainerDefinitionAnalyzer.php">
-    <DeprecatedClass occurrences="4">
-      <code>$consumer</code>
-      <code>ConfigurationDefinition</code>
-      <code>DefinitionsCollection</code>
-      <code>DefinitionsCollection</code>
-    </DeprecatedClass>
-    <DeprecatedMethod occurrences="1">
-      <code>getLogger</code>
+    <DeprecatedInterface>
+      <code><![CDATA[$consumer]]></code>
+      <code><![CDATA[ConfigurationDefinition]]></code>
+      <code><![CDATA[DefinitionsCollection]]></code>
+      <code><![CDATA[DefinitionsCollection]]></code>
+    </DeprecatedInterface>
+    <DeprecatedMethod>
+      <code><![CDATA[getLogger]]></code>
     </DeprecatedMethod>
-    <MixedAssignment occurrences="1">
-      <code>$convertedValue[$k]</code>
+    <MixedAssignment>
+      <code><![CDATA[$convertedValue[$k]]]></code>
     </MixedAssignment>
   </file>
   <file src="src/StaticAnalysis/AnnotatedTargetDefinitionConverter.php">
-    <DeprecatedClass occurrences="4">
-      <code>ConfigurationDefinition</code>
-      <code>ConfigurationDefinitionBuilder::forClass(objectType($target-&gt;getTargetReflection()-&gt;getName()))</code>
-      <code>ServiceDefinition|ServicePrepareDefinition|ServiceDelegateDefinition|InjectDefinition|ConfigurationDefinition</code>
-      <code>ServiceDefinition|ServicePrepareDefinition|ServiceDelegateDefinition|InjectDefinition|ConfigurationDefinition</code>
+    <DeprecatedClass>
+      <code><![CDATA[ConfigurationDefinitionBuilder::forClass(objectType($target->getTargetReflection()->getName()))]]></code>
     </DeprecatedClass>
+    <DeprecatedInterface>
+      <code><![CDATA[ConfigurationDefinition]]></code>
+      <code><![CDATA[ServiceDefinition|ServicePrepareDefinition|ServiceDelegateDefinition|InjectDefinition|ConfigurationDefinition]]></code>
+      <code><![CDATA[ServiceDefinition|ServicePrepareDefinition|ServiceDelegateDefinition|InjectDefinition|ConfigurationDefinition]]></code>
+    </DeprecatedInterface>
+    <InvalidArgument>
+      <code><![CDATA[$types]]></code>
+    </InvalidArgument>
+    <RedundantConditionGivenDocblockType>
+      <code><![CDATA[assert($type instanceof ReflectionNamedType)]]></code>
+    </RedundantConditionGivenDocblockType>
   </file>
   <file src="src/StaticAnalysis/CacheAwareContainerDefinitionAnalyzer.php">
-    <DeprecatedMethod occurrences="1">
-      <code>getLogger</code>
+    <DeprecatedMethod>
+      <code><![CDATA[getLogger]]></code>
     </DeprecatedMethod>
+    <RiskyTruthyFalsyComparison>
+      <code><![CDATA[!$contentWritten]]></code>
+    </RiskyTruthyFalsyComparison>
+  </file>
+  <file src="src/StaticAnalysis/CallableDefinitionProvider.php">
+    <UnusedClass>
+      <code><![CDATA[CallableDefinitionProvider]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/StaticAnalysis/CompositeDefinitionProvider.php">
+    <PropertyTypeCoercion>
+      <code><![CDATA[[
+            $provider,
+            ...$providers
+        ]]]></code>
+    </PropertyTypeCoercion>
   </file>
   <file src="src/StaticAnalysis/ContainerDefinitionAnalysisOptionsBuilder.php">
-    <MixedPropertyTypeCoercion occurrences="1">
-      <code>$directories</code>
-    </MixedPropertyTypeCoercion>
-    <MixedReturnTypeCoercion occurrences="2">
-      <code>$this-&gt;directories</code>
-      <code>array</code>
-    </MixedReturnTypeCoercion>
+    <LessSpecificReturnStatement>
+      <code><![CDATA[$this->directories]]></code>
+    </LessSpecificReturnStatement>
+    <MoreSpecificReturnType>
+      <code><![CDATA[array]]></code>
+    </MoreSpecificReturnType>
+    <PropertyTypeCoercion>
+      <code><![CDATA[$directories]]></code>
+    </PropertyTypeCoercion>
+  </file>
+  <file src="src/StaticAnalysis/ContainerDefinitionAnalyzerBuilder.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[build]]></code>
+      <code><![CDATA[withCache]]></code>
+      <code><![CDATA[withoutCache]]></code>
+    </PossiblyUnusedMethod>
   </file>
 </files>

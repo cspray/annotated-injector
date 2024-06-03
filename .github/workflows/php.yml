@@ -12,12 +12,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Composer
-        uses: php-actions/composer@v6
-      - name: Tests
-        uses: php-actions/phpunit@v3
+      - uses: actions/checkout@v3
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
-          version: 9.6
-      - name: Static Analysis
-        run: "vendor/bin/psalm"
+          php-version: 8.2
+          extensions: xdebug
+          tools: composer:2
+      - name: Composer (Annotated Container)
+        run: composer install
+      - name: Composer (PHPUnit)
+        run: cd tools/phpunit && composer install
+      - name: Composer (Psalm)
+        run: cd tools/psalm && composer install
+      - name: PHPUnit
+        env:
+          XDEBUG_MODE: coverage
+        run: ./tools/phpunit/vendor/bin/phpunit
+      - name: Psalm
+        run: ./tools/psalm/vendor/bin/psalm

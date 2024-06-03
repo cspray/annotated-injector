@@ -3,4 +3,4 @@
 .phpunit.cache
 architectural-decisions.xml.bak
 build/
-/vendor
+vendor/
