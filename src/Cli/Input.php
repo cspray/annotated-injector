@@ -26,5 +26,4 @@ interface Input {
      * @throws OptionNotFound
      */
     public function requireOption(string $opt) : array|string|bool;
-
 }

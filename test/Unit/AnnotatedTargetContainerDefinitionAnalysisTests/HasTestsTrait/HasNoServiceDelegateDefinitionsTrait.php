@@ -11,5 +11,4 @@ trait HasNoServiceDelegateDefinitionsTrait {
     public function testHasNoServiceDelegateDefinitions() : void {
         $this->assertEmpty($this->getSubject()->getServiceDelegateDefinitions());
     }
-
 }

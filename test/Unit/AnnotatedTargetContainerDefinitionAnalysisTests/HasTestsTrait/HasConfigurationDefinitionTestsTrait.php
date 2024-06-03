@@ -46,5 +46,4 @@ trait HasConfigurationDefinitionTestsTrait {
 
         $this->assertSame($expectedConfigurationName->name, $configurationDefinition->getName());
     }
-
 }

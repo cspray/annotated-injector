@@ -8,5 +8,4 @@ final class InvalidCache extends Exception {
         $message = sprintf('The cache directory, %s, could not be written to. Please ensure it exists and is writeable.', $dir);
         return new self($message);
     }
-
 }

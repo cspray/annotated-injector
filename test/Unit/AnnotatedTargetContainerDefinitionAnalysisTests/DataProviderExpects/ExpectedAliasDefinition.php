@@ -9,6 +9,6 @@ final class ExpectedAliasDefinition {
     public function __construct(
         public readonly ObjectType $abstractType,
         public readonly ObjectType $concreteType
-    ) {}
-
+    ) {
+    }
 }

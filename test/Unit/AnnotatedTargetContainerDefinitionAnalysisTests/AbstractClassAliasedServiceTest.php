@@ -80,5 +80,4 @@ class AbstractClassAliasedServiceTest extends AnnotatedTargetContainerDefinition
             [new ExpectedServiceProfiles(Fixtures::abstractClassAliasedService()->fooImplementation(), ['default'])]
         ];
     }
-
 }

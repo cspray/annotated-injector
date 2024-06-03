@@ -12,7 +12,8 @@ final class ContainerDefinitionAnalyzerBuilder {
 
     private ?string $cacheDir = null;
 
-    private function __construct() {}
+    private function __construct() {
+    }
 
     /**
      * With this option the results of the ContainerDefinition will be cached in a file stored in the provided
@@ -65,5 +66,4 @@ final class ContainerDefinitionAnalyzerBuilder {
             $this->cacheDir
         );
     }
-
 }

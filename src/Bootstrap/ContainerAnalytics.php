@@ -2,7 +2,6 @@
 
 namespace Cspray\AnnotatedContainer\Bootstrap;
 
-
 use Cspray\PrecisionStopwatch\Duration;
 
 final class ContainerAnalytics {
@@ -12,6 +11,6 @@ final class ContainerAnalytics {
         public readonly Duration $timePreppingForAnalysis,
         public readonly Duration $timeTakenForAnalysis,
         public readonly Duration $timeTakenCreatingContainer
-    ) {}
-
+    ) {
+    }
 }

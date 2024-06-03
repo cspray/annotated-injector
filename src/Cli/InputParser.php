@@ -41,7 +41,7 @@ final class InputParser {
         foreach ($argv as $arg) {
             if (str_starts_with($arg, '--')) {
                 $handleOption($arg);
-            } else if (str_starts_with($arg, '-')) {
+            } elseif (str_starts_with($arg, '-')) {
                 if (str_contains($arg, '=')) {
                     $handleOption('-' . $arg);
                 } else {
@@ -65,7 +65,8 @@ final class InputParser {
             public function __construct(
                 private readonly array $options,
                 private readonly array $args
-            ) {}
+            ) {
+            }
 
             /**
              * @return array<non-empty-string, list<string>|string|bool>
@@ -91,5 +92,4 @@ final class InputParser {
             }
         };
     }
-
 }

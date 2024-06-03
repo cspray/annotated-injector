@@ -490,5 +490,4 @@ class AssertExpectedInjectDefinitionTest extends TestCase {
 
         $this->assertSame($beforeCount + 1, $this->getNumAssertions());
     }
-
 }

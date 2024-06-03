@@ -16,7 +16,8 @@ final class ListOfAsArray implements ListOf {
      */
     public function __construct(
         private readonly string $type
-    ) {}
+    ) {
+    }
 
     public function type() : ObjectType {
         return objectType($this->type);

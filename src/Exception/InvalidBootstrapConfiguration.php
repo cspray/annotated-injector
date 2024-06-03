@@ -48,5 +48,4 @@ final class InvalidBootstrapConfiguration extends Exception {
             ContainerAnalyticsObserver::class
         ));
     }
-
 }

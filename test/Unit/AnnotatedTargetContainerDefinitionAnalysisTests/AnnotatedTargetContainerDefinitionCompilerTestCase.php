@@ -54,5 +54,4 @@ abstract class AnnotatedTargetContainerDefinitionCompilerTestCase extends TestCa
     final protected function getSubject() : ContainerDefinition {
         return $this->subject;
     }
-
 }

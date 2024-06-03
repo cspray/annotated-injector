@@ -169,7 +169,7 @@ final class IlluminateContainerFactory extends AbstractContainerFactory {
                             $container->when($service)
                                 ->needs($value->type->getName())
                                 ->give($value->name);
-                        } else if ($value instanceof ServiceCollectorReference) {
+                        } elseif ($value instanceof ServiceCollectorReference) {
                             if ($value->collectionType === arrayType()) {
                                 $paramIdentifier = sprintf('$%s', $param);
                             } else {
@@ -195,7 +195,6 @@ final class IlluminateContainerFactory extends AbstractContainerFactory {
                             $container->when($service)
                                 ->needs(sprintf('$%s', $param))
                                 ->give($value);
-
                         }
                     }
                 }

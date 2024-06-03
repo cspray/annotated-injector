@@ -29,5 +29,4 @@ final class ContainerFactoryOptionsBuilderTest extends TestCase {
 
         self::assertSame($logger, $options->getLogger());
     }
-
 }

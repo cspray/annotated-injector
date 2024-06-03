@@ -22,7 +22,8 @@ final class BuildCommand implements Command {
 
     public function __construct(
         private readonly BootstrappingDirectoryResolver $directoryResolver
-    ) {}
+    ) {
+    }
 
     public function getName() : string {
         return 'build';
@@ -71,7 +72,7 @@ SHELL;
         } else {
             if (is_bool($configName)) {
                 throw InvalidOptionType::fromBooleanOption('config-file');
-            } else if (is_array($configName)) {
+            } elseif (is_array($configName)) {
                 throw InvalidOptionType::fromArrayOption('config-file');
             }
         }

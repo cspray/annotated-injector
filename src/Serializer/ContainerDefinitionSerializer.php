@@ -106,7 +106,6 @@ final class ContainerDefinitionSerializer {
                 $attrNode->nodeValue = base64_encode(serialize($attr));
             }
         }
-
     }
 
     private function addAliasDefinitionsToDom(DOMElement $root, ContainerDefinition $containerDefinition) : void {
@@ -241,9 +240,9 @@ final class ContainerDefinitionSerializer {
         );
 
         foreach ($containerDefinition->getInjectDefinitions() as $injectDefinition) {
-            try{
+            try {
                 $serializedValue = serialize($injectDefinition->getValue());
-            } catch(PhpException $exception) {
+            } catch (PhpException $exception) {
                 throw InvalidInjectDefinition::fromValueNotSerializable($exception);
             }
 

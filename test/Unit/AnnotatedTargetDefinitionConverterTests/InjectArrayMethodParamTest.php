@@ -14,9 +14,11 @@ class InjectArrayMethodParamTest extends AnnotatedTargetDefinitionConverterTestC
     protected function getSubjectTarget() : AnnotatedTarget {
         return $this->getAnnotatedTarget(
             AttributeType::Inject,
-            new \ReflectionParameter([Fixtures::injectConstructorServices()->injectArrayService()->getName(), '__construct'],
-            'values'
-        ));
+            new \ReflectionParameter(
+                [Fixtures::injectConstructorServices()->injectArrayService()->getName(), '__construct'],
+                'values'
+            )
+        );
     }
 
     public function testDefinitionInstanceOf() : void {
@@ -55,5 +57,4 @@ class InjectArrayMethodParamTest extends AnnotatedTargetDefinitionConverterTestC
         self::assertInstanceOf(Inject::class, $this->definition->getAttribute());
         self::assertSame(['dependency', 'injection', 'rocks'], $this->definition->getAttribute()->getValue());
     }
-
 }

@@ -69,5 +69,4 @@ TEXT;
             $violation->message
         );
     }
-
 }

@@ -33,7 +33,7 @@ final class SerializerInjectValueParser {
             }
             /** @psalm-var list<Type> $types */
             $type = typeUnion(...$types);
-        } else if (str_contains($rawType, '&')) {
+        } elseif (str_contains($rawType, '&')) {
             $types = [];
             foreach (explode('&', $rawType) as $intersectType) {
                 $parsedType = $this->convertStringToType($intersectType);
@@ -42,7 +42,7 @@ final class SerializerInjectValueParser {
             }
             $type = typeIntersect(...$types);
         } else {
-            $type = match($rawType) {
+            $type = match ($rawType) {
                 'string' => stringType(),
                 'int', 'integer' => intType(),
                 'float', 'double' => floatType(),
@@ -59,5 +59,4 @@ final class SerializerInjectValueParser {
 
         return $type;
     }
-
 }

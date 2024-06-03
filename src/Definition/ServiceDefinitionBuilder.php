@@ -20,7 +20,8 @@ final class ServiceDefinitionBuilder {
     private array $profiles = [];
     private bool $isPrimary = false;
 
-    private function __construct() {}
+    private function __construct() {
+    }
 
     public static function forAbstract(ObjectType $type) : self {
         $instance = new self;
@@ -81,7 +82,8 @@ final class ServiceDefinitionBuilder {
                 private readonly array $profiles,
                 private readonly bool $isPrimary,
                 private readonly ?ServiceAttribute $attribute
-            ) {}
+            ) {
+            }
 
             /**
              * @return ?non-empty-string
@@ -118,5 +120,4 @@ final class ServiceDefinitionBuilder {
             }
         };
     }
-
 }

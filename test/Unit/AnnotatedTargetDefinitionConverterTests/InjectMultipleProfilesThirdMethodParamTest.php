@@ -13,7 +13,8 @@ class InjectMultipleProfilesThirdMethodParamTest extends AnnotatedTargetDefiniti
 
     protected function getSubjectTarget(): AnnotatedTarget {
         return $this->getAnnotatedTarget(AttributeType::Inject, new \ReflectionParameter(
-                [Fixtures::injectConstructorServices()->injectProfilesStringService()->getName(), '__construct'], 'val'
+            [Fixtures::injectConstructorServices()->injectProfilesStringService()->getName(), '__construct'],
+            'val'
         ), 2);
     }
 
@@ -53,5 +54,4 @@ class InjectMultipleProfilesThirdMethodParamTest extends AnnotatedTargetDefiniti
         self::assertInstanceOf(Inject::class, $this->definition->getAttribute());
         self::assertSame('from-prod', $this->definition->getAttribute()->getValue());
     }
-
 }

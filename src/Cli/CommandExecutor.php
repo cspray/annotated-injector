@@ -47,7 +47,8 @@ final class CommandExecutor {
                         $exitCode = 1;
                     }
                     $output->stderr->write(sprintf('Unhandled exception executing "%s"!', $command));
-                    $output->stderr->br();;
+                    $output->stderr->br();
+                    ;
                     $output->stderr->write(sprintf('Type: %s', $throwable::class));
                     $output->stderr->write(sprintf('Message: %s', $throwable->getMessage()));
                     $output->stderr->write(sprintf('Location: %sL#%s', $throwable->getFile(), $throwable->getLine()));
@@ -81,5 +82,4 @@ final class CommandExecutor {
             }
         }
     }
-
 }

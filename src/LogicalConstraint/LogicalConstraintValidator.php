@@ -13,7 +13,7 @@ final class LogicalConstraintValidator {
     private array $logicalConstraints;
 
     public function __construct(
-        LogicalConstraint... $logicalConstraints
+        LogicalConstraint...$logicalConstraints
     ) {
         $this->logicalConstraints = $logicalConstraints;
     }
@@ -37,5 +37,4 @@ final class LogicalConstraintValidator {
 
         return $collection;
     }
-
 }

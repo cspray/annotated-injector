@@ -14,5 +14,4 @@ class AnnotatedContainerVersionTest extends TestCase {
             AnnotatedContainerVersion::getVersion()
         );
     }
-
 }

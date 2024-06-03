@@ -365,5 +365,4 @@ TEXT;
 
         self::assertSame($expected, $this->stdout->getContentsAsString());
     }
-
 }

@@ -15,5 +15,4 @@ use JetBrains\PhpStorm\Deprecated;
 interface ContainerAnalyticsObserver {
 
     public function notifyAnalytics(ContainerAnalytics $analytics) : void;
-
 }

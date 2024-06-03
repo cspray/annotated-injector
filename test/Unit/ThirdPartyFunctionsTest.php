@@ -23,7 +23,8 @@ class ThirdPartyFunctionsTest extends TestCase {
         $builder = ContainerDefinitionBuilder::newDefinition();
         return new class($builder) implements DefinitionProviderContext {
 
-            public function __construct(private ContainerDefinitionBuilder $builder) {}
+            public function __construct(private ContainerDefinitionBuilder $builder) {
+            }
 
             public function getBuilder(): ContainerDefinitionBuilder {
                 return $this->builder;

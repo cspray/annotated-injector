@@ -1,0 +1,5 @@
+{
+    "require": {
+        "cspray/labrador-coding-standard": "^0.2.0"
+    }
+}

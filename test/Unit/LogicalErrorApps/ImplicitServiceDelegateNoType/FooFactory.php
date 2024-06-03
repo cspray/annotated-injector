@@ -7,6 +7,6 @@ use Cspray\AnnotatedContainer\Attribute\ServiceDelegate;
 class FooFactory {
 
     #[ServiceDelegate]
-    public static function create() {}
-
+    public static function create() {
+    }
 }

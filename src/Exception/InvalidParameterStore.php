@@ -8,7 +8,8 @@ final class InvalidParameterStore extends Exception {
 
     public static function fromParameterStoreIdentifierNotClass(string $identifier) : self {
         return new self(sprintf(
-            'Attempted to create a parameter store, "%s", that is not a class.', $identifier
+            'Attempted to create a parameter store, "%s", that is not a class.',
+            $identifier
         ));
     }
 
@@ -19,5 +20,4 @@ final class InvalidParameterStore extends Exception {
             ParameterStore::class
         ));
     }
-
 }

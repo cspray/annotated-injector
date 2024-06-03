@@ -52,5 +52,4 @@ interface InjectDefinition {
     public function getStoreName() : ?string;
 
     public function getAttribute() : ?InjectAttribute;
-
 }

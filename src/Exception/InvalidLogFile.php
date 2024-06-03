@@ -8,5 +8,4 @@ final class InvalidLogFile extends Exception {
         $message = sprintf('Unable to write to log file "%s".', $file);
         return new self($message);
     }
-
 }

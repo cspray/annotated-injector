@@ -18,5 +18,4 @@ interface ServiceGatherer {
      * @return ServiceFromServiceDefinition<T>[]
      */
     public function getServicesWithAttribute(string $attributeType) : array;
-
 }

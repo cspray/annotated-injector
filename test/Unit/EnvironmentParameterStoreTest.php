@@ -23,5 +23,4 @@ class EnvironmentParameterStoreTest extends TestCase {
         $this->expectExceptionMessage('The key "ANNOTATED_CONTAINER_NOT_PRESENT" is not available in store "env".');
         (new EnvironmentParameterStore())->fetch(stringType(), 'ANNOTATED_CONTAINER_NOT_PRESENT');
     }
-
 }

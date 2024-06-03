@@ -96,7 +96,7 @@ class AnnotatedTargetContainerDefinitionAnalyzerTest extends TestCase {
     public function testLogServicePrepareNotOnService() : void {
         try {
             $this->runAnalysisDirectory(__DIR__ . '/LogicalErrorApps/ServicePrepareNotService');
-        }  catch (InvalidServicePrepare $exception) {
+        } catch (InvalidServicePrepare $exception) {
             // noop, we expect this
         } finally {
             $expected = [
@@ -156,7 +156,7 @@ class AnnotatedTargetContainerDefinitionAnalyzerTest extends TestCase {
     public function testLogImplicitServiceDelegateHasNoReturnType() : void {
         try {
             $this->runAnalysisDirectory(__DIR__ . '/LogicalErrorApps/ImplicitServiceDelegateNoType');
-        }  catch (InvalidServiceDelegate $exception) {
+        } catch (InvalidServiceDelegate $exception) {
             // noop, we expect this
         } finally {
             $expected = [

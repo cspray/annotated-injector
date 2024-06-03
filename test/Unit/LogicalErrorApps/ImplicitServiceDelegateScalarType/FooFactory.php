@@ -10,5 +10,4 @@ class FooFactory {
     public static function create() : string {
         return '';
     }
-
 }

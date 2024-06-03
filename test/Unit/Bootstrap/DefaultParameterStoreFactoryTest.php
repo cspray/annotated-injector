@@ -40,5 +40,4 @@ final class DefaultParameterStoreFactoryTest extends TestCase {
 
         $subject->createParameterStore($this::class);
     }
-
 }

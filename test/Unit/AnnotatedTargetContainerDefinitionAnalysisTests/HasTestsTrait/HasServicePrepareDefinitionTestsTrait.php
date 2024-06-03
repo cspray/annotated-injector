@@ -33,5 +33,4 @@ trait HasServicePrepareDefinitionTestsTrait {
 
         $this->assertContains($expectedServicePrepare->method, $prepareMethods);
     }
-
 }

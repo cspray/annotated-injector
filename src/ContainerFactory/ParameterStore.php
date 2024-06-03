@@ -29,5 +29,4 @@ interface ParameterStore {
      * @return mixed
      */
     public function fetch(Type|TypeUnion|TypeIntersect $type, string $key) : mixed;
-
 }

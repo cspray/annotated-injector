@@ -11,5 +11,4 @@ final class EnvironmentVarNotFound extends Exception {
         );
         return new self($message);
     }
-
 }

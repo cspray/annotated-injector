@@ -158,7 +158,8 @@ SHELL;
 
     public function testHelpCommandWithArgumentAndCommandFound() : void {
         $input = (new InputParser())->parse(['script.php', 'help', 'foo']);
-        $stubCommand = new StubCommand('foo', function() { throw new \Exception('Should not run'); });
+        $stubCommand = new StubCommand('foo', function() { throw new \Exception('Should not run');
+        });
         $this->commandExecutor->addCommand($stubCommand);
 
         $terminalOutput = new TerminalOutput(
@@ -175,5 +176,4 @@ SHELL;
         self::assertSame($expected, $stdout->getContentsAsString());
         self::assertEmpty($stderr->getContents());
     }
-
 }

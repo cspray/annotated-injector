@@ -78,5 +78,4 @@ class LogicalConstraintValidatorTest extends TestCase {
         self::assertSame('message two', $results->get(1)->message);
         self::assertSame(LogicalConstraintViolationType::Warning, $results->get(1)->violationType);
     }
-
 }

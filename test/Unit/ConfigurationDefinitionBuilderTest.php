@@ -52,5 +52,4 @@ class ConfigurationDefinitionBuilderTest extends TestCase {
 
         self::assertSame($attr, $configDefinition->getAttribute());
     }
-
 }

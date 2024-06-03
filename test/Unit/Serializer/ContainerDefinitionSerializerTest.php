@@ -1790,5 +1790,4 @@ XML;
 
         self::assertSame($expected, $actual);
     }
-
 }

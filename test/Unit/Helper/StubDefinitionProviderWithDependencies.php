@@ -9,7 +9,8 @@ use function Cspray\AnnotatedContainer\service;
 
 final class StubDefinitionProviderWithDependencies implements DefinitionProvider {
 
-    public function __construct(private readonly ObjectType $service) {}
+    public function __construct(private readonly ObjectType $service) {
+    }
 
     public function consume(DefinitionProviderContext $context) : void {
         service($context, $this->service);

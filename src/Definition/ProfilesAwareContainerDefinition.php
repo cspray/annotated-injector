@@ -10,7 +10,8 @@ final class ProfilesAwareContainerDefinition implements ContainerDefinition {
     public function __construct(
         private readonly ContainerDefinition $containerDefinition,
         private readonly array $activeProfiles
-    ) {}
+    ) {
+    }
 
     public function getServiceDefinitions() : array {
         $filtered = [];

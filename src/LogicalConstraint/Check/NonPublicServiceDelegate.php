@@ -32,5 +32,4 @@ final class NonPublicServiceDelegate implements LogicalConstraint {
 
         return $violations;
     }
-
 }

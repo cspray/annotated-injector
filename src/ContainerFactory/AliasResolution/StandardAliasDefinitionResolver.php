@@ -27,7 +27,7 @@ final class StandardAliasDefinitionResolver implements AliasDefinitionResolver {
             if (count($aliases) === 1) {
                 $definition = $aliases[0];
                 $reason = AliasResolutionReason::SingleConcreteService;
-            } else if (count($aliases) > 1) {
+            } elseif (count($aliases) > 1) {
                 $definition = null;
                 $primaryAliases = [];
                 foreach ($aliases as $alias) {
@@ -40,7 +40,7 @@ final class StandardAliasDefinitionResolver implements AliasDefinitionResolver {
                 if (count($primaryAliases) === 1) {
                     $definition = $primaryAliases[0];
                     $reason = AliasResolutionReason::ConcreteServiceIsPrimary;
-                } else if (count($primaryAliases) === 0) {
+                } elseif (count($primaryAliases) === 0) {
                     $reason = AliasResolutionReason::MultipleConcreteService;
                 } else {
                     $reason = AliasResolutionReason::MultiplePrimaryService;
@@ -56,7 +56,8 @@ final class StandardAliasDefinitionResolver implements AliasDefinitionResolver {
             public function __construct(
                 private readonly AliasResolutionReason $reason,
                 private readonly ?AliasDefinition $definition
-            ) {}
+            ) {
+            }
 
             public function getAliasResolutionReason() : AliasResolutionReason {
                 return $this->reason;

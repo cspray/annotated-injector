@@ -40,5 +40,4 @@ trait HasMethodInjectState {
     public function getMethodInject() : array {
         return $this->methodInject;
     }
-
 }

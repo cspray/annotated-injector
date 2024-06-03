@@ -19,5 +19,4 @@ interface AutowireableFactory {
      * @return object An object that is an instanceof $classType
      */
     public function make(string $classType, AutowireableParameterSet $parameters = null) : object;
-
 }

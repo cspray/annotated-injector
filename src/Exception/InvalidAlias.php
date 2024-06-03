@@ -13,5 +13,4 @@ final class InvalidAlias extends Exception {
         $message = sprintf('An AliasDefinition has a concrete type, %s, that is not a registered ServiceDefinition.', $service);
         return new self($message);
     }
-
 }

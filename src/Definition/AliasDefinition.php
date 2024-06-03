@@ -24,5 +24,4 @@ interface AliasDefinition {
      * @return ObjectType
      */
     public function getConcreteService() : ObjectType;
-
 }

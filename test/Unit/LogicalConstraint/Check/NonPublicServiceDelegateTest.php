@@ -66,5 +66,4 @@ final class NonPublicServiceDelegateTest extends LogicalConstraintTestCase {
             $violations->get(0)->message
         );
     }
-
 }

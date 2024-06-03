@@ -15,5 +15,4 @@ interface AutowireableInvoker {
      * @return mixed
      */
     public function invoke(callable $callable, AutowireableParameterSet $parameters = null) : mixed;
-
 }

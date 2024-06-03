@@ -37,5 +37,4 @@ final class StdoutTest extends TestCase {
 
         self::assertSame('Some output without a new line', StreamBuffer::getBuffer());
     }
-
 }

@@ -12,7 +12,8 @@ final class HelpCommand implements Command {
 
     public function __construct(
         private readonly CommandExecutor $commandExecutor
-    ) {}
+    ) {
+    }
 
     public function getName() : string {
         return 'help';
@@ -69,5 +70,4 @@ SHELL;
         $output->stdout->write($command->getHelp());
         return 0;
     }
-
 }

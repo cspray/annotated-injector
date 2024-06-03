@@ -106,5 +106,4 @@ trait ContainerDefinitionAssertionsTrait /** extends \PHPUnit\TestCase */ {
 
         return null;
     }
-
 }

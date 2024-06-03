@@ -15,7 +15,7 @@ final class CompositeLogger implements LoggerInterface {
 
     public function __construct(
         LoggerInterface $logger,
-        LoggerInterface... $additionalLoggers
+        LoggerInterface...$additionalLoggers
     ) {
         $this->loggers = [$logger, ...$additionalLoggers];
     }

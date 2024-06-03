@@ -166,5 +166,4 @@ class ActiveProfilesBuilderTest extends TestCase {
 
         $this->assertSame($expected, $actual);
     }
-
 }

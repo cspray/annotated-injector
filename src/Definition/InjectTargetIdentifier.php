@@ -23,5 +23,4 @@ interface InjectTargetIdentifier {
      * @return non-empty-string|null
      */
     public function getMethodName() : ?string;
-
 }

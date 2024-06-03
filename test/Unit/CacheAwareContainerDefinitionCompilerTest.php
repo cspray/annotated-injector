@@ -211,5 +211,4 @@ XML;
 
         self::assertStringEqualsFile('vfs://root/' . md5($dir), $expected);
     }
-
 }

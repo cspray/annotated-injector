@@ -25,7 +25,8 @@ final class InitCommand implements Command {
     public function __construct(
         private readonly BootstrappingDirectoryResolver $directoryResolver,
         private readonly ThirdPartyInitializerProvider $initializerProvider
-    ) {}
+    ) {
+    }
 
     public function getName() : string {
         return 'init';
@@ -221,7 +222,7 @@ SHELL;
         /** @var ?string $cacheDirOpt */
         $cacheDirOpt = $input->getOption('cache-dir');
         $cacheDir = $this->directoryResolver->getCachePath(
-             $cacheDirOpt ?? '.annotated-container-cache'
+            $cacheDirOpt ?? '.annotated-container-cache'
         );
         if (!is_dir($cacheDir)) {
             mkdir($cacheDir, recursive: true);
@@ -241,21 +242,21 @@ SHELL;
         $configFile = $input->getOption('config-file');
         if (is_bool($configFile)) {
             throw InvalidOptionType::fromBooleanOption('config-file');
-        } else if (is_array($configFile)) {
+        } elseif (is_array($configFile)) {
             throw InvalidOptionType::fromArrayOption('config-file');
         }
 
         $cacheDir = $input->getOption('cache-dir');
         if (is_bool($cacheDir)) {
             throw InvalidOptionType::fromBooleanOption('cache-dir');
-        } else if (is_array($cacheDir)) {
+        } elseif (is_array($cacheDir)) {
             throw InvalidOptionType::fromArrayOption('cache-dir');
         }
 
         $definitionProvider = $input->getOption('definition-provider');
         if (is_bool($definitionProvider)) {
             throw InvalidOptionType::fromBooleanOption('definition-provider');
-        } else if (is_array($definitionProvider)) {
+        } elseif (is_array($definitionProvider)) {
             throw InvalidOptionType::fromArrayOption('definition-provider');
         }
 

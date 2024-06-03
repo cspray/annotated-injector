@@ -12,7 +12,8 @@ final class StubContainerFactory implements ContainerFactory {
 
     public function __construct(
         private readonly AnnotatedContainer $container
-    ) {}
+    ) {
+    }
 
     public function createContainer(ContainerDefinition $containerDefinition, ContainerFactoryOptions $containerFactoryOptions = null) : AnnotatedContainer {
         return $this->container;

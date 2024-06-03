@@ -193,5 +193,4 @@ class ProfilesAwareContainerDefinitionTest extends TestCase {
         $expected = [$injectDefinition2];
         self::assertSame($expected, $subject->getInjectDefinitions());
     }
-
 }

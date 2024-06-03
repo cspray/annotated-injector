@@ -55,5 +55,4 @@ final class CompositeLoggerTest extends TestCase {
 
         $logger->log('LEVEL', 'My message', ['my' => 'context']);
     }
-
 }

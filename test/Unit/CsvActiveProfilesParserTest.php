@@ -38,5 +38,4 @@ class CsvActiveProfilesParserTest extends TestCase {
         $this->expectExceptionMessage("The profile string ',,' results in no valid profiles.");
         $this->getSubject()->parse(',,');
     }
-
 }

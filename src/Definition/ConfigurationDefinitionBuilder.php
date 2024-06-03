@@ -20,7 +20,8 @@ final class ConfigurationDefinitionBuilder {
     private ?string $name = null;
     private ?ConfigurationAttribute $attribute = null;
 
-    private function __construct() {}
+    private function __construct() {
+    }
 
     public static function forClass(ObjectType $objectType) : self {
         $instance = new self;
@@ -46,7 +47,8 @@ final class ConfigurationDefinitionBuilder {
                 private readonly ObjectType $classType,
                 private readonly ?string $name,
                 private readonly ?ConfigurationAttribute $attribute
-            ) {}
+            ) {
+            }
 
             public function getClass() : ObjectType {
                 return $this->classType;
@@ -61,5 +63,4 @@ final class ConfigurationDefinitionBuilder {
             }
         };
     }
-
 }

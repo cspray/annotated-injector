@@ -44,5 +44,4 @@ FILE;
 
         self::assertSame($expected, StreamBuffer::getBuffer());
     }
-
 }

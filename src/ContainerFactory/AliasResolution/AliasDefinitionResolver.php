@@ -11,5 +11,4 @@ interface AliasDefinitionResolver {
         ContainerDefinition $containerDefinition,
         ObjectType $abstractService
     ) : AliasDefinitionResolution;
-
 }

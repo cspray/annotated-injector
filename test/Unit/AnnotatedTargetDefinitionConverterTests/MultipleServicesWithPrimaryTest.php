@@ -45,5 +45,4 @@ class MultipleServicesWithPrimaryTest extends AnnotatedTargetDefinitionConverter
         self::assertInstanceOf(Service::class, $this->definition->getAttribute());
         self::assertTrue($this->definition->getAttribute()->isPrimary());
     }
-
 }

@@ -38,7 +38,8 @@ abstract class AnnotatedTargetDefinitionConverterTestCase extends TestCase {
                 private readonly AttributeType $attributeType,
                 private readonly ReflectionClass|ReflectionMethod|ReflectionParameter|ReflectionProperty $reflection,
                 private readonly int $attributeIndex
-            ) {}
+            ) {
+            }
 
             public function getTargetReflection(): ReflectionClass|ReflectionMethod|ReflectionParameter|ReflectionProperty {
                 return $this->reflection;
@@ -55,5 +56,4 @@ abstract class AnnotatedTargetDefinitionConverterTestCase extends TestCase {
     }
 
     abstract protected function getSubjectTarget() : AnnotatedTarget;
-
 }

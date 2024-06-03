@@ -9,5 +9,4 @@ interface Command {
     public function getHelp() : string;
 
     public function handle(Input $input, TerminalOutput $output) : int;
-
 }

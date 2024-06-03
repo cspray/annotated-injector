@@ -8,6 +8,6 @@ final class ExpectedConfigurationType {
 
     public function __construct(
         public readonly ObjectType $configuration
-    ) {}
-
+    ) {
+    }
 }

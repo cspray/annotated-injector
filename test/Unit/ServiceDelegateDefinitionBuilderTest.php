@@ -71,5 +71,4 @@ class ServiceDelegateDefinitionBuilderTest extends TestCase {
 
         self::assertSame($attr, $delegateDefinition->getAttribute());
     }
-
 }

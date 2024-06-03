@@ -27,5 +27,4 @@ class AliasDefinitionBuilderTest extends TestCase {
         $this->assertSame($abstract, $aliasDefinition->getAbstractService());
         $this->assertSame($concrete, $aliasDefinition->getConcreteService());
     }
-
 }

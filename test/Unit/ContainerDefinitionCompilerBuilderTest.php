@@ -37,5 +37,4 @@ final class ContainerDefinitionCompilerBuilderTest extends TestCase {
         self::assertCount(1, $containerDefinition->getServiceDefinitions());
         self::assertFileExists('vfs://root/' . md5(Fixtures::singleConcreteService()->getPath()));
     }
-
 }

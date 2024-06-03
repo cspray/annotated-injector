@@ -73,5 +73,4 @@ final class NonPublicServicePrepareTest extends LogicalConstraintTestCase {
         );
         self::assertSame(LogicalConstraintViolationType::Critical, $violation->violationType);
     }
-
 }

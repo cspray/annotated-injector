@@ -10,5 +10,4 @@ final class CacheDirNotFound extends CliException {
             $dir
         ));
     }
-
 }

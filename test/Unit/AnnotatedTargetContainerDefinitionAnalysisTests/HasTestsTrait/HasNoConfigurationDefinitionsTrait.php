@@ -11,5 +11,4 @@ trait HasNoConfigurationDefinitionsTrait {
     final public function testHasNoConfigurationDefinitions() : void {
         $this->assertEmpty($this->getSubject()->getConfigurationDefinitions());
     }
-
 }

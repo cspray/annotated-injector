@@ -326,5 +326,4 @@ XML;
         self::assertFileExists('vfs://root/annotated-container.log');
         self::assertStringContainsString('Annotated Container compiling started.', file_get_contents('vfs://root/annotated-container.log'));
     }
-
 }

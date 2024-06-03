@@ -17,6 +17,4 @@ use JetBrains\PhpStorm\Deprecated;
 interface PostAnalysisObserver {
 
     public function notifyPostAnalysis(ActiveProfiles $activeProfiles, ContainerDefinition $containerDefinition) : void;
-
-
 }

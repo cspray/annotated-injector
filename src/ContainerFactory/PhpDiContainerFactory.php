@@ -95,7 +95,6 @@ final class PhpDiContainerFactory extends AbstractContainerFactory implements Co
                 $definition->getTargetIdentifier()->getName(),
                 $this->getInjectDefinitionValue($definition)
             );
-
         } else {
             $state->addPropertyInject(
                 $definition->getTargetIdentifier()->getClass()->getName(),
@@ -103,7 +102,6 @@ final class PhpDiContainerFactory extends AbstractContainerFactory implements Co
                 $this->getInjectDefinitionValue($definition)
             );
         }
-
     }
 
     public function handleConfigurationDefinition(ContainerFactoryState $state, ConfigurationDefinition $definition) : void {

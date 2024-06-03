@@ -8,7 +8,5 @@ class FooFactory {
 
     #[ServiceDelegate]
     public static function create() : FooService&BarService {
-
     }
-
 }

@@ -16,5 +16,4 @@ abstract class LogicalConstraintTestCase extends TestCase {
             new AnnotatedTargetDefinitionConverter()
         );
     }
-
 }

@@ -6,6 +6,6 @@ use Cspray\Typiphy\ObjectType;
 
 final class ExpectedServiceIsPrimary {
 
-    public function __construct(public readonly ObjectType $type, public readonly bool $isPrimary) {}
-
+    public function __construct(public readonly ObjectType $type, public readonly bool $isPrimary) {
+    }
 }

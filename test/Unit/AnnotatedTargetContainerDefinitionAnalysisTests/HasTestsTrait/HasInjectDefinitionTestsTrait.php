@@ -23,5 +23,4 @@ trait HasInjectDefinitionTestsTrait {
     final public function testInjectDefinition(ExpectedInject $expectedInject) : void {
         (new AssertExpectedInjectDefinition($this))->assert($expectedInject, $this->getSubject());
     }
-
 }

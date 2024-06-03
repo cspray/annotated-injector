@@ -16,5 +16,4 @@ use JetBrains\PhpStorm\Deprecated;
 interface PreAnalysisObserver {
 
     public function notifyPreAnalysis(ActiveProfiles $activeProfiles) : void;
-
 }

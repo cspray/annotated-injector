@@ -9,6 +9,6 @@ final class ExpectedConfigurationName {
     public function __construct(
         public readonly ObjectType $configuration,
         public readonly ?string $name
-    ) {}
-
+    ) {
+    }
 }

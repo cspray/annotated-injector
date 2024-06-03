@@ -908,5 +908,4 @@ XML;
 
         self::assertSame($container, $actual);
     }
-
 }
