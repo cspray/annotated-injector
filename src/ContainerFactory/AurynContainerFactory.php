@@ -29,9 +29,11 @@ use UnitEnum;
 use function Cspray\Typiphy\objectType;
 
 // @codeCoverageIgnoreStart
+// phpcs:disable
 if (!class_exists(Injector::class)) {
     throw new \RuntimeException("To enable the AurynContainerFactory please install rdlowrey/auryn!");
 }
+// phpcs:enable
 // @codeCoverageIgnoreEnd
 
 /**

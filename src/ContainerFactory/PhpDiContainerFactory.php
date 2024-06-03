@@ -27,9 +27,11 @@ use function DI\decorate;
 use function DI\get;
 
 // @codeCoverageIgnoreStart
+// phpcs:disable
 if (!class_exists(Container::class)) {
     throw new \RuntimeException("To enable the PhpDiContainerFactory please install php-di/php-di 7+!");
 }
+// phpcs:enable
 // @codeCoverageIgnoreEnd
 
 

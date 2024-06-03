@@ -32,6 +32,6 @@ jobs:
           XDEBUG_MODE: coverage
         run: ./tools/phpunit/vendor/bin/phpunit
       - name: Psalm
-        run: ./tools/psalm/vendor/bin/psalm
+        run: ./tools/psalm/vendor/bin/psalm --output-format=github
       - name: Code Linting
         run: ./tools/labrador-cs/vendor/bin/phpcs --standard=./tools/labrador-cs/vendor/cspray/labrador-coding-standard/ruleset.xml --exclude=Generic.Files.LineLength src test
