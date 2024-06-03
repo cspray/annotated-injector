@@ -5,6 +5,7 @@ namespace Cspray\AnnotatedContainer\Unit\AnnotatedTargetContainerDefinitionAnaly
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinition;
 use Cspray\AnnotatedContainer\Unit\AnnotatedTargetContainerDefinitionAnalysisTests\DataProviderExpects\ExpectedServicePrepare;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 trait HasServicePrepareDefinitionTestsTrait {
 
@@ -18,9 +19,7 @@ trait HasServicePrepareDefinitionTestsTrait {
         $this->assertSame($expectedCount, count($this->getSubject()->getServicePrepareDefinitions()));
     }
 
-    /**
-     * @dataProvider servicePrepareProvider
-     */
+    #[DataProvider('servicePrepareProvider')]
     final public function testServicePrepareDefinitionMethod(ExpectedServicePrepare $expectedServicePrepare) : void {
         $preparesForService = array_filter(
             $this->getSubject()->getServicePrepareDefinitions(),

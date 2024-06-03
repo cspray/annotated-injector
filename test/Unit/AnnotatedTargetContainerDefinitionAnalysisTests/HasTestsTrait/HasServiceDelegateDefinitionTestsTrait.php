@@ -4,6 +4,7 @@ namespace Cspray\AnnotatedContainer\Unit\AnnotatedTargetContainerDefinitionAnaly
 
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 use Cspray\AnnotatedContainer\Unit\AnnotatedTargetContainerDefinitionAnalysisTests\DataProviderExpects\ExpectedServiceDelegate;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 trait HasServiceDelegateDefinitionTestsTrait {
 
@@ -11,9 +12,7 @@ trait HasServiceDelegateDefinitionTestsTrait {
 
     abstract public static function serviceDelegateProvider() : array;
 
-    /**
-     * @dataProvider serviceDelegateProvider
-     */
+    #[DataProvider('serviceDelegateProvider')]
     final public function testServiceDelegateDefinition(ExpectedServiceDelegate $expectedServiceDelegate) : void {
         $definition = null;
         foreach ($this->getSubject()->getServiceDelegateDefinitions() as $delegateDefinition) {

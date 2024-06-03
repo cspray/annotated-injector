@@ -4,6 +4,7 @@ namespace Cspray\AnnotatedContainer\Unit\AnnotatedTargetContainerDefinitionAnaly
 
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 use Cspray\AnnotatedContainer\Unit\AnnotatedTargetContainerDefinitionAnalysisTests\DataProviderExpects\ExpectedInject;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 trait HasInjectDefinitionTestsTrait {
 
@@ -17,9 +18,7 @@ trait HasInjectDefinitionTestsTrait {
         $this->assertSame($expectedCount, count($this->getSubject()->getInjectDefinitions()));
     }
 
-    /**
-     * @dataProvider injectProvider
-     */
+    #[DataProvider('injectProvider')]
     final public function testInjectDefinition(ExpectedInject $expectedInject) : void {
         (new AssertExpectedInjectDefinition($this))->assert($expectedInject, $this->getSubject());
     }
