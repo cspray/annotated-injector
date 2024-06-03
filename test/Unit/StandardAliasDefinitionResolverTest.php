@@ -145,10 +145,12 @@ final class StandardAliasDefinitionResolverTest extends TestCase {
             Fixtures::ambiguousAliasedServices()->fooInterface()
         )->build();
         $one = ServiceDefinitionBuilder::forConcrete(
-            Fixtures::ambiguousAliasedServices()->barImplementation(), true
+            Fixtures::ambiguousAliasedServices()->barImplementation(),
+            true
         )->build();
         $two = ServiceDefinitionBuilder::forConcrete(
-            Fixtures::ambiguousAliasedServices()->bazImplementation(), true
+            Fixtures::ambiguousAliasedServices()->bazImplementation(),
+            true
         )->build();
         $oneAlias = AliasDefinitionBuilder::forAbstract($abstract->getType())
             ->withConcrete($one->getType())
@@ -169,5 +171,4 @@ final class StandardAliasDefinitionResolverTest extends TestCase {
         self::assertNull($resolution->getAliasDefinition());
         self::assertSame(AliasResolutionReason::MultiplePrimaryService, $resolution->getAliasResolutionReason());
     }
-
 }

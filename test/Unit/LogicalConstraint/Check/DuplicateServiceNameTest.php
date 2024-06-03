@@ -68,5 +68,4 @@ TEXT;
 
         self::assertCount(0, $violations);
     }
-
 }

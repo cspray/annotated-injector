@@ -11,5 +11,4 @@ interface ParameterStoreFactory {
      * @return ParameterStore
      */
     public function createParameterStore(string $identifier) : ParameterStore;
-
 }

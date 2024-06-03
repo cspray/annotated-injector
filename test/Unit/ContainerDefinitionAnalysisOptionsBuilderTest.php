@@ -24,14 +24,16 @@ class ContainerDefinitionAnalysisOptionsBuilderTest extends TestCase {
 
     public function testWithDefinitionProviderImmutable() : void {
         $a = ContainerDefinitionAnalysisOptionsBuilder::scanDirectories(Fixtures::singleConcreteService()->getPath());
-        $b = $a->withDefinitionProvider(new CallableDefinitionProvider(function() {}));
+        $b = $a->withDefinitionProvider(new CallableDefinitionProvider(function() {
+        }));
 
         self::assertNotSame($a, $b);
     }
 
     public function testWithDefinitionProviderReturnsCorrectInstance() : void {
         $compilerOptions = ContainerDefinitionAnalysisOptionsBuilder::scanDirectories(Fixtures::singleConcreteService()->getPath())
-            ->withDefinitionProvider($expected = new CallableDefinitionProvider(function() {}))
+            ->withDefinitionProvider($expected = new CallableDefinitionProvider(function() {
+            }))
             ->build();
 
         self::assertSame($expected, $compilerOptions->getDefinitionProvider());
@@ -53,5 +55,4 @@ class ContainerDefinitionAnalysisOptionsBuilderTest extends TestCase {
 
         self::assertSame($logger, $compilerOptions->getLogger());
     }
-
 }

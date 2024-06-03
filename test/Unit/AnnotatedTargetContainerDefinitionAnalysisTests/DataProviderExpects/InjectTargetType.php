@@ -11,7 +11,7 @@ enum InjectTargetType {
     public function isValidTargetIdentifier(InjectTargetIdentifier $injectTargetIdentifier) : bool {
         if ($this === self::MethodParameter) {
             return $injectTargetIdentifier->isMethodParameter();
-        } else if ($this === self::ClassProperty) {
+        } elseif ($this === self::ClassProperty) {
             return $injectTargetIdentifier->isClassProperty();
         }
 

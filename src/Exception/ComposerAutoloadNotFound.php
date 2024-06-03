@@ -10,5 +10,4 @@ final class ComposerAutoloadNotFound extends Exception {
             'Please ensure there is a PSR-4 or PSR-0 autoload or autoload-dev set in your composer.json and try again.'
         );
     }
-
 }

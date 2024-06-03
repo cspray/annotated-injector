@@ -182,5 +182,4 @@ SHELL;
 
         self::assertSame(255, $exitCode);
     }
-
 }

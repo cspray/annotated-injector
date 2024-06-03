@@ -27,5 +27,4 @@ trait HasPropertyInjectState {
     public function getPropertyInject() : array {
         return $this->propertyInject;
     }
-
 }

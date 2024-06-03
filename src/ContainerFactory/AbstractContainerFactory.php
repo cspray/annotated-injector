@@ -128,7 +128,8 @@ abstract class AbstractContainerFactory implements ContainerFactory {
             public function __construct(
                 /** @var list<non-empty-string> */
                 private readonly array $profiles
-            ) {}
+            ) {
+            }
 
             public function getProfiles() : array {
                 return $this->profiles;
@@ -180,7 +181,7 @@ abstract class AbstractContainerFactory implements ContainerFactory {
                 $value->type(),
                 $type
             );
-        } else if ($type instanceof ObjectType && !is_a($definition->getType()->getName(), UnitEnum::class, true)) {
+        } elseif ($type instanceof ObjectType && !is_a($definition->getType()->getName(), UnitEnum::class, true)) {
             $value = new ContainerReference($value, $type);
         }
 
@@ -363,7 +364,7 @@ abstract class AbstractContainerFactory implements ContainerFactory {
                         'value' => $inject->getValue()
                     ]
                 );
-            } else if ($inject->getType() instanceof ObjectType && !($inject->getValue() instanceof ListOf)) {
+            } elseif ($inject->getType() instanceof ObjectType && !($inject->getValue() instanceof ListOf)) {
                 $this->logger->info(
                     sprintf(
                         'Injecting service %s from Container into %s::%s($%s).',
@@ -441,7 +442,7 @@ abstract class AbstractContainerFactory implements ContainerFactory {
                         'value' => $inject->getValue()
                     ]
                 );
-            } else if ($inject->getType() instanceof ObjectType) {
+            } elseif ($inject->getType() instanceof ObjectType) {
                 $this->logger->info(
                     sprintf(
                         'Injecting service %s from Container into %s::%s.',
@@ -537,5 +538,4 @@ abstract class AbstractContainerFactory implements ContainerFactory {
     abstract protected function handleConfigurationDefinition(ContainerFactoryState $state, ConfigurationDefinition $definition) : void;
 
     abstract protected function createAnnotatedContainer(ContainerFactoryState $state, ActiveProfiles $activeProfiles) : AnnotatedContainer;
-
 }

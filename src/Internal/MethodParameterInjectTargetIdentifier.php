@@ -14,7 +14,8 @@ final class MethodParameterInjectTargetIdentifier implements InjectTargetIdentif
         private readonly string $name,
         private readonly string $methodName,
         private readonly ObjectType $class
-    ) {}
+    ) {
+    }
 
     public function isMethodParameter() : bool {
         return true;

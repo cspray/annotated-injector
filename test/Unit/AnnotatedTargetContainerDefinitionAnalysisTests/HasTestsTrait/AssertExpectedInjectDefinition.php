@@ -12,7 +12,8 @@ final class AssertExpectedInjectDefinition {
 
     public function __construct(
         private readonly TestCase $testCase
-    ) {}
+    ) {
+    }
 
     public function assert(ExpectedInject $expectedInject, ContainerDefinition $containerDefinition) : void {
         $definitions = $this->getDefinitionsForService($expectedInject, $containerDefinition);
@@ -21,7 +22,7 @@ final class AssertExpectedInjectDefinition {
             $definitions = $this->filterMethodName($expectedInject, $definitions);
             $definitions = $this->filterMethodParameter($expectedInject, $definitions);
             $this->validateMethodType($expectedInject, $definitions);
-        } else if ($expectedInject->injectTargetType === InjectTargetType::ClassProperty) {
+        } elseif ($expectedInject->injectTargetType === InjectTargetType::ClassProperty) {
             $definitions = $this->filterPropertyName($expectedInject, $definitions);
             $this->validatePropertyType($expectedInject, $definitions);
         }
@@ -110,7 +111,7 @@ final class AssertExpectedInjectDefinition {
         $definitionsWithType = array_filter($injectDefinitions, fn($injectDefinition) => $injectDefinition->getType() === $expectedInject->type);
         if (empty($definitionsWithType)) {
             Assert::fail(sprintf(
-                  'Could not find an InjectDefinition for property \'%s\' on %s with type \'%s\'.',
+                'Could not find an InjectDefinition for property \'%s\' on %s with type \'%s\'.',
                 $expectedInject->targetName,
                 $expectedInject->service,
                 $expectedInject->type
@@ -131,7 +132,7 @@ final class AssertExpectedInjectDefinition {
                     str_repeat(PHP_EOL, 2),
                     var_export($expectedInject->value, true)
                 );
-            } else if ($expectedInject->injectTargetType === InjectTargetType::ClassProperty) {
+            } elseif ($expectedInject->injectTargetType === InjectTargetType::ClassProperty) {
                 $message = sprintf(
                     'Could not find an InjectDefinition for property \'%s\' on %s with value matching:%s %s.',
                     $expectedInject->targetName,
@@ -159,7 +160,7 @@ final class AssertExpectedInjectDefinition {
                     $expectedInject->methodName,
                     $profileDescriptor()
                 );
-            } else if ($expectedInject->injectTargetType === InjectTargetType::ClassProperty) {
+            } elseif ($expectedInject->injectTargetType === InjectTargetType::ClassProperty) {
                 $message = sprintf(
                     'Could not find an InjectDefinition for property \'%s\' on %s with %s.',
                     $expectedInject->targetName,
@@ -184,7 +185,7 @@ final class AssertExpectedInjectDefinition {
                     $expectedInject->methodName,
                     $storeDescriptor()
                 );
-            } else if ($expectedInject->injectTargetType === InjectTargetType::ClassProperty) {
+            } elseif ($expectedInject->injectTargetType === InjectTargetType::ClassProperty) {
                 $message = sprintf(
                     'Could not find an InjectDefinition for property \'%s\' on %s with %s.',
                     $expectedInject->targetName,
@@ -195,5 +196,4 @@ final class AssertExpectedInjectDefinition {
             Assert::fail($message);
         }
     }
-
 }

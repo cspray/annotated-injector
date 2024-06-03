@@ -51,5 +51,4 @@ final class RootDirectoryBootstrappingDirectoryResolverTest extends TestCase {
             $subject->getVendorPath()
         );
     }
-
 }

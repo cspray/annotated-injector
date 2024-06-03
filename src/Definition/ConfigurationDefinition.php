@@ -35,5 +35,4 @@ interface ConfigurationDefinition {
     public function getName() : ?string;
 
     public function getAttribute() : ?ConfigurationAttribute;
-
 }

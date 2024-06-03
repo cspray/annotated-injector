@@ -44,6 +44,4 @@ final class SerializerInjectValueParserTest extends TestCase {
 
         self::assertSame($type, $actual);
     }
-
-
 }

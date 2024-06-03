@@ -21,5 +21,4 @@ final class CallableDefinitionProvider implements DefinitionProvider {
     public function consume(DefinitionProviderContext $context) : void {
         ($this->callable)($context);
     }
-
 }

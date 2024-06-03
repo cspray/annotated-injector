@@ -6,7 +6,8 @@ final class RootDirectoryBootstrappingDirectoryResolver implements Bootstrapping
 
     public function __construct(
         private readonly string $rootDir
-    ) {}
+    ) {
+    }
 
     public function getConfigurationPath(string $subPath) : string {
         return sprintf('%s/%s', $this->rootDir, $subPath);

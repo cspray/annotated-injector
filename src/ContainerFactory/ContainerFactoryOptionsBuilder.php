@@ -9,9 +9,10 @@ final class ContainerFactoryOptionsBuilder {
     private array $activeProfiles;
     private ?LoggerInterface $logger = null;
 
-    private function __construct() {}
+    private function __construct() {
+    }
 
-    public static function forActiveProfiles(string $profile, string... $additionalProfiles) : self {
+    public static function forActiveProfiles(string $profile, string...$additionalProfiles) : self {
         $instance = new self;
         $instance->activeProfiles = [$profile, ...$additionalProfiles];
         return $instance;
@@ -31,7 +32,8 @@ final class ContainerFactoryOptionsBuilder {
             public function __construct(
                 private readonly array $activeProfiles,
                 private readonly ?LoggerInterface $logger
-            ) {}
+            ) {
+            }
 
             public function getActiveProfiles(): array {
                 return $this->activeProfiles;
@@ -42,5 +44,4 @@ final class ContainerFactoryOptionsBuilder {
             }
         };
     }
-
 }

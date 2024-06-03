@@ -22,5 +22,4 @@ interface ContainerFactoryOptions {
      * @deprecated
      */
     public function getLogger() : ?LoggerInterface;
-
 }

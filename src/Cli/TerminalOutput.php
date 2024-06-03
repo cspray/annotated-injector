@@ -77,5 +77,4 @@ final class TerminalOutput {
             }
         };
     }
-
 }

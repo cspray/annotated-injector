@@ -150,5 +150,4 @@ class InputParserTest extends TestCase {
 
         self::assertSame('bar', $input->requireOption('foo'));
     }
-
 }

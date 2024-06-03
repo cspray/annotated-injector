@@ -11,5 +11,4 @@ final class ParameterStoreNotFound extends Exception {
         );
         return new self($message);
     }
-
 }

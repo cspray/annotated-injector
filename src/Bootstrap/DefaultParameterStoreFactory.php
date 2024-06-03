@@ -22,5 +22,4 @@ final class DefaultParameterStoreFactory implements ParameterStoreFactory {
 
         return new $identifier();
     }
-
 }

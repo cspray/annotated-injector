@@ -112,5 +112,4 @@ TEXT;
             $violation->message
         );
     }
-
 }

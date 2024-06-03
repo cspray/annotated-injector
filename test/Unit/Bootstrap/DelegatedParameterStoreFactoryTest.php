@@ -42,5 +42,4 @@ final class DelegatedParameterStoreFactoryTest extends TestCase {
             $subject->createParameterStore(StubParameterStore::class)
         );
     }
-
 }

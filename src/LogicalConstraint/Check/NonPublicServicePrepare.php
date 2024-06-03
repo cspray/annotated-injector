@@ -32,5 +32,4 @@ final class NonPublicServicePrepare implements LogicalConstraint {
 
         return $violations;
     }
-
 }

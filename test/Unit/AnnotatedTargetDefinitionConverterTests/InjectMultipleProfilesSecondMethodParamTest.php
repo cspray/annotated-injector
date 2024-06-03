@@ -13,7 +13,8 @@ class InjectMultipleProfilesSecondMethodParamTest extends AnnotatedTargetDefinit
 
     protected function getSubjectTarget(): AnnotatedTarget {
         return $this->getAnnotatedTarget(AttributeType::Inject, new \ReflectionParameter(
-                [Fixtures::injectConstructorServices()->injectProfilesStringService()->getName(), '__construct'], 'val'
+            [Fixtures::injectConstructorServices()->injectProfilesStringService()->getName(), '__construct'],
+            'val'
         ), 1);
     }
 

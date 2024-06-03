@@ -22,5 +22,4 @@ final class InvalidInjectDefinition extends Exception {
         $message = 'An InjectDefinition with a value that cannot be serialized was provided.';
         return new self($message, previous: $throwable);
     }
-
 }

@@ -28,6 +28,4 @@ interface DefinitionProviderContext {
      * @return void
      */
     public function setBuilder(ContainerDefinitionBuilder $containerDefinitionBuilder) : void;
-
-
 }

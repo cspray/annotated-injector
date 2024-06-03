@@ -25,5 +25,4 @@ final class StreamBuffer extends php_user_filter {
 
         return PSFS_FEED_ME;
     }
-
 }

@@ -66,5 +66,4 @@ class NonAnnotatedServicesTest extends AnnotatedTargetContainerDefinitionCompile
             [new ExpectedServiceProfiles(Fixtures::nonAnnotatedServices()->annotatedService(), ['default'])]
         ];
     }
-
 }

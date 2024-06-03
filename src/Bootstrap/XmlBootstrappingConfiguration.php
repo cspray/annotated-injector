@@ -52,7 +52,7 @@ final class XmlBootstrappingConfiguration implements BootstrappingConfiguration 
             throw InvalidBootstrapConfiguration::fromFileMissing($this->xmlFile);
         }
 
-        try{
+        try {
             $schemaFile = dirname(__DIR__, 2) . '/annotated-container.xsd';
             $dom = new DOMDocument();
             $dom->load($this->xmlFile);
@@ -101,7 +101,6 @@ final class XmlBootstrappingConfiguration implements BootstrappingConfiguration 
                     );
                     $scanDirectories[] = $vendorScanPath;
                 }
-
             }
 
             $definitionProvider = null;
@@ -112,7 +111,7 @@ final class XmlBootstrappingConfiguration implements BootstrappingConfiguration 
                 $definitionProviderType = trim($definitionProviderNode->nodeValue);
                 if (isset($this->definitionProviderFactory)) {
                     $definitionProviders[] = $this->definitionProviderFactory->createProvider($definitionProviderType);
-                } else{
+                } else {
                     if (!class_exists($definitionProviderType) ||
                         !is_subclass_of($definitionProviderType, DefinitionProvider::class)) {
                         throw InvalidBootstrapConfiguration::fromConfiguredDefinitionProviderWrongType($definitionProviderType);
@@ -181,10 +180,10 @@ final class XmlBootstrappingConfiguration implements BootstrappingConfiguration 
                 $fileLogger = new FileLogger($dateTimeProvider, $loggingFilePath);
                 $stdoutLogger = new StdoutLogger($dateTimeProvider);
                 $logger = new CompositeLogger($fileLogger, $stdoutLogger);
-            } else if ($hasLoggingFile) {
+            } elseif ($hasLoggingFile) {
                 $loggingFilePath = $this->directoryResolver->getLogPath($loggingFileNodes[0]->nodeValue);
                 $logger = new FileLogger($dateTimeProvider, $loggingFilePath);
-            } else if ($hasStdoutFile) {
+            } elseif ($hasStdoutFile) {
                 $logger = new StdoutLogger($dateTimeProvider);
             }
 
@@ -219,7 +218,6 @@ final class XmlBootstrappingConfiguration implements BootstrappingConfiguration 
             is_subclass_of($observerClass, PostAnalysisObserver::class) ||
             is_subclass_of($observerClass, ContainerCreatedObserver::class) ||
             is_subclass_of($observerClass, ContainerAnalyticsObserver::class);
-
     }
 
     public function getScanDirectories() : array {

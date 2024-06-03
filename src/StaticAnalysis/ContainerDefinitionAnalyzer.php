@@ -2,7 +2,6 @@
 
 namespace Cspray\AnnotatedContainer\StaticAnalysis;
 
-
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 
 /**
@@ -23,5 +22,4 @@ interface ContainerDefinitionAnalyzer {
      * @return ContainerDefinition
      */
     public function analyze(ContainerDefinitionAnalysisOptions $containerDefinitionCompileOptions) : ContainerDefinition;
-
 }

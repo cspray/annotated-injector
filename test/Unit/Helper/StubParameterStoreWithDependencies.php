@@ -9,7 +9,8 @@ use Cspray\Typiphy\TypeUnion;
 
 final class StubParameterStoreWithDependencies implements ParameterStore {
 
-    public function __construct(private readonly string $prefix) {}
+    public function __construct(private readonly string $prefix) {
+    }
 
     public function getName() : string {
         return 'test-store';

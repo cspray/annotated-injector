@@ -38,5 +38,4 @@ final class CsvActiveProfilesParser implements ActiveProfilesParser {
         }
         return $parsedProfiles;
     }
-
 }

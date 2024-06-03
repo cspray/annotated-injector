@@ -34,5 +34,4 @@ interface AutowireableParameterSet extends Countable, IteratorAggregate {
      * @return bool Whether a parameter can be found at the given index.
      */
     public function has(int $index) : bool;
-
 }

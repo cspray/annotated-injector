@@ -86,5 +86,4 @@ class ClassOverridesPrepareServicesTest extends AnnotatedTargetContainerDefiniti
             [new ExpectedServicePrepare(Fixtures::classOverridesPrepareServices()->fooInterface(), 'setBar')]
         ];
     }
-
 }

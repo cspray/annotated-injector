@@ -7,6 +7,6 @@ use Cspray\AnnotatedContainer\Attribute\ServicePrepare;
 class FooImplementation {
 
     #[ServicePrepare]
-    public function postConstruct() {}
-
+    public function postConstruct() {
+    }
 }

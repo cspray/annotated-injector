@@ -12,7 +12,8 @@ final class StubCommand implements Command {
     public function __construct(
         private readonly string $name,
         private readonly Closure $callable
-    ) {}
+    ) {
+    }
 
     public function getName() : string {
         return $this->name;

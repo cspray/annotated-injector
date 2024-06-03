@@ -16,6 +16,6 @@ final class ContainerReference {
     public function __construct(
         public readonly string $name,
         public readonly ObjectType $type
-    ) {}
-
+    ) {
+    }
 }

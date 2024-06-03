@@ -36,5 +36,4 @@ final class StdoutLogger extends AbstractLogger {
         );
         fwrite(STDOUT, $contents);
     }
-
 }

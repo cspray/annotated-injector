@@ -127,5 +127,4 @@ class TerminalOutputTest extends TestCase {
             "Need to have \033[47m\033[30mboth back and fore\033[0m\033[0m" . PHP_EOL
         ], $this->stdout->getContents());
     }
-
 }

@@ -49,5 +49,4 @@ TEXT;
 
         return $violations;
     }
-
 }

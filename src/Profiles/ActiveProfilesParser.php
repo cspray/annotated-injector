@@ -25,5 +25,4 @@ interface ActiveProfilesParser {
      * @return string[]
      */
     public function parse(string $profiles) : array;
-
 }

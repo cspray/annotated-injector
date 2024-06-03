@@ -2,7 +2,6 @@
 
 namespace Cspray\AnnotatedContainer\Cli\Exception;
 
-
 final class InvalidOptionType extends CliException {
 
     public static function fromBooleanOption(string $optionName) : self {
@@ -18,5 +17,4 @@ final class InvalidOptionType extends CliException {
             $optionName
         ));
     }
-
 }

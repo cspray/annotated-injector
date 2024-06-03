@@ -16,5 +16,4 @@ interface ListOf {
      * @return CollectionType
      */
     public function toCollection(array $servicesOfType) : mixed;
-
 }

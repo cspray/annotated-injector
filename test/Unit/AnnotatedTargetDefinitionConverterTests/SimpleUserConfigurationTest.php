@@ -49,5 +49,4 @@ class SimpleUserConfigurationTest extends AnnotatedTargetDefinitionConverterTest
     public function testGetAttribute() : void {
         self::assertInstanceOf(Inject::class, $this->definition->getAttribute());
     }
-
 }

@@ -33,7 +33,8 @@ trait HasServiceDefinitionTestsTrait {
         $expectedCount = count($this->serviceTypeProvider());
 
         $this->assertSame(
-            $expectedCount, count($this->getSubject()->getServiceDefinitions()),
+            $expectedCount,
+            count($this->getSubject()->getServiceDefinitions()),
             'The number of entries in \'serviceTypeProvider\' does not match the number of service definitions.'
         );
     }
@@ -42,7 +43,8 @@ trait HasServiceDefinitionTestsTrait {
         $expected = count($this->serviceNameProvider());
 
         $this->assertSame(
-            $expected, count($this->getSubject()->getServiceDefinitions()),
+            $expected,
+            count($this->getSubject()->getServiceDefinitions()),
             'The number of entries in \'serviceNameProvider\' does not match the number of service definitions.'
         );
     }
@@ -51,7 +53,8 @@ trait HasServiceDefinitionTestsTrait {
         $expected = count($this->serviceIsPrimaryProvider());
 
         $this->assertSame(
-            $expected, count($this->getSubject()->getServiceDefinitions()),
+            $expected,
+            count($this->getSubject()->getServiceDefinitions()),
             'The number of entries in \'serviceIsPrimaryProvider\' does not match the number of service definitions.'
         );
     }
@@ -60,7 +63,8 @@ trait HasServiceDefinitionTestsTrait {
         $expected = count($this->serviceIsConcreteProvider());
 
         $this->assertSame(
-            $expected, count($this->getSubject()->getServiceDefinitions()),
+            $expected,
+            count($this->getSubject()->getServiceDefinitions()),
             'The number of entries in \'serviceIsConcreteProvider\' does not match the number of service definitions.'
         );
     }
@@ -69,7 +73,8 @@ trait HasServiceDefinitionTestsTrait {
         $expected = count($this->serviceIsAbstractProvider());
 
         $this->assertSame(
-            $expected, count($this->getSubject()->getServiceDefinitions()),
+            $expected,
+            count($this->getSubject()->getServiceDefinitions()),
             'The number of entries in \'serviceIsAbstractProvides\' does not match the number of service definitions.'
         );
     }
@@ -78,7 +83,8 @@ trait HasServiceDefinitionTestsTrait {
         $expected = count($this->serviceTypeProvider());
 
         $this->assertSame(
-            $expected, count($this->getSubject()->getServiceDefinitions()),
+            $expected,
+            count($this->getSubject()->getServiceDefinitions()),
             'The number of entries in \'serviceIsSharedProvider\' does not match the number of service definitions.'
         );
     }
@@ -87,7 +93,8 @@ trait HasServiceDefinitionTestsTrait {
         $expected = count($this->serviceProfilesProvider());
 
         $this->assertSame(
-            $expected, count($this->getSubject()->getServiceDefinitions()),
+            $expected,
+            count($this->getSubject()->getServiceDefinitions()),
             'The number of entries in \'serviceProfilesProvider\' does not match the number of service definitions.'
         );
     }
@@ -148,5 +155,4 @@ trait HasServiceDefinitionTestsTrait {
 
         $this->assertSame($expectedServiceProfiles->profiles, $serviceDefinition?->getProfiles());
     }
-
 }

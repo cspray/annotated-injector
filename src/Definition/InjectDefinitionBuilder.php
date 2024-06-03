@@ -28,7 +28,8 @@ final class InjectDefinitionBuilder {
     private array $profiles = [];
     private ?string $store = null;
 
-    private function __construct() {}
+    private function __construct() {
+    }
 
     public static function forService(ObjectType $type) : self {
         $instance = new self();
@@ -62,7 +63,7 @@ final class InjectDefinitionBuilder {
      * @param non-empty-string $profile
      * @param non-empty-string ...$additionalProfiles
      */
-    public function withProfiles(string $profile, string... $additionalProfiles) : self {
+    public function withProfiles(string $profile, string...$additionalProfiles) : self {
         $instance = clone $this;
         $instance->profiles[] = $profile;
         foreach ($additionalProfiles as $additionalProfile) {
@@ -86,9 +87,9 @@ final class InjectDefinitionBuilder {
     public function build() : InjectDefinition {
         if (!isset($this->method) && !isset($this->property)) {
             throw InvalidInjectDefinition::fromMissingMethodAndProperty();
-        } else if (isset($this->method) && isset($this->property)) {
+        } elseif (isset($this->method) && isset($this->property)) {
             throw InvalidInjectDefinition::fromMethodAndPropertySet();
-        } else if (!$this->isValueCalled) {
+        } elseif (!$this->isValueCalled) {
             throw InvalidInjectDefinition::fromMissingValue();
         }
 
@@ -121,7 +122,8 @@ final class InjectDefinitionBuilder {
                 private readonly ?string $store,
                 private readonly array $profiles,
                 private readonly ?InjectAttribute $attribute
-            ) {}
+            ) {
+            }
 
             public function getTargetIdentifier() : InjectTargetIdentifier {
                 return $this->targetIdentifier;
@@ -148,5 +150,4 @@ final class InjectDefinitionBuilder {
             }
         };
     }
-
 }

@@ -28,5 +28,4 @@ interface AutowireableParameter {
      * @return bool Whether the value should be retrieved from the Container or injected directly
      */
     public function isServiceIdentifier() : bool;
-
 }

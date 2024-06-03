@@ -10,5 +10,4 @@ final class ComposerConfigurationNotFound extends Exception {
         $message = 'The file "composer.json" does not exist and is expected to be found.';
         return new self($message);
     }
-
 }

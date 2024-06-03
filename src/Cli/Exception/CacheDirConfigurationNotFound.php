@@ -11,5 +11,4 @@ final class CacheDirConfigurationNotFound extends CliException {
     public static function fromCacheCommand() : self {
         return new self('Clearing a cache without a cache directory configured is not supported.');
     }
-
 }

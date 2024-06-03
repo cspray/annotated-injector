@@ -37,7 +37,8 @@ final class ContainerDefinitionBuilder {
      */
     private array $configurationDefinitions = [];
 
-    private function __construct() {}
+    private function __construct() {
+    }
 
     /**
      * @return static
@@ -121,7 +122,8 @@ final class ContainerDefinitionBuilder {
                 private readonly array $injectDefinitions,
                 private readonly array $serviceDelegateDefinitions,
                 private readonly array $configurationDefinitions
-            ) {}
+            ) {
+            }
 
             public function getServiceDefinitions(): array {
                 return $this->serviceDefinitions;
@@ -148,5 +150,4 @@ final class ContainerDefinitionBuilder {
             }
         };
     }
-
 }

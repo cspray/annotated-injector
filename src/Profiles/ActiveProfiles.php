@@ -29,5 +29,4 @@ interface ActiveProfiles {
      * @return bool
      */
     public function isActive(string $profile) : bool;
-
 }

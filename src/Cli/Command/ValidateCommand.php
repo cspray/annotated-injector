@@ -224,7 +224,8 @@ TEXT;
              */
             public function __construct(
                 private readonly Closure $closure
-            ) {}
+            ) {
+            }
 
             public function notifyPostAnalysis(ActiveProfiles $activeProfiles, ContainerDefinition $containerDefinition) : void {
                 ($this->closure)($containerDefinition);

@@ -7,8 +7,7 @@ on:
     branches: [ release-2.x, release-3.x ]
 
 jobs:
-  continuous-integration:
-
+  unit-testing:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,15 +18,53 @@ jobs:
           php-version: 8.2
           extensions: xdebug
           tools: composer:2
+      - name: Setup problem matchers for PHP
+        run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+      - name: Setup problem matchers for PHPUnit
+        run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
       - name: Composer (Annotated Container)
         run: composer install
-      - name: Composer (PHPUnit)
+      - name: Composer (Testing Tools)
         run: cd tools/phpunit && composer install
-      - name: Composer (Psalm)
-        run: cd tools/psalm && composer install
-      - name: PHPUnit
+      - name: Unit Testing
         env:
           XDEBUG_MODE: coverage
         run: ./tools/phpunit/vendor/bin/phpunit
-      - name: Psalm
-        run: ./tools/psalm/vendor/bin/psalm
+
+  static-analysis:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          tools: composer:2
+      - name: Setup problem matchers for PHP
+        run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+      - name: Composer (Annotated Container)
+        run: composer install
+      - name: Composer (Static Analysis Tools)
+        run: cd tools/psalm && composer install
+      - name: Static Analysis
+        run: ./tools/psalm/vendor/bin/psalm --output-format=github
+
+  code-linting:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          tools: composer:2, cs2pr, phpcs
+      - name: Setup problem matchers for PHP
+        run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+      - name: Composer (Annotated Container)
+        run: composer install
+      - name: Composer (Static Analysis Tools)
+        run: cd tools/labrador-cs && composer install
+      - name: Code Linting
+        run: phpcs -q --standard=./tools/labrador-cs/vendor/cspray/labrador-coding-standard/ruleset.xml --exclude=Generic.Files.LineLength --report=checkstyle src test | cs2pr

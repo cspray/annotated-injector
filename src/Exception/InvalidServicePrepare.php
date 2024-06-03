@@ -12,5 +12,4 @@ final class InvalidServicePrepare extends Exception {
         );
         return new self($message);
     }
-
 }

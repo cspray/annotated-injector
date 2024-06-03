@@ -40,7 +40,8 @@ final class IlluminateContainerFactoryState implements ContainerFactoryState {
     public function __construct(
         public readonly Container $container,
         public readonly ContainerDefinition $containerDefinition
-    ) {}
+    ) {
+    }
 
     /**
      * @param class-string $service
@@ -102,5 +103,4 @@ final class IlluminateContainerFactoryState implements ContainerFactoryState {
     public function getNamedServices() : array {
         return $this->namedServices;
     }
-
 }

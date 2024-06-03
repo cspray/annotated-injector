@@ -6,6 +6,7 @@ use Cspray\AnnotatedContainer\StaticAnalysis\CompositeDefinitionProvider;
 use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProvider;
 use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProviderContext;
 use PHPUnit\Framework\TestCase;
+
 final class CompositeDefinitionProviderTest extends TestCase {
 
     public function testProvidedDefinitionProvidersHaveConsumeCalled() : void {
@@ -25,5 +26,4 @@ final class CompositeDefinitionProviderTest extends TestCase {
 
         $subject->consume($context);
     }
-
 }

@@ -13,7 +13,8 @@ class InjectEnvMethodParamTest extends AnnotatedTargetDefinitionConverterTestCas
 
     protected function getSubjectTarget(): AnnotatedTarget {
         return $this->getAnnotatedTarget(AttributeType::Inject, new \ReflectionParameter(
-             [Fixtures::injectConstructorServices()->injectEnvService()->getName(), '__construct'], 'user'
+            [Fixtures::injectConstructorServices()->injectEnvService()->getName(), '__construct'],
+            'user'
         ));
     }
 

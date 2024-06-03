@@ -14,9 +14,9 @@ final class InvalidAutowireParameter extends Exception {
 
     public static function fromParameterAlreadyAddedToSet(string $parameter) : self {
         $message = sprintf(
-            'A parameter named "%s" has already been added to this set.', $parameter
+            'A parameter named "%s" has already been added to this set.',
+            $parameter
         );
         return new self($message);
     }
-
 }

@@ -9,5 +9,4 @@ final class ContainerException extends Exception implements ContainerExceptionIn
     public static function fromCaughtThrowable(\Throwable $throwable) : self {
         return new self($throwable->getMessage(), previous: $throwable);
     }
-
 }

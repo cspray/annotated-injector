@@ -11,7 +11,7 @@ final class CompositeDefinitionProvider implements DefinitionProvider {
 
     public function __construct(
         DefinitionProvider $provider,
-        DefinitionProvider... $providers
+        DefinitionProvider...$providers
     ) {
         $this->providers = [
             $provider,

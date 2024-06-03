@@ -250,7 +250,7 @@ final class AnnotatedTargetDefinitionConverter {
             if ($paramType !== mixedType() && $reflectionType->allowsNull()) {
                 $paramType = typeUnion($paramType, nullType());
             }
-        } else if ($reflectionType instanceof ReflectionUnionType || $reflectionType instanceof ReflectionIntersectionType) {
+        } elseif ($reflectionType instanceof ReflectionUnionType || $reflectionType instanceof ReflectionIntersectionType) {
             $types = [];
             foreach ($reflectionType->getTypes() as $type) {
                 assert($type instanceof ReflectionNamedType);
@@ -280,5 +280,4 @@ final class AnnotatedTargetDefinitionConverter {
             default => objectType($type)
         };
     }
-
 }

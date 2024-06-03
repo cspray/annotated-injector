@@ -10,7 +10,8 @@ final class StubInput implements Input {
     public function __construct(
         private readonly array $options,
         private readonly array $arguments
-    ) {}
+    ) {
+    }
 
     public function getOptions() : array {
         return $this->options;

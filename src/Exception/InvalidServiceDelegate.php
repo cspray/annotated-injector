@@ -49,5 +49,4 @@ final class InvalidServiceDelegate extends Exception {
         );
         return new self($message);
     }
-
 }

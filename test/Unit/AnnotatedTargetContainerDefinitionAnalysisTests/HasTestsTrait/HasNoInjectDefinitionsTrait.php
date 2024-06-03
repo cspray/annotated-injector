@@ -11,5 +11,4 @@ trait HasNoInjectDefinitionsTrait {
     final public function testHasNoInjectDefinitions() : void {
         $this->assertEmpty($this->getSubject()->getInjectDefinitions());
     }
-
 }

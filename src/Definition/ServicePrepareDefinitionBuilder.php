@@ -12,7 +12,8 @@ final class ServicePrepareDefinitionBuilder {
     private string $method;
     private ?ServicePrepareAttribute $attribute = null;
 
-    private function __construct() {}
+    private function __construct() {
+    }
 
     public static function forMethod(ObjectType $serviceDefinition, string $method) : self {
         if (empty($method)) {
@@ -37,7 +38,8 @@ final class ServicePrepareDefinitionBuilder {
                 private readonly ObjectType $service,
                 private readonly string $method,
                 private readonly ?ServicePrepareAttribute $attribute
-            ) {}
+            ) {
+            }
 
             public function getService() : ObjectType {
                 return $this->service;
@@ -52,5 +54,4 @@ final class ServicePrepareDefinitionBuilder {
             }
         };
     }
-
 }

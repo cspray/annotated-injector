@@ -686,9 +686,6 @@
       <code><![CDATA[$service]]></code>
       <code><![CDATA[$type]]></code>
     </PropertyNotSetInConstructor>
-    <RedundantCondition>
-      <code><![CDATA[assert(isset($this->property))]]></code>
-    </RedundantCondition>
   </file>
   <file src="src/Definition/InjectTargetIdentifier.php">
     <PossiblyUnusedMethod>

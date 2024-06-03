@@ -76,7 +76,8 @@ abstract class ServiceWiringObserver implements ContainerCreatedObserver {
                     public function __construct(
                         private readonly object $service,
                         private readonly ServiceDefinition $definition
-                    ) {}
+                    ) {
+                    }
 
                     public function getService() : object {
                         return $this->service;
@@ -86,12 +87,10 @@ abstract class ServiceWiringObserver implements ContainerCreatedObserver {
                         return $this->definition;
                     }
                 };
-
             }
         };
         $this->wireServices($container, $serviceGatherer);
     }
 
     abstract protected function wireServices(AnnotatedContainer $container, ServiceGatherer $gatherer) : void;
-
 }

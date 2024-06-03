@@ -9,6 +9,6 @@ final class ExpectedServiceProfiles {
     public function __construct(
         public readonly ObjectType $type,
         public readonly array $profiles
-    ) {}
-
+    ) {
+    }
 }

@@ -26,5 +26,4 @@ trait HasServiceDelegateDefinitionTestsTrait {
         $this->assertSame($expectedServiceDelegate->factory, $definition?->getDelegateType());
         $this->assertSame($expectedServiceDelegate->method, $definition?->getDelegateMethod());
     }
-
 }

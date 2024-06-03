@@ -129,20 +129,20 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
             if ($definition instanceof ServiceDefinition) {
                 $consumer->serviceDefinitions[] = $definition;
                 $this->logServiceDefinition($target, $definition, $logger);
-            } else if ($definition instanceof ServicePrepareDefinition) {
+            } elseif ($definition instanceof ServicePrepareDefinition) {
                 $consumer->servicePrepareDefinitions[] = $definition;
                 $this->logServicePrepareDefinition($target, $definition, $logger);
-            } else if ($definition instanceof ServiceDelegateDefinition) {
+            } elseif ($definition instanceof ServiceDelegateDefinition) {
                 $consumer->serviceDelegateDefinitions[] = $definition;
                 $this->logServiceDelegateDefinition($target, $definition, $logger);
-            } else if ($definition instanceof InjectDefinition) {
+            } elseif ($definition instanceof InjectDefinition) {
                 $consumer->injectDefinitions[] = $definition;
                 if ($definition->getTargetIdentifier()->isMethodParameter()) {
                     $this->logParameterInjectDefinition($target, $definition, $logger);
                 } else {
                     $this->logPropertyInjectDefinition($target, $definition, $logger);
                 }
-            } else if ($definition instanceof ConfigurationDefinition) {
+            } elseif ($definition instanceof ConfigurationDefinition) {
                 $consumer->configurationDefinitions[] = $definition;
                 $this->logConfigurationDefinition($target, $definition, $logger);
             }
@@ -194,7 +194,8 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
             sprintf(
                 'Parsed ServicePrepareDefinition from #[%s] Attribute on %s::%s.',
                 $target->getAttributeReflection()->getName(),
-                $definition->getService()->getName(), $definition->getMethod()
+                $definition->getService()->getName(),
+                $definition->getMethod()
             ),
             [
                 'attribute' => $target->getAttributeReflection()->getName(),
@@ -323,7 +324,7 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
             $convertedValue = [];
             /** @var mixed $v */
             foreach ($value as $k => $v) {
-               $convertedValue[$k] = $this->convertValueToJsonifiable($v);
+                $convertedValue[$k] = $this->convertValueToJsonifiable($v);
             }
             return $convertedValue;
         }
@@ -533,5 +534,4 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
 
         return $containerDefinitionBuilder;
     }
-
 }

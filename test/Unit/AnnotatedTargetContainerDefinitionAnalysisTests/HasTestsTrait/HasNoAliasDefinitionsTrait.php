@@ -11,5 +11,4 @@ trait HasNoAliasDefinitionsTrait {
     public function testHasNoAliasDefinitions() : void {
         $this->assertEmpty($this->getSubject()->getAliasDefinitions());
     }
-
 }

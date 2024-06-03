@@ -18,5 +18,4 @@ use JetBrains\PhpStorm\Deprecated;
 interface ContainerCreatedObserver {
 
     public function notifyContainerCreated(ActiveProfiles $activeProfiles, ContainerDefinition $containerDefinition, AnnotatedContainer $container) : void;
-
 }

@@ -39,5 +39,4 @@ class ResourceOutputTest extends TestCase {
 
         self::assertSame($expected, $actual);
     }
-
 }

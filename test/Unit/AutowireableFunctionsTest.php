@@ -164,5 +164,4 @@ class AutowireableFunctionsTest extends TestCase {
         $this->expectExceptionMessage('A parameter named "foo" has already been added to this set.');
         autowiredParams(rawParam('foo', 'value'), serviceParam('foo', objectType($this::class)));
     }
-
 }

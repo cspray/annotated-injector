@@ -12,7 +12,8 @@ final class AliasDefinitionBuilder {
     private ObjectType $abstractType;
     private ObjectType $concreteType;
 
-    private function __construct() {}
+    private function __construct() {
+    }
 
     /**
      * Define the abstract Service that should have an alias defined for it.
@@ -50,7 +51,8 @@ final class AliasDefinitionBuilder {
             public function __construct(
                 private readonly ObjectType $abstractService,
                 private readonly ObjectType $concreteService
-            ) {}
+            ) {
+            }
 
             public function getAbstractService() : ObjectType {
                 return $this->abstractService;
@@ -61,5 +63,4 @@ final class AliasDefinitionBuilder {
             }
         };
     }
-
 }

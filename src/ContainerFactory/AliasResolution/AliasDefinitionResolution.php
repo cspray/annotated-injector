@@ -9,5 +9,4 @@ interface AliasDefinitionResolution {
     public function getAliasResolutionReason() : AliasResolutionReason;
 
     public function getAliasDefinition() : ?AliasDefinition;
-
 }

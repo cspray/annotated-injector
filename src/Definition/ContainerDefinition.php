@@ -61,5 +61,4 @@ interface ContainerDefinition {
      * @return list<ConfigurationDefinition>
      */
     public function getConfigurationDefinitions() : array;
-
 }

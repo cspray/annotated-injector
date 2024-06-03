@@ -45,7 +45,6 @@ final class ComposerJsonScanningThirdPartyInitializerProvider implements ThirdPa
                 }
                 $packages[] = sprintf('%s/%s', $vendorName, basename($vendorPackageInfo->getPathname()));
             }
-
         }
 
         $initializers = [];
@@ -65,5 +64,4 @@ final class ComposerJsonScanningThirdPartyInitializerProvider implements ThirdPa
         }
         return $initializers;
     }
-
 }

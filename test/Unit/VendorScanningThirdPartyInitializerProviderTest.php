@@ -24,5 +24,4 @@ class VendorScanningThirdPartyInitializerProviderTest extends TestCase {
             ThirdInitializer::class
         ], $subject->getThirdPartyInitializers());
     }
-
 }

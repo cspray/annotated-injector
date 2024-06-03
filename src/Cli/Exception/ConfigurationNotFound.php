@@ -10,6 +10,4 @@ final class ConfigurationNotFound extends CliException {
             $file
         ));
     }
-
-
 }

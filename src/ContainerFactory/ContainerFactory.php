@@ -24,5 +24,4 @@ interface ContainerFactory {
      * @return void
      */
     public function addParameterStore(ParameterStore $parameterStore) : void;
-
 }

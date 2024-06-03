@@ -14,5 +14,4 @@ interface DefinitionProvider {
      * @param DefinitionProviderContext $context
      */
     public function consume(DefinitionProviderContext $context) : void;
-
 }

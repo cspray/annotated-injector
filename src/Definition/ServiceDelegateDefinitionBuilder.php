@@ -13,7 +13,8 @@ final class ServiceDelegateDefinitionBuilder {
     private string $delegateMethod;
     private ?ServiceDelegateAttribute $attribute = null;
 
-    private function __construct() {}
+    private function __construct() {
+    }
 
     public static function forService(ObjectType $service) : self {
         $instance = new self;
@@ -46,7 +47,8 @@ final class ServiceDelegateDefinitionBuilder {
                 private readonly ObjectType $delegateType,
                 private readonly string $delegateMethod,
                 private readonly ?ServiceDelegateAttribute $attribute
-            ) {}
+            ) {
+            }
 
             public function getDelegateType() : ObjectType {
                 return $this->delegateType;
@@ -65,5 +67,4 @@ final class ServiceDelegateDefinitionBuilder {
             }
         };
     }
-
 }

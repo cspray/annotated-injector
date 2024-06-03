@@ -13,5 +13,4 @@ class ConsoleCommandTest extends TestCase {
         self::assertSame(0, $result);
         self::assertStringContainsString('Annotated Container ' . AnnotatedContainerVersion::getVersion(), implode(PHP_EOL, $output));
     }
-
 }

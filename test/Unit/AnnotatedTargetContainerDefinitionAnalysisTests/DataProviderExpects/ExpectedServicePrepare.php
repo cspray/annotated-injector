@@ -9,6 +9,6 @@ final class ExpectedServicePrepare {
     public function __construct(
         public readonly ObjectType $type,
         public readonly string $method
-    ) {}
-
+    ) {
+    }
 }

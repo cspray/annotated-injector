@@ -13,5 +13,4 @@ final class InvalidScanDirectories extends Exception {
         $message = 'ContainerDefinitionAnalysisOptions includes duplicate scan directories. Please pass a distinct set of directories to scan.';
         return new self($message);
     }
-
 }

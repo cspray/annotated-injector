@@ -10,6 +10,6 @@ final class ExpectedServiceDelegate {
         public readonly ObjectType $service,
         public readonly ObjectType $factory,
         public readonly string $method
-    ) {}
-
+    ) {
+    }
 }

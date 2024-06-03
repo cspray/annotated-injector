@@ -7,5 +7,4 @@ use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProvider;
 interface DefinitionProviderFactory {
 
     public function createProvider(string $identifier) : DefinitionProvider;
-
 }

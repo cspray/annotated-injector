@@ -11,5 +11,4 @@ trait HasNoServicePrepareDefinitionsTrait {
     final public function testHasNoServicePrepareDefinitions() : void {
         $this->assertEmpty($this->getSubject()->getServicePrepareDefinitions());
     }
-
 }

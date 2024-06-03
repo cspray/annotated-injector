@@ -36,5 +36,4 @@ interface ContainerDefinitionAnalysisOptions {
      * @deprecated
      */
     public function getLogger() : ?LoggerInterface;
-
 }

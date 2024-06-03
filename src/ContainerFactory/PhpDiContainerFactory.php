@@ -27,9 +27,11 @@ use function DI\decorate;
 use function DI\get;
 
 // @codeCoverageIgnoreStart
+// phpcs:disable
 if (!class_exists(Container::class)) {
     throw new \RuntimeException("To enable the PhpDiContainerFactory please install php-di/php-di 7+!");
 }
+// phpcs:enable
 // @codeCoverageIgnoreEnd
 
 
@@ -95,7 +97,6 @@ final class PhpDiContainerFactory extends AbstractContainerFactory implements Co
                 $definition->getTargetIdentifier()->getName(),
                 $this->getInjectDefinitionValue($definition)
             );
-
         } else {
             $state->addPropertyInject(
                 $definition->getTargetIdentifier()->getClass()->getName(),
@@ -103,7 +104,6 @@ final class PhpDiContainerFactory extends AbstractContainerFactory implements Co
                 $this->getInjectDefinitionValue($definition)
             );
         }
-
     }
 
     public function handleConfigurationDefinition(ContainerFactoryState $state, ConfigurationDefinition $definition) : void {

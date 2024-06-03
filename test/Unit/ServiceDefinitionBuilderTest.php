@@ -118,5 +118,4 @@ class ServiceDefinitionBuilderTest extends TestCase {
 
         self::assertSame($attr, $serviceDefinition->getAttribute());
     }
-
 }

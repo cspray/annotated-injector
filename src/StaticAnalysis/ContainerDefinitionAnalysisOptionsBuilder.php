@@ -17,7 +17,8 @@ final class ContainerDefinitionAnalysisOptionsBuilder {
 
     private ?LoggerInterface $logger = null;
 
-    private function __construct() {}
+    private function __construct() {
+    }
 
     /**
      * Specify the directories that should be parsed when generating the ContainerDefinition
@@ -25,7 +26,7 @@ final class ContainerDefinitionAnalysisOptionsBuilder {
      * @param string ...$directories
      * @return static
      */
-    public static function scanDirectories(string... $directories) : self {
+    public static function scanDirectories(string...$directories) : self {
         $instance = new self();
         $instance->directories = $directories;
         return $instance;
@@ -79,5 +80,4 @@ final class ContainerDefinitionAnalysisOptionsBuilder {
             }
         };
     }
-
 }

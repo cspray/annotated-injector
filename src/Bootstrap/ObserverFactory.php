@@ -12,5 +12,4 @@ use JetBrains\PhpStorm\Deprecated;
 interface ObserverFactory {
 
     public function createObserver(string $observer) : PreAnalysisObserver|PostAnalysisObserver|ContainerCreatedObserver;
-
 }

@@ -15,5 +15,4 @@ interface ServiceFromServiceDefinition {
     public function getService() : object;
 
     public function getDefinition() : ServiceDefinition;
-
 }

@@ -57,5 +57,4 @@ interface ServiceDefinition {
     public function isAbstract() : bool;
 
     public function getAttribute() : ?ServiceAttribute;
-
 }

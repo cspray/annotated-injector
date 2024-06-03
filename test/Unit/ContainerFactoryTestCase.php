@@ -767,7 +767,6 @@ abstract class ContainerFactoryTestCase extends TestCase {
                 'Injecting service %s from Container into %s::__construct($foo).',
                 Fixtures::injectServiceConstructorServices()->fooImplementation()->getName(),
                 Fixtures::injectServiceConstructorServices()->serviceInjector()->getName(),
-
             ),
             'context' => [
                 'service' => Fixtures::injectServiceConstructorServices()->serviceInjector()->getName(),
@@ -884,7 +883,6 @@ abstract class ContainerFactoryTestCase extends TestCase {
                 'Injecting service %s from Container into %s::foo.',
                 Fixtures::configurationInjectServiceFixture()->fooService()->getName(),
                 Fixtures::configurationInjectServiceFixture()->fooConfig()->getName(),
-
             ),
             'context' => [
                 'configuration' => Fixtures::configurationInjectServiceFixture()->fooConfig()->getName(),

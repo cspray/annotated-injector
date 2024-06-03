@@ -37,6 +37,4 @@ class ServiceDelegateConverterTest extends AnnotatedTargetDefinitionConverterTes
     public function testGetAttribute() : void {
         self::assertInstanceOf(ServiceDelegate::class, $this->definition->getAttribute());
     }
-
-
 }

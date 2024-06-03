@@ -13,5 +13,4 @@ final class ServiceNotFound extends Exception implements NotFoundExceptionInterf
         );
         return new self($message);
     }
-
 }

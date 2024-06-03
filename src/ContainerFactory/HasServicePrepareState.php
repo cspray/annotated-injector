@@ -17,5 +17,4 @@ trait HasServicePrepareState {
     public function getServicePrepares() : array {
         return $this->servicePrepares;
     }
-
 }

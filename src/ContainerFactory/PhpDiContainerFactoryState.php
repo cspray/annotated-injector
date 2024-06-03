@@ -102,5 +102,4 @@ final class PhpDiContainerFactoryState implements ContainerFactoryState {
     public function getServiceKey(string $serviceType) : ?string {
         return $this->serviceKeys[$serviceType] ?? null;
     }
-
 }

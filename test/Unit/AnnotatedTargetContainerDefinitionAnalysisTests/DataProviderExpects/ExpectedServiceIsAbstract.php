@@ -6,6 +6,6 @@ use Cspray\Typiphy\ObjectType;
 
 final class ExpectedServiceIsAbstract {
 
-    public function __construct(public readonly ObjectType $type, public readonly bool $isAbstract) {}
-
+    public function __construct(public readonly ObjectType $type, public readonly bool $isAbstract) {
+    }
 }

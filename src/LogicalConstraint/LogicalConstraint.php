@@ -22,5 +22,4 @@ interface LogicalConstraint {
         ContainerDefinition $containerDefinition,
         array $profiles
     ) : LogicalConstraintViolationCollection;
-
 }

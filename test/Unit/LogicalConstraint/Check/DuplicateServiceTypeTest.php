@@ -108,6 +108,4 @@ TEXT;
         self::assertSame(LogicalConstraintViolationType::Warning, $violation->violationType);
         self::assertSame($expected, $violation->message);
     }
-
-
 }

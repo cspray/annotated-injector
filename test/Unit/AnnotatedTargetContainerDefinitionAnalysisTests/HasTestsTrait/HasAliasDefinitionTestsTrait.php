@@ -30,5 +30,4 @@ trait HasAliasDefinitionTestsTrait {
 
         $this->assertContains($expectedAliasDefinition->concreteType, $concreteTypes);
     }
-
 }

@@ -44,7 +44,7 @@ final class AurynContainerFactoryState implements ContainerFactoryState {
             } else {
                 $value = $value->name;
             }
-        } else if ($value instanceof ServiceCollectorReference) {
+        } elseif ($value instanceof ServiceCollectorReference) {
             $key = '+' . $param;
             $values = [];
             foreach ($this->containerDefinition->getServiceDefinitions() as $serviceDefinition) {
@@ -81,5 +81,4 @@ final class AurynContainerFactoryState implements ContainerFactoryState {
     public function getTypeForName(string $name) : ?ObjectType {
         return $this->nameTypeMap[$name] ?? null;
     }
-
 }

@@ -16,6 +16,6 @@ final class ServiceCollectorReference {
         public readonly ListOf     $listOf,
         public readonly ObjectType $valueType,
         public readonly Type|TypeUnion|TypeIntersect $collectionType
-    ) {}
-
+    ) {
+    }
 }
