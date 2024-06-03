@@ -235,11 +235,11 @@ class AssertExpectedInjectDefinitionTest extends TestCase {
                     ->build()
             )->build();
 
-        $beforeCount = $this->getNumAssertions();
+        $beforeCount = $this->numberOfAssertionsPerformed();
 
         $assertion->assert($this->getArrayConstructorExpectedInject(), $containerDefinition);
 
-        $this->assertSame($beforeCount + 1, $this->getNumAssertions());
+        $this->assertSame($beforeCount + 1, $this->numberOfAssertionsPerformed());
     }
 
     public function testFoundInjectDefinitionWithCustomStoreIncreasesAssertionCount() : void {
@@ -253,11 +253,11 @@ class AssertExpectedInjectDefinitionTest extends TestCase {
                     ->build()
             )->build();
 
-        $beforeCount = $this->getNumAssertions();
+        $beforeCount = $this->numberOfAssertionsPerformed();
 
         $assertion->assert($this->getArrayConstructorExpectedInject(store: 'foo-store'), $containerDefinition);
 
-        $this->assertSame($beforeCount + 1, $this->getNumAssertions());
+        $this->assertSame($beforeCount + 1, $this->numberOfAssertionsPerformed());
     }
 
     public function testFoundInjectDefinitionWithCustomProfilesIncreasesAssertionCount() : void {
@@ -271,11 +271,11 @@ class AssertExpectedInjectDefinitionTest extends TestCase {
                     ->build()
             )->build();
 
-        $beforeCount = $this->getNumAssertions();
+        $beforeCount = $this->numberOfAssertionsPerformed();
 
         $assertion->assert($this->getArrayConstructorExpectedInject(profiles: ['foo', 'bar']), $containerDefinition);
 
-        $this->assertSame($beforeCount + 1, $this->getNumAssertions());
+        $this->assertSame($beforeCount + 1, $this->numberOfAssertionsPerformed());
     }
 
     public function testExpectedInjectConfigurationNotFound() : void {
@@ -448,11 +448,11 @@ class AssertExpectedInjectDefinitionTest extends TestCase {
                     ->build()
             )->build();
 
-        $beforeCount = $this->getNumAssertions();
+        $beforeCount = $this->numberOfAssertionsPerformed();
 
         $assertion->assert($this->getStringPropertyExpectedInject(), $containerDefinition);
 
-        $this->assertSame($beforeCount + 1, $this->getNumAssertions());
+        $this->assertSame($beforeCount + 1, $this->numberOfAssertionsPerformed());
     }
 
     public function testGoodExpectedInjectPropertyWithCustomStoreAddsToAssertionCount() : void {
@@ -466,11 +466,11 @@ class AssertExpectedInjectDefinitionTest extends TestCase {
                     ->build()
             )->build();
 
-        $beforeCount = $this->getNumAssertions();
+        $beforeCount = $this->numberOfAssertionsPerformed();
 
         $assertion->assert($this->getStringPropertyExpectedInject(store: 'foo-store'), $containerDefinition);
 
-        $this->assertSame($beforeCount + 1, $this->getNumAssertions());
+        $this->assertSame($beforeCount + 1, $this->numberOfAssertionsPerformed());
     }
 
     public function testGoodExpectedInjectPropertyWithCustomProfilesAddsToAssertionCount() : void {
@@ -484,10 +484,10 @@ class AssertExpectedInjectDefinitionTest extends TestCase {
                     ->build()
             )->build();
 
-        $beforeCount = $this->getNumAssertions();
+        $beforeCount = $this->numberOfAssertionsPerformed();
 
         $assertion->assert($this->getStringPropertyExpectedInject(profiles: ['foo', 'bar']), $containerDefinition);
 
-        $this->assertSame($beforeCount + 1, $this->getNumAssertions());
+        $this->assertSame($beforeCount + 1, $this->numberOfAssertionsPerformed());
     }
 }

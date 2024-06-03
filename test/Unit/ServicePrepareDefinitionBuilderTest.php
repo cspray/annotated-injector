@@ -26,7 +26,7 @@ class ServicePrepareDefinitionBuilderTest extends TestCase {
     public function testExceptionThrownIfMethodEmpty() {
         $this->expectException(InvalidServicePrepareDefinition::class);
         $this->expectExceptionMessage('A method for a ServicePrepareDefinition must not be blank.');
-        ServicePrepareDefinitionBuilder::forMethod(objectType($this::class), '')->build();
+        ServicePrepareDefinitionBuilder::forMethod(objectType(static::class), '')->build();
     }
 
     public function testWithAttributeIsImmutable() : void {

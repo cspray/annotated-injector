@@ -13,7 +13,7 @@ use function Cspray\AnnotatedContainer\autowiredParams;
 
 class AutowireableFunctionsTest extends TestCase {
 
-    public function nameProvider() : array {
+    public static function nameProvider() : array {
         return [
             ['param'],
             ['paramName'],
@@ -22,9 +22,7 @@ class AutowireableFunctionsTest extends TestCase {
         ];
     }
 
-    /**
-     * @dataProvider nameProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('nameProvider')]
     public function testRawParameterGetName(string $name) {
         $param = rawParam($name, 'value');
 
@@ -37,11 +35,9 @@ class AutowireableFunctionsTest extends TestCase {
         rawParam('', []);
     }
 
-    /**
-     * @dataProvider nameProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('nameProvider')]
     public function testServiceParameterGetName(string $name) {
-        $param = serviceParam($name, objectType($this::class));
+        $param = serviceParam($name, objectType(static::class));
 
         $this->assertSame($name, $param->getName());
     }
@@ -49,10 +45,10 @@ class AutowireableFunctionsTest extends TestCase {
     public function testServiceParameterWithEmptyNameThrowsException() {
         $this->expectException(InvalidAutowireParameter::class);
         $this->expectExceptionMessage('A parameter name must have a non-empty value.');
-        serviceParam('', objectType($this::class));
+        serviceParam('', objectType(static::class));
     }
 
-    public function valueProvider() : array {
+    public static function valueProvider() : array {
         return [
             ['value'],
             [true],
@@ -63,9 +59,7 @@ class AutowireableFunctionsTest extends TestCase {
         ];
     }
 
-    /**
-     * @dataProvider valueProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('valueProvider')]
     public function testRawParameterGetValue(mixed $value) {
         $param = rawParam('name', $value);
 
@@ -73,7 +67,7 @@ class AutowireableFunctionsTest extends TestCase {
     }
 
     public function testServiceParameterGetValue() {
-        $param = serviceParam('foo', $type = objectType($this::class));
+        $param = serviceParam('foo', $type = objectType(static::class));
 
         $this->assertSame($type, $param->getValue());
     }
@@ -83,7 +77,7 @@ class AutowireableFunctionsTest extends TestCase {
     }
 
     public function testServiceParameterIsServiceIdentifier() {
-        $this->assertTrue(serviceParam('foo', objectType($this::class))->isServiceIdentifier());
+        $this->assertTrue(serviceParam('foo', objectType(static::class))->isServiceIdentifier());
     }
 
     public function testAutowireableSetWithNoParamsIsEmpty() {
@@ -140,7 +134,7 @@ class AutowireableFunctionsTest extends TestCase {
     public function testAutowireableSetOriginalParameters() {
         $set = autowiredParams(
             $one = rawParam('foo', 'value'),
-            $two = serviceParam('bar', objectType($this::class))
+            $two = serviceParam('bar', objectType(static::class))
         );
 
         $arraySet = iterator_to_array($set);
@@ -151,7 +145,7 @@ class AutowireableFunctionsTest extends TestCase {
     public function testAutowireableSetAddWithOriginalParameters() {
         $set = autowiredParams(
             $one = rawParam('foo', 'value'),
-            $two = serviceParam('bar', objectType($this::class))
+            $two = serviceParam('bar', objectType(static::class))
         );
         $set->add($three = rawParam('baz', 1234));
 
@@ -162,6 +156,6 @@ class AutowireableFunctionsTest extends TestCase {
     public function testAutowireableSetWithDuplicateParameterNamesThrowsException() {
         $this->expectException(InvalidAutowireParameter::class);
         $this->expectExceptionMessage('A parameter named "foo" has already been added to this set.');
-        autowiredParams(rawParam('foo', 'value'), serviceParam('foo', objectType($this::class)));
+        autowiredParams(rawParam('foo', 'value'), serviceParam('foo', objectType(static::class)));
     }
 }

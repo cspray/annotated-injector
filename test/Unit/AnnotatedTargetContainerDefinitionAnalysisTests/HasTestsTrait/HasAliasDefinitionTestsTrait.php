@@ -5,12 +5,13 @@ namespace Cspray\AnnotatedContainer\Unit\AnnotatedTargetContainerDefinitionAnaly
 use Cspray\AnnotatedContainer\Definition\AliasDefinition;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 use Cspray\AnnotatedContainer\Unit\AnnotatedTargetContainerDefinitionAnalysisTests\DataProviderExpects\ExpectedAliasDefinition;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 trait HasAliasDefinitionTestsTrait {
 
     abstract protected function getSubject() : ContainerDefinition;
 
-    abstract protected function aliasProvider() : array;
+    abstract public static function aliasProvider() : array;
 
     final public function testExpectedAliasCount() : void {
         $expectedCount = count($this->aliasProvider());
@@ -18,9 +19,7 @@ trait HasAliasDefinitionTestsTrait {
         $this->assertSame($expectedCount, count($this->getSubject()->getAliasDefinitions()));
     }
 
-    /**
-     * @dataProvider aliasProvider
-     */
+    #[DataProvider('aliasProvider')]
     final public function testExpectedAliasDefinition(ExpectedAliasDefinition $expectedAliasDefinition) : void {
         $concreteDefinitionsMatchingAbstract = array_filter(
             $this->getSubject()->getAliasDefinitions(),

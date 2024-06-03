@@ -12,7 +12,6 @@ class ResourceOutputTest extends TestCase {
     private VirtualDirectory $vfs;
 
     protected function setUp() : void {
-        parent::setUp();
         $this->vfs = VirtualFilesystem::setup();
     }
 

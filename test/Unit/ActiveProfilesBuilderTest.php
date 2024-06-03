@@ -98,7 +98,7 @@ class ActiveProfilesBuilderTest extends TestCase {
         $this->assertSame($expected, $actual);
     }
 
-    public function addProvider() : array {
+    public static function addProvider() : array {
         return [
             [['foo']],
             [['foo', 'bar']],
@@ -106,9 +106,7 @@ class ActiveProfilesBuilderTest extends TestCase {
         ];
     }
 
-    /**
-     * @dataProvider addProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('addProvider')]
     public function testAddWithProfilesBuild(array $profiles) : void {
         $actual = ActiveProfilesBuilder::hasDefault()->add(...$profiles)->build();
         $expected = ['default', ...$profiles];

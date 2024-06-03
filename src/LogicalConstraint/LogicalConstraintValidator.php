@@ -10,7 +10,7 @@ use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 final class LogicalConstraintValidator {
 
     /** @var LogicalConstraint[] */
-    private array $logicalConstraints;
+    private readonly array $logicalConstraints;
 
     public function __construct(
         LogicalConstraint...$logicalConstraints

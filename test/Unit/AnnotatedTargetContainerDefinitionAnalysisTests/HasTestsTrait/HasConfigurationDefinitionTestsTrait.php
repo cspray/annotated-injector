@@ -6,6 +6,7 @@ use Cspray\AnnotatedContainer\Unit\ContainerDefinitionAssertionsTrait;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 use Cspray\AnnotatedContainer\Unit\AnnotatedTargetContainerDefinitionAnalysisTests\DataProviderExpects\ExpectedConfigurationName;
 use Cspray\AnnotatedContainer\Unit\AnnotatedTargetContainerDefinitionAnalysisTests\DataProviderExpects\ExpectedConfigurationType;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 trait HasConfigurationDefinitionTestsTrait {
 
@@ -13,9 +14,9 @@ trait HasConfigurationDefinitionTestsTrait {
 
     abstract protected function getSubject() : ContainerDefinition;
 
-    abstract protected function configurationTypeProvider() : array;
+    abstract public static function configurationTypeProvider() : array;
 
-    abstract protected function configurationNameProvider() : array;
+    abstract public static function configurationNameProvider() : array;
 
     final public function testConfigurationTypeCount() : void {
         $expected = count($this->configurationTypeProvider());
@@ -29,18 +30,14 @@ trait HasConfigurationDefinitionTestsTrait {
         $this->assertSame($expected, count($this->getSubject()->getConfigurationDefinitions()));
     }
 
-    /**
-     * @dataProvider configurationTypeProvider
-     */
+    #[DataProvider('configurationTypeProvider')]
     final public function testConfigurationType(ExpectedConfigurationType $expectedConfigurationType) : void {
         $configurationDefinition = $this->getConfigurationDefinition($this->getSubject()->getConfigurationDefinitions(), $expectedConfigurationType->configuration->getName());
 
         $this->assertNotNull($configurationDefinition);
     }
 
-    /**
-     * @dataProvider configurationNameProvider
-     */
+    #[DataProvider('configurationNameProvider')]
     final public function testConfigurationName(ExpectedConfigurationName $expectedConfigurationName) : void {
         $configurationDefinition = $this->getConfigurationDefinition($this->getSubject()->getConfigurationDefinitions(), $expectedConfigurationName->configuration->getName());
 

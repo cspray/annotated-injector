@@ -32,7 +32,6 @@ class BuildCommandTest extends TestCase {
     private VirtualDirectory $vfs;
 
     protected function setUp() : void {
-        parent::setUp();
         $this->subject = new BuildCommand(
             new FixtureBootstrappingDirectoryResolver()
         );

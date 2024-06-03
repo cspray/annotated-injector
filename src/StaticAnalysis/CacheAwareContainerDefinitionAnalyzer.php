@@ -13,19 +13,12 @@ use Cspray\AnnotatedContainer\Exception\InvalidCache;
  */
 final class CacheAwareContainerDefinitionAnalyzer implements ContainerDefinitionAnalyzer {
 
-    private ContainerDefinitionAnalyzer $containerDefinitionCompiler;
-    private ContainerDefinitionSerializer $containerDefinitionSerializer;
-    private string $cacheDir;
-
     /**
      * @param ContainerDefinitionAnalyzer $containerDefinitionCompiler The compiler to use if the cache file is not present
      * @param ContainerDefinitionSerializer $containerDefinitionSerializer The serializer to serialize/deserialize the cached ContainerDefinition
      * @param string $cacheDir The directory that the cache files should be generated
      */
-    public function __construct(ContainerDefinitionAnalyzer $containerDefinitionCompiler, ContainerDefinitionSerializer $containerDefinitionSerializer, string $cacheDir) {
-        $this->containerDefinitionCompiler = $containerDefinitionCompiler;
-        $this->containerDefinitionSerializer = $containerDefinitionSerializer;
-        $this->cacheDir = $cacheDir;
+    public function __construct(private readonly ContainerDefinitionAnalyzer $containerDefinitionCompiler, private readonly ContainerDefinitionSerializer $containerDefinitionSerializer, private readonly string $cacheDir) {
     }
 
     /**

@@ -20,7 +20,7 @@ use function Cspray\Typiphy\voidType;
 
 final class SerializerInjectValueParserTest extends TestCase {
 
-    public function parseStringTypeProvider() : array {
+    public static function parseStringTypeProvider() : array {
         return [
             ['string', stringType()],
             ['int', intType()],
@@ -32,13 +32,11 @@ final class SerializerInjectValueParserTest extends TestCase {
             ['null', nullType()],
             ['void', voidType()],
             ['callable', callableType()],
-            [$this::class, objectType($this::class)]
+            [self::class, objectType(self::class)]
         ];
     }
 
-    /**
-     * @dataProvider parseStringTypeProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('parseStringTypeProvider')]
     public function testParseStringToType(string $stringType, Type|ObjectType $type) : void {
         $actual = (new SerializerInjectValueParser())->convertStringToType($stringType);
 

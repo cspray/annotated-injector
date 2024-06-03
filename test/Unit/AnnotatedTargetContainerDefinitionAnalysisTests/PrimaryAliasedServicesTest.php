@@ -32,7 +32,7 @@ class PrimaryAliasedServicesTest extends AnnotatedTargetContainerDefinitionCompi
         return Fixtures::primaryAliasedServices();
     }
 
-    protected function aliasProvider() : array {
+    public static function aliasProvider() : array {
         return [
             [new ExpectedAliasDefinition(Fixtures::primaryAliasedServices()->fooInterface(), Fixtures::primaryAliasedServices()->fooImplementation())],
             [new ExpectedAliasDefinition(Fixtures::primaryAliasedServices()->fooInterface(), Fixtures::primaryAliasedServices()->barImplementation())],
@@ -40,7 +40,7 @@ class PrimaryAliasedServicesTest extends AnnotatedTargetContainerDefinitionCompi
         ];
     }
 
-    protected function serviceTypeProvider() : array {
+    public static function serviceTypeProvider() : array {
         return [
             [new ExpectedServiceType(Fixtures::primaryAliasedServices()->fooInterface())],
             [new ExpectedServiceType(Fixtures::primaryAliasedServices()->bazImplementation())],
@@ -49,7 +49,7 @@ class PrimaryAliasedServicesTest extends AnnotatedTargetContainerDefinitionCompi
         ];
     }
 
-    protected function serviceNameProvider() : array {
+    public static function serviceNameProvider() : array {
         return [
             [new ExpectedServiceName(Fixtures::primaryAliasedServices()->fooInterface(), null)],
             [new ExpectedServiceName(Fixtures::primaryAliasedServices()->bazImplementation(), null)],
@@ -58,7 +58,7 @@ class PrimaryAliasedServicesTest extends AnnotatedTargetContainerDefinitionCompi
         ];
     }
 
-    protected function serviceIsPrimaryProvider() : array {
+    public static function serviceIsPrimaryProvider() : array {
         return [
             [new ExpectedServiceIsPrimary(Fixtures::primaryAliasedServices()->fooInterface(), false)],
             [new ExpectedServiceIsPrimary(Fixtures::primaryAliasedServices()->fooImplementation(), true)],
@@ -67,7 +67,7 @@ class PrimaryAliasedServicesTest extends AnnotatedTargetContainerDefinitionCompi
         ];
     }
 
-    protected function serviceIsConcreteProvider() : array {
+    public static function serviceIsConcreteProvider() : array {
         return [
             [new ExpectedServiceIsConcrete(Fixtures::primaryAliasedServices()->fooInterface(), false)],
             [new ExpectedServiceIsConcrete(Fixtures::primaryAliasedServices()->fooImplementation(), true)],
@@ -76,7 +76,7 @@ class PrimaryAliasedServicesTest extends AnnotatedTargetContainerDefinitionCompi
         ];
     }
 
-    protected function serviceIsAbstractProvider() : array {
+    public static function serviceIsAbstractProvider() : array {
         return [
             [new ExpectedServiceIsAbstract(Fixtures::primaryAliasedServices()->fooInterface(), true)],
             [new ExpectedServiceIsAbstract(Fixtures::primaryAliasedServices()->fooImplementation(), false)],
@@ -85,7 +85,7 @@ class PrimaryAliasedServicesTest extends AnnotatedTargetContainerDefinitionCompi
         ];
     }
 
-    protected function serviceProfilesProvider() : array {
+    public static function serviceProfilesProvider() : array {
         return [
             [new ExpectedServiceProfiles(Fixtures::primaryAliasedServices()->fooInterface(), ['default'])],
             [new ExpectedServiceProfiles(Fixtures::primaryAliasedServices()->fooImplementation(), ['default'])],

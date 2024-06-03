@@ -36,61 +36,61 @@ class AliasedConfigurationTest extends AnnotatedTargetContainerDefinitionCompile
         return Fixtures::aliasedConfigurationFixture();
     }
 
-    protected function aliasProvider() : array {
+    public static function aliasProvider() : array {
         return [
             [new ExpectedAliasDefinition(Fixtures::aliasedConfigurationFixture()->appConfig(), Fixtures::aliasedConfigurationFixture()->myAppConfig())]
         ];
     }
 
-    protected function configurationTypeProvider() : array {
+    public static function configurationTypeProvider() : array {
         return [
             [new ExpectedConfigurationType(Fixtures::aliasedConfigurationFixture()->myAppConfig())]
         ];
     }
 
-    protected function configurationNameProvider() : array {
+    public static function configurationNameProvider() : array {
         return [
             [new ExpectedConfigurationName(Fixtures::aliasedConfigurationFixture()->myAppConfig(), null)]
         ];
     }
 
-    protected function injectProvider() : array {
+    public static function injectProvider() : array {
         return [
             [ExpectedInject::forClassProperty(Fixtures::aliasedConfigurationFixture()->myAppConfig(), 'name', stringType(), 'my-app-name')]
         ];
     }
 
-    protected function serviceTypeProvider() : array {
+    public static function serviceTypeProvider() : array {
         return [
             [new ExpectedServiceType(Fixtures::aliasedConfigurationFixture()->appConfig())]
         ];
     }
 
-    protected function serviceNameProvider() : array {
+    public static function serviceNameProvider() : array {
         return [
             [new ExpectedServiceName(Fixtures::aliasedConfigurationFixture()->appConfig(), null)]
         ];
     }
 
-    protected function serviceIsPrimaryProvider() : array {
+    public static function serviceIsPrimaryProvider() : array {
         return [
             [new ExpectedServiceIsPrimary(Fixtures::aliasedConfigurationFixture()->appConfig(), false)]
         ];
     }
 
-    protected function serviceIsConcreteProvider() : array {
+    public static function serviceIsConcreteProvider() : array {
         return [
             [new ExpectedServiceIsConcrete(Fixtures::aliasedConfigurationFixture()->appConfig(), false)]
         ];
     }
 
-    protected function serviceIsAbstractProvider() : array {
+    public static function serviceIsAbstractProvider() : array {
         return [
             [new ExpectedServiceIsAbstract(Fixtures::aliasedConfigurationFixture()->appConfig(), true)]
         ];
     }
 
-    protected function serviceProfilesProvider() : array {
+    public static function serviceProfilesProvider() : array {
         return [
             [new ExpectedServiceProfiles(Fixtures::aliasedConfigurationFixture()->appConfig(), ['default'])]
         ];

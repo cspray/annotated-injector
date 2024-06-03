@@ -28,7 +28,6 @@ class InitCommandTest extends TestCase {
     private TerminalOutput $output;
 
     protected function setUp() : void {
-        parent::setUp();
         $this->vfs = VirtualFilesystem::setup();
         VirtualFilesystem::newDirectory('vendor')->at($this->vfs);
         $this->subject = new InitCommand(

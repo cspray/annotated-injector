@@ -34,14 +34,14 @@ class InjectNamedServicesTest extends AnnotatedTargetContainerDefinitionCompiler
         return Fixtures::injectNamedServices();
     }
 
-    protected function aliasProvider() : array {
+    public static function aliasProvider() : array {
         return [
             [new ExpectedAliasDefinition(Fixtures::injectNamedServices()->fooInterface(), Fixtures::injectNamedServices()->barImplementation())],
             [new ExpectedAliasDefinition(Fixtures::injectNamedServices()->fooInterface(), Fixtures::injectNamedServices()->fooImplementation())]
         ];
     }
 
-    protected function injectProvider() : array {
+    public static function injectProvider() : array {
         return [
             [ExpectedInject::forConstructParam(
                 Fixtures::injectNamedServices()->serviceConsumer(),
@@ -58,7 +58,7 @@ class InjectNamedServicesTest extends AnnotatedTargetContainerDefinitionCompiler
         ];
     }
 
-    protected function serviceTypeProvider() : array {
+    public static function serviceTypeProvider() : array {
         return [
             [new ExpectedServiceType(Fixtures::injectNamedServices()->fooInterface())],
             [new ExpectedServiceType(Fixtures::injectNamedServices()->fooImplementation())],
@@ -67,7 +67,7 @@ class InjectNamedServicesTest extends AnnotatedTargetContainerDefinitionCompiler
         ];
     }
 
-    protected function serviceNameProvider() : array {
+    public static function serviceNameProvider() : array {
         return [
             [new ExpectedServiceName(Fixtures::injectNamedServices()->fooInterface(), null)],
             [new ExpectedServiceName(Fixtures::injectNamedServices()->fooImplementation(), 'foo')],
@@ -76,7 +76,7 @@ class InjectNamedServicesTest extends AnnotatedTargetContainerDefinitionCompiler
         ];
     }
 
-    protected function serviceIsPrimaryProvider() : array {
+    public static function serviceIsPrimaryProvider() : array {
         return [
             [new ExpectedServiceIsPrimary(Fixtures::injectNamedServices()->fooInterface(), false)],
             [new ExpectedServiceIsPrimary(Fixtures::injectNamedServices()->fooImplementation(), false)],
@@ -85,7 +85,7 @@ class InjectNamedServicesTest extends AnnotatedTargetContainerDefinitionCompiler
         ];
     }
 
-    protected function serviceIsConcreteProvider() : array {
+    public static function serviceIsConcreteProvider() : array {
         return [
             [new ExpectedServiceIsConcrete(Fixtures::injectNamedServices()->fooInterface(), false)],
             [new ExpectedServiceIsConcrete(Fixtures::injectNamedServices()->fooImplementation(), true)],
@@ -94,7 +94,7 @@ class InjectNamedServicesTest extends AnnotatedTargetContainerDefinitionCompiler
         ];
     }
 
-    protected function serviceIsAbstractProvider() : array {
+    public static function serviceIsAbstractProvider() : array {
         return [
             [new ExpectedServiceIsAbstract(Fixtures::injectNamedServices()->fooInterface(), true)],
             [new ExpectedServiceIsAbstract(Fixtures::injectNamedServices()->fooImplementation(), false)],
@@ -103,7 +103,7 @@ class InjectNamedServicesTest extends AnnotatedTargetContainerDefinitionCompiler
         ];
     }
 
-    protected function serviceProfilesProvider() : array {
+    public static function serviceProfilesProvider() : array {
         return [
             [new ExpectedServiceProfiles(Fixtures::injectNamedServices()->fooInterface(), ['default'])],
             [new ExpectedServiceProfiles(Fixtures::injectNamedServices()->fooImplementation(), ['default'])],

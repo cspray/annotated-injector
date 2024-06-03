@@ -27,7 +27,6 @@ final class CacheClearCommandTest extends TestCase {
     private VirtualDirectory $vfs;
 
     protected function setUp() : void {
-        parent::setUp();
         $this->stdout = new InMemoryOutput();
         $this->stderr = new InMemoryOutput();
         $this->output = new TerminalOutput($this->stdout, $this->stderr);

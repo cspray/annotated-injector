@@ -22,7 +22,6 @@ class CommandExecutorTest extends TestCase {
     private CommandExecutor $subject;
 
     protected function setUp() : void {
-        parent::setUp();
         $this->inputParser = new InputParser();
         $this->stdout = new InMemoryOutput();
         $this->stderr = new InMemoryOutput();
@@ -150,7 +149,7 @@ SHELL;
 
     public function testCommandThrowsExceptionHasCorrectOutput() : void {
         $input = $this->inputParser->parse(['script.php', 'baz']);
-        $command = new StubCommand('baz', function() {
+        $command = new StubCommand('baz', function(): never {
             throw new \Exception('An exception was thrown.');
         });
         $this->subject->addCommand($command);
@@ -164,7 +163,7 @@ Unhandled exception executing "baz"!
 
 Type: Exception
 Message: An exception was thrown.
-Location: {$file}L#154
+Location: {$file}L#153
 Stack Trace:
 
 %a
@@ -174,7 +173,7 @@ SHELL;
 
     public function testCommandThrowsExceptionHasExitCodeFromException() : void {
         $input = $this->inputParser->parse(['something.php', 'qux']);
-        $command = new StubCommand('qux', function() {
+        $command = new StubCommand('qux', function(): never {
             throw new \Exception('An exception was thrown.', 255);
         });
         $this->subject->addCommand($command);

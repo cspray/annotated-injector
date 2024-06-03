@@ -32,49 +32,49 @@ class DelegatedServiceTest extends AnnotatedTargetContainerDefinitionCompilerTes
         return Fixtures::delegatedService();
     }
 
-    protected function serviceTypeProvider() : array {
+    public static function serviceTypeProvider() : array {
         return [
             [new ExpectedServiceType(Fixtures::delegatedService()->serviceInterface())],
             [new ExpectedServiceType(Fixtures::delegatedService()->fooService())]
         ];
     }
 
-    protected function serviceNameProvider() : array {
+    public static function serviceNameProvider() : array {
         return [
             [new ExpectedServiceName(Fixtures::delegatedService()->serviceInterface(), null)],
             [new ExpectedServiceName(Fixtures::delegatedService()->fooService(), null)]
         ];
     }
 
-    protected function serviceIsPrimaryProvider() : array {
+    public static function serviceIsPrimaryProvider() : array {
         return [
             [new ExpectedServiceIsPrimary(Fixtures::delegatedService()->serviceInterface(), false)],
             [new ExpectedServiceIsPrimary(Fixtures::delegatedService()->fooService(), false)]
         ];
     }
 
-    protected function serviceIsConcreteProvider() : array {
+    public static function serviceIsConcreteProvider() : array {
         return [
             [new ExpectedServiceIsConcrete(Fixtures::delegatedService()->serviceInterface(), false)],
             [new ExpectedServiceIsConcrete(Fixtures::delegatedService()->fooService(), true)]
         ];
     }
 
-    protected function serviceIsAbstractProvider() : array {
+    public static function serviceIsAbstractProvider() : array {
         return [
             [new ExpectedServiceIsAbstract(Fixtures::delegatedService()->serviceInterface(), true)],
             [new ExpectedServiceIsAbstract(Fixtures::delegatedService()->fooService(), false)]
         ];
     }
 
-    protected function serviceProfilesProvider() : array {
+    public static function serviceProfilesProvider() : array {
         return [
             [new ExpectedServiceProfiles(Fixtures::delegatedService()->serviceInterface(), ['default'])],
             [new ExpectedServiceProfiles(Fixtures::delegatedService()->fooService(), ['default'])]
         ];
     }
 
-    protected function serviceDelegateProvider() : array {
+    public static function serviceDelegateProvider() : array {
         return [
             [new ExpectedServiceDelegate(Fixtures::delegatedService()->serviceInterface(), Fixtures::delegatedService()->serviceFactory(), 'createService')]
         ];

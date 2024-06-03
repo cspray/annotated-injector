@@ -19,9 +19,7 @@ final class CommandExecutor {
     }
 
     public function getCommand(string $name) : ?Command {
-        return array_reduce($this->commands, function(?Command $carry, Command $item) use($name) {
-            return $item->getName() === $name ? $item : $carry;
-        });
+        return array_reduce($this->commands, fn(?Command $carry, Command $item) => $item->getName() === $name ? $item : $carry);
     }
 
     public function addCommand(Command $command) : void {

@@ -45,43 +45,43 @@ class ThirdPartyDelegatedServicesTest extends AnnotatedTargetContainerDefinition
         });
     }
 
-    protected function serviceTypeProvider() : array {
+    public static function serviceTypeProvider() : array {
         return [
             [new ExpectedServiceType(objectType(LoggerInterface::class))]
         ];
     }
 
-    protected function serviceNameProvider() : array {
+    public static function serviceNameProvider() : array {
         return [
             [new ExpectedServiceName(objectType(LoggerInterface::class), null)]
         ];
     }
 
-    protected function serviceIsPrimaryProvider() : array {
+    public static function serviceIsPrimaryProvider() : array {
         return [
             [new ExpectedServiceIsPrimary(objectType(LoggerInterface::class), false)]
         ];
     }
 
-    protected function serviceIsConcreteProvider() : array {
+    public static function serviceIsConcreteProvider() : array {
         return [
             [new ExpectedServiceIsConcrete(objectType(LoggerInterface::class), false)]
         ];
     }
 
-    protected function serviceIsAbstractProvider() : array {
+    public static function serviceIsAbstractProvider() : array {
         return [
             [new ExpectedServiceIsAbstract(objectType(LoggerInterface::class), true)]
         ];
     }
 
-    protected function serviceProfilesProvider() : array {
+    public static function serviceProfilesProvider() : array {
         return [
             [new ExpectedServiceProfiles(objectType(LoggerInterface::class), ['default'])]
         ];
     }
 
-    protected function serviceDelegateProvider() : array {
+    public static function serviceDelegateProvider() : array {
         return [
             [new ExpectedServiceDelegate(
                 objectType(LoggerInterface::class),

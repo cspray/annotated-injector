@@ -10,6 +10,7 @@ use Cspray\AnnotatedContainer\Unit\AnnotatedTargetContainerDefinitionAnalysisTes
 use Cspray\AnnotatedContainer\Unit\AnnotatedTargetContainerDefinitionAnalysisTests\DataProviderExpects\ExpectedServiceName;
 use Cspray\AnnotatedContainer\Unit\AnnotatedTargetContainerDefinitionAnalysisTests\DataProviderExpects\ExpectedServiceProfiles;
 use Cspray\AnnotatedContainer\Unit\AnnotatedTargetContainerDefinitionAnalysisTests\DataProviderExpects\ExpectedServiceType;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 trait HasServiceDefinitionTestsTrait {
 
@@ -17,17 +18,17 @@ trait HasServiceDefinitionTestsTrait {
 
     abstract protected function getSubject() : ContainerDefinition;
 
-    abstract protected function serviceTypeProvider() : array;
+    abstract public static function serviceTypeProvider() : array;
 
-    abstract protected function serviceNameProvider() : array;
+    abstract public static function serviceNameProvider() : array;
 
-    abstract protected function serviceIsPrimaryProvider() : array;
+    abstract public static function serviceIsPrimaryProvider() : array;
 
-    abstract protected function serviceIsConcreteProvider() : array;
+    abstract public static function serviceIsConcreteProvider() : array;
 
-    abstract protected function serviceIsAbstractProvider() : array;
+    abstract public static function serviceIsAbstractProvider() : array;
 
-    abstract protected function serviceProfilesProvider() : array;
+    abstract public static function serviceProfilesProvider() : array;
 
     final public function testExpectedServiceTypeCount() : void {
         $expectedCount = count($this->serviceTypeProvider());
@@ -99,9 +100,7 @@ trait HasServiceDefinitionTestsTrait {
         );
     }
 
-    /**
-     * @dataProvider serviceTypeProvider
-     */
+    #[DataProvider('serviceTypeProvider')]
     final public function testExpectedServiceTypes(ExpectedServiceType $expectedServiceType) : void {
         $serviceDefinition = $this->getServiceDefinition($this->getSubject()->getServiceDefinitions(), $expectedServiceType->type->getName());
 
@@ -111,45 +110,35 @@ trait HasServiceDefinitionTestsTrait {
         );
     }
 
-    /**
-     * @dataProvider serviceNameProvider
-     */
+    #[DataProvider('serviceNameProvider')]
     final public function testExpectedServiceNames(ExpectedServiceName $expectedServiceName) : void {
         $serviceDefinition = $this->getServiceDefinition($this->getSubject()->getServiceDefinitions(), $expectedServiceName->type->getName());
 
         $this->assertSame($expectedServiceName->name, $serviceDefinition?->getName());
     }
 
-    /**
-     * @dataProvider serviceIsPrimaryProvider
-     */
+    #[DataProvider('serviceIsPrimaryProvider')]
     final public function testExpectedServiceIsPrimary(ExpectedServiceIsPrimary $expectedServiceIsPrimary) : void {
         $serviceDefinition = $this->getServiceDefinition($this->getSubject()->getServiceDefinitions(), $expectedServiceIsPrimary->type->getName());
 
         $this->assertSame($expectedServiceIsPrimary->isPrimary, $serviceDefinition?->isPrimary());
     }
 
-    /**
-     * @dataProvider serviceIsConcreteProvider
-     */
+    #[DataProvider('serviceIsConcreteProvider')]
     final public function testExpectedServiceIsConcrete(ExpectedServiceIsConcrete $expectedServiceIsConcrete) : void {
         $serviceDefinition = $this->getServiceDefinition($this->getSubject()->getServiceDefinitions(), $expectedServiceIsConcrete->type->getName());
 
         $this->assertSame($expectedServiceIsConcrete->isConcrete, $serviceDefinition?->isConcrete());
     }
 
-    /**
-     * @dataProvider serviceIsAbstractProvider
-     */
+    #[DataProvider('serviceIsAbstractProvider')]
     final public function testExpectedServiceIsAbstract(ExpectedServiceIsAbstract $expectedServiceIsAbstract) : void {
         $serviceDefinition = $this->getServiceDefinition($this->getSubject()->getServiceDefinitions(), $expectedServiceIsAbstract->type->getName());
 
         $this->assertSame($expectedServiceIsAbstract->isAbstract, $serviceDefinition?->isAbstract());
     }
 
-    /**
-     * @dataProvider serviceProfilesProvider
-     */
+    #[DataProvider('serviceProfilesProvider')]
     final public function testExpectedServiceProfiles(ExpectedServiceProfiles $expectedServiceProfiles) : void {
         $serviceDefinition = $this->getServiceDefinition($this->getSubject()->getServiceDefinitions(), $expectedServiceProfiles->type->getName());
 

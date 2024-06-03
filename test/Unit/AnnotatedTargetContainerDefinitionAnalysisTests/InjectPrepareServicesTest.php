@@ -37,14 +37,14 @@ class InjectPrepareServicesTest extends AnnotatedTargetContainerDefinitionCompil
         return Fixtures::injectPrepareServices();
     }
 
-    protected function aliasProvider() : array {
+    public static function aliasProvider() : array {
         return [
             [new ExpectedAliasDefinition(Fixtures::injectPrepareServices()->fooInterface(), Fixtures::injectPrepareServices()->fooImplementation())],
             [new ExpectedAliasDefinition(Fixtures::injectPrepareServices()->fooInterface(), Fixtures::injectPrepareServices()->barImplementation())]
         ];
     }
 
-    protected function injectProvider() : array {
+    public static function injectProvider() : array {
         return [
             [ExpectedInject::forMethodParam(
                 Fixtures::injectPrepareServices()->prepareInjector(),
@@ -70,7 +70,7 @@ class InjectPrepareServicesTest extends AnnotatedTargetContainerDefinitionCompil
         ];
     }
 
-    protected function serviceTypeProvider() : array {
+    public static function serviceTypeProvider() : array {
         return [
             [new ExpectedServiceType(Fixtures::injectPrepareServices()->fooInterface())],
             [new ExpectedServiceType(Fixtures::injectPrepareServices()->barImplementation())],
@@ -80,7 +80,7 @@ class InjectPrepareServicesTest extends AnnotatedTargetContainerDefinitionCompil
         ];
     }
 
-    protected function serviceNameProvider() : array {
+    public static function serviceNameProvider() : array {
         return [
             [new ExpectedServiceName(Fixtures::injectPrepareServices()->fooInterface(), null)],
             [new ExpectedServiceName(Fixtures::injectPrepareServices()->fooImplementation(), null)],
@@ -90,7 +90,7 @@ class InjectPrepareServicesTest extends AnnotatedTargetContainerDefinitionCompil
         ];
     }
 
-    protected function serviceIsPrimaryProvider() : array {
+    public static function serviceIsPrimaryProvider() : array {
         return [
             [new ExpectedServiceIsPrimary(Fixtures::injectPrepareServices()->fooInterface(), false)],
             [new ExpectedServiceIsPrimary(Fixtures::injectPrepareServices()->fooImplementation(), false)],
@@ -100,7 +100,7 @@ class InjectPrepareServicesTest extends AnnotatedTargetContainerDefinitionCompil
         ];
     }
 
-    protected function serviceIsConcreteProvider() : array {
+    public static function serviceIsConcreteProvider() : array {
         return [
             [new ExpectedServiceIsConcrete(Fixtures::injectPrepareServices()->fooInterface(), false)],
             [new ExpectedServiceIsConcrete(Fixtures::injectPrepareServices()->fooImplementation(), true)],
@@ -110,7 +110,7 @@ class InjectPrepareServicesTest extends AnnotatedTargetContainerDefinitionCompil
         ];
     }
 
-    protected function serviceIsAbstractProvider() : array {
+    public static function serviceIsAbstractProvider() : array {
         return [
             [new ExpectedServiceIsAbstract(Fixtures::injectPrepareServices()->fooInterface(), true)],
             [new ExpectedServiceIsAbstract(Fixtures::injectPrepareServices()->fooImplementation(), false)],
@@ -120,7 +120,7 @@ class InjectPrepareServicesTest extends AnnotatedTargetContainerDefinitionCompil
         ];
     }
 
-    protected function serviceProfilesProvider() : array {
+    public static function serviceProfilesProvider() : array {
         return [
             [new ExpectedServiceProfiles(Fixtures::injectPrepareServices()->fooInterface(), ['default'])],
             [new ExpectedServiceProfiles(Fixtures::injectPrepareServices()->fooImplementation(), ['default'])],
@@ -130,7 +130,7 @@ class InjectPrepareServicesTest extends AnnotatedTargetContainerDefinitionCompil
         ];
     }
 
-    protected function servicePrepareProvider() : array {
+    public static function servicePrepareProvider() : array {
         return [
             [new ExpectedServicePrepare(Fixtures::injectPrepareServices()->prepareInjector(), 'setVals')],
             [new ExpectedServicePrepare(Fixtures::injectPrepareServices()->serviceScalarUnionPrepareInjector(), 'setValue')]

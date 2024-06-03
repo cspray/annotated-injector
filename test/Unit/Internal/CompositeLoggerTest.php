@@ -8,7 +8,7 @@ use Psr\Log\LoggerInterface;
 
 final class CompositeLoggerTest extends TestCase {
 
-    public function loggerMethodProvider() : array {
+    public static function loggerMethodProvider() : array {
         return [
             ['emergency'],
             ['alert'],
@@ -21,9 +21,7 @@ final class CompositeLoggerTest extends TestCase {
         ];
     }
 
-    /**
-     * @dataProvider loggerMethodProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('loggerMethodProvider')]
     public function testLoggersPassedToCompositeAreCalled(string $method) : void {
         $one = $this->getMockBuilder(LoggerInterface::class)->getMock();
         $two = $this->getMockBuilder(LoggerInterface::class)->getMock();

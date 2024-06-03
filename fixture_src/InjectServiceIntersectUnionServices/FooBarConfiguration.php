@@ -9,9 +9,9 @@ use Cspray\AnnotatedContainer\Attribute\Inject;
 class FooBarConfiguration {
 
     #[Inject(FooBarImplementation::class)]
-    private FooInterface&BarInterface $fooAndBar;
+    private readonly FooInterface&BarInterface $fooAndBar;
 
     #[Inject(BarImplementation::class)]
-    private FooInterface|BarInterface $fooOrBar;
+    private readonly FooInterface|BarInterface $fooOrBar;
 
 }

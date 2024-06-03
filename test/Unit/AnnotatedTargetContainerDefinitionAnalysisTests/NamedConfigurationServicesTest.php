@@ -29,19 +29,19 @@ class NamedConfigurationServicesTest extends AnnotatedTargetContainerDefinitionC
         return Fixtures::namedConfigurationServices();
     }
 
-    protected function configurationTypeProvider() : array {
+    public static function configurationTypeProvider() : array {
         return [
             [new ExpectedConfigurationType(Fixtures::namedConfigurationServices()->myConfig())]
         ];
     }
 
-    protected function configurationNameProvider() : array {
+    public static function configurationNameProvider() : array {
         return [
             [new ExpectedConfigurationName(Fixtures::namedConfigurationServices()->myConfig(), 'my-config')]
         ];
     }
 
-    protected function injectProvider() : array {
+    public static function injectProvider() : array {
         return [
             [ExpectedInject::forClassProperty(
                 Fixtures::namedConfigurationServices()->myConfig(),

@@ -35,9 +35,9 @@ final class DefaultParameterStoreFactoryTest extends TestCase {
 
         self::expectException(InvalidParameterStore::class);
         self::expectExceptionMessage(
-            'Attempted to create a parameter store, "' . $this::class . '", that is not a ' . ParameterStore::class
+            'Attempted to create a parameter store, "' . self::class . '", that is not a ' . ParameterStore::class
         );
 
-        $subject->createParameterStore($this::class);
+        $subject->createParameterStore(self::class);
     }
 }
