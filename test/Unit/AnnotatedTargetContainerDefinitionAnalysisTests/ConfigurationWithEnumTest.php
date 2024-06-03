@@ -30,19 +30,19 @@ class ConfigurationWithEnumTest extends AnnotatedTargetContainerDefinitionCompil
         return Fixtures::configurationWithEnum();
     }
 
-    protected function configurationTypeProvider() : array {
+    public static function configurationTypeProvider() : array {
         return [
             [new ExpectedConfigurationType(Fixtures::configurationWithEnum()->configuration())]
         ];
     }
 
-    protected function configurationNameProvider() : array {
+    public static function configurationNameProvider() : array {
         return [
             [new ExpectedConfigurationName(Fixtures::configurationWithEnum()->configuration(), null)]
         ];
     }
 
-    protected function injectProvider() : array {
+    public static function injectProvider() : array {
         return [
             [ExpectedInject::forClassProperty(
                 Fixtures::configurationWithEnum()->configuration(),

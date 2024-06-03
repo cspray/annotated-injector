@@ -9,7 +9,7 @@ trait HasServiceDelegateDefinitionTestsTrait {
 
     abstract protected function getSubject() : ContainerDefinition;
 
-    abstract protected function serviceDelegateProvider() : array;
+    abstract public static function serviceDelegateProvider() : array;
 
     /**
      * @dataProvider serviceDelegateProvider

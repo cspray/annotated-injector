@@ -33,55 +33,55 @@ class ClassOverridesPrepareServicesTest extends AnnotatedTargetContainerDefiniti
         return Fixtures::classOverridesPrepareServices();
     }
 
-    protected function aliasProvider() : array {
+    public static function aliasProvider() : array {
         return [
             [new ExpectedAliasDefinition(Fixtures::classOverridesPrepareServices()->fooInterface(), Fixtures::classOverridesPrepareServices()->fooImplementation())]
         ];
     }
 
-    protected function serviceTypeProvider() : array {
+    public static function serviceTypeProvider() : array {
         return [
             [new ExpectedServiceType(Fixtures::classOverridesPrepareServices()->fooInterface())],
             [new ExpectedServiceType(Fixtures::classOverridesPrepareServices()->fooImplementation())]
         ];
     }
 
-    protected function serviceNameProvider() : array {
+    public static function serviceNameProvider() : array {
         return [
             [new ExpectedServiceName(Fixtures::classOverridesPrepareServices()->fooInterface(), null)],
             [new ExpectedServiceName(Fixtures::classOverridesPrepareServices()->fooImplementation(), null)]
         ];
     }
 
-    protected function serviceIsPrimaryProvider() : array {
+    public static function serviceIsPrimaryProvider() : array {
         return [
             [new ExpectedServiceIsPrimary(Fixtures::classOverridesPrepareServices()->fooInterface(), false)],
             [new ExpectedServiceIsPrimary(Fixtures::classOverridesPrepareServices()->fooImplementation(), false)]
         ];
     }
 
-    protected function serviceIsConcreteProvider() : array {
+    public static function serviceIsConcreteProvider() : array {
         return [
             [new ExpectedServiceIsConcrete(Fixtures::classOverridesPrepareServices()->fooInterface(), false)],
             [new ExpectedServiceIsConcrete(Fixtures::classOverridesPrepareServices()->fooImplementation(), true)]
         ];
     }
 
-    protected function serviceIsAbstractProvider() : array {
+    public static function serviceIsAbstractProvider() : array {
         return [
             [new ExpectedServiceIsAbstract(Fixtures::classOverridesPrepareServices()->fooInterface(), true)],
             [new ExpectedServiceIsAbstract(Fixtures::classOverridesPrepareServices()->fooImplementation(), false)]
         ];
     }
 
-    protected function serviceProfilesProvider() : array {
+    public static function serviceProfilesProvider() : array {
         return [
             [new ExpectedServiceProfiles(Fixtures::classOverridesPrepareServices()->fooInterface(), ['default'])],
             [new ExpectedServiceProfiles(Fixtures::classOverridesPrepareServices()->fooImplementation(), ['default'])]
         ];
     }
 
-    protected function servicePrepareProvider() : array {
+    public static function servicePrepareProvider() : array {
         return [
             [new ExpectedServicePrepare(Fixtures::classOverridesPrepareServices()->fooInterface(), 'setBar')]
         ];

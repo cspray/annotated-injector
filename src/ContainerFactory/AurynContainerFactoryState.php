@@ -31,7 +31,6 @@ final class AurynContainerFactoryState implements ContainerFactoryState {
      * @param class-string $class
      * @param non-empty-string $method
      * @param non-empty-string $param
-     * @param mixed $value
      * @return void
      * @throws \Auryn\InjectionException
      */

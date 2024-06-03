@@ -14,9 +14,9 @@ use Cspray\Typiphy\TypeUnion;
 final class InjectDefinitionBuilder {
 
     private ObjectType $service;
-    private ?string $method;
-    private ?string $paramName;
-    private ?string $property;
+    private ?string $method = null;
+    private ?string $paramName = null;
+    private ?string $property = null;
     private Type|TypeUnion|TypeIntersect $type;
     private mixed $value;
     private bool $isValueCalled = false;
@@ -111,7 +111,6 @@ final class InjectDefinitionBuilder {
             /**
              * @param InjectTargetIdentifier $targetIdentifier
              * @param Type|TypeUnion|TypeIntersect $type
-             * @param mixed $annotationValue
              * @param string|null $store
              * @param list<non-empty-string> $profiles
              */

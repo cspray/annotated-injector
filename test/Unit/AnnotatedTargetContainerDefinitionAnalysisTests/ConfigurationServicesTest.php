@@ -31,19 +31,19 @@ class ConfigurationServicesTest extends AnnotatedTargetContainerDefinitionCompil
         return Fixtures::configurationServices();
     }
 
-    protected function configurationTypeProvider() : array {
+    public static function configurationTypeProvider() : array {
         return [
             [new ExpectedConfigurationType(Fixtures::configurationServices()->myConfig())]
         ];
     }
 
-    protected function configurationNameProvider() : array {
+    public static function configurationNameProvider() : array {
         return [
             [new ExpectedConfigurationName(Fixtures::configurationServices()->myConfig(), null)]
         ];
     }
 
-    protected function injectProvider() : array {
+    public static function injectProvider() : array {
         return [
             [ExpectedInject::forClassProperty(
                 Fixtures::configurationServices()->myConfig(),

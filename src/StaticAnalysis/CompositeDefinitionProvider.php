@@ -2,7 +2,7 @@
 
 namespace Cspray\AnnotatedContainer\StaticAnalysis;
 
-final class CompositeDefinitionProvider implements DefinitionProvider {
+final class CompositeDefinitionProvider implements DefinitionProvider, \Stringable {
 
     /**
      * @var list<DefinitionProvider>

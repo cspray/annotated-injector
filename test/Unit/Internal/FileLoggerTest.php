@@ -13,7 +13,6 @@ use PHPUnit\Framework\TestCase;
 class FileLoggerTest extends TestCase {
 
     protected function setUp() : void {
-        parent::setUp();
         VirtualFilesystem::setup();
     }
 

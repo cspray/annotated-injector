@@ -38,12 +38,10 @@
   </file>
   <file src="src/Bootstrap/Bootstrap.php">
     <DeprecatedInterface>
-      <code><![CDATA[?ObserverFactory]]></code>
       <code><![CDATA[ActiveProfiles]]></code>
       <code><![CDATA[ActiveProfiles]]></code>
       <code><![CDATA[ActiveProfiles]]></code>
       <code><![CDATA[ActiveProfiles]]></code>
-      <code><![CDATA[ObserverFactory]]></code>
       <code><![CDATA[PreAnalysisObserver|PostAnalysisObserver|ContainerCreatedObserver|ContainerAnalyticsObserver $observer]]></code>
       <code><![CDATA[PreAnalysisObserver|PostAnalysisObserver|ContainerCreatedObserver|ContainerAnalyticsObserver $observer]]></code>
       <code><![CDATA[PreAnalysisObserver|PostAnalysisObserver|ContainerCreatedObserver|ContainerAnalyticsObserver $observer]]></code>
@@ -53,6 +51,7 @@
       <code><![CDATA[array]]></code>
       <code><![CDATA[array]]></code>
       <code><![CDATA[class($profiles) implements ActiveProfiles {]]></code>
+      <code><![CDATA[private]]></code>
       <code><![CDATA[private array $observers = [];]]></code>
       <code><![CDATA[private array $observers = [];]]></code>
       <code><![CDATA[private array $observers = [];]]></code>
@@ -67,10 +66,6 @@
       <code><![CDATA[withLogger]]></code>
       <code><![CDATA[withLogger]]></code>
     </DeprecatedMethod>
-    <DeprecatedProperty>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-    </DeprecatedProperty>
     <InvalidScalarArgument>
       <code><![CDATA[$activeProfiles->getProfiles()]]></code>
     </InvalidScalarArgument>
@@ -680,9 +675,6 @@
       <code><![CDATA[?string]]></code>
     </MoreSpecificReturnType>
     <PropertyNotSetInConstructor>
-      <code><![CDATA[$method]]></code>
-      <code><![CDATA[$paramName]]></code>
-      <code><![CDATA[$property]]></code>
       <code><![CDATA[$service]]></code>
       <code><![CDATA[$type]]></code>
     </PropertyNotSetInConstructor>

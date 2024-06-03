@@ -281,7 +281,7 @@ abstract class ContainerFactoryTestCase extends TestCase {
         $this->getContainer(Fixtures::configurationMissingStore()->getPath());
     }
 
-    public function profilesProvider() : array {
+    public static function profilesProvider() : array {
         return [
             ['from-prod', ['default', 'prod']],
             ['from-test', ['default', 'test']],
@@ -289,9 +289,7 @@ abstract class ContainerFactoryTestCase extends TestCase {
         ];
     }
 
-    /**
-     * @dataProvider profilesProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('profilesProvider')]
     public function testInjectProfilesMethodParam(string $expected, array $profiles)  {
         $container = $this->getContainer(Fixtures::injectConstructorServices()->getPath(), $profiles);
         $subject = $container->get(Fixtures::injectConstructorServices()->injectProfilesStringService()->getName());
@@ -472,24 +470,16 @@ abstract class ContainerFactoryTestCase extends TestCase {
         self::assertFalse($container->has('test-foo'));
     }
 
-    public function deserializeContainerProvider() : array {
+    public static function deserializeContainerProvider() : array {
         return [
             [Fixtures::injectCustomStoreServices(), function(ContainerFactory $containerFactory, ContainerDefinition $deserialize) {
-                $store = $this->getMockBuilder(ParameterStore::class)->getMock();
-                $store->expects($this->once())
-                    ->method('getName')
-                    ->willReturn('test-store');
-
-                $store->expects($this->once())
-                    ->method('fetch')
-                    ->with($this->isInstanceOf(NamedType::class), 'key')
-                    ->willReturn('the store key value');
+                $store = new StubParameterStore();
                 $containerFactory->addParameterStore($store);
 
                 $container = $containerFactory->createContainer($deserialize);
                 $service = $container->get(Fixtures::injectCustomStoreServices()->scalarInjector()->getName());
 
-                self::assertSame('the store key value', $service->key);
+                self::assertSame('from test-store key', $service->key);
             }],
             [Fixtures::injectConstructorServices(), function(ContainerFactory $containerFactory, ContainerDefinition $deserialize) {
                 $container = $containerFactory->createContainer($deserialize);
@@ -501,9 +491,7 @@ abstract class ContainerFactoryTestCase extends TestCase {
         ];
     }
 
-    /**
-     * @dataProvider deserializeContainerProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('deserializeContainerProvider')]
     public function testDeserializingContainerWithInjectAllowsServiceCreation(Fixture $fixture, callable $assertions) {
         $serializer = new ContainerDefinitionSerializer();
         $containerDefinition = $this->getContainerDefinitionCompiler()->analyze(

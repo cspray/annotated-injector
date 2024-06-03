@@ -40,7 +40,7 @@ class InjectConstructorServicesTest extends AnnotatedTargetContainerDefinitionCo
         return Fixtures::injectConstructorServices();
     }
 
-    protected function injectProvider() : array {
+    public static function injectProvider() : array {
         return [
             [ExpectedInject::forConstructParam(
                 Fixtures::injectConstructorServices()->injectArrayService(),
@@ -127,7 +127,7 @@ class InjectConstructorServicesTest extends AnnotatedTargetContainerDefinitionCo
         ];
     }
 
-    protected function serviceTypeProvider() : array {
+    public static function serviceTypeProvider() : array {
         return [
             [new ExpectedServiceType(Fixtures::injectConstructorServices()->injectArrayService())],
             [new ExpectedServiceType(Fixtures::injectConstructorServices()->injectIntService())],
@@ -143,7 +143,7 @@ class InjectConstructorServicesTest extends AnnotatedTargetContainerDefinitionCo
         ];
     }
 
-    protected function serviceNameProvider() : array {
+    public static function serviceNameProvider() : array {
         return [
             [new ExpectedServiceName(Fixtures::injectConstructorServices()->injectArrayService(), null)],
             [new ExpectedServiceName(Fixtures::injectConstructorServices()->injectIntService(), null)],
@@ -159,7 +159,7 @@ class InjectConstructorServicesTest extends AnnotatedTargetContainerDefinitionCo
         ];
     }
 
-    protected function serviceIsPrimaryProvider() : array {
+    public static function serviceIsPrimaryProvider() : array {
         return [
             [new ExpectedServiceIsPrimary(Fixtures::injectConstructorServices()->injectArrayService(), false)],
             [new ExpectedServiceIsPrimary(Fixtures::injectConstructorServices()->injectIntService(), false)],
@@ -175,7 +175,7 @@ class InjectConstructorServicesTest extends AnnotatedTargetContainerDefinitionCo
         ];
     }
 
-    protected function serviceIsConcreteProvider() : array {
+    public static function serviceIsConcreteProvider() : array {
         return [
             [new ExpectedServiceIsConcrete(Fixtures::injectConstructorServices()->injectArrayService(), true)],
             [new ExpectedServiceIsConcrete(Fixtures::injectConstructorServices()->injectIntService(), true)],
@@ -191,7 +191,7 @@ class InjectConstructorServicesTest extends AnnotatedTargetContainerDefinitionCo
         ];
     }
 
-    protected function serviceIsAbstractProvider() : array {
+    public static function serviceIsAbstractProvider() : array {
         return [
             [new ExpectedServiceIsAbstract(Fixtures::injectConstructorServices()->injectArrayService(), false)],
             [new ExpectedServiceIsAbstract(Fixtures::injectConstructorServices()->injectIntService(), false)],
@@ -207,7 +207,7 @@ class InjectConstructorServicesTest extends AnnotatedTargetContainerDefinitionCo
         ];
     }
 
-    protected function serviceProfilesProvider() : array {
+    public static function serviceProfilesProvider() : array {
         return [
             [new ExpectedServiceProfiles(Fixtures::injectConstructorServices()->injectArrayService(), ['default'])],
             [new ExpectedServiceProfiles(Fixtures::injectConstructorServices()->injectIntService(), ['default'])],

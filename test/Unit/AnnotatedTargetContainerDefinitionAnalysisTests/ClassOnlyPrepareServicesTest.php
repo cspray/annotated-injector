@@ -33,55 +33,55 @@ class ClassOnlyPrepareServicesTest extends AnnotatedTargetContainerDefinitionCom
         return Fixtures::classOnlyPrepareServices();
     }
 
-    protected function aliasProvider() : array {
+    public static function aliasProvider() : array {
         return [
             [new ExpectedAliasDefinition(Fixtures::classOnlyPrepareServices()->fooInterface(), Fixtures::classOnlyPrepareServices()->fooImplementation())]
         ];
     }
 
-    protected function serviceTypeProvider() : array {
+    public static function serviceTypeProvider() : array {
         return [
             [new ExpectedServiceType(Fixtures::classOnlyPrepareServices()->fooInterface())],
             [new ExpectedServiceType(Fixtures::classOnlyPrepareServices()->fooImplementation())]
         ];
     }
 
-    protected function serviceNameProvider() : array {
+    public static function serviceNameProvider() : array {
         return [
             [new ExpectedServiceName(Fixtures::classOnlyPrepareServices()->fooInterface(), null)],
             [new ExpectedServiceName(Fixtures::classOnlyPrepareServices()->fooImplementation(), null)]
         ];
     }
 
-    protected function serviceIsPrimaryProvider() : array {
+    public static function serviceIsPrimaryProvider() : array {
         return [
             [new ExpectedServiceIsPrimary(Fixtures::classOnlyPrepareServices()->fooInterface(), false)],
             [new ExpectedServiceIsPrimary(Fixtures::classOnlyPrepareServices()->fooImplementation(), false)]
         ];
     }
 
-    protected function serviceIsConcreteProvider() : array {
+    public static function serviceIsConcreteProvider() : array {
         return [
             [new ExpectedServiceIsConcrete(Fixtures::classOnlyPrepareServices()->fooInterface(), false)],
             [new ExpectedServiceIsConcrete(Fixtures::classOnlyPrepareServices()->fooImplementation(), true)]
         ];
     }
 
-    protected function serviceIsAbstractProvider() : array {
+    public static function serviceIsAbstractProvider() : array {
         return [
             [new ExpectedServiceIsAbstract(Fixtures::classOnlyPrepareServices()->fooInterface(), true)],
             [new ExpectedServiceIsAbstract(Fixtures::classOnlyPrepareServices()->fooImplementation(), false)]
         ];
     }
 
-    protected function serviceProfilesProvider() : array {
+    public static function serviceProfilesProvider() : array {
         return [
             [new ExpectedServiceProfiles(Fixtures::classOnlyPrepareServices()->fooInterface(), ['default'])],
             [new ExpectedServiceProfiles(Fixtures::classOnlyPrepareServices()->fooImplementation(), ['default'])]
         ];
     }
 
-    protected function servicePrepareProvider() : array {
+    public static function servicePrepareProvider() : array {
         return [
             [new ExpectedServicePrepare(Fixtures::classOnlyPrepareServices()->fooImplementation(), 'setBar')]
         ];

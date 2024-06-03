@@ -10,6 +10,7 @@ use Cspray\AnnotatedContainer\Unit\AnnotatedTargetContainerDefinitionAnalysisTes
 use Cspray\AnnotatedContainer\Unit\AnnotatedTargetContainerDefinitionAnalysisTests\DataProviderExpects\ExpectedServiceName;
 use Cspray\AnnotatedContainer\Unit\AnnotatedTargetContainerDefinitionAnalysisTests\DataProviderExpects\ExpectedServiceProfiles;
 use Cspray\AnnotatedContainer\Unit\AnnotatedTargetContainerDefinitionAnalysisTests\DataProviderExpects\ExpectedServiceType;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 trait HasServiceDefinitionTestsTrait {
 
@@ -17,17 +18,17 @@ trait HasServiceDefinitionTestsTrait {
 
     abstract protected function getSubject() : ContainerDefinition;
 
-    abstract protected function serviceTypeProvider() : array;
+    abstract public static function serviceTypeProvider() : array;
 
-    abstract protected function serviceNameProvider() : array;
+    abstract public static function serviceNameProvider() : array;
 
-    abstract protected function serviceIsPrimaryProvider() : array;
+    abstract public static function serviceIsPrimaryProvider() : array;
 
-    abstract protected function serviceIsConcreteProvider() : array;
+    abstract public static function serviceIsConcreteProvider() : array;
 
-    abstract protected function serviceIsAbstractProvider() : array;
+    abstract public static function serviceIsAbstractProvider() : array;
 
-    abstract protected function serviceProfilesProvider() : array;
+    abstract public static function serviceProfilesProvider() : array;
 
     final public function testExpectedServiceTypeCount() : void {
         $expectedCount = count($this->serviceTypeProvider());
@@ -99,9 +100,7 @@ trait HasServiceDefinitionTestsTrait {
         );
     }
 
-    /**
-     * @dataProvider serviceTypeProvider
-     */
+    #[DataProvider('serviceTypeProvider')]
     final public function testExpectedServiceTypes(ExpectedServiceType $expectedServiceType) : void {
         $serviceDefinition = $this->getServiceDefinition($this->getSubject()->getServiceDefinitions(), $expectedServiceType->type->getName());
 

@@ -73,7 +73,7 @@ class AnnotatedTargetContainerDefinitionAnalyzerTest extends TestCase {
     public function testLogEmptyScanDirectories() : void {
         try {
             $this->runAnalysisDirectory([]);
-        } catch (InvalidScanDirectories $exception) {
+        } catch (InvalidScanDirectories) {
             // noop, we expect this
         } finally {
             $expected = [
@@ -96,7 +96,7 @@ class AnnotatedTargetContainerDefinitionAnalyzerTest extends TestCase {
     public function testLogServicePrepareNotOnService() : void {
         try {
             $this->runAnalysisDirectory(__DIR__ . '/LogicalErrorApps/ServicePrepareNotService');
-        } catch (InvalidServicePrepare $exception) {
+        } catch (InvalidServicePrepare) {
             // noop, we expect this
         } finally {
             $expected = [
@@ -127,7 +127,7 @@ class AnnotatedTargetContainerDefinitionAnalyzerTest extends TestCase {
                 Fixtures::singleConcreteService()->getPath(),
                 Fixtures::configurationServices()->getPath()
             ]);
-        } catch (InvalidScanDirectories $exception) {
+        } catch (InvalidScanDirectories) {
             // noop, we expect this
         } finally {
             $expected = [
@@ -156,7 +156,7 @@ class AnnotatedTargetContainerDefinitionAnalyzerTest extends TestCase {
     public function testLogImplicitServiceDelegateHasNoReturnType() : void {
         try {
             $this->runAnalysisDirectory(__DIR__ . '/LogicalErrorApps/ImplicitServiceDelegateNoType');
-        } catch (InvalidServiceDelegate $exception) {
+        } catch (InvalidServiceDelegate) {
             // noop, we expect this
         } finally {
             $expected = [
@@ -179,7 +179,7 @@ class AnnotatedTargetContainerDefinitionAnalyzerTest extends TestCase {
     public function testLogImplicitServiceDelegateHasScalarReturnType() : void {
         try {
             $this->runAnalysisDirectory(__DIR__ . '/LogicalErrorApps/ImplicitServiceDelegateScalarType');
-        } catch (InvalidServiceDelegate $exception) {
+        } catch (InvalidServiceDelegate) {
             // noop, we expect this
         } finally {
             $expected = [
@@ -202,7 +202,7 @@ class AnnotatedTargetContainerDefinitionAnalyzerTest extends TestCase {
     public function testLogImplicitServiceDelegateHasIntersectionReturnType() : void {
         try {
             $this->runAnalysisDirectory(__DIR__ . '/LogicalErrorApps/ImplicitServiceDelegateIntersectionType');
-        } catch (InvalidServiceDelegate $exception) {
+        } catch (InvalidServiceDelegate) {
             // noop we expect this
         } finally {
             $expected = [
@@ -225,7 +225,7 @@ class AnnotatedTargetContainerDefinitionAnalyzerTest extends TestCase {
     public function testLogImplicitServiceDelegateHasUnionReturnType() {
         try {
             $this->runAnalysisDirectory(__DIR__ . '/LogicalErrorApps/ImplicitServiceDelegateUnionType');
-        } catch (InvalidServiceDelegate $exception) {
+        } catch (InvalidServiceDelegate) {
             // noop, we expect this
         } finally {
             $expected = [

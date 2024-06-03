@@ -10,7 +10,7 @@ trait HasAliasDefinitionTestsTrait {
 
     abstract protected function getSubject() : ContainerDefinition;
 
-    abstract protected function aliasProvider() : array;
+    abstract public static function aliasProvider() : array;
 
     final public function testExpectedAliasCount() : void {
         $expectedCount = count($this->aliasProvider());

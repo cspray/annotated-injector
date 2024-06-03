@@ -10,7 +10,7 @@ trait HasServicePrepareDefinitionTestsTrait {
 
     abstract protected function getSubject() : ContainerDefinition;
 
-    abstract protected function servicePrepareProvider() : array;
+    abstract public static function servicePrepareProvider() : array;
 
     final public function testServicePrepareDefinitionsCount() : void {
         $expectedCount = count($this->servicePrepareProvider());

@@ -13,9 +13,9 @@ trait HasConfigurationDefinitionTestsTrait {
 
     abstract protected function getSubject() : ContainerDefinition;
 
-    abstract protected function configurationTypeProvider() : array;
+    abstract public static function configurationTypeProvider() : array;
 
-    abstract protected function configurationNameProvider() : array;
+    abstract public static function configurationNameProvider() : array;
 
     final public function testConfigurationTypeCount() : void {
         $expected = count($this->configurationTypeProvider());

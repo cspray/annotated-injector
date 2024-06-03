@@ -29,15 +29,7 @@ use Psr\Log\LoggerInterface;
 final class Bootstrap {
 
     private readonly BootstrappingDirectoryResolver $directoryResolver;
-    /**
-     * @deprecated
-     */
-    private readonly ?LoggerInterface $logger;
     private readonly ParameterStoreFactory $parameterStoreFactory;
-    private readonly ?DefinitionProviderFactory $definitionProviderFactory;
-    private readonly ?ObserverFactory $observerFactory;
-
-    private readonly ?ContainerFactory $containerFactory;
 
     private readonly Stopwatch $stopwatch;
 
@@ -48,20 +40,19 @@ final class Bootstrap {
 
     public function __construct(
         BootstrappingDirectoryResolver $directoryResolver = null,
-        LoggerInterface $logger = null,
+        /**
+         * @deprecated
+         */
+        private readonly ?LoggerInterface $logger = null,
         ParameterStoreFactory $parameterStoreFactory = null,
-        DefinitionProviderFactory $definitionProviderFactory = null,
-        ObserverFactory $observerFactory = null,
+        private readonly ?DefinitionProviderFactory $definitionProviderFactory = null,
+        private readonly ?ObserverFactory $observerFactory = null,
         Stopwatch $stopwatch = null,
-        ContainerFactory $containerFactory = null
+        private readonly ?ContainerFactory $containerFactory = null
     ) {
         $this->directoryResolver = $directoryResolver ?? $this->defaultDirectoryResolver();
-        $this->logger = $logger;
         $this->parameterStoreFactory = $parameterStoreFactory ?? new DefaultParameterStoreFactory();
-        $this->definitionProviderFactory = $definitionProviderFactory;
-        $this->observerFactory = $observerFactory;
         $this->stopwatch = $stopwatch ?? new Stopwatch();
-        $this->containerFactory = $containerFactory;
     }
 
     private function defaultDirectoryResolver() : BootstrappingDirectoryResolver {

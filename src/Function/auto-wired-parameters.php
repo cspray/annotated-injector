@@ -99,7 +99,6 @@ function serviceParam(string $name, ObjectType $service) : AutowireableParameter
  * passed to the parameter.
  *
  * @param string $name
- * @param mixed $value
  * @return AutowireableParameter
  * @throws InvalidAutowireParameter
  */

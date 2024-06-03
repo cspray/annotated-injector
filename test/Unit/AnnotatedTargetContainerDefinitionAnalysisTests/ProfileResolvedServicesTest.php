@@ -32,7 +32,7 @@ class ProfileResolvedServicesTest extends AnnotatedTargetContainerDefinitionComp
         return Fixtures::profileResolvedServices();
     }
 
-    protected function serviceTypeProvider() : array {
+    public static function serviceTypeProvider() : array {
         return [
             [new ExpectedServiceType(Fixtures::profileResolvedServices()->fooInterface())],
             [new ExpectedServiceType(Fixtures::profileResolvedServices()->devImplementation())],
@@ -41,7 +41,7 @@ class ProfileResolvedServicesTest extends AnnotatedTargetContainerDefinitionComp
         ];
     }
 
-    protected function serviceNameProvider() : array {
+    public static function serviceNameProvider() : array {
         return [
             [new ExpectedServiceName(Fixtures::profileResolvedServices()->fooInterface(), null)],
             [new ExpectedServiceName(Fixtures::profileResolvedServices()->devImplementation(), null)],
@@ -50,7 +50,7 @@ class ProfileResolvedServicesTest extends AnnotatedTargetContainerDefinitionComp
         ];
     }
 
-    protected function serviceIsPrimaryProvider() : array {
+    public static function serviceIsPrimaryProvider() : array {
         return [
             [new ExpectedServiceIsPrimary(Fixtures::profileResolvedServices()->fooInterface(), false)],
             [new ExpectedServiceIsPrimary(Fixtures::profileResolvedServices()->devImplementation(), false)],
@@ -59,7 +59,7 @@ class ProfileResolvedServicesTest extends AnnotatedTargetContainerDefinitionComp
         ];
     }
 
-    protected function serviceIsConcreteProvider() : array {
+    public static function serviceIsConcreteProvider() : array {
         return [
             [new ExpectedServiceIsConcrete(Fixtures::profileResolvedServices()->fooInterface(), false)],
             [new ExpectedServiceIsConcrete(Fixtures::profileResolvedServices()->devImplementation(), true)],
@@ -68,7 +68,7 @@ class ProfileResolvedServicesTest extends AnnotatedTargetContainerDefinitionComp
         ];
     }
 
-    protected function serviceIsAbstractProvider() : array {
+    public static function serviceIsAbstractProvider() : array {
         return [
             [new ExpectedServiceIsAbstract(Fixtures::profileResolvedServices()->fooInterface(), true)],
             [new ExpectedServiceIsAbstract(Fixtures::profileResolvedServices()->devImplementation(), false)],
@@ -77,7 +77,7 @@ class ProfileResolvedServicesTest extends AnnotatedTargetContainerDefinitionComp
         ];
     }
 
-    protected function serviceProfilesProvider() : array {
+    public static function serviceProfilesProvider() : array {
         return [
             [new ExpectedServiceProfiles(Fixtures::profileResolvedServices()->fooInterface(), ['default'])],
             [new ExpectedServiceProfiles(Fixtures::profileResolvedServices()->devImplementation(), ['dev'])],
@@ -86,7 +86,7 @@ class ProfileResolvedServicesTest extends AnnotatedTargetContainerDefinitionComp
         ];
     }
 
-    protected function aliasProvider() : array {
+    public static function aliasProvider() : array {
         return [
             [new ExpectedAliasDefinition(Fixtures::profileResolvedServices()->fooInterface(), Fixtures::profileResolvedServices()->devImplementation())],
             [new ExpectedAliasDefinition(Fixtures::profileResolvedServices()->fooInterface(), Fixtures::profileResolvedServices()->testImplementation())],

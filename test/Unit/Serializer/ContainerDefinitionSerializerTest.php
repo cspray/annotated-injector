@@ -1756,7 +1756,7 @@ XML;
         self::assertNull($actual);
     }
 
-    public function fixturesDirProvider() : array {
+    public static function fixturesDirProvider() : array {
         return [
             'singleConcreteService' => [Fixtures::singleConcreteService()],
             'injectConstructorServices' => [Fixtures::injectConstructorServices()],
@@ -1770,9 +1770,7 @@ XML;
         ];
     }
 
-    /**
-     * @dataProvider fixturesDirProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('fixturesDirProvider')]
     public function testScannedAndSerializedContainerDefinitionMatchesDeserialized(Fixture $fixture) : void {
         $compiler = new AnnotatedTargetContainerDefinitionAnalyzer(
             new PhpParserAnnotatedTargetParser(),

@@ -9,7 +9,7 @@ trait HasInjectDefinitionTestsTrait {
 
     abstract protected function getSubject() : ContainerDefinition;
 
-    abstract protected function injectProvider() : array;
+    abstract public static function injectProvider() : array;
 
     final public function testInjectDefinitionCount() : void {
         $expectedCount = count($this->injectProvider());

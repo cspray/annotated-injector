@@ -13,7 +13,6 @@ final class StdoutLoggerTest extends TestCase {
     private $streamFilter;
 
     protected function setUp() : void {
-        parent::setUp();
         if (!in_array('test.stream.buffer', stream_get_filters())) {
             self::assertTrue(stream_filter_register('test.stream.buffer', StreamBuffer::class));
         }
@@ -23,7 +22,6 @@ final class StdoutLoggerTest extends TestCase {
     }
 
     protected function tearDown() : void {
-        parent::tearDown();
         StreamBuffer::clearBuffer();
         self::assertTrue(stream_filter_remove($this->streamFilter));
     }

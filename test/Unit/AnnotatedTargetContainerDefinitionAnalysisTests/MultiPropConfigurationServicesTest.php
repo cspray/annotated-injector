@@ -29,19 +29,19 @@ class MultiPropConfigurationServicesTest extends AnnotatedTargetContainerDefinit
         return Fixtures::multiPropConfigurationServices();
     }
 
-    protected function configurationTypeProvider() : array {
+    public static function configurationTypeProvider() : array {
         return [
             [new ExpectedConfigurationType(Fixtures::multiPropConfigurationServices()->myConfig())]
         ];
     }
 
-    protected function configurationNameProvider() : array {
+    public static function configurationNameProvider() : array {
         return [
             [new ExpectedConfigurationName(Fixtures::multiPropConfigurationServices()->myConfig(), null)]
         ];
     }
 
-    protected function injectProvider() : array {
+    public static function injectProvider() : array {
         return [
             [ExpectedInject::forClassProperty(
                 Fixtures::multiPropConfigurationServices()->myConfig(),

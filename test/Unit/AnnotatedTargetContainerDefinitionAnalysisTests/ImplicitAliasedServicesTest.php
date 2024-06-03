@@ -32,49 +32,49 @@ class ImplicitAliasedServicesTest extends AnnotatedTargetContainerDefinitionComp
         return Fixtures::implicitAliasedServices();
     }
 
-    protected function serviceTypeProvider() : array {
+    public static function serviceTypeProvider() : array {
         return [
             [new ExpectedServiceType(Fixtures::implicitAliasedServices()->fooInterface())],
             [new ExpectedServiceType(Fixtures::implicitAliasedServices()->fooImplementation())]
         ];
     }
 
-    protected function serviceNameProvider() : array {
+    public static function serviceNameProvider() : array {
         return [
             [new ExpectedServiceName(Fixtures::implicitAliasedServices()->fooInterface(), null)],
             [new ExpectedServiceName(Fixtures::implicitAliasedServices()->fooImplementation(), null)]
         ];
     }
 
-    protected function serviceIsPrimaryProvider() : array {
+    public static function serviceIsPrimaryProvider() : array {
         return [
             [new ExpectedServiceIsPrimary(Fixtures::implicitAliasedServices()->fooInterface(), false)],
             [new ExpectedServiceIsPrimary(Fixtures::implicitAliasedServices()->fooImplementation(), false)]
         ];
     }
 
-    protected function serviceIsConcreteProvider() : array {
+    public static function serviceIsConcreteProvider() : array {
         return [
             [new ExpectedServiceIsConcrete(Fixtures::implicitAliasedServices()->fooImplementation(), true)],
             [new ExpectedServiceIsConcrete(Fixtures::implicitAliasedServices()->fooInterface(), false)]
         ];
     }
 
-    protected function serviceIsAbstractProvider() : array {
+    public static function serviceIsAbstractProvider() : array {
         return [
             [new ExpectedServiceIsAbstract(Fixtures::implicitAliasedServices()->fooImplementation(), false)],
             [new ExpectedServiceIsAbstract(Fixtures::implicitAliasedServices()->fooInterface(), true)]
         ];
     }
 
-    protected function serviceProfilesProvider() : array {
+    public static function serviceProfilesProvider() : array {
         return [
             [new ExpectedServiceProfiles(Fixtures::implicitAliasedServices()->fooImplementation(), ['default'])],
             [new ExpectedServiceProfiles(Fixtures::implicitAliasedServices()->fooInterface(), ['default'])]
         ];
     }
 
-    protected function aliasProvider() : array {
+    public static function aliasProvider() : array {
         return [
             [new ExpectedAliasDefinition(Fixtures::implicitAliasedServices()->fooInterface(), Fixtures::implicitAliasedServices()->fooImplementation())]
         ];

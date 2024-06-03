@@ -32,7 +32,7 @@ class SubNamespacedServicesTest extends AnnotatedTargetContainerDefinitionCompil
         return Fixtures::subNamespacedServices();
     }
 
-    protected function aliasProvider() : array {
+    public static function aliasProvider() : array {
         return [
             [new ExpectedAliasDefinition(Fixtures::subNamespacedServices()->barInterface(), Fixtures::subNamespacedServices()->barImplementation())],
             [new ExpectedAliasDefinition(Fixtures::subNamespacedServices()->bazInterface(), Fixtures::subNamespacedServices()->bazImplementation())],
@@ -40,7 +40,7 @@ class SubNamespacedServicesTest extends AnnotatedTargetContainerDefinitionCompil
         ];
     }
 
-    protected function serviceTypeProvider() : array {
+    public static function serviceTypeProvider() : array {
         return [
             [new ExpectedServiceType(Fixtures::subNamespacedServices()->barInterface())],
             [new ExpectedServiceType(Fixtures::subNamespacedServices()->bazInterface())],
@@ -51,7 +51,7 @@ class SubNamespacedServicesTest extends AnnotatedTargetContainerDefinitionCompil
         ];
     }
 
-    protected function serviceNameProvider() : array {
+    public static function serviceNameProvider() : array {
         return [
             [new ExpectedServiceName(Fixtures::subNamespacedServices()->fooInterface(), null)],
             [new ExpectedServiceName(Fixtures::subNamespacedServices()->barInterface(), null)],
@@ -62,7 +62,7 @@ class SubNamespacedServicesTest extends AnnotatedTargetContainerDefinitionCompil
         ];
     }
 
-    protected function serviceIsPrimaryProvider() : array {
+    public static function serviceIsPrimaryProvider() : array {
         return [
             [new ExpectedServiceIsPrimary(Fixtures::subNamespacedServices()->fooInterface(), false)],
             [new ExpectedServiceIsPrimary(Fixtures::subNamespacedServices()->barInterface(), false)],
@@ -73,7 +73,7 @@ class SubNamespacedServicesTest extends AnnotatedTargetContainerDefinitionCompil
         ];
     }
 
-    protected function serviceIsConcreteProvider() : array {
+    public static function serviceIsConcreteProvider() : array {
         return [
             [new ExpectedServiceIsConcrete(Fixtures::subNamespacedServices()->fooInterface(), false)],
             [new ExpectedServiceIsConcrete(Fixtures::subNamespacedServices()->barInterface(), false)],
@@ -84,7 +84,7 @@ class SubNamespacedServicesTest extends AnnotatedTargetContainerDefinitionCompil
         ];
     }
 
-    protected function serviceIsAbstractProvider() : array {
+    public static function serviceIsAbstractProvider() : array {
         return [
             [new ExpectedServiceIsAbstract(Fixtures::subNamespacedServices()->fooInterface(), true)],
             [new ExpectedServiceIsAbstract(Fixtures::subNamespacedServices()->barInterface(), true)],
@@ -95,7 +95,7 @@ class SubNamespacedServicesTest extends AnnotatedTargetContainerDefinitionCompil
         ];
     }
 
-    protected function serviceProfilesProvider() : array {
+    public static function serviceProfilesProvider() : array {
         return [
             [new ExpectedServiceProfiles(Fixtures::subNamespacedServices()->barInterface(), ['default'])],
             [new ExpectedServiceProfiles(Fixtures::subNamespacedServices()->bazInterface(), ['default'])],
