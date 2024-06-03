@@ -16,7 +16,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php_version: 8.2
+          php-version: 8.2
           extensions: xdebug
           tools: composer:2
       - name: Composer
@@ -26,4 +26,4 @@ jobs:
           XDEBUG_MODE: coverage
         run: ./tools/phpunit/vendor/bin/phpunit
       - name: Psalm
-        run: ./vendor/bin/psalm
+        run: ./tools/psalm/vendor/bin/psalm

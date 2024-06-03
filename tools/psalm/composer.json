@@ -1,0 +1,6 @@
+{
+    "require": {
+        "vimeo/psalm": "^5.24",
+        "cspray/phinal": "^2.0"
+    }
+}

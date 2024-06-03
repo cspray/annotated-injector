@@ -5,24 +5,18 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="https://getpsalm.org/schema/config"
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+    findUnusedBaselineEntry="true"
+    findUnusedCode="true"
     errorBaseline="known-issues.xml"
 >
-  <projectFiles>
-    <directory name="src"/>
-    <ignoreFiles>
-      <directory name="vendor"/>
-    </ignoreFiles>
-  </projectFiles>
+    <projectFiles>
+        <directory name="src" />
+        <ignoreFiles>
+            <directory name="vendor" />
+        </ignoreFiles>
+    </projectFiles>
 
-  <issueHandlers>
-    <PropertyNotSetInConstructor>
-      <errorLevel type="suppress">
-        <file name="src/ContainerFactory/*Builder.php" />
-        <file name="src/Definition/*Builder.php"/>
-      </errorLevel>
-    </PropertyNotSetInConstructor>
-  </issueHandlers>
-  <plugins>
-    <pluginClass class="Cspray\Phinal\Plugin"/>
-  </plugins>
+    <plugins>
+        <pluginClass class="Cspray\Phinal\Plugin" />
+    </plugins>
 </psalm>

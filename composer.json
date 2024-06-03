@@ -28,14 +28,11 @@
     "psr/log": "^2 || ^3"
   },
   "require-dev": {
-    "cspray/phinal": "^1.0",
-    "mikey179/vfsstream": "^1.6",
+    "illuminate/container": "^10.11",
+    "jetbrains/phpstorm-attributes": "^1.1",
     "php-di/php-di": "^7.0",
     "rdlowrey/auryn": "^1.4",
-    "roave/security-advisories": "dev-latest",
-    "vimeo/psalm": "^4.24",
-    "illuminate/container": "^10.11",
-    "jetbrains/phpstorm-attributes": "^1.1"
+    "roave/security-advisories": "dev-latest"
   },
   "bin": ["bin/annotated-container"],
   "autoload": {
