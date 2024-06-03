@@ -9,6 +9,7 @@ use Cspray\AnnotatedContainer\Autowire\AutowireableParameterSet;
 use Cspray\AnnotatedContainer\ContainerFactory\AliasResolution\AliasDefinitionResolution;
 use Cspray\AnnotatedContainer\ContainerFactory\AliasResolution\AliasDefinitionResolver;
 use Cspray\AnnotatedContainer\Definition\ConfigurationDefinition;
+use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 use Cspray\AnnotatedContainer\Definition\InjectDefinition;
 use Cspray\AnnotatedContainer\Definition\ServiceDefinition;
 use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinition;
@@ -17,6 +18,7 @@ use Cspray\AnnotatedContainer\Exception\ServiceNotFound;
 use Cspray\AnnotatedContainer\Profiles\ActiveProfiles;
 use Cspray\Typiphy\ObjectType;
 use Illuminate\Contracts\Container\Container;
+use function Cspray\Typiphy\arrayType;
 use function Cspray\Typiphy\objectType;
 
 final class IlluminateContainerFactory extends AbstractContainerFactory {
@@ -32,8 +34,8 @@ final class IlluminateContainerFactory extends AbstractContainerFactory {
         return objectType(\Illuminate\Container\Container::class);
     }
 
-    protected function getContainerFactoryState() : ContainerFactoryState {
-        return new IlluminateContainerFactoryState($this->container);
+    protected function getContainerFactoryState(ContainerDefinition $containerDefinition) : ContainerFactoryState {
+        return new IlluminateContainerFactoryState($this->container, $containerDefinition);
     }
 
     protected function handleServiceDefinition(ContainerFactoryState $state, ServiceDefinition $definition) : void {
@@ -167,6 +169,28 @@ final class IlluminateContainerFactory extends AbstractContainerFactory {
                             $container->when($service)
                                 ->needs($value->type->getName())
                                 ->give($value->name);
+                        } else if ($value instanceof ServiceCollectorReference) {
+                            if ($value->collectionType === arrayType()) {
+                                $paramIdentifier = sprintf('$%s', $param);
+                            } else {
+                                $paramIdentifier = $value->collectionType->getName();
+                            }
+
+                            $container->when($service)
+                                ->needs($paramIdentifier)
+                                ->give(function() use($state, $container, $value) {
+                                    $values = [];
+                                    foreach ($state->containerDefinition->getServiceDefinitions() as $serviceDefinition) {
+                                        if ($serviceDefinition->isAbstract()) {
+                                            continue;
+                                        }
+
+                                        if (is_a($serviceDefinition->getType()->getName(), $value->valueType->getName(), true)) {
+                                            $values[] = $container->get($serviceDefinition->getType()->getName());
+                                        }
+                                    }
+                                    return $value->listOf->toCollection($values);
+                                });
                         } else {
                             $container->when($service)
                                 ->needs(sprintf('$%s', $param))

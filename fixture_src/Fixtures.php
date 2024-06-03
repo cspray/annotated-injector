@@ -194,4 +194,12 @@ final class Fixtures {
         return new BeanLikeConfigAbstractFixture();
     }
 
+    public static function injectServiceCollection() : InjectServiceCollectionFixture {
+        return new InjectServiceCollectionFixture();
+    }
+
+    public static function injectServiceDomainCollection() : InjectServiceDomainCollectionFixture {
+        return new InjectServiceDomainCollectionFixture();
+    }
+
 }

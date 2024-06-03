@@ -9,6 +9,10 @@ use Cspray\Typiphy\ObjectType;
  */
 final class ContainerReference {
 
+    /**
+     * @param non-empty-string $name
+     * @param ObjectType $type
+     */
     public function __construct(
         public readonly string $name,
         public readonly ObjectType $type
