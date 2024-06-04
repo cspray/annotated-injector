@@ -18,10 +18,10 @@
     "composer-runtime-api": "^2",
     "cspray/annotated-container-adr": "^3",
     "cspray/annotated-container-attribute": "^1.3",
-    "cspray/annotated-target": "^v0.3",
+    "cspray/annotated-target": "^v1.1",
     "cspray/precision-stopwatch": "^0.2.0",
     "cspray/typiphy": "^0.3",
-    "nikic/php-parser": "^4.10",
+    "nikic/php-parser": "^5",
     "ocramius/package-versions": "^2.7",
     "psr/container": "^2.0"
   },
