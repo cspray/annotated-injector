@@ -4,9 +4,9 @@ This document details which versions of Annotated Container are being supported 
 
 ## Supported Versions
 
-As of 2022-06-25 the following versions are supported by Annotated Container and will receive security fixes:
+As of 2024-06-04 the only supported series is the **2.x** release. All versions in this release series will receive security fixes. Using versions prior to this is not advised and efforts should be made to update the library.
 
-- v0.6
+It is planned for the 2.x series to continue receiving security fixes when the 3.x release goes live.
 
 ## Reporting a Vulnerability
 
