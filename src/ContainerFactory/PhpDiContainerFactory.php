@@ -111,7 +111,7 @@ final class PhpDiContainerFactory extends AbstractContainerFactory implements Co
         }
 
         $servicePrepareDefinitions = [];
-        foreach ($state->getServicePrepares() as $service => $methods) {
+        foreach ($state->servicePrepares() as $service => $methods) {
             $servicePrepareDefinitions[$service] = decorate(static function (object $service, Container $container) use($state, $methods) {
                 foreach ($methods as $method) {
                     $params = $state->parametersForMethod($service::class, $method);

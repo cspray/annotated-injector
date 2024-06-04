@@ -104,7 +104,7 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
          * @var class-string $serviceType
          * @var list<string> $methods
          */
-        foreach ($state->getServicePrepares() as $serviceType => $methods) {
+        foreach ($state->servicePrepares() as $serviceType => $methods) {
             $state->injector->prepare(
                 $serviceType,
                 static function(object $object) use($state, $methods) : void {

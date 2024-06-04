@@ -135,7 +135,7 @@ final class IlluminateContainerFactory extends AbstractContainerFactory {
         }
 
         $container->afterResolving(static function ($created, Container $container) use($state) {
-            foreach ($state->getServicePrepares() as $service => $methods) {
+            foreach ($state->servicePrepares() as $service => $methods) {
                 if ($created instanceof $service) {
                     foreach ($methods as $method) {
                         $params = [];
