@@ -56,8 +56,8 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
         $alias = $resolution->aliasDefinition();
         if ($alias !== null) {
             $state->injector->alias(
-                $alias->getAbstractService()->getName(),
-                $alias->getConcreteService()->getName()
+                $alias->abstractService()->getName(),
+                $alias->concreteService()->getName()
             );
         }
     }

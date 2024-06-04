@@ -23,9 +23,9 @@ trait HasAliasDefinitionTestsTrait {
     final public function testExpectedAliasDefinition(ExpectedAliasDefinition $expectedAliasDefinition) : void {
         $concreteDefinitionsMatchingAbstract = array_filter(
             $this->getSubject()->getAliasDefinitions(),
-            fn(AliasDefinition $aliasDefinition) => $aliasDefinition->getAbstractService() === $expectedAliasDefinition->abstractType
+            fn(AliasDefinition $aliasDefinition) => $aliasDefinition->abstractService() === $expectedAliasDefinition->abstractType
         );
-        $concreteTypes = array_map(fn(AliasDefinition $aliasDefinition) => $aliasDefinition->getConcreteService(), $concreteDefinitionsMatchingAbstract);
+        $concreteTypes = array_map(fn(AliasDefinition $aliasDefinition) => $aliasDefinition->concreteService(), $concreteDefinitionsMatchingAbstract);
 
         $this->assertContains($expectedAliasDefinition->concreteType, $concreteTypes);
     }

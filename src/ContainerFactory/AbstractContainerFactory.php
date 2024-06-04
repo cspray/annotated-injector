@@ -70,7 +70,7 @@ abstract class AbstractContainerFactory implements ContainerFactory {
         }
 
         foreach ($definition->getAliasDefinitions() as $aliasDefinition) {
-            $resolution = $this->aliasDefinitionResolver->resolveAlias($definition, $aliasDefinition->getAbstractService());
+            $resolution = $this->aliasDefinitionResolver->resolveAlias($definition, $aliasDefinition->abstractService());
             $this->handleAliasDefinition($state, $resolution);
         }
 

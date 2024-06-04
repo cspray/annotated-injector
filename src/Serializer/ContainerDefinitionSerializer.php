@@ -117,10 +117,10 @@ final class ContainerDefinitionSerializer {
             );
 
             $aliasDefinitionNode->appendChild(
-                $dom->createElementNS(self::XML_SCHEMA, 'abstractService', $aliasDefinition->getAbstractService()->getName())
+                $dom->createElementNS(self::XML_SCHEMA, 'abstractService', $aliasDefinition->abstractService()->getName())
             );
             $aliasDefinitionNode->appendChild(
-                $dom->createElementNS(self::XML_SCHEMA, 'concreteService', $aliasDefinition->getConcreteService()->getName())
+                $dom->createElementNS(self::XML_SCHEMA, 'concreteService', $aliasDefinition->concreteService()->getName())
             );
         }
     }

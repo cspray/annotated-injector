@@ -67,7 +67,7 @@ final class IlluminateContainerFactory extends AbstractContainerFactory {
         assert($state instanceof IlluminateContainerFactoryState);
         $definition = $resolution->aliasDefinition();
         if ($definition !== null) {
-            $state->addAlias($definition->getAbstractService()->getName(), $definition->getConcreteService()->getName());
+            $state->addAlias($definition->abstractService()->getName(), $definition->concreteService()->getName());
         }
     }
 

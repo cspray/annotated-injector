@@ -50,8 +50,8 @@ trait ContainerDefinitionAssertionsTrait /** extends \PHPUnit\TestCase */ {
         foreach ($aliasDefinitions as $aliasDefinition) {
             $this->assertInstanceOf(AliasDefinition::class, $aliasDefinition);
             $actualMap[] = [
-                $aliasDefinition->getAbstractService()->getName(),
-                $aliasDefinition->getConcreteService()->getName()
+                $aliasDefinition->abstractService()->getName(),
+                $aliasDefinition->concreteService()->getName()
             ];
         }
 

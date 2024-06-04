@@ -28,14 +28,14 @@ final class ProfilesAwareContainerDefinition implements ContainerDefinition {
     public function getAliasDefinitions() : array {
         $filtered = [];
         foreach ($this->containerDefinition->getAliasDefinitions() as $aliasDefinition) {
-            $abstract = $this->getServiceDefinition($aliasDefinition->getAbstractService());
+            $abstract = $this->getServiceDefinition($aliasDefinition->abstractService());
             if ($abstract === null) {
-                throw InvalidAlias::fromAbstractNotService($aliasDefinition->getAbstractService()->getName());
+                throw InvalidAlias::fromAbstractNotService($aliasDefinition->abstractService()->getName());
             }
 
-            $concrete = $this->getServiceDefinition($aliasDefinition->getConcreteService());
+            $concrete = $this->getServiceDefinition($aliasDefinition->concreteService());
             if ($concrete === null) {
-                throw InvalidAlias::fromConcreteNotService($aliasDefinition->getConcreteService()->getName());
+                throw InvalidAlias::fromConcreteNotService($aliasDefinition->concreteService()->getName());
             }
 
             if ($this->hasActiveProfile($abstract) && $this->hasActiveProfile($concrete)) {

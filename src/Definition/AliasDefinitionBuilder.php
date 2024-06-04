@@ -54,11 +54,11 @@ final class AliasDefinitionBuilder {
             ) {
             }
 
-            public function getAbstractService() : ObjectType {
+            public function abstractService() : ObjectType {
                 return $this->abstractService;
             }
 
-            public function getConcreteService() : ObjectType {
+            public function concreteService() : ObjectType {
                 return $this->concreteService;
             }
         };

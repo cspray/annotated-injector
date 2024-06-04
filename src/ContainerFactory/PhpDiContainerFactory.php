@@ -64,8 +64,8 @@ final class PhpDiContainerFactory extends AbstractContainerFactory implements Co
         $aliasDefinition = $resolution->aliasDefinition();
         if ($aliasDefinition !== null) {
             $state->referenceService(
-                $state->serviceKey($aliasDefinition->getAbstractService()->getName()),
-                $aliasDefinition->getConcreteService()->getName()
+                $state->serviceKey($aliasDefinition->abstractService()->getName()),
+                $aliasDefinition->concreteService()->getName()
             );
         }
     }

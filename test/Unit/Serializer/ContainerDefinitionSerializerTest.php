@@ -1045,8 +1045,8 @@ XML;
 
         self::assertCount(1, $actual->getAliasDefinitions());
         $aliasDefinition = $actual->getAliasDefinitions()[0];
-        self::assertSame(Fixtures::implicitAliasedServices()->fooInterface(), $aliasDefinition->getAbstractService());
-        self::assertSame(Fixtures::implicitAliasedServices()->fooImplementation(), $aliasDefinition->getConcreteService());
+        self::assertSame(Fixtures::implicitAliasedServices()->fooInterface(), $aliasDefinition->abstractService());
+        self::assertSame(Fixtures::implicitAliasedServices()->fooImplementation(), $aliasDefinition->concreteService());
     }
 
     public function testDeserializeServicePrepareDefinitions() : void {
