@@ -62,11 +62,11 @@ final class ValidateCommand implements Command {
         $this->validator = new LogicalConstraintValidator(...$this->logicalConstraints);
     }
 
-    public function getName() : string {
+    public function name() : string {
         return 'validate';
     }
 
-    public function getHelp() : string {
+    public function help() : string {
         return <<<TEXT
 NAME
 

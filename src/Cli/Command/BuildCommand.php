@@ -28,11 +28,11 @@ final class BuildCommand implements Command {
     ) {
     }
 
-    public function getName() : string {
+    public function name() : string {
         return 'build';
     }
 
-    public function getHelp() : string {
+    public function help() : string {
         return <<<SHELL
 NAME
 

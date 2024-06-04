@@ -21,11 +21,11 @@ final class CacheClearCommand implements Command {
     ) {
     }
 
-    public function getName() : string {
+    public function name() : string {
         return 'cache-clear';
     }
 
-    public function getHelp() : string {
+    public function help() : string {
         return <<<SHELL
 NAME
 

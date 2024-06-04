@@ -15,11 +15,11 @@ final class HelpCommand implements Command {
     ) {
     }
 
-    public function getName() : string {
+    public function name() : string {
         return 'help';
     }
 
-    public function getHelp() : string {
+    public function help() : string {
         $version = AnnotatedContainerVersion::getVersion();
         return <<<SHELL
 <bold>Annotated Container $version</bold>
@@ -55,7 +55,7 @@ SHELL;
                 $output->stdout->write('<bg:red><fg:white>!! Warning !!</fg:white></bg:red> - Expecting 1 arg, showing default help');
                 $output->stdout->br();
             }
-            $output->stdout->write($this->getHelp());
+            $output->stdout->write($this->help());
             return 0;
         }
 
@@ -67,7 +67,7 @@ SHELL;
             return 1;
         }
 
-        $output->stdout->write($command->getHelp());
+        $output->stdout->write($command->help());
         return 0;
     }
 }

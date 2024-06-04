@@ -50,11 +50,11 @@ SHELL;
     }
 
     public function testHelpCommandName() : void {
-        self::assertSame('help', $this->subject->getName());
+        self::assertSame('help', $this->subject->name());
     }
 
     public function testHelpCommandGetHelp() : void {
-        self::assertSame($this->getExpectedHelp(), $this->subject->getHelp());
+        self::assertSame($this->getExpectedHelp(), $this->subject->help());
     }
 
     public function testHelpCommandHandleNoArguments() : void {

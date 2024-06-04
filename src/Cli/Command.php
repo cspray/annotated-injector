@@ -4,9 +4,9 @@ namespace Cspray\AnnotatedContainer\Cli;
 
 interface Command {
 
-    public function getName() : string;
+    public function name() : string;
 
-    public function getHelp() : string;
+    public function help() : string;
 
     public function handle(Input $input, TerminalOutput $output) : int;
 }

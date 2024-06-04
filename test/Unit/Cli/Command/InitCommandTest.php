@@ -40,7 +40,7 @@ class InitCommandTest extends TestCase {
     }
 
     public function testGetName() : void {
-        self::assertSame('init', $this->subject->getName());
+        self::assertSame('init', $this->subject->name());
     }
 
     public function testGetHelp() : void {
@@ -198,7 +198,7 @@ OPTIONS
 
 SHELL;
 
-        self::assertSame($expected, $this->subject->getHelp());
+        self::assertSame($expected, $this->subject->help());
     }
 
     public function testInitIfConfigurationExistsThrowsException() : void {

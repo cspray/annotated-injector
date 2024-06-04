@@ -28,11 +28,11 @@ final class InitCommand implements Command {
     ) {
     }
 
-    public function getName() : string {
+    public function name() : string {
         return 'init';
     }
 
-    public function getHelp() : string {
+    public function help() : string {
         return <<<SHELL
 NAME
 
