@@ -155,5 +155,4 @@ final class Bootstrap {
             $metrics->getDurationBetweenMarkers($analysisCompleted, $metrics->getEndMarker())
         );
     }
-
 }

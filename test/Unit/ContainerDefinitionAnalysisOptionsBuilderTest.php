@@ -31,5 +31,4 @@ class ContainerDefinitionAnalysisOptionsBuilderTest extends TestCase {
 
         self::assertSame($expected, $compilerOptions->getDefinitionProvider());
     }
-
 }

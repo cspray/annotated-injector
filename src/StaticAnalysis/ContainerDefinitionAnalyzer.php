@@ -21,5 +21,5 @@ interface ContainerDefinitionAnalyzer {
      * @param ContainerDefinitionAnalysisOptions $containerDefinitionAnalysisOptions
      * @return ContainerDefinition
      */
-    public function analyze(ContainerDefinitionAnalysisOptions $containerDefinitionCompileOptions) : ContainerDefinition;
+    public function analyze(ContainerDefinitionAnalysisOptions $containerDefinitionAnalysisOptions) : ContainerDefinition;
 }

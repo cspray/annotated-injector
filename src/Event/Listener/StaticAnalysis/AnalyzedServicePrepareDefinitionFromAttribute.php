@@ -8,5 +8,4 @@ use Cspray\AnnotatedTarget\AnnotatedTarget;
 interface AnalyzedServicePrepareDefinitionFromAttribute {
 
     public function handleAnalyzedServicePrepareDefinitionFromAttribute(AnnotatedTarget $annotatedTarget, ServicePrepareDefinition $definition) : void;
-
 }

@@ -17,5 +17,4 @@ interface ContainerFactoryOptions {
      * @return Profiles
      */
     public function getProfiles() : Profiles;
-
 }

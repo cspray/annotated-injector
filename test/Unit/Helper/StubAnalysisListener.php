@@ -23,7 +23,8 @@ use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\BeforeContainerAnaly
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptions;
 use Cspray\AnnotatedTarget\AnnotatedTarget;
 
-class StubAnalysisListener implements BeforeContainerAnalysis,
+class StubAnalysisListener implements
+    BeforeContainerAnalysis,
     AnalyzedServiceDefinitionFromAttribute,
     AnalyzedServiceDelegateDefinitionFromAttribute,
     AnalyzedServicePrepareDefinitionFromAttribute,

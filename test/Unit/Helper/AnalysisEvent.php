@@ -16,5 +16,4 @@ enum AnalysisEvent {
 
     case BeforeContainerAnalysis;
     case AfterContainerAnalysis;
-
 }

@@ -7,5 +7,4 @@ use Cspray\AnnotatedContainer\Definition\AliasDefinition;
 interface AddedAliasDefinition {
 
     public function handleAddedAliasDefinition(AliasDefinition $aliasDefinition) : void;
-
 }

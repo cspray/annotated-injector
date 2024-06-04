@@ -236,5 +236,4 @@ class ThirdPartyFunctionsTest extends TestCase {
         $this->assertTrue($inject->getTargetIdentifier()->isMethodParameter());
         $this->assertSame('store-name', $inject->getStoreName());
     }
-
 }

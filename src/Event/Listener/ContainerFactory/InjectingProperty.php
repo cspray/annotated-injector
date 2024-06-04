@@ -8,5 +8,4 @@ use Cspray\AnnotatedContainer\Profiles;
 interface InjectingProperty {
 
     public function handleInjectingProperty(Profiles $profiles, InjectDefinition $injectDefinition) : void;
-
 }

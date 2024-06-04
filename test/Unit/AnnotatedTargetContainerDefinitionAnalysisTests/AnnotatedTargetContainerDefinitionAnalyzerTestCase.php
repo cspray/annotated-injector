@@ -74,6 +74,7 @@ abstract class AnnotatedTargetContainerDefinitionAnalyzerTestCase extends TestCa
     }
 
     public function testAppropriateEventsEmitted() : void {
+        $this->getSubject();
         $this->assertEmittedEvents($this->stubAnalysisListener->getTriggeredEvents());
     }
 

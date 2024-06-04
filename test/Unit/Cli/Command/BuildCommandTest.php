@@ -295,5 +295,4 @@ SHELL;
 
         self::assertSame($expected, $this->stdout->getContentsAsString());
     }
-
 }

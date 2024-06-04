@@ -87,5 +87,4 @@ final class AbstractClassAliasedServiceTest extends AnnotatedTargetContainerDefi
         self::assertCount(1, $analysisEventCollection->filter(AnalysisEvent::AddedAliasDefinition));
         self::assertSame(AnalysisEvent::AfterContainerAnalysis, $analysisEventCollection->last());
     }
-
 }

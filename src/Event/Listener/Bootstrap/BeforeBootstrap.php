@@ -7,5 +7,4 @@ use Cspray\AnnotatedContainer\Bootstrap\BootstrappingConfiguration;
 interface BeforeBootstrap {
 
     public function handleBeforeBootstrap(BootstrappingConfiguration $bootstrappingConfiguration) : void;
-
 }

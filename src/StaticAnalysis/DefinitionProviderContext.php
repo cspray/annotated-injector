@@ -34,5 +34,4 @@ interface DefinitionProviderContext {
     public function addInjectDefinition(InjectDefinition $injectDefinition) : void;
 
     public function addAliasDefinition(AliasDefinition $aliasDefinition) : void;
-
 }

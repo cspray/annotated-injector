@@ -22,5 +22,4 @@ interface BootstrappingConfiguration {
      * @return list<ParameterStore>
      */
     public function getParameterStores() : array;
-
 }

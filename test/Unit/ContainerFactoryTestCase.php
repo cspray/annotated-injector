@@ -471,5 +471,4 @@ abstract class ContainerFactoryTestCase extends TestCase {
 
         self::assertSame(['BeforeContainerCreation', 'AfterContainerCreation'], $listener->getTriggeredEvents());
     }
-
 }

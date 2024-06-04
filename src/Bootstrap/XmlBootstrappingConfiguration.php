@@ -163,5 +163,4 @@ final class XmlBootstrappingConfiguration implements BootstrappingConfiguration 
     public function getCacheDirectory() : ?string {
         return $this->cacheDir;
     }
-
 }

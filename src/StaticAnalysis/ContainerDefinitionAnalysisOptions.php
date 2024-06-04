@@ -25,5 +25,4 @@ interface ContainerDefinitionAnalysisOptions {
      */
     #[SingleEntrypointDefinitionProvider]
     public function getDefinitionProvider() : ?DefinitionProvider;
-
 }

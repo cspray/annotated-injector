@@ -91,19 +91,4 @@ trait ContainerDefinitionAssertionsTrait /** extends \PHPUnit\TestCase */ {
 
         return null;
     }
-
-    /**
-     * @param ConfigurationDefinition[] $configurationDefinitions
-     * @param string $type
-     * @return ConfigurationDefinition|null
-     */
-    protected function getConfigurationDefinition(array $configurationDefinitions, string $type) : ?ConfigurationDefinition {
-        foreach ($configurationDefinitions as $configurationDefinition) {
-            if ($configurationDefinition->getClass()->getName() === $type) {
-                return $configurationDefinition;
-            }
-        }
-
-        return null;
-    }
 }

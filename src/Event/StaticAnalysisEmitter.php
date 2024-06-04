@@ -55,5 +55,4 @@ interface StaticAnalysisEmitter {
         ContainerDefinitionAnalysisOptions $analysisOptions,
         ContainerDefinition $containerDefinition,
     ) : void;
-
 }

@@ -27,8 +27,23 @@ test:
 
 # Run static analysis checks on src and test
 static-analysis:
+    @./tools/psalm/vendor/bin/psalm --version
     @./tools/psalm/vendor/bin/psalm
+
+static-analysis-set-baseline:
+    @./tools/psalm/vendor/bin/psalm --set-baseline=known-issues.xml
+
+static-analysis-update-baseline:
+    @./tools/psalm/vendor/bin/psalm --update-baseline
 
 # Run code-linting tools on src and test
 code-lint:
-    @./tools/labrador-cs/vendor/bin/phpcs -p --standard=./tools/labrador-cs/vendor/cspray/labrador-coding-standard/ruleset.xml --exclude=Generic.Files.LineLength src test
+    @./tools/labrador-cs/vendor/bin/phpcs --version
+    @./tools/labrador-cs/vendor/bin/phpcs -p --colors --standard=./tools/labrador-cs/vendor/cspray/labrador-coding-standard/ruleset.xml --exclude=Generic.Files.LineLength src test
+
+code-lint-fix:
+    @./tools/labrador-cs/vendor/bin/phpcbf -p --standard=./tools/labrador-cs/vendor/cspray/labrador-coding-standard/ruleset.xml --exclude=Generic.Files.LineLength src test
+
+ci-check: test static-analysis
+    @echo ""
+    @just code-lint

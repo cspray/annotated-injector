@@ -8,5 +8,4 @@ use Cspray\AnnotatedContainer\Profiles;
 interface ServiceShared {
 
     public function handleServiceShared(Profiles $profiles, ServiceDefinition $serviceDefinition) : void;
-
 }

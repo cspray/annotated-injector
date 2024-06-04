@@ -53,5 +53,4 @@ interface ContainerDefinition {
      * @return list<InjectDefinition>
      */
     public function getInjectDefinitions() : array;
-
 }

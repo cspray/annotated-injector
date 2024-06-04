@@ -17,5 +17,4 @@ interface BootstrapEmitter {
         AnnotatedContainer $container,
         ContainerAnalytics $containerAnalytics,
     ) : void;
-
 }

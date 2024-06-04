@@ -332,6 +332,4 @@ final class EmitterTest extends TestCase {
         $addListener->call($this, $listener);
         $emitEvent->call($this, ...$args);
     }
-
-
 }

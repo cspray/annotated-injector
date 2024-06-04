@@ -66,7 +66,8 @@ XML;
             ->at($this->vfs);
 
         $bootstrap = new Bootstrap(
-            new AurynContainerFactory(), directoryResolver: $directoryResolver
+            new AurynContainerFactory(),
+            directoryResolver: $directoryResolver
         );
         $container = $bootstrap->bootstrapContainer(Profiles::fromList(['default']));
 
@@ -674,5 +675,4 @@ XML;
             $listener->getTriggeredEvents()
         );
     }
-
 }

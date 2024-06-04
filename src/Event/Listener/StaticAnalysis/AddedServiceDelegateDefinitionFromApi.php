@@ -7,5 +7,4 @@ use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinition;
 interface AddedServiceDelegateDefinitionFromApi {
 
     public function handleAddedServiceDelegateDefinitionFromApi(ServiceDelegateDefinition $serviceDelegateDefinition) : void;
-
 }

@@ -101,7 +101,8 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
         $consumer->serviceDelegateDefinitions = [];
         $consumer->injectDefinitions = [];
         $attributeTypes = array_map(
-            static fn(AttributeType $attributeType) => objectType($attributeType->value), AttributeType::cases()
+            static fn(AttributeType $attributeType) => objectType($attributeType->value),
+            AttributeType::cases()
         );
         $dirs = $containerDefinitionAnalysisOptions->getScanDirectories();
         $options = AnnotatedTargetParserOptionsBuilder::scanDirectories(...$dirs)
@@ -115,13 +116,13 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
             if ($definition instanceof ServiceDefinition) {
                 $consumer->serviceDefinitions[] = $definition;
                 $this->emitter?->emitAnalyzedServiceDefinitionFromAttribute($target, $definition);
-            } else if ($definition instanceof ServicePrepareDefinition) {
+            } elseif ($definition instanceof ServicePrepareDefinition) {
                 $consumer->servicePrepareDefinitions[] = $definition;
                 $this->emitter?->emitAnalyzedServicePrepareDefinitionFromAttribute($target, $definition);
-            } else if ($definition instanceof ServiceDelegateDefinition) {
+            } elseif ($definition instanceof ServiceDelegateDefinition) {
                 $consumer->serviceDelegateDefinitions[] = $definition;
                 $this->emitter?->emitAnalyzedServiceDelegateDefinitionFromAttribute($target, $definition);
-            } else if ($definition instanceof InjectDefinition) {
+            } elseif ($definition instanceof InjectDefinition) {
                 $consumer->injectDefinitions[] = $definition;
                 $this->emitter?->emitAnalyzedInjectDefinitionFromAttribute($target, $definition);
             }
@@ -223,7 +224,8 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
                 public function __construct(
                     private ContainerDefinitionBuilder $builder,
                     private ?StaticAnalysisEmitter $analysisEmitter = null
-                ) {}
+                ) {
+                }
 
                 public function getBuilder() : ContainerDefinitionBuilder {
                     return $this->builder;

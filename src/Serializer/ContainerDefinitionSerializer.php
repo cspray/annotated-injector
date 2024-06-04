@@ -54,8 +54,6 @@ final class ContainerDefinitionSerializer {
     private function addServiceDefinitionsToDom(DOMElement $root, ContainerDefinition $containerDefinition) : void {
         $dom = $root->ownerDocument;
 
-        assert($dom instanceof DOMDocument);
-
         $root->appendChild(
             $serviceDefinitionsNode = $dom->createElementNS(self::XML_SCHEMA, 'serviceDefinitions')
         );
@@ -108,7 +106,6 @@ final class ContainerDefinitionSerializer {
 
     private function addAliasDefinitionsToDom(DOMElement $root, ContainerDefinition $containerDefinition) : void {
         $dom = $root->ownerDocument;
-        assert($dom instanceof DOMDocument);
 
         $root->appendChild(
             $aliasDefinitionsNode = $dom->createElementNS(self::XML_SCHEMA, 'aliasDefinitions')
@@ -130,7 +127,7 @@ final class ContainerDefinitionSerializer {
 
     private function addServicePrepareDefinitionsToDom(DOMElement $root, ContainerDefinition $containerDefinition) : void {
         $dom = $root->ownerDocument;
-        assert($dom instanceof DOMDocument);
+
         $root->appendChild(
             $servicePrepareDefinitionsNode = $dom->createElementNS(self::XML_SCHEMA, 'servicePrepareDefinitions')
         );
@@ -161,7 +158,6 @@ final class ContainerDefinitionSerializer {
 
     private function addServiceDelegateDefinitionsToDom(DOMElement $root, ContainerDefinition $containerDefinition) : void {
         $dom = $root->ownerDocument;
-        assert($dom instanceof DOMDocument);
 
         $root->appendChild(
             $serviceDelegateDefinitionsNode = $dom->createElementNS(self::XML_SCHEMA, 'serviceDelegateDefinitions')
@@ -194,7 +190,6 @@ final class ContainerDefinitionSerializer {
 
     private function addInjectDefinitionsToDom(DOMElement $root, ContainerDefinition $containerDefinition) : void {
         $dom = $root->ownerDocument;
-        assert($dom instanceof DOMDocument);
 
         $root->appendChild(
             $injectDefinitionsNode = $dom->createElementNS(self::XML_SCHEMA, 'injectDefinitions')
@@ -268,7 +263,6 @@ final class ContainerDefinitionSerializer {
 
     private function addMethodParameterInjectDefinitionToDom(DOMElement $root, InjectDefinition $injectDefinition) : void {
         $dom = $root->ownerDocument;
-        assert($dom instanceof DOMDocument);
 
         $root->appendChild(
             $classMethodNode = $dom->createElementNS(self::XML_SCHEMA, 'classMethod')
@@ -291,7 +285,6 @@ final class ContainerDefinitionSerializer {
 
     private function addClassPropertyInjectDefinitionToDom(DOMElement $root, InjectDefinition $injectDefinition) : void {
         $dom = $root->ownerDocument;
-        assert($dom instanceof DOMDocument);
 
         $root->appendChild(
             $classPropertyNode = $dom->createElementNS(self::XML_SCHEMA, 'classProperty')
@@ -484,5 +477,4 @@ final class ContainerDefinitionSerializer {
 
         return $builder;
     }
-
 }

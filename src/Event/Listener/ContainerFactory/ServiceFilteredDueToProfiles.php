@@ -8,5 +8,4 @@ use Cspray\AnnotatedContainer\Profiles;
 interface ServiceFilteredDueToProfiles {
 
     public function handleServiceFilteredDueToProfiles(Profiles $profiles, ServiceDefinition $serviceDefinition) : void;
-
 }

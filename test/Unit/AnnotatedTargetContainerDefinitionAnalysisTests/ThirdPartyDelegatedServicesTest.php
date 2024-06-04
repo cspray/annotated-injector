@@ -98,5 +98,4 @@ class ThirdPartyDelegatedServicesTest extends AnnotatedTargetContainerDefinition
         self::assertCount(1, $analysisEventCollection->filter(AnalysisEvent::AddedServiceDefinitionFromApi));
         self::assertSame(AnalysisEvent::AfterContainerAnalysis, $analysisEventCollection->last());
     }
-
 }

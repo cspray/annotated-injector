@@ -8,5 +8,4 @@ use Cspray\AnnotatedContainer\Profiles;
 interface ServicePrepared {
 
     public function handleServicePrepared(Profiles $profiles, ServicePrepareDefinition $definition) : void;
-
 }

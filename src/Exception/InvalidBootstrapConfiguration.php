@@ -37,5 +37,4 @@ final class InvalidBootstrapConfiguration extends Exception {
         );
         return new self($message);
     }
-
 }

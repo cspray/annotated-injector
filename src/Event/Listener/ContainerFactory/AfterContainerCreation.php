@@ -9,5 +9,4 @@ use Cspray\AnnotatedContainer\Profiles;
 interface AfterContainerCreation {
 
     public function handleAfterContainerCreation(Profiles $profiles, ContainerDefinition $containerDefinition, AnnotatedContainer $container) : void;
-
 }

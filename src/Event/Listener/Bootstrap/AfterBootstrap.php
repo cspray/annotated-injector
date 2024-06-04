@@ -15,5 +15,4 @@ interface AfterBootstrap {
         AnnotatedContainer $container,
         ContainerAnalytics $containerAnalytics,
     ) : void;
-
 }

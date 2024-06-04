@@ -76,5 +76,4 @@ final class ProfilesAwareContainerDefinition implements ContainerDefinition {
     private function hasActiveProfile(ServiceDefinition|InjectDefinition $definition) : bool {
         return $this->activeProfiles->isAnyActive($definition->getProfiles());
     }
-
 }

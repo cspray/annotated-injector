@@ -16,7 +16,8 @@ final class AnalysisEventCollection implements Countable, IteratorAggregate {
      */
     public function __construct(
         private array $collection = []
-    ) {}
+    ) {
+    }
 
     public function add(AnalysisEvent $event) : void {
         $this->collection[] = $event;
@@ -47,5 +48,4 @@ final class AnalysisEventCollection implements Countable, IteratorAggregate {
     public function count() : int {
         return count($this->collection);
     }
-
 }

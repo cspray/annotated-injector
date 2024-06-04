@@ -172,5 +172,4 @@ class AnnotatedTargetContainerDefinitionAnalyzerTest extends TestCase {
         self::assertFalse($serviceDef->isConcrete());
         self::assertTrue($serviceDef->isAbstract());
     }
-
 }

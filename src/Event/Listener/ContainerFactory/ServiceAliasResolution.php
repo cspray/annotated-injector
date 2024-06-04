@@ -9,5 +9,4 @@ use Cspray\AnnotatedContainer\Profiles;
 interface ServiceAliasResolution {
 
     public function handleServiceAliasResolution(Profiles $profiles, AliasDefinition $aliasDefinition, AliasResolutionReason $resolutionReason) : void;
-
 }

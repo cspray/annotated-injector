@@ -7,5 +7,4 @@ use Cspray\AnnotatedContainer\Definition\InjectDefinition;
 interface AddedInjectDefinitionFromApi {
 
     public function handleAddedInjectDefinitionFromApi(InjectDefinition $injectDefinition) : void;
-
 }

@@ -7,5 +7,4 @@ use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinition;
 interface AddedServicePrepareDefinitionFromApi {
 
     public function handleAddedServicePrepareDefinitionFromApi(ServicePrepareDefinition $servicePrepareDefinition) : void;
-
 }

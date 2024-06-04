@@ -89,5 +89,4 @@ abstract class ServiceWiringListener implements AfterContainerCreation {
         };
         $this->wireServices($container, $serviceGatherer);
     }
-
 }
