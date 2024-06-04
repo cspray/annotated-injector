@@ -346,13 +346,13 @@ SHELL;
         );
         foreach ($this->initializerProvider->getThirdPartyInitializers() as $thirdPartyInitializerClass) {
             $thirdPartyInitializer = new $thirdPartyInitializerClass();
-            $packageRelativeScanDirectories = $thirdPartyInitializer->getRelativeScanDirectories();
+            $packageRelativeScanDirectories = $thirdPartyInitializer->relativeScanDirectories();
             if (count($packageRelativeScanDirectories) > 0) {
                 $package = $vendor->appendChild(
                     $dom->createElementNS(self::XML_SCHEMA, 'package')
                 );
                 $package->appendChild(
-                    $dom->createElementNS(self::XML_SCHEMA, 'name', $thirdPartyInitializer->getPackageName())
+                    $dom->createElementNS(self::XML_SCHEMA, 'name', $thirdPartyInitializer->packageName())
                 );
                 $packageSource = $package->appendChild(
                     $dom->createElementNS(self::XML_SCHEMA, 'source')
@@ -365,7 +365,7 @@ SHELL;
                 }
             }
 
-            $providerClass = $thirdPartyInitializer->getDefinitionProviderClass();
+            $providerClass = $thirdPartyInitializer->definitionProviderClass();
             if ($providerClass !== null) {
                 $definitionProvidersNode->appendChild(
                     $dom->createElementNS(self::XML_SCHEMA, 'definitionProvider', $providerClass)
