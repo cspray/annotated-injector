@@ -94,7 +94,7 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
     protected function createAnnotatedContainer(ContainerFactoryState $state, Profiles $activeProfiles) : AnnotatedContainer {
         assert($state instanceof AurynContainerFactoryState);
 
-        foreach ($state->getMethodInject() as $service => $methods) {
+        foreach ($state->methodInject() as $service => $methods) {
             if (array_key_exists('__construct', $methods)) {
                 $state->injector->define($service, $methods['__construct']);
             }

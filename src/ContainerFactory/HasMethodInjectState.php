@@ -36,7 +36,7 @@ trait HasMethodInjectState {
     /**
      * @return array<class-string, array<non-empty-string, array<non-empty-string, mixed>>>
      */
-    public function getMethodInject() : array {
+    public function methodInject() : array {
         return $this->methodInject;
     }
 }

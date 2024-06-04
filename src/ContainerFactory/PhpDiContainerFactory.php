@@ -100,7 +100,7 @@ final class PhpDiContainerFactory extends AbstractContainerFactory implements Co
 
         $definitions = $state->getDefinitions();
 
-        foreach ($state->getMethodInject() as $service => $methods) {
+        foreach ($state->methodInject() as $service => $methods) {
             foreach ($methods as $method => $params) {
                 if ($method === '__construct') {
                     foreach ($params as $param => $value) {
