@@ -119,11 +119,11 @@ TEXT;
     }
 
     public function handle(Input $input, TerminalOutput $output) : int {
-        if ($input->getOption('list-constraints') === true) {
+        if ($input->option('list-constraints') === true) {
             $this->listConstraints($output);
             return 0;
         }
-        $configOption = $input->getOption('config-file')  ?? 'annotated-container.xml';
+        $configOption = $input->option('config-file')  ?? 'annotated-container.xml';
         $configFile = $this->directoryResolver->configurationPath($configOption);
         if (!is_file($configFile)) {
             throw ConfigurationNotFound::fromMissingFile($configFile);
@@ -148,7 +148,7 @@ TEXT;
 
         $emitter->addListener($infoCapturingListener);
 
-        $inputProfiles = $input->getOption('profile') ?? ['default'];
+        $inputProfiles = $input->option('profile') ?? ['default'];
         if (is_string($inputProfiles)) {
             $inputProfiles = [$inputProfiles];
         }

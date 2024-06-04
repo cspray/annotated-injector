@@ -71,15 +71,15 @@ final class InputParser {
             /**
              * @return array<non-empty-string, list<string>|string|bool>
              */
-            public function getOptions() : array {
+            public function options() : array {
                 return $this->options;
             }
 
-            public function getArguments() : array {
+            public function arguments() : array {
                 return $this->args;
             }
 
-            public function getOption(string $opt) : array|string|bool|null {
+            public function option(string $opt) : array|string|bool|null {
                 return $this->options[$opt] ?? null;
             }
 

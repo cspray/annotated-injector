@@ -13,15 +13,15 @@ final class StubInput implements Input {
     ) {
     }
 
-    public function getOptions() : array {
+    public function options() : array {
         return $this->options;
     }
 
-    public function getArguments() : array {
+    public function arguments() : array {
         return $this->arguments;
     }
 
-    public function getOption(string $opt) : array|string|bool|null {
+    public function option(string $opt) : array|string|bool|null {
         return $this->options[$opt] ?? null;
     }
 

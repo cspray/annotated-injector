@@ -55,7 +55,7 @@ SHELL;
     }
 
     public function handle(Input $input, TerminalOutput $output) : int {
-        $configName = $input->getOption('config-file');
+        $configName = $input->option('config-file');
         if (!isset($configName)) {
             // This not being present would be highly irregular and not party of the happy path
             // But it is possible that somebody created the configuration manually and is not using composer

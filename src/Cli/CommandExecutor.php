@@ -27,12 +27,12 @@ final class CommandExecutor {
     }
 
     public function execute(Input $input, TerminalOutput $output) : int {
-        $noArgs = empty($input->getArguments());
+        $noArgs = empty($input->arguments());
         $exitCode = null;
         if ($noArgs && !isset($this->defaultCommand)) {
             $this->notFoundCommand($output);
         } else {
-            $command = $noArgs ? $this->defaultCommand : $input->getArguments()[0];
+            $command = $noArgs ? $this->defaultCommand : $input->arguments()[0];
             if (!isset($this->commands[$command])) {
                 $this->notFoundCommand($output, $command);
             } else {

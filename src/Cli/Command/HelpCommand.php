@@ -48,7 +48,7 @@ SHELL;
     }
 
     public function handle(Input $input, TerminalOutput $output) : int {
-        $arguments = $input->getArguments();
+        $arguments = $input->arguments();
         $argc = count($arguments);
         if ($argc !== 2) {
             if ($argc > 1) {

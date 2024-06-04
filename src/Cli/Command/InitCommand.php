@@ -205,7 +205,7 @@ SHELL;
         $composer = json_decode(file_get_contents($composerFile), true);
 
         /** @var string|null $configName */
-        $configName = $input->getOption('config-file');
+        $configName = $input->option('config-file');
         if (!isset($configName)) {
             $configName = $composer['extra']['annotatedContainer']['configFile'] ?? 'annotated-container.xml';
         }
@@ -220,7 +220,7 @@ SHELL;
         $this->generateAndSaveConfiguration($input, $composer, $configFile);
 
         /** @var ?string $cacheDirOpt */
-        $cacheDirOpt = $input->getOption('cache-dir');
+        $cacheDirOpt = $input->option('cache-dir');
         $cacheDir = $this->directoryResolver->cachePath(
             $cacheDirOpt ?? '.annotated-container-cache'
         );
@@ -239,33 +239,33 @@ SHELL;
      * @throws InvalidOptionType
      */
     private function validateInput(Input $input) : void {
-        $configFile = $input->getOption('config-file');
+        $configFile = $input->option('config-file');
         if (is_bool($configFile)) {
             throw InvalidOptionType::fromBooleanOption('config-file');
         } elseif (is_array($configFile)) {
             throw InvalidOptionType::fromArrayOption('config-file');
         }
 
-        $cacheDir = $input->getOption('cache-dir');
+        $cacheDir = $input->option('cache-dir');
         if (is_bool($cacheDir)) {
             throw InvalidOptionType::fromBooleanOption('cache-dir');
         } elseif (is_array($cacheDir)) {
             throw InvalidOptionType::fromArrayOption('cache-dir');
         }
 
-        $definitionProvider = $input->getOption('definition-provider');
+        $definitionProvider = $input->option('definition-provider');
         if (is_bool($definitionProvider)) {
             throw InvalidOptionType::fromBooleanOption('definition-provider');
         } elseif (is_array($definitionProvider)) {
             throw InvalidOptionType::fromArrayOption('definition-provider');
         }
 
-        $parameterStore = $input->getOption('parameter-store');
+        $parameterStore = $input->option('parameter-store');
         if (is_bool($parameterStore)) {
             throw InvalidOptionType::fromBooleanOption('parameter-store');
         }
 
-        $observers = $input->getOption('observer');
+        $observers = $input->option('observer');
         if (is_bool($observers)) {
             throw InvalidOptionType::fromBooleanOption('observer');
         }
@@ -324,7 +324,7 @@ SHELL;
             $dom->createElementNS(self::XML_SCHEMA, 'definitionProviders')
         );
         /** @var string|null $definitionProvider */
-        $definitionProvider = $input->getOption('definition-provider');
+        $definitionProvider = $input->option('definition-provider');
         if (isset($definitionProvider)) {
             $definitionProvidersNode->appendChild(
                 $dom->createElementNS(self::XML_SCHEMA, 'definitionProvider', $definitionProvider)
@@ -332,7 +332,7 @@ SHELL;
         }
 
         /** @var string|array|null $parameterStores */
-        $parameterStores = $input->getOption('parameter-store');
+        $parameterStores = $input->option('parameter-store');
         if ($parameterStores !== null) {
             $parameterStores = is_string($parameterStores) ? [$parameterStores] : $parameterStores;
             $parameterStoresNode = $root->appendChild($dom->createElementNS(self::XML_SCHEMA, 'parameterStores'));
@@ -374,7 +374,7 @@ SHELL;
         }
 
         /** @var string|null $cacheDirOpt */
-        $cacheDirOpt = $input->getOption('cache-dir');
+        $cacheDirOpt = $input->option('cache-dir');
         $cacheName = $cacheDirOpt ?? '.annotated-container-cache';
 
         $root->appendChild($dom->createElementNS(self::XML_SCHEMA, 'cacheDir', $cacheName));
