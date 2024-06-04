@@ -68,11 +68,11 @@ final class PhpDiContainerFactoryState implements ContainerFactoryState {
         $this->addResolvedMethodInject($class, $method, $param, $value);
     }
 
-    public function getDefinitions() : array {
+    public function definitions() : array {
         return $this->definitions;
     }
 
-    public function getServices() : array {
+    public function services() : array {
         return $this->services;
     }
 
@@ -96,7 +96,7 @@ final class PhpDiContainerFactoryState implements ContainerFactoryState {
         $this->serviceKeys[$serviceType] = $key;
     }
 
-    public function getServiceKey(string $serviceType) : ?string {
+    public function serviceKey(string $serviceType) : ?string {
         return $this->serviceKeys[$serviceType] ?? null;
     }
 }

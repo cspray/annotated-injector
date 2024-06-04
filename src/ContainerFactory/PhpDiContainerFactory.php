@@ -64,7 +64,7 @@ final class PhpDiContainerFactory extends AbstractContainerFactory implements Co
         $aliasDefinition = $resolution->aliasDefinition();
         if ($aliasDefinition !== null) {
             $state->referenceService(
-                $state->getServiceKey($aliasDefinition->getAbstractService()->getName()),
+                $state->serviceKey($aliasDefinition->getAbstractService()->getName()),
                 $aliasDefinition->getConcreteService()->getName()
             );
         }
@@ -98,7 +98,7 @@ final class PhpDiContainerFactory extends AbstractContainerFactory implements Co
         assert($state instanceof PhpDiContainerFactoryState);
         $containerBuilder = new ContainerBuilder();
 
-        $definitions = $state->getDefinitions();
+        $definitions = $state->definitions();
 
         foreach ($state->methodInject() as $service => $methods) {
             foreach ($methods as $method => $params) {
@@ -124,7 +124,7 @@ final class PhpDiContainerFactory extends AbstractContainerFactory implements Co
         $containerBuilder->addDefinitions($definitions);
         $containerBuilder->addDefinitions($servicePrepareDefinitions);
 
-        return new class($containerBuilder->build(), $state->getServices(), $activeProfiles) implements AnnotatedContainer {
+        return new class($containerBuilder->build(), $state->services(), $activeProfiles) implements AnnotatedContainer {
 
             public function __construct(
                 private readonly Container $container,

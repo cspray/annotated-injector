@@ -266,7 +266,6 @@
     </MixedReturnStatement>
     <PossiblyNullArgument>
       <code><![CDATA[$definition->getTargetIdentifier()->getMethodName()]]></code>
-      <code><![CDATA[$state->getServiceKey($aliasDefinition->getAbstractService()->getName())]]></code>
     </PossiblyNullArgument>
   </file>
   <file src="src/ContainerFactory/PhpDiContainerFactoryState.php">
