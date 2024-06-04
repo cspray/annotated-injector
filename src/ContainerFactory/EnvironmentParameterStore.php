@@ -10,7 +10,7 @@ use Cspray\Typiphy\TypeUnion;
 
 final class EnvironmentParameterStore implements ParameterStore {
 
-    public function getName() : string {
+    public function name() : string {
         return 'env';
     }
 

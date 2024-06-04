@@ -89,7 +89,7 @@ abstract class AbstractContainerFactory implements ContainerFactory {
      * @see Inject
      */
     final public function addParameterStore(ParameterStore $parameterStore): void {
-        $this->parameterStores[$parameterStore->getName()] = $parameterStore;
+        $this->parameterStores[$parameterStore->name()] = $parameterStore;
     }
 
     final protected function parameterStore(string $storeName) : ?ParameterStore {

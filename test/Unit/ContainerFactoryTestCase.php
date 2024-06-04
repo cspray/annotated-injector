@@ -205,7 +205,7 @@ abstract class ContainerFactoryTestCase extends TestCase {
 
     public function testCreateArbitraryStorePresent() {
         $parameterStore = new class implements ParameterStore {
-            public function getName(): string {
+            public function name(): string {
                 return 'test-store';
             }
 
@@ -221,7 +221,7 @@ abstract class ContainerFactoryTestCase extends TestCase {
 
     public function testCreateArbitraryStoreWithUnionType() {
         $parameterStore = new class implements ParameterStore {
-            public function getName() : string {
+            public function name() : string {
                 return 'union-store';
             }
 
@@ -239,7 +239,7 @@ abstract class ContainerFactoryTestCase extends TestCase {
 
     public function testCreateArbitraryStoreWithIntersectType() {
         $parameterStore = new class implements ParameterStore {
-            public function getName() : string {
+            public function name() : string {
                 return 'intersect-store';
             }
 
