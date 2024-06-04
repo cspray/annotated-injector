@@ -23,7 +23,7 @@ $directoryResolver = new RootDirectoryBootstrappingDirectoryResolver($dir);
 
 $commandExecutor = new CommandExecutor();
 
-$commandExecutor->setDefaultCommand(new HelpCommand($commandExecutor));
+$commandExecutor->defaultCommand(new HelpCommand($commandExecutor));
 $commandExecutor->addCommand(new InitCommand($directoryResolver, new ComposerJsonScanningThirdPartyInitializerProvider($directoryResolver)));
 $commandExecutor->addCommand(new BuildCommand($directoryResolver));
 $commandExecutor->addCommand(new CacheClearCommand($directoryResolver));

@@ -60,7 +60,7 @@ SHELL;
         $command = new StubCommand('default', function(Input $input) use(&$actualInput) {
             $actualInput = $input;
         });
-        $this->subject->setDefaultCommand($command);
+        $this->subject->defaultCommand($command);
         $this->subject->execute($input, $this->terminalOutput);
 
         self::assertEmpty($this->stdout->getContents());

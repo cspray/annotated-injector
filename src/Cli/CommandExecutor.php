@@ -13,12 +13,12 @@ final class CommandExecutor {
 
     private ?string $defaultCommand = null;
 
-    public function setDefaultCommand(Command $command) : void {
+    public function defaultCommand(Command $command) : void {
         $this->defaultCommand = $command->name();
         $this->addCommand($command);
     }
 
-    public function getCommand(string $name) : ?Command {
+    public function command(string $name) : ?Command {
         return array_reduce($this->commands, fn(?Command $carry, Command $item) => $item->name() === $name ? $item : $carry);
     }
 

@@ -60,7 +60,7 @@ SHELL;
         }
 
         $commandName = $arguments[1];
-        $command = $this->commandExecutor->getCommand($commandName);
+        $command = $this->commandExecutor->command($commandName);
 
         if (!isset($command)) {
             $output->stderr->write(sprintf('<fg:red>Could not find command "%s"!</fg:red>', $commandName));
