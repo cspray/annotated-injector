@@ -133,7 +133,7 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
                         throw ServiceNotFound::fromServiceNotInContainer($id);
                     }
 
-                    $namedType = $this->state->getTypeForName($id);
+                    $namedType = $this->state->typeForName($id);
                     if ($namedType !== null) {
                         $id = $namedType->getName();
                     }
@@ -144,7 +144,7 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
             }
 
             public function has(string $id): bool {
-                $namedType = $this->state->getTypeForName($id);
+                $namedType = $this->state->typeForName($id);
                 if ($namedType !== null) {
                     return true;
                 }

@@ -37,7 +37,7 @@ final class AurynContainerFactoryState implements ContainerFactoryState {
     public function addMethodInject(string $class, string $method, string $param, mixed $value) : void {
         if ($value instanceof ContainerReference) {
             $key = $param;
-            $nameType = $this->getTypeForName($value->name);
+            $nameType = $this->typeForName($value->name);
             if ($nameType !== null) {
                 $value = $nameType->getName();
             } else {
@@ -77,7 +77,7 @@ final class AurynContainerFactoryState implements ContainerFactoryState {
      * @param non-empty-string $name
      * @return ObjectType|null
      */
-    public function getTypeForName(string $name) : ?ObjectType {
+    public function typeForName(string $name) : ?ObjectType {
         return $this->nameTypeMap[$name] ?? null;
     }
 }
