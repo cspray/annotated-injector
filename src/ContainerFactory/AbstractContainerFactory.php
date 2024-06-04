@@ -15,18 +15,12 @@ use Cspray\AnnotatedContainer\Definition\ProfilesAwareContainerDefinition;
 use Cspray\AnnotatedContainer\Definition\ServiceDefinition;
 use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinition;
 use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinition;
-use Cspray\AnnotatedContainer\Exception\ContainerException;
 use Cspray\AnnotatedContainer\Exception\ParameterStoreNotFound;
 use Cspray\AnnotatedContainer\Profiles\ActiveProfiles;
-use Cspray\AnnotatedContainer\Profiles\ActiveProfilesBuilder;
 use Cspray\Typiphy\ObjectType;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use stdClass;
-use Throwable;
 use UnitEnum;
-use function Cspray\Typiphy\arrayType;
-use function Cspray\Typiphy\objectType;
 
 abstract class AbstractContainerFactory implements ContainerFactory {
 
@@ -132,10 +126,18 @@ abstract class AbstractContainerFactory implements ContainerFactory {
             }
 
             public function getProfiles() : array {
+                trigger_error(
+                    'The ' . ActiveProfiles::class . ' interface is being removed in 3.0. Please use the new Profiles interface instead.',
+                    E_USER_DEPRECATED
+                );
                 return $this->profiles;
             }
 
             public function isActive(string $profile) : bool {
+                trigger_error(
+                    'The ' . ActiveProfiles::class . ' interface is being removed in 3.0. Please use the new Profiles interface instead.',
+                    E_USER_DEPRECATED
+                );
                 return in_array($profile, $this->profiles, true);
             }
         };

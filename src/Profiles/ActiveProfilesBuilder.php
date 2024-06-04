@@ -18,6 +18,10 @@ final class ActiveProfilesBuilder {
     private array $profiles = [];
 
     private function __construct() {
+        trigger_error(
+            'The ' . ActiveProfilesBuilder::class . ' is being removed in 3.0. There is no corresponding feature replacing this. Please use a static constructor on the new Profiles class instead.',
+            E_USER_DEPRECATED
+        );
     }
 
     /**

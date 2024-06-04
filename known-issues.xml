@@ -158,9 +158,6 @@
     <MoreSpecificReturnType>
       <code><![CDATA[array]]></code>
     </MoreSpecificReturnType>
-    <UnusedClass>
-      <code><![CDATA[ServiceWiringObserver]]></code>
-    </UnusedClass>
   </file>
   <file src="src/Bootstrap/ThirdPartyInitializer.php">
     <PossiblyUnusedMethod>
