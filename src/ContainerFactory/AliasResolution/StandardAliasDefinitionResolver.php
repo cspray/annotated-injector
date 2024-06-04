@@ -31,7 +31,7 @@ final class StandardAliasDefinitionResolver implements AliasDefinitionResolver {
                 $definition = null;
                 $primaryAliases = [];
                 foreach ($aliases as $alias) {
-                    $concreteDefinition = $this->getServiceDefinition($containerDefinition, $alias->getConcreteService());
+                    $concreteDefinition = $this->serviceDefinition($containerDefinition, $alias->getConcreteService());
                     if ($concreteDefinition?->isPrimary()) {
                         $primaryAliases[] = $alias;
                     }
@@ -69,7 +69,7 @@ final class StandardAliasDefinitionResolver implements AliasDefinitionResolver {
         };
     }
 
-    private function getServiceDefinition(ContainerDefinition $containerDefinition, ObjectType $objectType) : ?ServiceDefinition {
+    private function serviceDefinition(ContainerDefinition $containerDefinition, ObjectType $objectType) : ?ServiceDefinition {
         foreach ($containerDefinition->getServiceDefinitions() as $serviceDefinition) {
             if ($serviceDefinition->getType()->getName() === $objectType->getName()) {
                 return $serviceDefinition;
