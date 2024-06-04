@@ -39,7 +39,7 @@ abstract class AbstractContainerFactory implements ContainerFactory {
     }
 
     final public function createContainer(ContainerDefinition $containerDefinition, ContainerFactoryOptions $containerFactoryOptions = null) : AnnotatedContainer {
-        $activeProfiles = $containerFactoryOptions?->getProfiles() ?? Profiles::fromList(['default']);
+        $activeProfiles = $containerFactoryOptions?->profiles() ?? Profiles::fromList(['default']);
 
         $this->emitter?->emitBeforeContainerCreation($activeProfiles, $containerDefinition);
 
