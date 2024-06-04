@@ -3,8 +3,9 @@
 namespace Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis;
 
 use Cspray\AnnotatedContainer\Definition\InjectDefinition;
+use Cspray\AnnotatedContainer\Event\Listener;
 
-interface AddedInjectDefinitionFromApi {
+interface AddedInjectDefinitionFromApi extends Listener {
 
     public function handleAddedInjectDefinitionFromApi(InjectDefinition $injectDefinition) : void;
 }

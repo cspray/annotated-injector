@@ -3,9 +3,10 @@
 namespace Cspray\AnnotatedContainer\Event\Listener\ContainerFactory;
 
 use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinition;
+use Cspray\AnnotatedContainer\Event\Listener;
 use Cspray\AnnotatedContainer\Profiles;
 
-interface ServiceDelegated {
+interface ServiceDelegated extends Listener {
 
     public function handleServiceDelegated(Profiles $profiles, ServiceDelegateDefinition $definition) : void;
 }

@@ -35,6 +35,7 @@ use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AnalyzedServiceDefin
 use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AnalyzedServiceDelegateDefinitionFromAttribute;
 use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\AnalyzedServicePrepareDefinitionFromAttribute;
 use Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis\BeforeContainerAnalysis;
+use Cspray\AnnotatedContainer\Exception\InvalidListener;
 use Cspray\AnnotatedContainer\Profiles;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptions;
 use Cspray\AnnotatedTarget\AnnotatedTarget;
@@ -130,11 +131,6 @@ final class Emitter implements StaticAnalysisEmitter, BootstrapEmitter, Containe
     private array $injectingMethodParameters = [];
 
     /**
-     * @var list<InjectingProperty>
-     */
-    private array $injectingProperties = [];
-
-    /**
      * @var list<ServicePrepared>
      */
     private array $servicePrepareds = [];
@@ -159,96 +155,66 @@ final class Emitter implements StaticAnalysisEmitter, BootstrapEmitter, Containe
      */
     private array $afterBootstraps = [];
 
-    public function addBeforeBootstrapListener(BeforeBootstrap $listener) : void {
-        $this->beforeBootstraps[] = $listener;
-    }
+    public function addListener(Listener $listener) : void {
+        /** @var array<class-string<Listener>, callable> $listenersMap */
+        $listenersMap = [
+            AfterBootstrap::class => fn(AfterBootstrap $afterBootstrap) : AfterBootstrap =>
+                $this->afterBootstraps[] = $afterBootstrap,
+            BeforeBootstrap::class => fn(BeforeBootstrap $beforeBootstrap) : BeforeBootstrap =>
+                $this->beforeBootstraps[] = $beforeBootstrap,
+            AfterContainerCreation::class => fn(AfterContainerCreation $afterContainerCreation) : AfterContainerCreation =>
+                $this->afterContainerCreation[] = $afterContainerCreation,
+            BeforeContainerCreation::class => fn(BeforeContainerCreation $beforeContainerCreation) : BeforeContainerCreation =>
+                $this->beforeContainerCreations[] = $beforeContainerCreation,
+            InjectingMethodParameter::class => fn(InjectingMethodParameter $injectingMethodParameter) : InjectingMethodParameter =>
+                $this->injectingMethodParameters[] = $injectingMethodParameter,
+            ServiceAliasResolution::class => fn(ServiceAliasResolution $serviceAliasResolution) : ServiceAliasResolution =>
+                $this->serviceAliasResolutions[] = $serviceAliasResolution,
+            ServiceDelegated::class => fn(ServiceDelegated $serviceDelegated) : ServiceDelegated =>
+                $this->serviceDelegateds[] = $serviceDelegated,
+            ServiceFilteredDueToProfiles::class => fn(ServiceFilteredDueToProfiles $serviceFilteredDueToProfiles) : ServiceFilteredDueToProfiles =>
+                $this->serviceFilteredDueToProfiles[] = $serviceFilteredDueToProfiles,
+            ServicePrepared::class => fn(ServicePrepared $servicePrepared) : ServicePrepared =>
+                $this->servicePrepareds[] = $servicePrepared,
+            ServiceShared::class => fn(ServiceShared $serviceShared) : ServiceShared =>
+                $this->serviceShared[] = $serviceShared,
+            AddedAliasDefinition::class => fn(AddedAliasDefinition $addedAliasDefinition) : AddedAliasDefinition =>
+                $this->addedAliasDefinitions[] = $addedAliasDefinition,
+            AddedInjectDefinitionFromApi::class => fn(AddedInjectDefinitionFromApi $addedInjectDefinitionFromApi) : AddedInjectDefinitionFromApi =>
+                $this->addedInjectDefinitions[] = $addedInjectDefinitionFromApi,
+            AddedServiceDefinitionFromApi::class => fn(AddedServiceDefinitionFromApi $addedServiceDefinitionFromApi) : AddedServiceDefinitionFromApi =>
+                $this->addedServiceDefinitions[] = $addedServiceDefinitionFromApi,
+            AddedServiceDelegateDefinitionFromApi::class => fn(AddedServiceDelegateDefinitionFromApi $addedServiceDelegateDefinitionFromApi) : AddedServiceDelegateDefinitionFromApi =>
+                $this->addedServiceDelegateDefinitions[] = $addedServiceDelegateDefinitionFromApi,
+            AddedServicePrepareDefinitionFromApi::class => fn(AddedServicePrepareDefinitionFromApi $addedServicePrepareDefinitionFromApi) : AddedServicePrepareDefinitionFromApi =>
+                $this->addedServicePrepareDefinitions[] = $addedServicePrepareDefinitionFromApi,
+            AfterContainerAnalysis::class => fn(AfterContainerAnalysis $afterContainerAnalysis) : AfterContainerAnalysis =>
+                $this->afterContainerAnalysis[] = $afterContainerAnalysis,
+            AnalyzedContainerDefinitionFromCache::class => fn(AnalyzedContainerDefinitionFromCache $analyzedContainerDefinitionFromCache) : AnalyzedContainerDefinitionFromCache =>
+                $this->analyzedContainerDefinitionFromCaches[] = $analyzedContainerDefinitionFromCache,
+            AnalyzedInjectDefinitionFromAttribute::class => fn(AnalyzedInjectDefinitionFromAttribute $analyzedInjectDefinitionFromAttribute) : AnalyzedInjectDefinitionFromAttribute =>
+                $this->analyzedInjectDefinitionFromAttributes[] = $analyzedInjectDefinitionFromAttribute,
+            AnalyzedServiceDefinitionFromAttribute::class => fn(AnalyzedServiceDefinitionFromAttribute $analyzedServiceDefinitionFromAttribute) : AnalyzedServiceDefinitionFromAttribute =>
+                $this->analyzedServiceDefinitionFromAttributes[] = $analyzedServiceDefinitionFromAttribute,
+            AnalyzedServiceDelegateDefinitionFromAttribute::class => fn(AnalyzedServiceDelegateDefinitionFromAttribute $analyzedServiceDelegateDefinitionFromAttribute) : AnalyzedServiceDelegateDefinitionFromAttribute =>
+                $this->analyzedServiceDelegateDefinitionFromAttributes[] = $analyzedServiceDelegateDefinitionFromAttribute,
+            AnalyzedServicePrepareDefinitionFromAttribute::class => fn(AnalyzedServicePrepareDefinitionFromAttribute $analyzedServicePrepareDefinitionFromAttribute) : AnalyzedServicePrepareDefinitionFromAttribute =>
+                $this->analyzedServicePrepareDefinitionFromAttributes[] = $analyzedServicePrepareDefinitionFromAttribute,
+            BeforeContainerAnalysis::class => fn(BeforeContainerAnalysis $beforeContainerAnalysis) : BeforeContainerAnalysis =>
+                $this->beforeContainerAnalysis[] = $beforeContainerAnalysis,
+        ];
 
-    public function addBeforeContainerAnalysisListener(BeforeContainerAnalysis $listener) : void {
-        $this->beforeContainerAnalysis[] = $listener;
-    }
+        $added = false;
+        foreach ($listenersMap as $listenerType => $callable) {
+            if ($listener instanceof $listenerType) {
+                $added = true;
+                $callable($listener);
+            }
+        }
 
-    public function addAnalyzedServiceDefinitionFromAttributeListener(AnalyzedServiceDefinitionFromAttribute $listener) : void {
-        $this->analyzedServiceDefinitionFromAttributes[] = $listener;
-    }
-
-    public function addAnalyzedServicePrepareDefinitionFromAttributeListener(AnalyzedServicePrepareDefinitionFromAttribute $listener) : void {
-        $this->analyzedServicePrepareDefinitionFromAttributes[] = $listener;
-    }
-
-    public function addAnalyzedServiceDelegateDefinitionFromAttributeListener(AnalyzedServiceDelegateDefinitionFromAttribute $listener) : void {
-        $this->analyzedServiceDelegateDefinitionFromAttributes[] = $listener;
-    }
-
-    public function addAnalyzedInjectDefinitionFromAttributeListener(AnalyzedInjectDefinitionFromAttribute $listener) : void {
-        $this->analyzedInjectDefinitionFromAttributes[] = $listener;
-    }
-
-    public function addAnalyzedContainerDefinitionFromCacheListener(AnalyzedContainerDefinitionFromCache $listener) : void {
-        $this->analyzedContainerDefinitionFromCaches[] = $listener;
-    }
-
-    public function addAddedAliasDefinitionListener(AddedAliasDefinition $listener) : void {
-        $this->addedAliasDefinitions[] = $listener;
-    }
-
-    public function addAddedInjectDefinitionFromApiListener(AddedInjectDefinitionFromApi $listener) : void {
-        $this->addedInjectDefinitions[] = $listener;
-    }
-
-    public function addAddedServiceDefinitionFromApiListener(AddedServiceDefinitionFromApi $listener) : void {
-        $this->addedServiceDefinitions[] = $listener;
-    }
-
-    public function addAddedServiceDelegateDefinitionFromApiListener(AddedServiceDelegateDefinitionFromApi $listener) : void {
-        $this->addedServiceDelegateDefinitions[] = $listener;
-    }
-
-    public function addAddedServicePrepareDefinitionFromApiListener(AddedServicePrepareDefinitionFromApi $listener) : void {
-        $this->addedServicePrepareDefinitions[] = $listener;
-    }
-
-    public function addAfterContainerAnalysisListener(AfterContainerAnalysis $listener) : void {
-        $this->afterContainerAnalysis[] = $listener;
-    }
-
-    public function addBeforeContainerCreationListener(BeforeContainerCreation $listener) : void {
-        $this->beforeContainerCreations[] = $listener;
-    }
-
-    public function addServiceFilteredDueToProfilesListener(ServiceFilteredDueToProfiles $listener) : void {
-        $this->serviceFilteredDueToProfiles[] = $listener;
-    }
-
-    public function addServiceSharedListener(ServiceShared $listener) : void {
-        $this->serviceShared[] = $listener;
-    }
-
-    public function addServiceDelegatedListener(ServiceDelegated $listener) : void {
-        $this->serviceDelegateds[] = $listener;
-    }
-
-    public function addServicePreparedListener(ServicePrepared $listener) : void {
-        $this->servicePrepareds[] = $listener;
-    }
-
-    public function addInjectingMethodParameterListener(InjectingMethodParameter $listener) : void {
-        $this->injectingMethodParameters[] = $listener;
-    }
-
-    public function addInjectingPropertyListener(InjectingProperty $listener) : void {
-        $this->injectingProperties[] = $listener;
-    }
-
-    public function addServiceAliasResolutionListener(ServiceAliasResolution $listener) : void {
-        $this->serviceAliasResolutions[] = $listener;
-    }
-
-    public function addAfterContainerCreationListener(AfterContainerCreation $listener) : void {
-        $this->afterContainerCreation[] = $listener;
-    }
-
-    public function addAfterBootstrapListener(AfterBootstrap $listener) : void {
-        $this->afterBootstraps[] = $listener;
+        if (!$added) {
+            throw InvalidListener::fromListenerNotKnownType($listener);
+        }
     }
 
     public function emitBeforeContainerAnalysis(ContainerDefinitionAnalysisOptions $analysisOptions) : void {
@@ -332,12 +298,6 @@ final class Emitter implements StaticAnalysisEmitter, BootstrapEmitter, Containe
     public function emitInjectingMethodParameter(Profiles $profiles, InjectDefinition $injectDefinition) : void {
         foreach ($this->injectingMethodParameters as $injectingMethodParameter) {
             $injectingMethodParameter->handleInjectingMethodParameter($profiles, $injectDefinition);
-        }
-    }
-
-    public function emitInjectingProperty(Profiles $profiles, InjectDefinition $injectDefinition) : void {
-        foreach ($this->injectingProperties as $injectingProperty) {
-            $injectingProperty->handleInjectingProperty($profiles, $injectDefinition);
         }
     }
 

@@ -3,8 +3,9 @@
 namespace Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis;
 
 use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinition;
+use Cspray\AnnotatedContainer\Event\Listener;
 
-interface AddedServiceDelegateDefinitionFromApi {
+interface AddedServiceDelegateDefinitionFromApi extends Listener {
 
     public function handleAddedServiceDelegateDefinitionFromApi(ServiceDelegateDefinition $serviceDelegateDefinition) : void;
 }

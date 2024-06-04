@@ -140,7 +140,7 @@ TEXT;
             $containerDefinition = $definition;
         });
 
-        $emitter->addAfterBootstrapListener($infoCapturingListener);
+        $emitter->addListener($infoCapturingListener);
 
         $inputProfiles = $input->getOption('profile') ?? ['default'];
         if (is_string($inputProfiles)) {

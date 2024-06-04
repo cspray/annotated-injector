@@ -3,8 +3,9 @@
 namespace Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis;
 
 use Cspray\AnnotatedContainer\Definition\AliasDefinition;
+use Cspray\AnnotatedContainer\Event\Listener;
 
-interface AddedAliasDefinition {
+interface AddedAliasDefinition extends Listener {
 
     public function handleAddedAliasDefinition(AliasDefinition $aliasDefinition) : void;
 }

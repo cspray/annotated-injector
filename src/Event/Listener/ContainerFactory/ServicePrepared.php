@@ -3,9 +3,10 @@
 namespace Cspray\AnnotatedContainer\Event\Listener\ContainerFactory;
 
 use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinition;
+use Cspray\AnnotatedContainer\Event\Listener;
 use Cspray\AnnotatedContainer\Profiles;
 
-interface ServicePrepared {
+interface ServicePrepared extends Listener {
 
     public function handleServicePrepared(Profiles $profiles, ServicePrepareDefinition $definition) : void;
 }
