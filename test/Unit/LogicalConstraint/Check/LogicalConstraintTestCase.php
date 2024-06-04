@@ -2,6 +2,7 @@
 
 namespace Cspray\AnnotatedContainer\Unit\LogicalConstraint\Check;
 
+use Cspray\AnnotatedContainer\Event\Emitter;
 use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalyzer;
 use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetDefinitionConverter;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalyzer;
@@ -13,7 +14,8 @@ abstract class LogicalConstraintTestCase extends TestCase {
     protected function getAnalyzer() : ContainerDefinitionAnalyzer {
         return new AnnotatedTargetContainerDefinitionAnalyzer(
             new PhpParserAnnotatedTargetParser(),
-            new AnnotatedTargetDefinitionConverter()
+            new AnnotatedTargetDefinitionConverter(),
+            new Emitter()
         );
     }
 }

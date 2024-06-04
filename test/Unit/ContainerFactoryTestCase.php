@@ -55,7 +55,8 @@ abstract class ContainerFactoryTestCase extends TestCase {
     private function getContainerDefinitionCompiler() : ContainerDefinitionAnalyzer {
         return new AnnotatedTargetContainerDefinitionAnalyzer(
             new PhpParserAnnotatedTargetParser(),
-            new AnnotatedTargetDefinitionConverter()
+            new AnnotatedTargetDefinitionConverter(),
+            new Emitter()
         );
     }
 

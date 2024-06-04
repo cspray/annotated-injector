@@ -41,7 +41,7 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
     public function __construct(
         private readonly AnnotatedTargetParser $annotatedTargetCompiler,
         private readonly AnnotatedTargetDefinitionConverter $definitionConverter,
-        private readonly ?StaticAnalysisEmitter $emitter = null
+        private readonly StaticAnalysisEmitter $emitter
     ) {
     }
 
@@ -68,7 +68,7 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
 
         $containerDefinitionBuilder = ContainerDefinitionBuilder::newDefinition();
 
-        $this->emitter?->emitBeforeContainerAnalysis($containerDefinitionAnalysisOptions);
+        $this->emitter->emitBeforeContainerAnalysis($containerDefinitionAnalysisOptions);
 
         $consumer = $this->parse($containerDefinitionAnalysisOptions);
         // We need to add services from the DefinitionProvider first to ensure that any services required
@@ -82,7 +82,7 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
 
         $containerDefinition = $containerDefinitionBuilder->build();
 
-        $this->emitter?->emitAfterContainerAnalysis($containerDefinitionAnalysisOptions, $containerDefinition);
+        $this->emitter->emitAfterContainerAnalysis($containerDefinitionAnalysisOptions, $containerDefinition);
 
         return $containerDefinition;
     }
@@ -115,16 +115,16 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
 
             if ($definition instanceof ServiceDefinition) {
                 $consumer->serviceDefinitions[] = $definition;
-                $this->emitter?->emitAnalyzedServiceDefinitionFromAttribute($target, $definition);
+                $this->emitter->emitAnalyzedServiceDefinitionFromAttribute($target, $definition);
             } elseif ($definition instanceof ServicePrepareDefinition) {
                 $consumer->servicePrepareDefinitions[] = $definition;
-                $this->emitter?->emitAnalyzedServicePrepareDefinitionFromAttribute($target, $definition);
+                $this->emitter->emitAnalyzedServicePrepareDefinitionFromAttribute($target, $definition);
             } elseif ($definition instanceof ServiceDelegateDefinition) {
                 $consumer->serviceDelegateDefinitions[] = $definition;
-                $this->emitter?->emitAnalyzedServiceDelegateDefinitionFromAttribute($target, $definition);
+                $this->emitter->emitAnalyzedServiceDelegateDefinitionFromAttribute($target, $definition);
             } elseif ($definition instanceof InjectDefinition) {
                 $consumer->injectDefinitions[] = $definition;
-                $this->emitter?->emitAnalyzedInjectDefinitionFromAttribute($target, $definition);
+                $this->emitter->emitAnalyzedInjectDefinitionFromAttribute($target, $definition);
             }
         }
 
@@ -223,7 +223,7 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
             $context = new class($builder, $this->emitter) implements DefinitionProviderContext {
                 public function __construct(
                     private ContainerDefinitionBuilder $builder,
-                    private ?StaticAnalysisEmitter $analysisEmitter = null
+                    private StaticAnalysisEmitter $analysisEmitter
                 ) {
                 }
 
@@ -233,22 +233,22 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
 
                 public function addServiceDefinition(ServiceDefinition $serviceDefinition) : void {
                     $this->builder = $this->builder->withServiceDefinition($serviceDefinition);
-                    $this->analysisEmitter?->emitAddedServiceDefinitionFromApi($serviceDefinition);
+                    $this->analysisEmitter->emitAddedServiceDefinitionFromApi($serviceDefinition);
                 }
 
                 public function addServicePrepareDefinition(ServicePrepareDefinition $servicePrepareDefinition) : void {
                     $this->builder = $this->builder->withServicePrepareDefinition($servicePrepareDefinition);
-                    $this->analysisEmitter?->emitAddedServicePrepareDefinitionFromApi($servicePrepareDefinition);
+                    $this->analysisEmitter->emitAddedServicePrepareDefinitionFromApi($servicePrepareDefinition);
                 }
 
                 public function addServiceDelegateDefinition(ServiceDelegateDefinition $serviceDelegateDefinition) : void {
                     $this->builder = $this->builder->withServiceDelegateDefinition($serviceDelegateDefinition);
-                    $this->analysisEmitter?->emitAddedServiceDelegateDefinitionFromApi($serviceDelegateDefinition);
+                    $this->analysisEmitter->emitAddedServiceDelegateDefinitionFromApi($serviceDelegateDefinition);
                 }
 
                 public function addInjectDefinition(InjectDefinition $injectDefinition) : void {
                     $this->builder = $this->builder->withInjectDefinition($injectDefinition);
-                    $this->analysisEmitter?->emitAddedInjectDefinitionFromApi($injectDefinition);
+                    $this->analysisEmitter->emitAddedInjectDefinitionFromApi($injectDefinition);
                 }
 
                 public function addAliasDefinition(AliasDefinition $aliasDefinition) : void {
@@ -286,7 +286,7 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
                         ->withConcrete($concreteType)
                         ->build();
                     $containerDefinitionBuilder = $containerDefinitionBuilder->withAliasDefinition($aliasDefinition);
-                    $this->emitter?->emitAddedAliasDefinition($aliasDefinition);
+                    $this->emitter->emitAddedAliasDefinition($aliasDefinition);
                 }
             }
         }

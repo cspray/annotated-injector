@@ -13,6 +13,7 @@ use Cspray\AnnotatedContainer\Definition\InjectDefinition;
 use Cspray\AnnotatedContainer\Definition\ServiceDefinition;
 use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinition;
 use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinition;
+use Cspray\AnnotatedContainer\Event\Emitter;
 use Cspray\AnnotatedContainer\Exception\InvalidScanDirectories;
 use Cspray\AnnotatedContainer\Exception\InvalidServiceDelegate;
 use Cspray\AnnotatedContainer\Exception\InvalidServicePrepare;
@@ -41,7 +42,8 @@ class AnnotatedTargetContainerDefinitionAnalyzerTest extends TestCase {
     public function setUp() : void {
         $this->subject = new AnnotatedTargetContainerDefinitionAnalyzer(
             new PhpParserAnnotatedTargetParser(),
-            new AnnotatedTargetDefinitionConverter()
+            new AnnotatedTargetDefinitionConverter(),
+            new Emitter()
         );
     }
 

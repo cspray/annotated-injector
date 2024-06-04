@@ -20,8 +20,6 @@ use UnitEnum;
 
 abstract class AbstractContainerFactory implements ContainerFactory {
 
-    protected readonly AliasDefinitionResolver $aliasDefinitionResolver;
-
     private readonly ?ContainerFactoryEmitter $emitter;
 
     /**
@@ -30,14 +28,13 @@ abstract class AbstractContainerFactory implements ContainerFactory {
     private array $parameterStores = [];
 
     public function __construct(
-        ContainerFactoryEmitter $emitter = null,
-        AliasDefinitionResolver $aliasDefinitionResolver = null,
+        ContainerFactoryEmitter $emitter,
+        private readonly AliasDefinitionResolver $aliasDefinitionResolver = new StandardAliasDefinitionResolver(),
     ) {
         // Injecting environment variables is something we have supported since early versions.
         // We don't require adding this parameter store explicitly to continue providing this functionality
         // without the end-user having to change how they construct their ContainerFactory.
         $this->addParameterStore(new EnvironmentParameterStore());
-        $this->aliasDefinitionResolver = $aliasDefinitionResolver ?? new StandardAliasDefinitionResolver();
         $this->emitter = $emitter;
     }
 

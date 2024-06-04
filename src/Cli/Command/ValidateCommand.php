@@ -9,6 +9,8 @@ use Cspray\AnnotatedContainer\Bootstrap\Bootstrap;
 use Cspray\AnnotatedContainer\Bootstrap\BootstrappingConfiguration;
 use Cspray\AnnotatedContainer\Bootstrap\BootstrappingDirectoryResolver;
 use Cspray\AnnotatedContainer\Bootstrap\ContainerAnalytics;
+use Cspray\AnnotatedContainer\Bootstrap\DefaultDefinitionProviderFactory;
+use Cspray\AnnotatedContainer\Bootstrap\DefaultParameterStoreFactory;
 use Cspray\AnnotatedContainer\Bootstrap\PostAnalysisObserver;
 use Cspray\AnnotatedContainer\Cli\Command;
 use Cspray\AnnotatedContainer\Cli\Exception\ConfigurationNotFound;
@@ -32,6 +34,7 @@ use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraint;
 use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraintValidator;
 use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraintViolationType;
 use Cspray\AnnotatedContainer\Profiles;
+use Cspray\PrecisionStopwatch\Stopwatch;
 use DI\Container;
 
 final class ValidateCommand implements Command {
@@ -128,10 +131,13 @@ TEXT;
 
         $emitter = new Emitter();
 
-        $bootstrap = new Bootstrap(
-            emitter: $emitter,
-            directoryResolver: $this->directoryResolver,
-            containerFactory: $this->noOpContainerFactory()
+        $bootstrap = Bootstrap::fromCompleteSetup(
+            $this->noOpContainerFactory(),
+            $emitter,
+            $this->directoryResolver,
+            new DefaultParameterStoreFactory(),
+            new DefaultDefinitionProviderFactory(),
+            new Stopwatch()
         );
 
         $containerDefinition = null;

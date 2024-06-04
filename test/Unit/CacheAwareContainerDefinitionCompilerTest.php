@@ -4,6 +4,7 @@ namespace Cspray\AnnotatedContainer\Unit;
 
 use Cspray\AnnotatedContainer\AnnotatedContainerVersion;
 use Cspray\AnnotatedContainer\Attribute\Service;
+use Cspray\AnnotatedContainer\Event\Emitter;
 use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalyzer;
 use Cspray\AnnotatedContainer\StaticAnalysis\CacheAwareContainerDefinitionAnalyzer;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
@@ -30,7 +31,8 @@ class CacheAwareContainerDefinitionCompilerTest extends TestCase {
         $this->cacheAwareContainerDefinitionCompiler = new CacheAwareContainerDefinitionAnalyzer(
             $this->phpParserContainerDefinitionCompiler = new AnnotatedTargetContainerDefinitionAnalyzer(
                 new PhpParserAnnotatedTargetParser(),
-                new AnnotatedTargetDefinitionConverter()
+                new AnnotatedTargetDefinitionConverter(),
+                new Emitter()
             ),
             $this->containerDefinitionSerializer = new ContainerDefinitionSerializer(),
             'vfs://root'
@@ -108,7 +110,8 @@ class CacheAwareContainerDefinitionCompilerTest extends TestCase {
         $subject = new CacheAwareContainerDefinitionAnalyzer(
             $this->phpParserContainerDefinitionCompiler = new AnnotatedTargetContainerDefinitionAnalyzer(
                 new PhpParserAnnotatedTargetParser(),
-                new AnnotatedTargetDefinitionConverter()
+                new AnnotatedTargetDefinitionConverter(),
+                new Emitter()
             ),
             $this->containerDefinitionSerializer,
             'vfs://cache'

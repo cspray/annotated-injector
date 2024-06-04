@@ -2,6 +2,7 @@
 
 namespace Cspray\AnnotatedContainer\Unit\LogicalConstraint;
 
+use Cspray\AnnotatedContainer\Event\Emitter;
 use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraint;
 use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraintValidator;
 use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraintViolation;
@@ -23,7 +24,8 @@ class LogicalConstraintValidatorTest extends TestCase {
     protected function setUp(): void {
         $this->analyzer = new AnnotatedTargetContainerDefinitionAnalyzer(
             new PhpParserAnnotatedTargetParser(),
-            new AnnotatedTargetDefinitionConverter()
+            new AnnotatedTargetDefinitionConverter(),
+            new Emitter()
         );
     }
 

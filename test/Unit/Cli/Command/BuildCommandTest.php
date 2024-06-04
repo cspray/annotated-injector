@@ -7,6 +7,7 @@ use Cspray\AnnotatedContainer\Cli\Exception\CacheDirConfigurationNotFound;
 use Cspray\AnnotatedContainer\Cli\Exception\ConfigurationNotFound;
 use Cspray\AnnotatedContainer\Cli\Exception\InvalidOptionType;
 use Cspray\AnnotatedContainer\Cli\TerminalOutput;
+use Cspray\AnnotatedContainer\Event\Emitter;
 use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalyzer;
 use Cspray\AnnotatedContainer\StaticAnalysis\CacheAwareContainerDefinitionAnalyzer;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
@@ -247,6 +248,7 @@ XML;
             new AnnotatedTargetContainerDefinitionAnalyzer(
                 new PhpParserAnnotatedTargetParser(),
                 new AnnotatedTargetDefinitionConverter(),
+                new Emitter(),
             ),
             new ContainerDefinitionSerializer(),
             'vfs://root/.annotated-container-cache'

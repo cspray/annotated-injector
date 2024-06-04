@@ -3,8 +3,12 @@
 namespace Cspray\AnnotatedContainer\Bootstrap;
 
 use Cspray\AnnotatedContainer\AnnotatedContainer;
+use Cspray\AnnotatedContainer\ContainerFactory\AurynContainerFactory;
+use Cspray\AnnotatedContainer\ContainerFactory\IlluminateContainerFactory;
+use Cspray\AnnotatedContainer\ContainerFactory\PhpDiContainerFactory;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
-use Cspray\AnnotatedContainer\Event\BootstrapEmitter;
+use Cspray\AnnotatedContainer\Event\ContainerFactoryEmitter;
+use Cspray\AnnotatedContainer\Event\Emitter;
 use Cspray\AnnotatedContainer\Profiles;
 use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalyzer;
 use Cspray\AnnotatedContainer\StaticAnalysis\CacheAwareContainerDefinitionAnalyzer;
@@ -19,17 +23,75 @@ use Cspray\AnnotatedTarget\PhpParserAnnotatedTargetParser;
 use Cspray\PrecisionStopwatch\Marker;
 use Cspray\PrecisionStopwatch\Metrics;
 use Cspray\PrecisionStopwatch\Stopwatch;
+use DI\Container as PhpDiContainer;
+use Illuminate\Container\Container as IlluminateContainer;
+use Auryn\Injector as AurynContainer;
+use RuntimeException;
 
 final class Bootstrap {
 
-    public function __construct(
+    private function __construct(
         private readonly ContainerFactory $containerFactory,
-        private readonly ?BootstrapEmitter $emitter = null,
-        private readonly BootstrappingDirectoryResolver $directoryResolver = new VendorPresenceBasedBootstrappingDirectoryResolver(),
-        private readonly ParameterStoreFactory $parameterStoreFactory = new DefaultParameterStoreFactory(),
-        private readonly DefinitionProviderFactory $definitionProviderFactory = new DefaultDefinitionProviderFactory(),
-        private readonly Stopwatch $stopwatch = new Stopwatch(),
+        private readonly Emitter $emitter,
+        private readonly BootstrappingDirectoryResolver $directoryResolver,
+        private readonly ParameterStoreFactory $parameterStoreFactory,
+        private readonly DefinitionProviderFactory $definitionProviderFactory,
+        private readonly Stopwatch $stopwatch,
     ) {
+    }
+
+    public static function fromMinimalSetup(
+        Emitter $emitter,
+        ParameterStoreFactory $parameterStoreFactory = new DefaultParameterStoreFactory(),
+        DefinitionProviderFactory $definitionProviderFactory = new DefaultDefinitionProviderFactory(),
+    ) : self {
+        $containerFactory = self::inferredContainerFactory($emitter);
+        return new Bootstrap(
+            $containerFactory,
+            $emitter,
+            new VendorPresenceBasedBootstrappingDirectoryResolver(),
+            $parameterStoreFactory,
+            $definitionProviderFactory,
+            new Stopwatch()
+        );
+    }
+
+    private static function inferredContainerFactory(
+        ContainerFactoryEmitter $emitter,
+    ) : ContainerFactory {
+        if (class_exists(PhpDiContainer::class)) {
+            return new PhpDiContainerFactory($emitter);
+        }
+
+        if (class_exists(IlluminateContainer::class)) {
+            return new IlluminateContainerFactory($emitter);
+        }
+
+        if (class_exists(AurynContainer::class)) {
+            return new AurynContainerFactory($emitter);
+        }
+
+        throw new RuntimeException(
+            'To utilize Bootstrap::fromMinimalSetup you MUST install a backing container listed when running "composer suggest".'
+        );
+    }
+
+    public static function fromCompleteSetup(
+        ContainerFactory $containerFactory,
+        Emitter $emitter,
+        BootstrappingDirectoryResolver $resolver,
+        ParameterStoreFactory $parameterStoreFactory,
+        DefinitionProviderFactory $definitionProviderFactory,
+        Stopwatch $stopwatch
+    ) : self {
+        return new Bootstrap(
+            $containerFactory,
+            $emitter,
+            $resolver,
+            $parameterStoreFactory,
+            $definitionProviderFactory,
+            $stopwatch
+        );
     }
 
     public function bootstrapContainer(
@@ -42,7 +104,7 @@ final class Bootstrap {
         $configuration = $this->bootstrappingConfiguration($configurationFile);
         $analysisOptions = $this->analysisOptions($configuration);
 
-        $this->emitter?->emitBeforeBootstrap($configuration);
+        $this->emitter->emitBeforeBootstrap($configuration);
 
         $analysisPrepped = $this->stopwatch->mark();
 
@@ -59,7 +121,7 @@ final class Bootstrap {
         $metrics = $this->stopwatch->stop();
         $analytics = $this->createAnalytics($metrics, $analysisPrepped, $analysisCompleted);
 
-        $this->emitter?->emitAfterBootstrap(
+        $this->emitter->emitAfterBootstrap(
             $configuration,
             $containerDefinition,
             $container,
@@ -108,7 +170,8 @@ final class Bootstrap {
     private function containerDefinitionAnalyzer(?string $cacheDir) : ContainerDefinitionAnalyzer {
         $compiler = new AnnotatedTargetContainerDefinitionAnalyzer(
             new PhpParserAnnotatedTargetParser(),
-            new AnnotatedTargetDefinitionConverter()
+            new AnnotatedTargetDefinitionConverter(),
+            $this->emitter
         );
         if ($cacheDir !== null) {
             $compiler = new CacheAwareContainerDefinitionAnalyzer($compiler, new ContainerDefinitionSerializer(), $cacheDir);
