@@ -20,18 +20,6 @@
       <code><![CDATA[isDot]]></code>
     </UndefinedMethod>
   </file>
-  <file src="src/Bootstrap/ServiceWiringListener.php">
-    <MissingTemplateParam>
-      <code><![CDATA[ServiceFromServiceDefinition]]></code>
-      <code><![CDATA[ServiceGatherer]]></code>
-    </MissingTemplateParam>
-    <MixedArgument>
-      <code><![CDATA[$service]]></code>
-    </MixedArgument>
-    <MixedAssignment>
-      <code><![CDATA[$service]]></code>
-    </MixedAssignment>
-  </file>
   <file src="src/Bootstrap/XmlBootstrappingConfiguration.php">
     <MixedAssignment>
       <code><![CDATA[$scanDirectories[]]]></code>

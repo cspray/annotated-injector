@@ -27,11 +27,7 @@ abstract class ServiceWiringListener implements AfterContainerCreation {
                 $this->containerDefinition = new ProfilesAwareContainerDefinition($containerDefinition, $activeProfiles);
             }
 
-            /**
-             * @param class-string $type
-             * @return list<ServiceFromServiceDefinition>
-             */
-            public function getServicesForType(string $type) : array {
+            public function servicesForType(string $type) : array {
                 /** @var list<ServiceFromServiceDefinition> $services */
                 $services = [];
                 foreach ($this->containerDefinition->getServiceDefinitions() as $serviceDefinition) {
@@ -50,7 +46,7 @@ abstract class ServiceWiringListener implements AfterContainerCreation {
                 return $services;
             }
 
-            public function getServicesWithAttribute(string $attributeType) : array {
+            public function servicesWithAttribute(string $attributeType) : array {
                 $services = [];
                 foreach ($this->containerDefinition->getServiceDefinitions() as $serviceDefinition) {
                     if ($serviceDefinition->isAbstract()) {
@@ -69,6 +65,12 @@ abstract class ServiceWiringListener implements AfterContainerCreation {
                 return $services;
             }
 
+            /**
+             * @template T of object
+             * @param T $service
+             * @param ServiceDefinition $serviceDefinition
+             * @return ServiceFromServiceDefinition<T>
+             */
             private function createServiceFromServiceDefinition(object $service, ServiceDefinition $serviceDefinition) : ServiceFromServiceDefinition {
                 return new class($service, $serviceDefinition) implements ServiceFromServiceDefinition {
                     public function __construct(

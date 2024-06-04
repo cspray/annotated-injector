@@ -2,20 +2,19 @@
 
 namespace Cspray\AnnotatedContainer\Bootstrap;
 
-/**
- * @template T
- */
 interface ServiceGatherer {
 
     /**
+     * @template T
      * @param class-string<T> $type
-     * @return ServiceFromServiceDefinition<T>[]
+     * @return list<ServiceFromServiceDefinition<T>>
      */
-    public function getServicesForType(string $type) : array;
+    public function servicesForType(string $type) : array;
 
     /**
+     * @template T
      * @param class-string<T> $attributeType
-     * @return ServiceFromServiceDefinition<T>[]
+     * @return list<ServiceFromServiceDefinition<T>>
      */
-    public function getServicesWithAttribute(string $attributeType) : array;
+    public function servicesWithAttribute(string $attributeType) : array;
 }

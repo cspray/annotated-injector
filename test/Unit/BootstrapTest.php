@@ -394,7 +394,7 @@ XML;
 
             protected function wireServices(AnnotatedContainer $container, ServiceGatherer $gatherer) : void {
                 $this->container = $container;
-                $this->services = $gatherer->getServicesForType(Fixtures::ambiguousAliasedServices()->fooInterface()->getName());
+                $this->services = $gatherer->servicesForType(Fixtures::ambiguousAliasedServices()->fooInterface()->getName());
             }
         };
 
@@ -459,7 +459,7 @@ XML;
 
             protected function wireServices(AnnotatedContainer $container, ServiceGatherer $gatherer) : void {
                 $this->container = $container;
-                $this->services = $gatherer->getServicesWithAttribute(Repository::class);
+                $this->services = $gatherer->servicesWithAttribute(Repository::class);
             }
         };
 
@@ -520,7 +520,7 @@ XML;
 
             protected function wireServices(AnnotatedContainer $container, ServiceGatherer $gatherer) : void {
                 $this->container = $container;
-                $this->services = $gatherer->getServicesForType(Fixtures::profileResolvedServices()->fooInterface()->getName());
+                $this->services = $gatherer->servicesForType(Fixtures::profileResolvedServices()->fooInterface()->getName());
             }
         };
 
@@ -583,7 +583,7 @@ XML;
 
             protected function wireServices(AnnotatedContainer $container, ServiceGatherer $gatherer) : void {
                 $this->container = $container;
-                $this->services = $gatherer->getServicesWithAttribute(Repository::class);
+                $this->services = $gatherer->servicesWithAttribute(Repository::class);
             }
         };
 
