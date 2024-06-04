@@ -30,9 +30,11 @@ static-analysis:
     @./tools/psalm/vendor/bin/psalm --version
     @./tools/psalm/vendor/bin/psalm
 
+# Set the baseline of known issues to be used during static analysis
 static-analysis-set-baseline:
     @./tools/psalm/vendor/bin/psalm --set-baseline=known-issues.xml
 
+# Update the baseline to _remove_ fixed issues. If new issues are to be added please use static-analysis-set-baseline
 static-analysis-update-baseline:
     @./tools/psalm/vendor/bin/psalm --update-baseline
 
@@ -41,9 +43,17 @@ code-lint:
     @./tools/labrador-cs/vendor/bin/phpcs --version
     @./tools/labrador-cs/vendor/bin/phpcs -p --colors --standard=./tools/labrador-cs/vendor/cspray/labrador-coding-standard/ruleset.xml --exclude=Generic.Files.LineLength src test
 
+# Resolve fixable code-linting issues
 code-lint-fix:
     @./tools/labrador-cs/vendor/bin/phpcbf -p --standard=./tools/labrador-cs/vendor/cspray/labrador-coding-standard/ruleset.xml --exclude=Generic.Files.LineLength src test
 
-ci-check: test static-analysis
+# Run all CI checks
+ci-check:
+    -@just test
+    -@just static-analysis
     @echo ""
-    @just code-lint
+    -@just code-lint
+
+# Generate a new Architectural Decision Record document
+generate-adr:
+    @./vendor/bin/architectural-decisions

@@ -3,9 +3,10 @@
 namespace Cspray\AnnotatedContainer\Event\Listener\ContainerFactory;
 
 use Cspray\AnnotatedContainer\Definition\ServiceDefinition;
+use Cspray\AnnotatedContainer\Event\Listener;
 use Cspray\AnnotatedContainer\Profiles;
 
-interface ServiceFilteredDueToProfiles {
+interface ServiceFilteredDueToProfiles extends Listener {
 
     public function handleServiceFilteredDueToProfiles(Profiles $profiles, ServiceDefinition $serviceDefinition) : void;
 }

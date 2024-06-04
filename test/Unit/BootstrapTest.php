@@ -6,12 +6,8 @@ use Cspray\AnnotatedContainer\AnnotatedContainer;
 use Cspray\AnnotatedContainer\Bootstrap\Bootstrap;
 use Cspray\AnnotatedContainer\Bootstrap\BootstrappingConfiguration;
 use Cspray\AnnotatedContainer\Bootstrap\ContainerAnalytics;
-use Cspray\AnnotatedContainer\Bootstrap\ContainerAnalyticsObserver;
-use Cspray\AnnotatedContainer\Bootstrap\ContainerCreatedObserver;
 use Cspray\AnnotatedContainer\Bootstrap\DefinitionProviderFactory;
-use Cspray\AnnotatedContainer\Bootstrap\ObserverFactory;
 use Cspray\AnnotatedContainer\Bootstrap\ParameterStoreFactory;
-use Cspray\AnnotatedContainer\Bootstrap\PreAnalysisObserver;
 use Cspray\AnnotatedContainer\Bootstrap\ServiceFromServiceDefinition;
 use Cspray\AnnotatedContainer\Bootstrap\ServiceGatherer;
 use Cspray\AnnotatedContainer\Bootstrap\ServiceWiringListener;
@@ -24,12 +20,9 @@ use Cspray\AnnotatedContainer\Profiles;
 use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProvider;
 use Cspray\AnnotatedContainer\ContainerFactory\ParameterStore;
 use Cspray\AnnotatedContainer\Unit\Helper\FixtureBootstrappingDirectoryResolver;
-use Cspray\AnnotatedContainer\Unit\Helper\StubAnalyticsObserver;
 use Cspray\AnnotatedContainer\Unit\Helper\StubBootstrapListener;
-use Cspray\AnnotatedContainer\Unit\Helper\StubBootstrapObserver;
 use Cspray\AnnotatedContainer\Unit\Helper\StubDefinitionProviderWithDependencies;
 use Cspray\AnnotatedContainer\Unit\Helper\StubParameterStoreWithDependencies;
-use Cspray\AnnotatedContainer\Unit\Helper\TestLogger;
 use Cspray\AnnotatedContainerFixture\CustomServiceAttribute\Repository;
 use Cspray\AnnotatedContainerFixture\Fixtures;
 use Cspray\PrecisionStopwatch\KnownIncrementingPreciseTime;
@@ -37,7 +30,6 @@ use Cspray\PrecisionStopwatch\Stopwatch;
 use org\bovigo\vfs\vfsStream as VirtualFilesystem;
 use org\bovigo\vfs\vfsStreamDirectory as VirtualDirectory;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\LogLevel;
 
 final class BootstrapTest extends TestCase {
 
@@ -364,7 +356,7 @@ XML;
             }
         };
 
-        $emitter->addAfterContainerCreationListener($listener);
+        $emitter->addListener($listener);
 
         $container = $bootstrap->bootstrapContainer(Profiles::fromList(['default']));
 
@@ -427,7 +419,7 @@ XML;
             }
         };
 
-        $emitter->addAfterContainerCreationListener($listener);
+        $emitter->addListener($listener);
 
         $container = $bootstrap->bootstrapContainer(Profiles::fromList(['default', 'test']));
 
@@ -485,7 +477,7 @@ XML;
             }
         };
 
-        $emitter->addAfterContainerCreationListener($listener);
+        $emitter->addListener($listener);
 
         $container = $bootstrap->bootstrapContainer(Profiles::fromList(['default', 'prod']));
 
@@ -546,7 +538,7 @@ XML;
             }
         };
 
-        $emitter->addAfterContainerCreationListener($listener);
+        $emitter->addListener($listener);
 
         // The Repository is only active under 'test' profile and should not be included
         $container = $bootstrap->bootstrapContainer(Profiles::fromList(['default', 'dev']));
@@ -594,7 +586,7 @@ XML;
             stopwatch: new Stopwatch(new KnownIncrementingPreciseTime())
         );
 
-        $emitter->addAfterBootstrapListener($listener);
+        $emitter->addListener($listener);
 
         $subject->bootstrapContainer(Profiles::fromList(['default']));
 
@@ -660,8 +652,7 @@ XML;
             ->at($this->vfs);
 
         $listener = new StubBootstrapListener();
-        $emitter->addBeforeBootstrapListener($listener);
-        $emitter->addAfterBootstrapListener($listener);
+        $emitter->addListener($listener);
 
         $bootstrap = new Bootstrap(
             new AurynContainerFactory(),

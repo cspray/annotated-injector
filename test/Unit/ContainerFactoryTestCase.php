@@ -460,8 +460,7 @@ abstract class ContainerFactoryTestCase extends TestCase {
         $emitter = new Emitter();
 
         $listener = new StubContainerFactoryListener();
-        $emitter->addBeforeContainerCreationListener($listener);
-        $emitter->addAfterContainerCreationListener($listener);
+        $emitter->addListener($listener);
 
         $this->getContainer(
             Fixtures::singleConcreteService()->getPath(),

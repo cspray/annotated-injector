@@ -19,9 +19,6 @@ in the #[Inject] Attribute. This way just 1 Configuration instance is required a
 defined on the value itself.]]></contents>
     <codeAnnotations>
       <codeAnnotation>
-        <class>Cspray\AnnotatedContainer\Definition\ConfigurationDefinition</class>
-      </codeAnnotation>
-      <codeAnnotation>
         <class>Cspray\AnnotatedContainer\Attribute\Configuration</class>
       </codeAnnotation>
     </codeAnnotations>
@@ -145,20 +142,6 @@ ways. This value object will also continue to provide the same functionality as 
 The deprecation of these implementations in 2.3 is meant to serve as a warning they will be removed in 3.0. For the
 most part, transitioning from ActiveProfiles to Profiles in your code should be straightforward. You should only need
 to adjust the type declaration to be the new type.]]></contents>
-    <codeAnnotations>
-      <codeAnnotation>
-        <class>Cspray\AnnotatedContainer\Profiles\ActiveProfilesBuilder</class>
-      </codeAnnotation>
-      <codeAnnotation>
-        <class>Cspray\AnnotatedContainer\Profiles\CsvActiveProfilesParser</class>
-      </codeAnnotation>
-      <codeAnnotation>
-        <class>Cspray\AnnotatedContainer\Profiles\ActiveProfiles</class>
-      </codeAnnotation>
-      <codeAnnotation>
-        <class>Cspray\AnnotatedContainer\Profiles\ActiveProfilesParser</class>
-      </codeAnnotation>
-    </codeAnnotations>
     <meta>
       <author>
         <name>Charles Sprayberry</name>
@@ -196,26 +179,6 @@ necessary. The deprecation of this system in 2.3 is meant to act as a warning th
 your Observer implementations to use the corresponding Event. In practice this should be a relatively straight-forward
 operation requiring implementation of a new interface, renaming a method, and perhaps adjusting a method signature.
 All the data made available through the Observer system will also be made available through the Event system.]]></contents>
-    <codeAnnotations>
-      <codeAnnotation>
-        <class>Cspray\AnnotatedContainer\Bootstrap\ObserverFactory</class>
-      </codeAnnotation>
-      <codeAnnotation>
-        <class>Cspray\AnnotatedContainer\Bootstrap\PostAnalysisObserver</class>
-      </codeAnnotation>
-      <codeAnnotation>
-        <class>Cspray\AnnotatedContainer\Bootstrap\ServiceWiringObserver</class>
-      </codeAnnotation>
-      <codeAnnotation>
-        <class>Cspray\AnnotatedContainer\Bootstrap\ContainerCreatedObserver</class>
-      </codeAnnotation>
-      <codeAnnotation>
-        <class>Cspray\AnnotatedContainer\Bootstrap\ContainerAnalyticsObserver</class>
-      </codeAnnotation>
-      <codeAnnotation>
-        <class>Cspray\AnnotatedContainer\Bootstrap\PreAnalysisObserver</class>
-      </codeAnnotation>
-    </codeAnnotations>
     <meta>
       <author>
         <name>Charles Sprayberry</name>
@@ -253,12 +216,6 @@ We could simply add these pieces of the ConfigurationAttribute but at that point
 ServiceAttribute. Instead of that, we should discourage the use of the ConfigurationAttribute. If you require similar
 functionality, you should implement your own custom ServiceAttribute.]]></contents>
     <codeAnnotations>
-      <codeAnnotation>
-        <class>Cspray\AnnotatedContainer\Definition\ConfigurationDefinition</class>
-      </codeAnnotation>
-      <codeAnnotation>
-        <class>Cspray\AnnotatedContainer\Definition\ConfigurationDefinitionBuilder</class>
-      </codeAnnotation>
       <codeAnnotation>
         <class>Cspray\AnnotatedContainer\Attribute\ConfigurationAttribute</class>
       </codeAnnotation>

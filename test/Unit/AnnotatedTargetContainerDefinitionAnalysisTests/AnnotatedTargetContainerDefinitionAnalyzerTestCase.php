@@ -38,18 +38,7 @@ abstract class AnnotatedTargetContainerDefinitionAnalyzerTestCase extends TestCa
 
         $emitter = new Emitter();
 
-        $emitter->addBeforeContainerAnalysisListener($this->stubAnalysisListener);
-        $emitter->addAnalyzedContainerDefinitionFromCacheListener($this->stubAnalysisListener);
-        $emitter->addAnalyzedInjectDefinitionFromAttributeListener($this->stubAnalysisListener);
-        $emitter->addAnalyzedServiceDefinitionFromAttributeListener($this->stubAnalysisListener);
-        $emitter->addAnalyzedServiceDelegateDefinitionFromAttributeListener($this->stubAnalysisListener);
-        $emitter->addAnalyzedServicePrepareDefinitionFromAttributeListener($this->stubAnalysisListener);
-        $emitter->addAddedAliasDefinitionListener($this->stubAnalysisListener);
-        $emitter->addAddedInjectDefinitionFromApiListener($this->stubAnalysisListener);
-        $emitter->addAddedServiceDefinitionFromApiListener($this->stubAnalysisListener);
-        $emitter->addAddedServiceDelegateDefinitionFromApiListener($this->stubAnalysisListener);
-        $emitter->addAddedServicePrepareDefinitionFromApiListener($this->stubAnalysisListener);
-        $emitter->addAfterContainerAnalysisListener($this->stubAnalysisListener);
+        $emitter->addListener($this->stubAnalysisListener);
 
         $this->analyzer = new AnnotatedTargetContainerDefinitionAnalyzer(
             new PhpParserAnnotatedTargetParser(),

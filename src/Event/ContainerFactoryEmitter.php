@@ -22,8 +22,6 @@ interface ContainerFactoryEmitter {
 
     public function emitInjectingMethodParameter(Profiles $profiles, InjectDefinition $injectDefinition) : void;
 
-    public function emitInjectingProperty(Profiles $profiles, InjectDefinition $injectDefinition) : void;
-
     public function emitServicePrepared(Profiles $profiles, ServicePrepareDefinition $servicePrepareDefinition) : void;
 
     public function emitServiceDelegated(Profiles $profiles, ServiceDelegateDefinition $serviceDelegateDefinition) : void;

@@ -3,8 +3,9 @@
 namespace Cspray\AnnotatedContainer\Event\Listener\Bootstrap;
 
 use Cspray\AnnotatedContainer\Bootstrap\BootstrappingConfiguration;
+use Cspray\AnnotatedContainer\Event\Listener;
 
-interface BeforeBootstrap {
+interface BeforeBootstrap extends Listener {
 
     public function handleBeforeBootstrap(BootstrappingConfiguration $bootstrappingConfiguration) : void;
 }

@@ -3,9 +3,10 @@
 namespace Cspray\AnnotatedContainer\Event\Listener\StaticAnalysis;
 
 use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinition;
+use Cspray\AnnotatedContainer\Event\Listener;
 use Cspray\AnnotatedTarget\AnnotatedTarget;
 
-interface AnalyzedServiceDelegateDefinitionFromAttribute {
+interface AnalyzedServiceDelegateDefinitionFromAttribute extends Listener {
 
     public function handleAnalyzedServiceDelegateDefinitionFromAttribute(AnnotatedTarget $annotatedTarget, ServiceDelegateDefinition $definition) : void;
 }
