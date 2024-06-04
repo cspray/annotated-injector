@@ -14,7 +14,7 @@ final class NonPublicServicePrepare implements LogicalConstraint {
     public function getConstraintViolations(ContainerDefinition $containerDefinition, Profiles $profiles) : LogicalConstraintViolationCollection {
         $violations =  new LogicalConstraintViolationCollection();
 
-        foreach ($containerDefinition->getServicePrepareDefinitions() as $prepareDefinition) {
+        foreach ($containerDefinition->servicePrepareDefinitions() as $prepareDefinition) {
             $reflection = new \ReflectionMethod(sprintf('%s::%s', $prepareDefinition->getService()->getName(), $prepareDefinition->getMethod()));
             if ($reflection->isPrivate() || $reflection->isProtected()) {
                 $protectedOrPrivate = $reflection->isProtected() ? 'protected' : 'private';

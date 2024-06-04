@@ -18,7 +18,7 @@ final class DuplicateServiceName implements LogicalConstraint {
 
         /** @var array<string, list<class-string>> $namedServiceMap */
         $namedServiceMap = [];
-        foreach ($containerDefinition->getServiceDefinitions() as $definition) {
+        foreach ($containerDefinition->serviceDefinitions() as $definition) {
             $name = $definition->getName();
             if ($name === null) {
                 continue;

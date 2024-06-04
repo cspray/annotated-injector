@@ -14,7 +14,7 @@ final class NonPublicServiceDelegate implements LogicalConstraint {
     public function getConstraintViolations(ContainerDefinition $containerDefinition, Profiles $profiles) : LogicalConstraintViolationCollection {
         $violations = new LogicalConstraintViolationCollection();
 
-        foreach ($containerDefinition->getServiceDelegateDefinitions() as $delegateDefinition) {
+        foreach ($containerDefinition->serviceDelegateDefinitions() as $delegateDefinition) {
             $reflection = new \ReflectionMethod(sprintf('%s::%s', $delegateDefinition->getDelegateType()->getName(), $delegateDefinition->getDelegateMethod()));
             if ($reflection->isProtected() || $reflection->isPrivate()) {
                 $protectedOrPrivate = $reflection->isProtected() ? 'protected' : 'private';

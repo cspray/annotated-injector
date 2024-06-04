@@ -54,7 +54,7 @@ TEXT;
      * @return Generator<ServiceDefinition>
      */
     private function getAbstractServices(ContainerDefinition $containerDefinition) : Generator {
-        foreach ($containerDefinition->getServiceDefinitions() as $serviceDefinition) {
+        foreach ($containerDefinition->serviceDefinitions() as $serviceDefinition) {
             if ($serviceDefinition->isAbstract()) {
                 yield $serviceDefinition;
             }
@@ -65,7 +65,7 @@ TEXT;
      * @return Generator<ServiceDefinition>
      */
     private function getConcreteServicesInstanceOf(ContainerDefinition $containerDefinition, ServiceDefinition $serviceDefinition) : Generator {
-        foreach ($containerDefinition->getServiceDefinitions() as $service) {
+        foreach ($containerDefinition->serviceDefinitions() as $service) {
             if ($service->isConcrete()) {
                 if (is_subclass_of($service->getType()->getName(), $serviceDefinition->getType()->getName())) {
                     yield $service;

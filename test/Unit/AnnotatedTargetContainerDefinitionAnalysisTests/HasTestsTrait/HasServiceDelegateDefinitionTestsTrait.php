@@ -15,7 +15,7 @@ trait HasServiceDelegateDefinitionTestsTrait {
     #[DataProvider('serviceDelegateProvider')]
     final public function testServiceDelegateDefinition(ExpectedServiceDelegate $expectedServiceDelegate) : void {
         $definition = null;
-        foreach ($this->getSubject()->getServiceDelegateDefinitions() as $delegateDefinition) {
+        foreach ($this->getSubject()->serviceDelegateDefinitions() as $delegateDefinition) {
             if ($delegateDefinition->getServiceType() === $expectedServiceDelegate->service) {
                 $definition = $delegateDefinition;
                 break;

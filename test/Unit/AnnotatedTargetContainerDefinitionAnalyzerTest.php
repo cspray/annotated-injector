@@ -128,7 +128,7 @@ class AnnotatedTargetContainerDefinitionAnalyzerTest extends TestCase {
         $containerDef = $this->runAnalysisDirectory(Fixtures::beanLikeConfigConcrete()->getPath());
 
         $serviceDef = $this->getServiceDefinition(
-            $containerDef->getServiceDefinitions(),
+            $containerDef->serviceDefinitions(),
             Fixtures::beanLikeConfigConcrete()->fooService()->getName()
         );
 
@@ -145,7 +145,7 @@ class AnnotatedTargetContainerDefinitionAnalyzerTest extends TestCase {
         $containerDef = $this->runAnalysisDirectory(Fixtures::beanLikeConfigInterface()->getPath());
 
         $serviceDef = $this->getServiceDefinition(
-            $containerDef->getServiceDefinitions(),
+            $containerDef->serviceDefinitions(),
             Fixtures::beanLikeConfigInterface()->fooInterface()->getName()
         );
 
@@ -162,7 +162,7 @@ class AnnotatedTargetContainerDefinitionAnalyzerTest extends TestCase {
         $containerDef = $this->runAnalysisDirectory(Fixtures::beanLikeConfigAbstract()->getPath());
 
         $serviceDef = $this->getServiceDefinition(
-            $containerDef->getServiceDefinitions(),
+            $containerDef->serviceDefinitions(),
             Fixtures::beanLikeConfigAbstract()->abstractFooService()->getName()
         );
 

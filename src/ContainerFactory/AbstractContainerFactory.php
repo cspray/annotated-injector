@@ -57,24 +57,24 @@ abstract class AbstractContainerFactory implements ContainerFactory {
         $definition = new ProfilesAwareContainerDefinition($containerDefinition, $activeProfiles);
         $state = $this->containerFactoryState($definition);
 
-        foreach ($definition->getServiceDefinitions() as $serviceDefinition) {
+        foreach ($definition->serviceDefinitions() as $serviceDefinition) {
             $this->handleServiceDefinition($state, $serviceDefinition);
         }
 
-        foreach ($definition->getServiceDelegateDefinitions() as $serviceDelegateDefinition) {
+        foreach ($definition->serviceDelegateDefinitions() as $serviceDelegateDefinition) {
             $this->handleServiceDelegateDefinition($state, $serviceDelegateDefinition);
         }
 
-        foreach ($definition->getServicePrepareDefinitions() as $servicePrepareDefinition) {
+        foreach ($definition->servicePrepareDefinitions() as $servicePrepareDefinition) {
             $this->handleServicePrepareDefinition($state, $servicePrepareDefinition);
         }
 
-        foreach ($definition->getAliasDefinitions() as $aliasDefinition) {
+        foreach ($definition->aliasDefinitions() as $aliasDefinition) {
             $resolution = $this->aliasDefinitionResolver->resolveAlias($definition, $aliasDefinition->abstractService());
             $this->handleAliasDefinition($state, $resolution);
         }
 
-        foreach ($definition->getInjectDefinitions() as $injectDefinition) {
+        foreach ($definition->injectDefinitions() as $injectDefinition) {
             $this->handleInjectDefinition($state, $injectDefinition);
         }
 

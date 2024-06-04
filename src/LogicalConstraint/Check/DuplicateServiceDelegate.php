@@ -20,7 +20,7 @@ final class DuplicateServiceDelegate implements LogicalConstraint {
          */
         $delegateMap = [];
 
-        foreach ($containerDefinition->getServiceDelegateDefinitions() as $definition) {
+        foreach ($containerDefinition->serviceDelegateDefinitions() as $definition) {
             $service = $definition->getServiceType()->getName();
             $method = sprintf('%s::%s', $definition->getDelegateType()->getName(), $definition->getDelegateMethod());
             $delegateMap[$service] ??= [];

@@ -256,14 +256,14 @@ XML;
             ContainerDefinitionAnalysisOptionsBuilder::scanDirectories(Fixtures::thirdPartyServices()->getPath())->build()
         );
 
-        self::assertCount(2, $containerDefinition->getServiceDefinitions());
+        self::assertCount(2, $containerDefinition->serviceDefinitions());
         self::assertSame(
             Fixtures::thirdPartyServices()->fooImplementation(),
-            $containerDefinition->getServiceDefinitions()[0]->getType()
+            $containerDefinition->serviceDefinitions()[0]->getType()
         );
         self::assertSame(
             Fixtures::thirdPartyServices()->fooInterface(),
-            $containerDefinition->getServiceDefinitions()[1]->getType()
+            $containerDefinition->serviceDefinitions()[1]->getType()
         );
     }
 

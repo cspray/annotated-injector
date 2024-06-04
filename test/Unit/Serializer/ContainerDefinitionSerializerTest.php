@@ -824,7 +824,7 @@ XML;
 
         $actual = $subject->deserialize($xml);
 
-        $serviceDefinitions = $actual->getServiceDefinitions();
+        $serviceDefinitions = $actual->serviceDefinitions();
 
         self::assertCount(1, $serviceDefinitions);
         $serviceDefinition = $serviceDefinitions[0];
@@ -865,7 +865,7 @@ XML;
 
         $actual = $subject->deserialize($xml);
 
-        $serviceDefinitions = $actual->getServiceDefinitions();
+        $serviceDefinitions = $actual->serviceDefinitions();
 
         self::assertCount(1, $serviceDefinitions);
         $serviceDefinition = $serviceDefinitions[0];
@@ -906,7 +906,7 @@ XML;
 
         $actual = $subject->deserialize($xml);
 
-        $serviceDefinitions = $actual->getServiceDefinitions();
+        $serviceDefinitions = $actual->serviceDefinitions();
 
         self::assertCount(1, $serviceDefinitions);
         $serviceDefinition = $serviceDefinitions[0];
@@ -949,7 +949,7 @@ XML;
 
         $actual = $subject->deserialize($xml);
 
-        $serviceDefinitions = $actual->getServiceDefinitions();
+        $serviceDefinitions = $actual->serviceDefinitions();
 
         self::assertCount(1, $serviceDefinitions);
         $serviceDefinition = $serviceDefinitions[0];
@@ -989,7 +989,7 @@ XML;
 
         $actual = $subject->deserialize($xml);
 
-        $serviceDefinitions = $actual->getServiceDefinitions();
+        $serviceDefinitions = $actual->serviceDefinitions();
 
         self::assertCount(1, $serviceDefinitions);
         $serviceDefinition = $serviceDefinitions[0];
@@ -1043,8 +1043,8 @@ XML;
         $subject = new ContainerDefinitionSerializer();
         $actual = $subject->deserialize($xml);
 
-        self::assertCount(1, $actual->getAliasDefinitions());
-        $aliasDefinition = $actual->getAliasDefinitions()[0];
+        self::assertCount(1, $actual->aliasDefinitions());
+        $aliasDefinition = $actual->aliasDefinitions()[0];
         self::assertSame(Fixtures::implicitAliasedServices()->fooInterface(), $aliasDefinition->abstractService());
         self::assertSame(Fixtures::implicitAliasedServices()->fooImplementation(), $aliasDefinition->concreteService());
     }
@@ -1082,8 +1082,8 @@ XML;
         $subject = new ContainerDefinitionSerializer();
         $actual = $subject->deserialize($xml);
 
-        self::assertCount(1, $actual->getServicePrepareDefinitions());
-        $prepareDefinition = $actual->getServicePrepareDefinitions()[0];
+        self::assertCount(1, $actual->servicePrepareDefinitions());
+        $prepareDefinition = $actual->servicePrepareDefinitions()[0];
         self::assertSame(Fixtures::interfacePrepareServices()->fooInterface(), $prepareDefinition->getService());
         self::assertSame('setBar', $prepareDefinition->getMethod());
     }
@@ -1122,8 +1122,8 @@ XML;
         $subject = new ContainerDefinitionSerializer();
         $actual = $subject->deserialize($xml);
 
-        self::assertCount(1, $actual->getServiceDelegateDefinitions());
-        $delegateDefinition = $actual->getServiceDelegateDefinitions()[0];
+        self::assertCount(1, $actual->serviceDelegateDefinitions());
+        $delegateDefinition = $actual->serviceDelegateDefinitions()[0];
 
         self::assertSame(Fixtures::delegatedService()->serviceInterface(), $delegateDefinition->getServiceType());
         self::assertSame(Fixtures::delegatedService()->serviceFactory(), $delegateDefinition->getDelegateType());
@@ -1177,8 +1177,8 @@ XML;
 
         $actual = $subject->deserialize($xml);
 
-        self::assertCount(1, $actual->getInjectDefinitions());
-        $injectDefinition = $actual->getInjectDefinitions()[0];
+        self::assertCount(1, $actual->injectDefinitions());
+        $injectDefinition = $actual->injectDefinitions()[0];
 
         self::assertTrue(
             $injectDefinition->getTargetIdentifier()->isMethodParameter()
@@ -1242,8 +1242,8 @@ XML;
 
         $actual = $subject->deserialize($xml);
 
-        self::assertCount(1, $actual->getInjectDefinitions());
-        $injectDefinition = $actual->getInjectDefinitions()[0];
+        self::assertCount(1, $actual->injectDefinitions());
+        $injectDefinition = $actual->injectDefinitions()[0];
 
         self::assertTrue(
             $injectDefinition->getTargetIdentifier()->isMethodParameter()
@@ -1307,8 +1307,8 @@ XML;
 
         $actual = $subject->deserialize($xml);
 
-        self::assertCount(1, $actual->getInjectDefinitions());
-        $injectDefinition = $actual->getInjectDefinitions()[0];
+        self::assertCount(1, $actual->injectDefinitions());
+        $injectDefinition = $actual->injectDefinitions()[0];
 
         self::assertTrue(
             $injectDefinition->getTargetIdentifier()->isMethodParameter()
@@ -1373,8 +1373,8 @@ XML;
 
         $actual = $subject->deserialize($xml);
 
-        self::assertCount(1, $actual->getInjectDefinitions());
-        $injectDefinition = $actual->getInjectDefinitions()[0];
+        self::assertCount(1, $actual->injectDefinitions());
+        $injectDefinition = $actual->injectDefinitions()[0];
 
         self::assertTrue(
             $injectDefinition->getTargetIdentifier()->isMethodParameter()

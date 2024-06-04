@@ -35,7 +35,7 @@ final class AssertExpectedInjectDefinition {
     }
 
     private function getDefinitionsForService(ExpectedInject $expectedInject, ContainerDefinition $containerDefinition) : array {
-        $definitionsForService = array_filter($containerDefinition->getInjectDefinitions(), fn($injectDefinition) => $injectDefinition->getTargetIdentifier()->getClass() === $expectedInject->service);
+        $definitionsForService = array_filter($containerDefinition->injectDefinitions(), fn($injectDefinition) => $injectDefinition->getTargetIdentifier()->getClass() === $expectedInject->service);
         if (empty($definitionsForService)) {
             Assert::fail(sprintf(
                 'Could not find an InjectDefinition for %s in the provided ContainerDefinition.',

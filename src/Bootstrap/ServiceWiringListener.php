@@ -30,7 +30,7 @@ abstract class ServiceWiringListener implements AfterContainerCreation {
             public function servicesForType(string $type) : array {
                 /** @var list<ServiceFromServiceDefinition> $services */
                 $services = [];
-                foreach ($this->containerDefinition->getServiceDefinitions() as $serviceDefinition) {
+                foreach ($this->containerDefinition->serviceDefinitions() as $serviceDefinition) {
                     if ($serviceDefinition->isAbstract()) {
                         continue;
                     }
@@ -48,7 +48,7 @@ abstract class ServiceWiringListener implements AfterContainerCreation {
 
             public function servicesWithAttribute(string $attributeType) : array {
                 $services = [];
-                foreach ($this->containerDefinition->getServiceDefinitions() as $serviceDefinition) {
+                foreach ($this->containerDefinition->serviceDefinitions() as $serviceDefinition) {
                     if ($serviceDefinition->isAbstract()) {
                         continue;
                     }

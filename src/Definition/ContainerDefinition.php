@@ -15,7 +15,7 @@ interface ContainerDefinition {
      *
      * @return list<ServiceDefinition>
      */
-    public function getServiceDefinitions() : array;
+    public function serviceDefinitions() : array;
 
     /**
      * Returns a set of AliasDefinition that define which concrete services are possible candidate for a given abstract
@@ -29,7 +29,7 @@ interface ContainerDefinition {
      *
      * @return list<AliasDefinition>
      */
-    public function getAliasDefinitions() : array;
+    public function aliasDefinitions() : array;
 
     /**
      * Returns a set of ServicePrepareDefinition that determine which service methods will be automatically invoked
@@ -37,14 +37,14 @@ interface ContainerDefinition {
      *
      * @return list<ServicePrepareDefinition>
      */
-    public function getServicePrepareDefinitions() : array;
+    public function servicePrepareDefinitions() : array;
 
     /**
      * Returns a set of ServiceDelegateDefinition that determine which services require factories to be constructed.
      *
      * @return list<ServiceDelegateDefinition>
      */
-    public function getServiceDelegateDefinitions() : array;
+    public function serviceDelegateDefinitions() : array;
 
     /**
      * Returns a set of InjectDefinition that determine what values are injected into methods or properties that
@@ -52,5 +52,5 @@ interface ContainerDefinition {
      *
      * @return list<InjectDefinition>
      */
-    public function getInjectDefinitions() : array;
+    public function injectDefinitions() : array;
 }

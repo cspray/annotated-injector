@@ -58,7 +58,7 @@ final class ContainerDefinitionSerializer {
             $serviceDefinitionsNode = $dom->createElementNS(self::XML_SCHEMA, 'serviceDefinitions')
         );
 
-        foreach ($containerDefinition->getServiceDefinitions() as $serviceDefinition) {
+        foreach ($containerDefinition->serviceDefinitions() as $serviceDefinition) {
             $serviceDefinitionsNode->appendChild(
                 $serviceDefinitionNode = $dom->createElementNS(self::XML_SCHEMA, 'serviceDefinition')
             );
@@ -111,7 +111,7 @@ final class ContainerDefinitionSerializer {
             $aliasDefinitionsNode = $dom->createElementNS(self::XML_SCHEMA, 'aliasDefinitions')
         );
 
-        foreach ($containerDefinition->getAliasDefinitions() as $aliasDefinition) {
+        foreach ($containerDefinition->aliasDefinitions() as $aliasDefinition) {
             $aliasDefinitionsNode->appendChild(
                 $aliasDefinitionNode = $dom->createElementNS(self::XML_SCHEMA, 'aliasDefinition')
             );
@@ -132,7 +132,7 @@ final class ContainerDefinitionSerializer {
             $servicePrepareDefinitionsNode = $dom->createElementNS(self::XML_SCHEMA, 'servicePrepareDefinitions')
         );
 
-        foreach ($containerDefinition->getServicePrepareDefinitions() as $servicePrepareDefinition) {
+        foreach ($containerDefinition->servicePrepareDefinitions() as $servicePrepareDefinition) {
             $servicePrepareDefinitionsNode->appendChild(
                 $servicePrepareDefinitionNode = $dom->createElementNS(self::XML_SCHEMA, 'servicePrepareDefinition')
             );
@@ -163,7 +163,7 @@ final class ContainerDefinitionSerializer {
             $serviceDelegateDefinitionsNode = $dom->createElementNS(self::XML_SCHEMA, 'serviceDelegateDefinitions')
         );
 
-        foreach ($containerDefinition->getServiceDelegateDefinitions() as $serviceDelegateDefinition) {
+        foreach ($containerDefinition->serviceDelegateDefinitions() as $serviceDelegateDefinition) {
             $serviceDelegateDefinitionsNode->appendChild(
                 $serviceDelegateDefinitionNode = $dom->createElementNS(self::XML_SCHEMA, 'serviceDelegateDefinition')
             );
@@ -195,7 +195,7 @@ final class ContainerDefinitionSerializer {
             $injectDefinitionsNode = $dom->createElementNS(self::XML_SCHEMA, 'injectDefinitions')
         );
 
-        foreach ($containerDefinition->getInjectDefinitions() as $injectDefinition) {
+        foreach ($containerDefinition->injectDefinitions() as $injectDefinition) {
             try {
                 $serializedValue = serialize($injectDefinition->getValue());
             } catch (PhpException $exception) {

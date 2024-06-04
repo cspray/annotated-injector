@@ -14,9 +14,9 @@ final class ProfilesAwareContainerDefinition implements ContainerDefinition {
     ) {
     }
 
-    public function getServiceDefinitions() : array {
+    public function serviceDefinitions() : array {
         $filtered = [];
-        foreach ($this->containerDefinition->getServiceDefinitions() as $serviceDefinition) {
+        foreach ($this->containerDefinition->serviceDefinitions() as $serviceDefinition) {
             if ($this->hasActiveProfile($serviceDefinition)) {
                 $filtered[] = $serviceDefinition;
             }
@@ -25,9 +25,9 @@ final class ProfilesAwareContainerDefinition implements ContainerDefinition {
         return $filtered;
     }
 
-    public function getAliasDefinitions() : array {
+    public function aliasDefinitions() : array {
         $filtered = [];
-        foreach ($this->containerDefinition->getAliasDefinitions() as $aliasDefinition) {
+        foreach ($this->containerDefinition->aliasDefinitions() as $aliasDefinition) {
             $abstract = $this->getServiceDefinition($aliasDefinition->abstractService());
             if ($abstract === null) {
                 throw InvalidAlias::fromAbstractNotService($aliasDefinition->abstractService()->getName());
@@ -45,17 +45,17 @@ final class ProfilesAwareContainerDefinition implements ContainerDefinition {
         return $filtered;
     }
 
-    public function getServicePrepareDefinitions() : array {
-        return $this->containerDefinition->getServicePrepareDefinitions();
+    public function servicePrepareDefinitions() : array {
+        return $this->containerDefinition->servicePrepareDefinitions();
     }
 
-    public function getServiceDelegateDefinitions() : array {
-        return $this->containerDefinition->getServiceDelegateDefinitions();
+    public function serviceDelegateDefinitions() : array {
+        return $this->containerDefinition->serviceDelegateDefinitions();
     }
 
-    public function getInjectDefinitions() : array {
+    public function injectDefinitions() : array {
         $filtered = [];
-        foreach ($this->containerDefinition->getInjectDefinitions() as $injectDefinition) {
+        foreach ($this->containerDefinition->injectDefinitions() as $injectDefinition) {
             if ($this->hasActiveProfile($injectDefinition)) {
                 $filtered[] = $injectDefinition;
             }
@@ -64,7 +64,7 @@ final class ProfilesAwareContainerDefinition implements ContainerDefinition {
     }
 
     private function getServiceDefinition(ObjectType $objectType) : ?ServiceDefinition {
-        foreach ($this->containerDefinition->getServiceDefinitions() as $serviceDefinition) {
+        foreach ($this->containerDefinition->serviceDefinitions() as $serviceDefinition) {
             if ($serviceDefinition->getType() === $objectType) {
                 return $serviceDefinition;
             }

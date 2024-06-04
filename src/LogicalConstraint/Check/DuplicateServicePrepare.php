@@ -17,7 +17,7 @@ final class DuplicateServicePrepare implements LogicalConstraint {
         /** @var array<non-empty-string, list<ServicePrepareAttribute|null>> $servicePrepareMap */
         $servicePrepareMap = [];
 
-        foreach ($containerDefinition->getServicePrepareDefinitions() as $prepareDefinition) {
+        foreach ($containerDefinition->servicePrepareDefinitions() as $prepareDefinition) {
             $classMethod = sprintf(
                 '%s::%s',
                 $prepareDefinition->getService()->getName(),

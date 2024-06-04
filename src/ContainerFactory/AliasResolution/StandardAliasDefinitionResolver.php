@@ -18,7 +18,7 @@ final class StandardAliasDefinitionResolver implements AliasDefinitionResolver {
             $reason = AliasResolutionReason::ServiceIsDelegated;
         } else {
             $aliases = [];
-            foreach ($containerDefinition->getAliasDefinitions() as $aliasDefinition) {
+            foreach ($containerDefinition->aliasDefinitions() as $aliasDefinition) {
                 if ($aliasDefinition->abstractService()->getName() === $abstractService->getName()) {
                     $aliases[] = $aliasDefinition;
                 }
@@ -70,7 +70,7 @@ final class StandardAliasDefinitionResolver implements AliasDefinitionResolver {
     }
 
     private function serviceDefinition(ContainerDefinition $containerDefinition, ObjectType $objectType) : ?ServiceDefinition {
-        foreach ($containerDefinition->getServiceDefinitions() as $serviceDefinition) {
+        foreach ($containerDefinition->serviceDefinitions() as $serviceDefinition) {
             if ($serviceDefinition->getType()->getName() === $objectType->getName()) {
                 return $serviceDefinition;
             }
@@ -80,7 +80,7 @@ final class StandardAliasDefinitionResolver implements AliasDefinitionResolver {
     }
 
     private function isServiceDelegate(ContainerDefinition $containerDefinition, ObjectType $service) : bool {
-        foreach ($containerDefinition->getServiceDelegateDefinitions() as $serviceDelegateDefinition) {
+        foreach ($containerDefinition->serviceDelegateDefinitions() as $serviceDelegateDefinition) {
             if ($serviceDelegateDefinition->getServiceType()->getName() === $service->getName()) {
                 return true;
             }

@@ -16,13 +16,13 @@ trait HasAliasDefinitionTestsTrait {
     final public function testExpectedAliasCount() : void {
         $expectedCount = count($this->aliasProvider());
 
-        $this->assertSame($expectedCount, count($this->getSubject()->getAliasDefinitions()));
+        $this->assertSame($expectedCount, count($this->getSubject()->aliasDefinitions()));
     }
 
     #[DataProvider('aliasProvider')]
     final public function testExpectedAliasDefinition(ExpectedAliasDefinition $expectedAliasDefinition) : void {
         $concreteDefinitionsMatchingAbstract = array_filter(
-            $this->getSubject()->getAliasDefinitions(),
+            $this->getSubject()->aliasDefinitions(),
             fn(AliasDefinition $aliasDefinition) => $aliasDefinition->abstractService() === $expectedAliasDefinition->abstractType
         );
         $concreteTypes = array_map(fn(AliasDefinition $aliasDefinition) => $aliasDefinition->concreteService(), $concreteDefinitionsMatchingAbstract);

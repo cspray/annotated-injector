@@ -45,7 +45,7 @@ final class PhpDiContainerFactoryState implements ContainerFactoryState {
 
         if ($value instanceof ServiceCollectorReference) {
             $values = [];
-            foreach ($this->containerDefinition->getServiceDefinitions() as $serviceDefinition) {
+            foreach ($this->containerDefinition->serviceDefinitions() as $serviceDefinition) {
                 if ($serviceDefinition->isAbstract()) {
                     continue;
                 }
