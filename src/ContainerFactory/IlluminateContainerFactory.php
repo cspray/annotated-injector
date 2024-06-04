@@ -110,11 +110,11 @@ final class IlluminateContainerFactory extends AbstractContainerFactory {
         $container = $state->container;
 
 
-        foreach ($state->getAliases() as $abstract => $concrete) {
+        foreach ($state->aliases() as $abstract => $concrete) {
             $container->singleton($abstract, $concrete);
         }
 
-        foreach ($state->getDelegates() as $service => $delegateInfo) {
+        foreach ($state->delegates() as $service => $delegateInfo) {
             if ($delegateInfo['isStatic']) {
                 $target = $delegateInfo['delegateType'];
             } else {
@@ -126,11 +126,11 @@ final class IlluminateContainerFactory extends AbstractContainerFactory {
             );
         }
 
-        foreach ($state->getNamedServices() as $service => $name) {
+        foreach ($state->namedServices() as $service => $name) {
             $container->alias($service, $name);
         }
 
-        foreach ($state->getConcreteServices() as $service) {
+        foreach ($state->concreteServices() as $service) {
             $container->singleton($service);
         }
 
@@ -189,7 +189,7 @@ final class IlluminateContainerFactory extends AbstractContainerFactory {
             }
         }
 
-        foreach ($state->getAbstractServices() as $abstractService) {
+        foreach ($state->abstractServices() as $abstractService) {
             $container->singletonIf($abstractService);
         }
 

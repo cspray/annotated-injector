@@ -81,26 +81,26 @@ final class IlluminateContainerFactoryState implements ContainerFactoryState {
         $this->aliases[$abstract] = $concrete;
     }
 
-    public function getAbstractServices() : array {
+    public function abstractServices() : array {
         return $this->abstractServices;
     }
 
-    public function getConcreteServices() : array {
+    public function concreteServices() : array {
         return $this->concreteServices;
     }
 
-    public function getAliases() : array {
+    public function aliases() : array {
         return $this->aliases;
     }
 
     /**
      * @return array<class-string, array{delegateType: class-string, delegateMethod: non-empty-string, isStatic: bool}>
      */
-    public function getDelegates() : array {
+    public function delegates() : array {
         return $this->delegates;
     }
 
-    public function getNamedServices() : array {
+    public function namedServices() : array {
         return $this->namedServices;
     }
 }
