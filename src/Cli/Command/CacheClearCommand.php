@@ -80,7 +80,7 @@ SHELL;
         }
 
         $config = new XmlBootstrappingConfiguration($configPath, new DefaultParameterStoreFactory(), new DefaultDefinitionProviderFactory());
-        $cacheDir = $config->getCacheDirectory();
+        $cacheDir = $config->cacheDirectory();
         if (!isset($cacheDir)) {
             throw CacheDirConfigurationNotFound::fromCacheCommand();
         }
@@ -91,7 +91,7 @@ SHELL;
         }
 
         $sourceDirs = [];
-        foreach ($config->getScanDirectories() as $scanDirectory) {
+        foreach ($config->scanDirectories() as $scanDirectory) {
             $sourceDirs[] = $this->directoryResolver->getPathFromRoot($scanDirectory);
         }
 

@@ -11,15 +11,15 @@ interface BootstrappingConfiguration {
     /**
      * @return list<string>
      */
-    public function getScanDirectories() : array;
+    public function scanDirectories() : array;
 
-    public function getCacheDirectory() : ?string;
+    public function cacheDirectory() : ?string;
 
     #[SingleEntrypointDefinitionProvider]
-    public function getContainerDefinitionProvider() : ?DefinitionProvider;
+    public function containerDefinitionProvider() : ?DefinitionProvider;
 
     /**
      * @return list<ParameterStore>
      */
-    public function getParameterStores() : array;
+    public function parameterStores() : array;
 }

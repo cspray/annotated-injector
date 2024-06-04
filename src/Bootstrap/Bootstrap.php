@@ -143,11 +143,11 @@ final class Bootstrap {
 
     private function analysisOptions(BootstrappingConfiguration $configuration) : ContainerDefinitionAnalysisOptions {
         $scanPaths = [];
-        foreach ($configuration->getScanDirectories() as $scanDirectory) {
+        foreach ($configuration->scanDirectories() as $scanDirectory) {
             $scanPaths[] = $this->directoryResolver->getPathFromRoot($scanDirectory);
         }
         $analysisOptions = ContainerDefinitionAnalysisOptionsBuilder::scanDirectories(...$scanPaths);
-        $containerDefinitionConsumer = $configuration->getContainerDefinitionProvider();
+        $containerDefinitionConsumer = $configuration->containerDefinitionProvider();
         if ($containerDefinitionConsumer !== null) {
             $analysisOptions = $analysisOptions->withDefinitionProvider($containerDefinitionConsumer);
         }
@@ -160,7 +160,7 @@ final class Bootstrap {
         ContainerDefinitionAnalysisOptions $analysisOptions
     ) : ContainerDefinition {
         $cacheDir = null;
-        $configuredCacheDir = $configuration->getCacheDirectory();
+        $configuredCacheDir = $configuration->cacheDirectory();
         if ($configuredCacheDir !== null) {
             $cacheDir = $this->directoryResolver->getCachePath($configuredCacheDir);
         }
@@ -185,7 +185,7 @@ final class Bootstrap {
         Profiles $activeProfiles,
         ContainerDefinition $containerDefinition,
     ) : AnnotatedContainer {
-        foreach ($configuration->getParameterStores() as $parameterStore) {
+        foreach ($configuration->parameterStores() as $parameterStore) {
             $this->containerFactory->addParameterStore($parameterStore);
         }
 

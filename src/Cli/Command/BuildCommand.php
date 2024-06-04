@@ -92,19 +92,19 @@ SHELL;
             new DefaultDefinitionProviderFactory(),
         );
 
-        $cacheDir = $config->getCacheDirectory();
+        $cacheDir = $config->cacheDirectory();
         if (!isset($cacheDir)) {
             throw CacheDirConfigurationNotFound::fromBuildCommand();
         }
 
         $cacheDir = $this->directoryResolver->getCachePath($cacheDir);
         $scanDirs = [];
-        foreach ($config->getScanDirectories() as $scanDirectory) {
+        foreach ($config->scanDirectories() as $scanDirectory) {
             $scanDirs[] = $this->directoryResolver->getPathFromRoot($scanDirectory);
         }
 
         $compileOptions = ContainerDefinitionAnalysisOptionsBuilder::scanDirectories(...$scanDirs);
-        $containerDefinitionConsumer = $config->getContainerDefinitionProvider();
+        $containerDefinitionConsumer = $config->containerDefinitionProvider();
         if ($containerDefinitionConsumer !== null) {
             $compileOptions = $compileOptions->withDefinitionProvider($containerDefinitionConsumer);
         }
