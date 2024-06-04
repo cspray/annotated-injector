@@ -59,11 +59,11 @@ final class StandardAliasDefinitionResolver implements AliasDefinitionResolver {
             ) {
             }
 
-            public function getAliasResolutionReason() : AliasResolutionReason {
+            public function aliasResolutionReason() : AliasResolutionReason {
                 return $this->reason;
             }
 
-            public function getAliasDefinition() : ?AliasDefinition {
+            public function aliasDefinition() : ?AliasDefinition {
                 return $this->definition;
             }
         };

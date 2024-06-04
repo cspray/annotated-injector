@@ -6,7 +6,7 @@ use Cspray\AnnotatedContainer\Definition\AliasDefinition;
 
 interface AliasDefinitionResolution {
 
-    public function getAliasResolutionReason() : AliasResolutionReason;
+    public function aliasResolutionReason() : AliasResolutionReason;
 
-    public function getAliasDefinition() : ?AliasDefinition;
+    public function aliasDefinition() : ?AliasDefinition;
 }

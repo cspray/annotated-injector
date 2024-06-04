@@ -23,8 +23,8 @@ final class StandardAliasDefinitionResolverTest extends TestCase {
 
         $resolution = $subject->resolveAlias($containerDefinition, $serviceDefinition->getType());
 
-        self::assertSame(AliasResolutionReason::NoConcreteService, $resolution->getAliasResolutionReason());
-        self::assertNull($resolution->getAliasDefinition());
+        self::assertSame(AliasResolutionReason::NoConcreteService, $resolution->aliasResolutionReason());
+        self::assertNull($resolution->aliasDefinition());
     }
 
     public function testPassAbstractServiceDefinitionWithSingleConcreteDefinitionReturnsCorrectResolution() : void {
@@ -48,8 +48,8 @@ final class StandardAliasDefinitionResolverTest extends TestCase {
 
         $resolution = $subject->resolveAlias($containerDefinition, $serviceDefinition->getType());
 
-        self::assertSame(AliasResolutionReason::SingleConcreteService, $resolution->getAliasResolutionReason());
-        self::assertSame($aliasDefinition, $resolution->getAliasDefinition());
+        self::assertSame(AliasResolutionReason::SingleConcreteService, $resolution->aliasResolutionReason());
+        self::assertSame($aliasDefinition, $resolution->aliasDefinition());
     }
 
     public function testPassAbstractServiceDefinitionWithMultipleConcreteDefinitionReturnsCorrectResolution() : void {
@@ -77,8 +77,8 @@ final class StandardAliasDefinitionResolverTest extends TestCase {
 
         $resolution = $subject->resolveAlias($containerDefinition, $serviceDefinition->getType());
 
-        self::assertSame(AliasResolutionReason::MultipleConcreteService, $resolution->getAliasResolutionReason());
-        self::assertNull($resolution->getAliasDefinition());
+        self::assertSame(AliasResolutionReason::MultipleConcreteService, $resolution->aliasResolutionReason());
+        self::assertNull($resolution->aliasDefinition());
     }
 
     public function testPassAbstractServiceDefinitionWithMultipleConcreteDefinitionWithPrimaryReturnsCorrectResolution() : void {
@@ -106,8 +106,8 @@ final class StandardAliasDefinitionResolverTest extends TestCase {
 
         $resolution = $subject->resolveAlias($containerDefinition, $serviceDefinition->getType());
 
-        self::assertSame(AliasResolutionReason::ConcreteServiceIsPrimary, $resolution->getAliasResolutionReason());
-        self::assertSame($aliasDefinition, $resolution->getAliasDefinition());
+        self::assertSame(AliasResolutionReason::ConcreteServiceIsPrimary, $resolution->aliasResolutionReason());
+        self::assertSame($aliasDefinition, $resolution->aliasDefinition());
     }
 
     public function testDelegatedAbstractServiceHasNoAlias() : void {
@@ -134,8 +134,8 @@ final class StandardAliasDefinitionResolverTest extends TestCase {
 
         $resolution = $subject->resolveAlias($containerDefinition, $abstract->getType());
 
-        self::assertNull($resolution->getAliasDefinition());
-        self::assertSame(AliasResolutionReason::ServiceIsDelegated, $resolution->getAliasResolutionReason());
+        self::assertNull($resolution->aliasDefinition());
+        self::assertSame(AliasResolutionReason::ServiceIsDelegated, $resolution->aliasResolutionReason());
     }
 
     public function testMultiplePrimaryServiceIsNull() : void {
@@ -168,7 +168,7 @@ final class StandardAliasDefinitionResolverTest extends TestCase {
 
         $resolution = $subject->resolveAlias($containerDefinition, $abstract->getType());
 
-        self::assertNull($resolution->getAliasDefinition());
-        self::assertSame(AliasResolutionReason::MultiplePrimaryService, $resolution->getAliasResolutionReason());
+        self::assertNull($resolution->aliasDefinition());
+        self::assertSame(AliasResolutionReason::MultiplePrimaryService, $resolution->aliasResolutionReason());
     }
 }

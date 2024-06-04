@@ -61,7 +61,7 @@ final class PhpDiContainerFactory extends AbstractContainerFactory implements Co
 
     protected function handleAliasDefinition(ContainerFactoryState $state, AliasDefinitionResolution $resolution) : void {
         assert($state instanceof PhpDiContainerFactoryState);
-        $aliasDefinition = $resolution->getAliasDefinition();
+        $aliasDefinition = $resolution->aliasDefinition();
         if ($aliasDefinition !== null) {
             $state->referenceService(
                 $state->getServiceKey($aliasDefinition->getAbstractService()->getName()),

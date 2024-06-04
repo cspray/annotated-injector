@@ -53,7 +53,7 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
 
     protected function handleAliasDefinition(ContainerFactoryState $state, AliasDefinitionResolution $resolution) : void {
         assert($state instanceof AurynContainerFactoryState);
-        $alias = $resolution->getAliasDefinition();
+        $alias = $resolution->aliasDefinition();
         if ($alias !== null) {
             $state->injector->alias(
                 $alias->getAbstractService()->getName(),
