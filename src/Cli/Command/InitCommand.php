@@ -344,7 +344,7 @@ SHELL;
         $vendor = $scanDirectories->appendChild(
             $dom->createElementNS(self::XML_SCHEMA, 'vendor')
         );
-        foreach ($this->initializerProvider->getThirdPartyInitializers() as $thirdPartyInitializerClass) {
+        foreach ($this->initializerProvider->thirdPartyInitializerProviders() as $thirdPartyInitializerClass) {
             $thirdPartyInitializer = new $thirdPartyInitializerClass();
             $packageRelativeScanDirectories = $thirdPartyInitializer->relativeScanDirectories();
             if (count($packageRelativeScanDirectories) > 0) {

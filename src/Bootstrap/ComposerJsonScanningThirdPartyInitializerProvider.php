@@ -17,7 +17,7 @@ final class ComposerJsonScanningThirdPartyInitializerProvider implements ThirdPa
     ) {
     }
 
-    public function getThirdPartyInitializers() : array {
+    public function thirdPartyInitializerProviders() : array {
         if ($this->initializers === null) {
             $this->initializers = $this->scanVendorDirectoryForInitializers();
             sort($this->initializers);
