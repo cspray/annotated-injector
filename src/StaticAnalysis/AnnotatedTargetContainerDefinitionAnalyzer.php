@@ -205,7 +205,7 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
 
     private function getServiceDefinition(ContainerDefinitionBuilder $containerDefinitionBuilder, ObjectType $objectType) : ?ServiceDefinition {
         $return = null;
-        foreach ($containerDefinitionBuilder->getServiceDefinitions() as $serviceDefinition) {
+        foreach ($containerDefinitionBuilder->serviceDefinitions() as $serviceDefinition) {
             if ($serviceDefinition->getType() === $objectType) {
                 $return = $serviceDefinition;
                 break;
@@ -270,7 +270,7 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
         $abstractTypes = [];
         $concreteTypes = [];
 
-        foreach ($containerDefinitionBuilder->getServiceDefinitions() as $serviceDefinition) {
+        foreach ($containerDefinitionBuilder->serviceDefinitions() as $serviceDefinition) {
             if ($serviceDefinition->isAbstract()) {
                 $abstractTypes[] = $serviceDefinition->getType();
             } else {

@@ -100,7 +100,7 @@ class ThirdPartyFunctionsTest extends TestCase {
         service($context, Fixtures::implicitAliasedServices()->fooInterface(), profiles: ['default', 'dev']);
 
         $containerDefinition = $context->getBuilder();
-        $serviceDefinition = $this->getServiceDefinition($containerDefinition->getServiceDefinitions(), Fixtures::implicitAliasedServices()->fooInterface()->getName());
+        $serviceDefinition = $this->getServiceDefinition($containerDefinition->serviceDefinitions(), Fixtures::implicitAliasedServices()->fooInterface()->getName());
 
         $this->assertSame(['default', 'dev'], $serviceDefinition->getProfiles());
     }

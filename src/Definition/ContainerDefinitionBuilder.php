@@ -76,7 +76,7 @@ final class ContainerDefinitionBuilder {
     /**
      * @return list<ServiceDefinition>
      */
-    public function getServiceDefinitions() : array {
+    public function serviceDefinitions() : array {
         return $this->serviceDefinitions;
     }
 
