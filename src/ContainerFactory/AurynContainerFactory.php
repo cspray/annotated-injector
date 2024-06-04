@@ -179,8 +179,8 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
                 if (!is_null($parameters)) {
                     /** @var AutowireableParameter $parameter */
                     foreach ($parameters as $parameter) {
-                        $name = $parameter->isServiceIdentifier() ? $parameter->getName() : ':' . $parameter->getName();
-                        $params[$name] = $parameter->isServiceIdentifier() ? $parameter->getValue()->getName() : $parameter->getValue();
+                        $name = $parameter->isServiceIdentifier() ? $parameter->name() : ':' . $parameter->name();
+                        $params[$name] = $parameter->isServiceIdentifier() ? $parameter->value()->getName() : $parameter->value();
                     }
                 }
                 return $params;

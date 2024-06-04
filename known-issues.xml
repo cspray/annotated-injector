@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files psalm-version="5.24.0@462c80e31c34e58cc4f750c656be3927e80e550e">
-  <file src="src/Autowire/AutowireableParameterSet.php">
-    <InvalidDocblock>
-      <code><![CDATA[interface AutowireableParameterSet extends Countable, IteratorAggregate {]]></code>
-    </InvalidDocblock>
-    <MissingTemplateParam>
-      <code><![CDATA[IteratorAggregate]]></code>
-    </MissingTemplateParam>
-  </file>
   <file src="src/Bootstrap/ComposerJsonScanningThirdPartyInitializerProvider.php">
     <MixedArrayAccess>
       <code><![CDATA[$composerData['extra']]]></code>
@@ -210,21 +202,15 @@
       <code><![CDATA[$service]]></code>
       <code><![CDATA[$service]]></code>
     </MixedArgumentTypeCoercion>
-    <MixedArrayOffset>
-      <code><![CDATA[$params[$parameter->getName()]]]></code>
-      <code><![CDATA[$params[$parameter->getName()]]]></code>
-    </MixedArrayOffset>
     <MixedAssignment>
       <code><![CDATA[$abstractService]]></code>
       <code><![CDATA[$concrete]]></code>
       <code><![CDATA[$method]]></code>
       <code><![CDATA[$methods]]></code>
       <code><![CDATA[$name]]></code>
-      <code><![CDATA[$parameter]]></code>
-      <code><![CDATA[$parameter]]></code>
       <code><![CDATA[$params[$param]]]></code>
-      <code><![CDATA[$params[$parameter->getName()]]]></code>
-      <code><![CDATA[$params[$parameter->getName()]]]></code>
+      <code><![CDATA[$params[$parameter->name()]]]></code>
+      <code><![CDATA[$params[$parameter->name()]]]></code>
       <code><![CDATA[$service]]></code>
       <code><![CDATA[$target]]></code>
       <code><![CDATA[$value]]></code>
@@ -241,12 +227,6 @@
     <MixedMethodCall>
       <code><![CDATA[getName]]></code>
       <code><![CDATA[getName]]></code>
-      <code><![CDATA[getName]]></code>
-      <code><![CDATA[getName]]></code>
-      <code><![CDATA[getValue]]></code>
-      <code><![CDATA[getValue]]></code>
-      <code><![CDATA[isServiceIdentifier]]></code>
-      <code><![CDATA[isServiceIdentifier]]></code>
     </MixedMethodCall>
     <MixedReturnStatement>
       <code><![CDATA[$this->state->container->make($classType, $params)]]></code>
@@ -275,12 +255,12 @@
     </MissingClosureReturnType>
     <MixedArgument>
       <code><![CDATA[$method]]></code>
-      <code><![CDATA[$parameter->getValue()->getName()]]></code>
+      <code><![CDATA[$parameter->value()->getName()]]></code>
     </MixedArgument>
     <MixedAssignment>
       <code><![CDATA[$method]]></code>
       <code><![CDATA[$methods]]></code>
-      <code><![CDATA[$params[$parameter->getName()]]]></code>
+      <code><![CDATA[$params[$parameter->name()]]]></code>
       <code><![CDATA[$value]]></code>
     </MixedAssignment>
     <MixedInferredReturnType>
@@ -419,9 +399,6 @@
     <PossiblyNullArgument>
       <code><![CDATA[$injectProfiles]]></code>
     </PossiblyNullArgument>
-    <RedundantCondition>
-      <code><![CDATA[assert($dom instanceof DOMDocument)]]></code>
-    </RedundantCondition>
     <UndefinedPropertyFetch>
       <code><![CDATA[$xpath->query('@isPrimary', $serviceDefinition)[0]?->value]]></code>
       <code><![CDATA[$xpath->query('@isPrimary', $serviceDefinition)[0]?->value]]></code>

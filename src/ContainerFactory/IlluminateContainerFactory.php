@@ -212,11 +212,11 @@ final class IlluminateContainerFactory extends AbstractContainerFactory {
                 $params = [];
                 if ($parameters !== null) {
                     foreach ($parameters as $parameter) {
-                        $value = $parameter->getValue();
+                        $value = $parameter->value();
                         if ($parameter->isServiceIdentifier()) {
                             $value = $this->state->container->get($value->getName());
                         }
-                        $params[$parameter->getName()] = $value;
+                        $params[$parameter->name()] = $value;
                     }
                 }
                 return $this->state->container->make($classType, $params);
@@ -226,11 +226,11 @@ final class IlluminateContainerFactory extends AbstractContainerFactory {
                 $params = [];
                 if ($parameters !== null) {
                     foreach ($parameters as $parameter) {
-                        $value = $parameter->getValue();
+                        $value = $parameter->value();
                         if ($parameter->isServiceIdentifier()) {
                             $value = $this->state->container->get($value->getName());
                         }
-                        $params[$parameter->getName()] = $value;
+                        $params[$parameter->name()] = $value;
                     }
                 }
                 return $this->state->container->call($callable, $params);

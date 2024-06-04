@@ -203,7 +203,6 @@ final class ContainerDefinitionSerializer {
             }
 
             $dom = $root->ownerDocument;
-            assert($dom instanceof DOMDocument);
 
             $injectDefinitionsNode->appendChild(
                 $injectDefinitionNode = $dom->createElementNS(self::XML_SCHEMA, 'injectDefinition')

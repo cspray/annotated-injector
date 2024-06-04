@@ -170,7 +170,7 @@ final class PhpDiContainerFactory extends AbstractContainerFactory implements Co
                 if (!is_null($parameters)) {
                     /** @var AutowireableParameter $parameter */
                     foreach ($parameters as $parameter) {
-                        $params[$parameter->getName()] = $parameter->isServiceIdentifier() ? get($parameter->getValue()->getName()) : $parameter->getValue();
+                        $params[$parameter->name()] = $parameter->isServiceIdentifier() ? get($parameter->value()->getName()) : $parameter->value();
                     }
                 }
                 return $params;
