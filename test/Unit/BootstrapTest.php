@@ -404,7 +404,7 @@ XML;
 
         $actual = $listener->getServices();
 
-        $actualServices = array_map(fn(ServiceFromServiceDefinition $fromServiceDefinition) => $fromServiceDefinition->getService(), $actual);
+        $actualServices = array_map(fn(ServiceFromServiceDefinition $fromServiceDefinition) => $fromServiceDefinition->service(), $actual);
 
         usort($actualServices, fn($a, $b) => $a::class <=> $b::class);
 
@@ -468,7 +468,7 @@ XML;
         $container = $bootstrap->bootstrapContainer(Profiles::fromList(['default', 'test']));
 
         $actual = $listener->getServices();
-        $actualServices = array_map(fn(ServiceFromServiceDefinition $fromServiceDefinition) => $fromServiceDefinition->getService(), $actual);
+        $actualServices = array_map(fn(ServiceFromServiceDefinition $fromServiceDefinition) => $fromServiceDefinition->service(), $actual);
 
         self::assertSame($container, $listener->getAnnotatedContainer());
         self::assertSame([
@@ -530,7 +530,7 @@ XML;
 
         $actual = $listener->getServices();
 
-        $actualServices = array_map(fn(ServiceFromServiceDefinition $fromServiceDefinition) => $fromServiceDefinition->getService(), $actual);
+        $actualServices = array_map(fn(ServiceFromServiceDefinition $fromServiceDefinition) => $fromServiceDefinition->service(), $actual);
 
         usort($actualServices, fn($a, $b) => $a::class <=> $b::class);
 

@@ -77,11 +77,11 @@ abstract class ServiceWiringListener implements AfterContainerCreation {
                     ) {
                     }
 
-                    public function getService() : object {
+                    public function service() : object {
                         return $this->service;
                     }
 
-                    public function getDefinition() : ServiceDefinition {
+                    public function definition() : ServiceDefinition {
                         return $this->definition;
                     }
                 };

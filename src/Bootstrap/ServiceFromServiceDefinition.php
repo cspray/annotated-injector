@@ -12,7 +12,7 @@ interface ServiceFromServiceDefinition {
     /**
      * @return Service
      */
-    public function getService() : object;
+    public function service() : object;
 
-    public function getDefinition() : ServiceDefinition;
+    public function definition() : ServiceDefinition;
 }
