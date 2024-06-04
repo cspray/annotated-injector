@@ -30,8 +30,8 @@ final class XmlBootstrappingConfiguration implements BootstrappingConfiguration 
 
     public function __construct(
         private readonly string $xmlFile,
-        private readonly ?ParameterStoreFactory $parameterStoreFactory = null,
-        private readonly ?DefinitionProviderFactory $definitionProviderFactory = null
+        private readonly ParameterStoreFactory $parameterStoreFactory,
+        private readonly DefinitionProviderFactory $definitionProviderFactory
     ) {
         if (!file_exists($this->xmlFile)) {
             throw InvalidBootstrapConfiguration::fromFileMissing($this->xmlFile);
@@ -94,15 +94,7 @@ final class XmlBootstrappingConfiguration implements BootstrappingConfiguration 
             foreach ($definitionProviderNodes as $definitionProviderNode) {
                 assert($definitionProviderNode->nodeValue !== null);
                 $definitionProviderType = trim($definitionProviderNode->nodeValue);
-                if (isset($this->definitionProviderFactory)) {
-                    $definitionProviders[] = $this->definitionProviderFactory->createProvider($definitionProviderType);
-                } else {
-                    if (!class_exists($definitionProviderType) ||
-                        !is_subclass_of($definitionProviderType, DefinitionProvider::class)) {
-                        throw InvalidBootstrapConfiguration::fromConfiguredDefinitionProviderWrongType($definitionProviderType);
-                    }
-                    $definitionProviders[] = new $definitionProviderType();
-                }
+                $definitionProviders[] = $this->definitionProviderFactory->createProvider($definitionProviderType);
             }
 
             if ($definitionProviders !== []) {
@@ -115,14 +107,7 @@ final class XmlBootstrappingConfiguration implements BootstrappingConfiguration 
                 foreach ($parameterStoreNodes as $parameterStoreNode) {
                     assert(isset($parameterStoreNode->nodeValue));
                     $parameterStoreType = trim($parameterStoreNode->nodeValue);
-                    if (isset($this->parameterStoreFactory)) {
-                        $parameterStore = $this->parameterStoreFactory->createParameterStore($parameterStoreType);
-                    } else {
-                        if (!class_exists($parameterStoreType) || !is_subclass_of($parameterStoreType, ParameterStore::class)) {
-                            throw InvalidBootstrapConfiguration::fromConfiguredParameterStoreWrongType($parameterStoreType);
-                        }
-                        $parameterStore = new $parameterStoreType();
-                    }
+                    $parameterStore = $this->parameterStoreFactory->createParameterStore($parameterStoreType);
                     $parameterStores[] = $parameterStore;
                 }
             }

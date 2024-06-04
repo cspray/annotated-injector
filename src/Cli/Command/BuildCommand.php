@@ -3,6 +3,8 @@
 namespace Cspray\AnnotatedContainer\Cli\Command;
 
 use Cspray\AnnotatedContainer\Bootstrap\BootstrappingDirectoryResolver;
+use Cspray\AnnotatedContainer\Bootstrap\DefaultDefinitionProviderFactory;
+use Cspray\AnnotatedContainer\Bootstrap\DefaultParameterStoreFactory;
 use Cspray\AnnotatedContainer\Bootstrap\XmlBootstrappingConfiguration;
 use Cspray\AnnotatedContainer\Cli\Command;
 use Cspray\AnnotatedContainer\Cli\Exception\CacheDirConfigurationNotFound;
@@ -83,7 +85,11 @@ SHELL;
             throw ConfigurationNotFound::fromMissingFile($configName);
         }
 
-        $config = new XmlBootstrappingConfiguration($configFile);
+        $config = new XmlBootstrappingConfiguration(
+            $configFile,
+            new DefaultParameterStoreFactory(),
+            new DefaultDefinitionProviderFactory(),
+        );
 
         $cacheDir = $config->getCacheDirectory();
         if (!isset($cacheDir)) {

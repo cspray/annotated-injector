@@ -10,10 +10,5 @@ interface BootstrappingDirectoryResolver {
 
     public function getCachePath(string $subPath) : string;
 
-    /**
-     * @deprecated
-     */
-    public function getLogPath(string $subPath) : string;
-
     public function getVendorPath() : string;
 }

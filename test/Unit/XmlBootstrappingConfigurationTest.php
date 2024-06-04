@@ -2,20 +2,15 @@
 
 namespace Cspray\AnnotatedContainer\Unit;
 
-use Cspray\AnnotatedContainer\Bootstrap\ContainerAnalyticsObserver;
-use Cspray\AnnotatedContainer\Bootstrap\ContainerCreatedObserver;
+use Cspray\AnnotatedContainer\Bootstrap\DefaultDefinitionProviderFactory;
+use Cspray\AnnotatedContainer\Bootstrap\DefaultParameterStoreFactory;
 use Cspray\AnnotatedContainer\Bootstrap\DefinitionProviderFactory;
-use Cspray\AnnotatedContainer\Bootstrap\ObserverFactory;
 use Cspray\AnnotatedContainer\Bootstrap\ParameterStoreFactory;
-use Cspray\AnnotatedContainer\Bootstrap\PostAnalysisObserver;
-use Cspray\AnnotatedContainer\Bootstrap\PreAnalysisObserver;
 use Cspray\AnnotatedContainer\Bootstrap\XmlBootstrappingConfiguration;
 use Cspray\AnnotatedContainer\StaticAnalysis\CompositeDefinitionProvider;
 use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProvider;
 use Cspray\AnnotatedContainer\ContainerFactory\ParameterStore;
 use Cspray\AnnotatedContainer\Exception\InvalidBootstrapConfiguration;
-use Cspray\AnnotatedContainer\Unit\Helper\FixtureBootstrappingDirectoryResolver;
-use Cspray\AnnotatedContainer\Unit\Helper\StubBootstrapObserverWithDependencies;
 use Cspray\AnnotatedContainer\Unit\Helper\StubDefinitionProvider;
 use Cspray\AnnotatedContainer\Unit\Helper\StubDefinitionProviderWithDependencies;
 use Cspray\AnnotatedContainer\Unit\Helper\StubParameterStore;
@@ -23,7 +18,6 @@ use Cspray\AnnotatedContainerFixture\Fixtures;
 use org\bovigo\vfs\vfsStream as VirtualFilesystem;
 use org\bovigo\vfs\vfsStreamDirectory as VirtualDirectory;
 use PHPUnit\Framework\TestCase;
-use PHPUnit\Util\Xml;
 use function Cspray\Typiphy\stringType;
 
 class XmlBootstrappingConfigurationTest extends TestCase {
@@ -48,6 +42,8 @@ XML;
         );
         new XmlBootstrappingConfiguration(
             'vfs://root/annotated-container.xml',
+            new DefaultParameterStoreFactory(),
+            new DefaultDefinitionProviderFactory(),
         );
     }
 
@@ -69,6 +65,8 @@ XML;
             ->at($this->vfs);
         $configuration = new XmlBootstrappingConfiguration(
             'vfs://root/annotated-container.xml',
+            new DefaultParameterStoreFactory(),
+            new DefaultDefinitionProviderFactory(),
         );
 
         self::assertSame(
@@ -97,6 +95,8 @@ XML;
 
         $configuration = new XmlBootstrappingConfiguration(
             'vfs://root/annotated-container.xml',
+            new DefaultParameterStoreFactory(),
+            new DefaultDefinitionProviderFactory(),
         );
         $provider = $configuration->getContainerDefinitionProvider();
         self::assertInstanceOf(
@@ -106,64 +106,6 @@ XML;
         self::assertContainsOnlyInstancesOf(
             StubDefinitionProvider::class,
             $provider->getDefinitionProviders()
-        );
-    }
-
-    public function testDefinitionProviderNotClass() : void {
-        $badXml = <<<XML
-<?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
-    <scanDirectories>
-        <source>
-            <dir>src</dir>
-        </source>
-    </scanDirectories>
-    <definitionProviders>
-        <definitionProvider>FooBar</definitionProvider>
-    </definitionProviders>
-</annotatedContainer>
-XML;
-
-        VirtualFilesystem::newFile('annotated-container.xml')
-            ->withContent($badXml)
-            ->at($this->vfs);
-
-        $this->expectException(InvalidBootstrapConfiguration::class);
-        $this->expectExceptionMessage(
-            'The entry FooBar in definitionProviders does not implement the ' . DefinitionProvider::class . ' interface.'
-        );
-
-        new XmlBootstrappingConfiguration(
-            'vfs://root/annotated-container.xml',
-        );
-    }
-
-    public function testDefinitionProviderNotImplementCorrectInterface() : void {
-        $badXml = <<<XML
-<?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
-    <scanDirectories>
-        <source>
-            <dir>src</dir>
-        </source>
-    </scanDirectories>
-    <definitionProviders>
-        <definitionProvider>Cspray\AnnotatedContainer\XmlBootstrappingConfiguration</definitionProvider>
-    </definitionProviders>
-</annotatedContainer>
-XML;
-
-        VirtualFilesystem::newFile('annotated-container.xml')
-            ->withContent($badXml)
-            ->at($this->vfs);
-
-        $this->expectException(InvalidBootstrapConfiguration::class);
-        $this->expectExceptionMessage(
-            'The entry Cspray\AnnotatedContainer\XmlBootstrappingConfiguration in definitionProviders does not implement the ' . DefinitionProvider::class . ' interface.'
-        );
-
-        new XmlBootstrappingConfiguration(
-            'vfs://root/annotated-container.xml',
         );
     }
 
@@ -185,6 +127,8 @@ XML;
 
         $config = new XmlBootstrappingConfiguration(
             'vfs://root/annotated-container.xml',
+            new DefaultParameterStoreFactory(),
+            new DefaultDefinitionProviderFactory(),
         );
 
         self::assertNull($config->getContainerDefinitionProvider());
@@ -208,6 +152,8 @@ XML;
 
         $config = new XmlBootstrappingConfiguration(
             'vfs://root/annotated-container.xml',
+            new DefaultParameterStoreFactory(),
+            new DefaultDefinitionProviderFactory(),
         );
         self::assertNull($config->getCacheDirectory());
     }
@@ -231,6 +177,8 @@ XML;
 
         $config = new XmlBootstrappingConfiguration(
             'vfs://root/annotated-container.xml',
+            new DefaultParameterStoreFactory(),
+            new DefaultDefinitionProviderFactory(),
         );
         self::assertSame('cache', $config->getCacheDirectory());
     }
@@ -256,66 +204,12 @@ XML;
 
         $config = new XmlBootstrappingConfiguration(
             'vfs://root/annotated-container.xml',
+            new DefaultParameterStoreFactory(),
+            new DefaultDefinitionProviderFactory(),
         );
 
         self::assertCount(1, $config->getParameterStores());
         self::assertContainsOnlyInstancesOf(StubParameterStore::class, $config->getParameterStores());
-    }
-
-    public function testParameterStoreContainsNonClassThrowsException() : void {
-        $badXml = <<<XML
-<?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
-  <scanDirectories>
-    <source>
-      <dir>src</dir>
-    </source>
-  </scanDirectories>
-  <parameterStores>
-    <parameterStore>something not a class</parameterStore>
-  </parameterStores>
-</annotatedContainer>
-XML;
-
-        VirtualFilesystem::newFile('annotated-container.xml')
-            ->withContent($badXml)
-            ->at($this->vfs);
-
-        $this->expectException(InvalidBootstrapConfiguration::class);
-        $this->expectExceptionMessage(
-            'The entry something not a class in parameterStores does not implement the ' . ParameterStore::class . ' interface.'
-        );
-        new XmlBootstrappingConfiguration(
-            'vfs://root/annotated-container.xml',
-        );
-    }
-
-    public function testParameterStoreContainsNotParameterStoreThrowsException() : void {
-        $badXml = <<<XML
-<?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
-  <scanDirectories>
-    <source>
-      <dir>src</dir>
-    </source>
-  </scanDirectories>
-  <parameterStores>
-    <parameterStore>Cspray\AnnotatedContainer\Unit\Helper\StubDefinitionProvider</parameterStore>
-  </parameterStores>
-</annotatedContainer>
-XML;
-
-        VirtualFilesystem::newFile('annotated-container.xml')
-            ->withContent($badXml)
-            ->at($this->vfs);
-
-        $this->expectException(InvalidBootstrapConfiguration::class);
-        $this->expectExceptionMessage(
-            'The entry Cspray\AnnotatedContainer\Unit\Helper\StubDefinitionProvider in parameterStores does not implement the ' . ParameterStore::class . ' interface.'
-        );
-        new XmlBootstrappingConfiguration(
-            'vfs://root/annotated-container.xml',
-        );
     }
 
     public function testParameterStoreFactoryPresentRespected() : void {
@@ -350,7 +244,8 @@ XML;
 
         $config = new XmlBootstrappingConfiguration(
             'vfs://root/annotated-container.xml',
-            $parameterStoreFactory
+            $parameterStoreFactory,
+            new DefaultDefinitionProviderFactory(),
         );
 
         self::assertCount(1, $config->getParameterStores());
@@ -384,7 +279,8 @@ XML;
 
         $config = new XmlBootstrappingConfiguration(
             'vfs://root/annotated-container.xml',
-            definitionProviderFactory: $consumerFactory
+            new DefaultParameterStoreFactory(),
+            $consumerFactory
         );
 
         $provider = $config->getContainerDefinitionProvider();
@@ -425,6 +321,8 @@ XML;
             ->at($this->vfs);
         $configuration = new XmlBootstrappingConfiguration(
             'vfs://root/annotated-container.xml',
+            new DefaultParameterStoreFactory(),
+            new DefaultDefinitionProviderFactory()
         );
 
         self::assertSame(
@@ -439,6 +337,8 @@ XML;
 
         new XmlBootstrappingConfiguration(
             'vfs://root/not-found',
+            new DefaultParameterStoreFactory(),
+            new DefaultDefinitionProviderFactory()
         );
     }
 }

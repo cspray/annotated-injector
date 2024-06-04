@@ -22,26 +22,14 @@ use Cspray\PrecisionStopwatch\Stopwatch;
 
 final class Bootstrap {
 
-    private readonly BootstrappingDirectoryResolver $directoryResolver;
-
     public function __construct(
         private readonly ContainerFactory $containerFactory,
         private readonly ?BootstrapEmitter $emitter = null,
-        BootstrappingDirectoryResolver $directoryResolver = null,
+        private readonly BootstrappingDirectoryResolver $directoryResolver = new VendorPresenceBasedBootstrappingDirectoryResolver(),
         private readonly ParameterStoreFactory $parameterStoreFactory = new DefaultParameterStoreFactory(),
-        private readonly ?DefinitionProviderFactory $definitionProviderFactory = null,
+        private readonly DefinitionProviderFactory $definitionProviderFactory = new DefaultDefinitionProviderFactory(),
         private readonly Stopwatch $stopwatch = new Stopwatch(),
     ) {
-        $this->directoryResolver = $directoryResolver ?? $this->defaultDirectoryResolver();
-    }
-
-    private function defaultDirectoryResolver() : BootstrappingDirectoryResolver {
-        $rootDir = dirname(__DIR__);
-        if (!file_exists($rootDir . '/vendor/autoload.php')) {
-            $rootDir = dirname(__DIR__, 5);
-        }
-
-        return new RootDirectoryBootstrappingDirectoryResolver($rootDir);
     }
 
     public function bootstrapContainer(
