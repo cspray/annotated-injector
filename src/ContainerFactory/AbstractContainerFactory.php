@@ -55,7 +55,7 @@ abstract class AbstractContainerFactory implements ContainerFactory {
 
     private function createContainerState(ContainerDefinition $containerDefinition, Profiles $activeProfiles) : ContainerFactoryState {
         $definition = new ProfilesAwareContainerDefinition($containerDefinition, $activeProfiles);
-        $state = $this->getContainerFactoryState($definition);
+        $state = $this->containerFactoryState($definition);
 
         foreach ($definition->getServiceDefinitions() as $serviceDefinition) {
             $this->handleServiceDefinition($state, $serviceDefinition);
@@ -92,15 +92,15 @@ abstract class AbstractContainerFactory implements ContainerFactory {
         $this->parameterStores[$parameterStore->getName()] = $parameterStore;
     }
 
-    final protected function getParameterStore(string $storeName) : ?ParameterStore {
+    final protected function parameterStore(string $storeName) : ?ParameterStore {
         return $this->parameterStores[$storeName] ?? null;
     }
 
-    final protected function getInjectDefinitionValue(InjectDefinition $definition) : mixed {
+    final protected function injectDefinitionValue(InjectDefinition $definition) : mixed {
         $value = $definition->getValue();
         $store = $definition->getStoreName();
         if ($store !== null) {
-            $parameterStore = $this->getParameterStore($store);
+            $parameterStore = $this->parameterStore($store);
             if ($parameterStore === null) {
                 throw ParameterStoreNotFound::fromParameterStoreNotAddedToContainerFactory($store);
             }
@@ -122,9 +122,9 @@ abstract class AbstractContainerFactory implements ContainerFactory {
     }
 
 
-    abstract protected function getBackingContainerType() : ObjectType;
+    abstract protected function backingContainerType() : ObjectType;
 
-    abstract protected function getContainerFactoryState(ContainerDefinition $containerDefinition) : ContainerFactoryState;
+    abstract protected function containerFactoryState(ContainerDefinition $containerDefinition) : ContainerFactoryState;
 
     abstract protected function handleServiceDefinition(ContainerFactoryState $state, ServiceDefinition $definition) : void;
 

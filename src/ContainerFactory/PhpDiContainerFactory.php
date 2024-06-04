@@ -36,11 +36,11 @@ if (!class_exists(Container::class)) {
  */
 final class PhpDiContainerFactory extends AbstractContainerFactory implements ContainerFactory {
 
-    protected function getBackingContainerType() : ObjectType {
+    protected function backingContainerType() : ObjectType {
         return objectType(Container::class);
     }
 
-    protected function getContainerFactoryState(ContainerDefinition $containerDefinition) : ContainerFactoryState {
+    protected function containerFactoryState(ContainerDefinition $containerDefinition) : ContainerFactoryState {
         return new PhpDiContainerFactoryState($containerDefinition);
     }
 
@@ -90,7 +90,7 @@ final class PhpDiContainerFactory extends AbstractContainerFactory implements Co
             $definition->getTargetIdentifier()->getClass()->getName(),
             $definition->getTargetIdentifier()->getMethodName(),
             $definition->getTargetIdentifier()->getName(),
-            $this->getInjectDefinitionValue($definition)
+            $this->injectDefinitionValue($definition)
         );
     }
 

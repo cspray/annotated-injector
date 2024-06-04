@@ -34,11 +34,11 @@ if (!class_exists(Injector::class)) {
  */
 final class AurynContainerFactory extends AbstractContainerFactory implements ContainerFactory {
 
-    protected function getBackingContainerType() : ObjectType {
+    protected function backingContainerType() : ObjectType {
         return objectType(Injector::class);
     }
 
-    protected function getContainerFactoryState(ContainerDefinition $containerDefinition) : AurynContainerFactoryState {
+    protected function containerFactoryState(ContainerDefinition $containerDefinition) : AurynContainerFactoryState {
         return new AurynContainerFactoryState($containerDefinition);
     }
 
@@ -86,7 +86,7 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
         $injectTargetType = $definition->getTargetIdentifier()->getClass()->getName();
         $method = $definition->getTargetIdentifier()->getMethodName();
         $parameterName = $definition->getTargetIdentifier()->getName();
-        $value = $this->getInjectDefinitionValue($definition);
+        $value = $this->injectDefinitionValue($definition);
 
         $state->addMethodInject($injectTargetType, $method, $parameterName, $value);
     }
