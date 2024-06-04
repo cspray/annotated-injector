@@ -6,6 +6,8 @@ use Cspray\AnnotatedContainer\AnnotatedContainer;
 use Cspray\AnnotatedContainer\Bootstrap\Bootstrap;
 use Cspray\AnnotatedContainer\Bootstrap\BootstrappingConfiguration;
 use Cspray\AnnotatedContainer\Bootstrap\ContainerAnalytics;
+use Cspray\AnnotatedContainer\Bootstrap\DefaultDefinitionProviderFactory;
+use Cspray\AnnotatedContainer\Bootstrap\DefaultParameterStoreFactory;
 use Cspray\AnnotatedContainer\Bootstrap\DefinitionProviderFactory;
 use Cspray\AnnotatedContainer\Bootstrap\ParameterStoreFactory;
 use Cspray\AnnotatedContainer\Bootstrap\ServiceFromServiceDefinition;
@@ -57,9 +59,14 @@ XML;
             ->withContent($goodXml)
             ->at($this->vfs);
 
-        $bootstrap = new Bootstrap(
-            new AurynContainerFactory(),
-            directoryResolver: $directoryResolver
+        $emitter = new Emitter();
+        $bootstrap = Bootstrap::fromCompleteSetup(
+            new AurynContainerFactory($emitter),
+            $emitter,
+            $directoryResolver,
+            new DefaultParameterStoreFactory(),
+            new DefaultDefinitionProviderFactory(),
+            new Stopwatch()
         );
         $container = $bootstrap->bootstrapContainer(Profiles::fromList(['default']));
 
@@ -93,9 +100,14 @@ XML;
         VirtualFilesystem::newDirectory('.annotated-container-cache')
             ->at($this->vfs);
 
-        $bootstrap = new Bootstrap(
-            new AurynContainerFactory(),
-            directoryResolver: $directoryResolver
+        $emitter = new Emitter();
+        $bootstrap = Bootstrap::fromCompleteSetup(
+            new AurynContainerFactory($emitter),
+            $emitter,
+            $directoryResolver,
+            new DefaultParameterStoreFactory(),
+            new DefaultDefinitionProviderFactory(),
+            new Stopwatch()
         );
         $bootstrap->bootstrapContainer(Profiles::fromList(['default']));
         $expected = md5(Fixtures::singleConcreteService()->getPath());
@@ -124,9 +136,14 @@ XML;
             ->withContent($goodXml)
             ->at($this->vfs);
 
-        $bootstrap = new Bootstrap(
-            new AurynContainerFactory(),
-            directoryResolver: $directoryResolver
+        $emitter = new Emitter();
+        $bootstrap = Bootstrap::fromCompleteSetup(
+            new AurynContainerFactory($emitter),
+            $emitter,
+            $directoryResolver,
+            new DefaultParameterStoreFactory(),
+            new DefaultDefinitionProviderFactory(),
+            new Stopwatch()
         );
         $container = $bootstrap->bootstrapContainer(Profiles::fromList(['default']));
 
@@ -155,9 +172,14 @@ XML;
             ->withContent($goodXml)
             ->at($this->vfs);
 
-        $bootstrap = new Bootstrap(
-            new AurynContainerFactory(),
-            directoryResolver: $directoryResolver
+        $emitter = new Emitter();
+        $bootstrap = Bootstrap::fromCompleteSetup(
+            new AurynContainerFactory($emitter),
+            $emitter,
+            $directoryResolver,
+            new DefaultParameterStoreFactory(),
+            new DefaultDefinitionProviderFactory(),
+            new Stopwatch()
         );
         $container = $bootstrap->bootstrapContainer(Profiles::fromList(['default']));
 
@@ -184,9 +206,14 @@ XML;
             ->withContent($goodXml)
             ->at($this->vfs);
 
-        $bootstrap = new Bootstrap(
-            new AurynContainerFactory(),
-            directoryResolver: $directoryResolver
+        $emitter = new Emitter();
+        $bootstrap = Bootstrap::fromCompleteSetup(
+            new AurynContainerFactory($emitter),
+            $emitter,
+            $directoryResolver,
+            new DefaultParameterStoreFactory(),
+            new DefaultDefinitionProviderFactory(),
+            new Stopwatch()
         );
         $container = $bootstrap->bootstrapContainer(profiles: Profiles::fromList(['default', 'dev']));
         $service = $container->get(Fixtures::profileResolvedServices()->fooInterface()->getName());
@@ -211,9 +238,14 @@ XML;
             ->withContent($goodXml)
             ->at($this->vfs);
 
-        $bootstrap = new Bootstrap(
-            new AurynContainerFactory(),
-            directoryResolver: $directoryResolver
+        $emitter = new Emitter();
+        $bootstrap = Bootstrap::fromCompleteSetup(
+            new AurynContainerFactory($emitter),
+            $emitter,
+            $directoryResolver,
+            new DefaultParameterStoreFactory(),
+            new DefaultDefinitionProviderFactory(),
+            new Stopwatch()
         );
         $container = $bootstrap->bootstrapContainer(profiles: Profiles::fromList(['default']), configurationFile: 'my-container.xml.dist');
 
@@ -257,11 +289,15 @@ XML;
             }
         };
 
-        $container = (new Bootstrap(
-            new AurynContainerFactory(),
-            directoryResolver: $directoryResolver,
-            definitionProviderFactory: $factory
-        ))->bootstrapContainer(Profiles::fromList(['default']));
+        $emitter = new Emitter();
+        $container = Bootstrap::fromCompleteSetup(
+            new AurynContainerFactory($emitter),
+            $emitter,
+            $directoryResolver,
+            new DefaultParameterStoreFactory(),
+            $factory,
+            new Stopwatch()
+        )->bootstrapContainer(Profiles::fromList(['default']));
 
         $service = $container->get(Fixtures::thirdPartyServices()->fooInterface()->getName());
 
@@ -300,11 +336,15 @@ XML;
             }
         };
 
-        $container = (new Bootstrap(
-            new AurynContainerFactory(),
-            directoryResolver: $directoryResolver,
-            parameterStoreFactory: $factory
-        ))->bootstrapContainer(Profiles::fromList(['default']));
+        $emitter = new Emitter();
+        $container = Bootstrap::fromCompleteSetup(
+            new AurynContainerFactory($emitter),
+            $emitter,
+            $directoryResolver,
+            $factory,
+            new DefaultDefinitionProviderFactory(),
+            new Stopwatch()
+        )->bootstrapContainer(Profiles::fromList(['default']));
 
         $service = $container->get(Fixtures::injectCustomStoreServices()->scalarInjector()->getName());
 
@@ -330,11 +370,13 @@ XML;
             ->at($this->vfs);
 
         $emitter = new Emitter();
-
-        $bootstrap = new Bootstrap(
+        $bootstrap = Bootstrap::fromCompleteSetup(
             new AurynContainerFactory($emitter),
-            emitter: $emitter,
-            directoryResolver: $directoryResolver
+            $emitter,
+            $directoryResolver,
+            new DefaultParameterStoreFactory(),
+            new DefaultDefinitionProviderFactory(),
+            new Stopwatch()
         );
 
         $listener = new class extends ServiceWiringListener {
@@ -393,11 +435,13 @@ XML;
             ->at($this->vfs);
 
         $emitter = new Emitter();
-
-        $bootstrap = new Bootstrap(
+        $bootstrap = Bootstrap::fromCompleteSetup(
             new AurynContainerFactory($emitter),
-            emitter: $emitter,
-            directoryResolver: $directoryResolver
+            $emitter,
+            $directoryResolver,
+            new DefaultParameterStoreFactory(),
+            new DefaultDefinitionProviderFactory(),
+            new Stopwatch()
         );
 
         $listener = new class extends ServiceWiringListener {
@@ -452,10 +496,13 @@ XML;
 
         $emitter = new Emitter();
 
-        $bootstrap = new Bootstrap(
+        $bootstrap = Bootstrap::fromCompleteSetup(
             new AurynContainerFactory($emitter),
-            emitter: $emitter,
-            directoryResolver: $directoryResolver
+            $emitter,
+            $directoryResolver,
+            new DefaultParameterStoreFactory(),
+            new DefaultDefinitionProviderFactory(),
+            new Stopwatch()
         );
 
         $listener = new class extends ServiceWiringListener {
@@ -512,11 +559,13 @@ XML;
             ->at($this->vfs);
 
         $emitter = new Emitter();
-
-        $bootstrap = new Bootstrap(
+        $bootstrap = Bootstrap::fromCompleteSetup(
             new AurynContainerFactory($emitter),
-            emitter: $emitter,
-            directoryResolver: $directoryResolver
+            $emitter,
+            $directoryResolver,
+            new DefaultParameterStoreFactory(),
+            new DefaultDefinitionProviderFactory(),
+            new Stopwatch()
         );
 
         $listener = new class extends ServiceWiringListener {
@@ -565,8 +614,6 @@ XML;
             ->withContent($goodXml)
             ->at($this->vfs);
 
-        $emitter = new Emitter();
-
         $listener = new class implements AfterBootstrap {
             private ?ContainerAnalytics $analytics = null;
 
@@ -579,11 +626,14 @@ XML;
             }
         };
 
-        $subject = new Bootstrap(
-            new AurynContainerFactory(),
-            emitter: $emitter,
-            directoryResolver: $directoryResolver,
-            stopwatch: new Stopwatch(new KnownIncrementingPreciseTime())
+        $emitter = new Emitter();
+        $subject = Bootstrap::fromCompleteSetup(
+            new AurynContainerFactory($emitter),
+            $emitter,
+            $directoryResolver,
+            new DefaultParameterStoreFactory(),
+            new DefaultDefinitionProviderFactory(),
+            new Stopwatch(new KnownIncrementingPreciseTime())
         );
 
         $emitter->addListener($listener);
@@ -622,9 +672,14 @@ XML;
             ->method('createContainer')
             ->willReturn($container = $this->getMockBuilder(AnnotatedContainer::class)->getMock());
 
-        $subject = new Bootstrap(
-            directoryResolver: $directoryResolver,
-            containerFactory: $containerFactory
+        $emitter = new Emitter();
+        $subject = Bootstrap::fromCompleteSetup(
+            $containerFactory,
+            $emitter,
+            $directoryResolver,
+            new DefaultParameterStoreFactory(),
+            new DefaultDefinitionProviderFactory(),
+            new Stopwatch()
         );
 
         $actual = $subject->bootstrapContainer(Profiles::fromList(['default']));
@@ -654,10 +709,13 @@ XML;
         $listener = new StubBootstrapListener();
         $emitter->addListener($listener);
 
-        $bootstrap = new Bootstrap(
-            new AurynContainerFactory(),
-            emitter: $emitter,
-            directoryResolver: $directoryResolver
+        $bootstrap = Bootstrap::fromCompleteSetup(
+            new AurynContainerFactory($emitter),
+            $emitter,
+            $directoryResolver,
+            new DefaultParameterStoreFactory(),
+            new DefaultDefinitionProviderFactory(),
+            new Stopwatch()
         );
         $bootstrap->bootstrapContainer(Profiles::fromList(['default']));
 

@@ -7,6 +7,7 @@ use Cspray\AnnotatedContainer\Attribute\Inject;
 use Cspray\AnnotatedContainer\Attribute\Service;
 use Cspray\AnnotatedContainer\Attribute\ServiceDelegate;
 use Cspray\AnnotatedContainer\Attribute\ServicePrepare;
+use Cspray\AnnotatedContainer\Event\Emitter;
 use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalyzer;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
 use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetDefinitionConverter;
@@ -23,6 +24,7 @@ use Cspray\AnnotatedContainerFixture\Fixture;
 use Cspray\AnnotatedContainerFixture\Fixtures;
 use Cspray\AnnotatedContainerFixture\InjectEnumConstructorServices\CardinalDirections;
 use Cspray\AnnotatedTarget\PhpParserAnnotatedTargetParser;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use function Cspray\Typiphy\intType;
 use function Cspray\Typiphy\objectType;
@@ -1431,11 +1433,12 @@ XML;
         ];
     }
 
-    #[\PHPUnit\Framework\Attributes\DataProvider('fixturesDirProvider')]
+    #[DataProvider('fixturesDirProvider')]
     public function testScannedAndSerializedContainerDefinitionMatchesDeserialized(Fixture $fixture) : void {
         $compiler = new AnnotatedTargetContainerDefinitionAnalyzer(
             new PhpParserAnnotatedTargetParser(),
-            new AnnotatedTargetDefinitionConverter()
+            new AnnotatedTargetDefinitionConverter(),
+            new Emitter()
         );
 
         $subject = new ContainerDefinitionSerializer();

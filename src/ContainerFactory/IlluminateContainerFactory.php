@@ -8,6 +8,7 @@ use Cspray\AnnotatedContainer\Autowire\AutowireableInvoker;
 use Cspray\AnnotatedContainer\Autowire\AutowireableParameterSet;
 use Cspray\AnnotatedContainer\ContainerFactory\AliasResolution\AliasDefinitionResolution;
 use Cspray\AnnotatedContainer\ContainerFactory\AliasResolution\AliasDefinitionResolver;
+use Cspray\AnnotatedContainer\ContainerFactory\AliasResolution\StandardAliasDefinitionResolver;
 use Cspray\AnnotatedContainer\Definition\ConfigurationDefinition;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 use Cspray\AnnotatedContainer\Definition\InjectDefinition;
@@ -22,12 +23,20 @@ use Illuminate\Contracts\Container\Container;
 use function Cspray\Typiphy\arrayType;
 use function Cspray\Typiphy\objectType;
 
+// @codeCoverageIgnoreStart
+// phpcs:disable
+if (!interface_exists(Container::class)) {
+    throw new \RuntimeException("To enable the IlluminateContainerFactory please install illuminate/container 10+!");
+}
+// phpcs:enable
+// @codeCoverageIgnoreEnd
+
 final class IlluminateContainerFactory extends AbstractContainerFactory {
 
     public function __construct(
+        ContainerFactoryEmitter $emitter,
         private readonly Container $container = new \Illuminate\Container\Container(),
-        ContainerFactoryEmitter $emitter = null,
-        AliasDefinitionResolver $aliasDefinitionResolver = null,
+        AliasDefinitionResolver $aliasDefinitionResolver = new StandardAliasDefinitionResolver(),
 
     ) {
         parent::__construct($emitter, $aliasDefinitionResolver);
