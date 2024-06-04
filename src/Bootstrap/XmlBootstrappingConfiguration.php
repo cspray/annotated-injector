@@ -159,6 +159,13 @@ final class XmlBootstrappingConfiguration implements BootstrappingConfiguration 
                 }
             }
 
+            if ($observers !== []) {
+                trigger_error(
+                    'There are Observer implementations found in your configuration. This feature will be removed in 3.0 and replaced with an Event system. Your configuration will need to be changed when upgrading to Annotated Container 3+.',
+                    E_USER_DEPRECATED
+                );
+            }
+
             /** @var DOMNodeList $cacheDirNodes */
             $cacheDirNodes = $xpath->query('/ac:annotatedContainer/ac:cacheDir');
             $cache = null;
@@ -185,6 +192,13 @@ final class XmlBootstrappingConfiguration implements BootstrappingConfiguration 
                 $logger = new FileLogger($dateTimeProvider, $loggingFilePath);
             } elseif ($hasStdoutFile) {
                 $logger = new StdoutLogger($dateTimeProvider);
+            }
+
+            if ($logger !== null) {
+                trigger_error(
+                    'There is logging set in your configuration. In 3.0 logging has been moved to its own library using the new Event system. Please see cspray/annotated-container-logging to emulate this functionality.',
+                    E_USER_DEPRECATED
+                );
             }
 
             $excludedProfilesNodes = $xpath->query('/ac:annotatedContainer/ac:logging/ac:exclude/ac:profile/text()');

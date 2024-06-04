@@ -16,7 +16,9 @@ abstract class AnnotatedTargetContainerDefinitionCompilerTestCase extends TestCa
 
     use ContainerDefinitionAssertionsTrait;
 
-    protected ContainerDefinition $subject;
+    private AnnotatedTargetContainerDefinitionAnalyzer $analyzer;
+
+    private ContainerDefinitionAnalysisOptionsBuilder $builder;
 
     /**
      * @return Fixture[]|Fixture
@@ -24,7 +26,7 @@ abstract class AnnotatedTargetContainerDefinitionCompilerTestCase extends TestCa
     abstract protected function getFixtures() : array|Fixture;
 
     protected function setUp() : void {
-        $compiler = new AnnotatedTargetContainerDefinitionAnalyzer(
+        $this->analyzer = new AnnotatedTargetContainerDefinitionAnalyzer(
             new PhpParserAnnotatedTargetParser(),
             new AnnotatedTargetDefinitionConverter()
         );
@@ -38,13 +40,11 @@ abstract class AnnotatedTargetContainerDefinitionCompilerTestCase extends TestCa
             $dirs[] = $fixture->getPath();
         }
 
-        $builder = ContainerDefinitionAnalysisOptionsBuilder::scanDirectories(...$dirs);
+        $this->builder = ContainerDefinitionAnalysisOptionsBuilder::scanDirectories(...$dirs);
         $consumer = $this->getDefinitionProvider();
         if (!is_null($consumer)) {
-            $builder = $builder->withDefinitionProvider($consumer);
+            $this->builder = $this->builder->withDefinitionProvider($consumer);
         }
-
-        $this->subject = $compiler->analyze($builder->build());
     }
 
     protected function getDefinitionProvider() : ?DefinitionProvider {
@@ -52,6 +52,6 @@ abstract class AnnotatedTargetContainerDefinitionCompilerTestCase extends TestCa
     }
 
     final protected function getSubject() : ContainerDefinition {
-        return $this->subject;
+        return $this->analyzer->analyze($this->builder->build());
     }
 }

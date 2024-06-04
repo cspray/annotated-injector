@@ -29,6 +29,10 @@ final class CsvActiveProfilesParser implements ActiveProfilesParser {
      * @return string[]
      */
     public function parse(string $profiles) : array {
+        trigger_error(
+            'The ' . self::class . ' is being removed in 3.0. Please use a static constructor on the new Profiles class instead.',
+            E_USER_DEPRECATED
+        );
         if (empty($profiles)) {
             throw new \InvalidArgumentException('The profiles to parse cannot be an empty string.');
         }
