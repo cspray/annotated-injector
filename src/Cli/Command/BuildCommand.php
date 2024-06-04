@@ -63,7 +63,7 @@ SHELL;
         if (!isset($configName)) {
             // This not being present would be highly irregular and not party of the happy path
             // But it is possible that somebody created the configuration manually and is not using composer
-            $composerFile = $this->directoryResolver->getConfigurationPath('composer.json');
+            $composerFile = $this->directoryResolver->configurationPath('composer.json');
             if (file_exists($composerFile)) {
                 /** @var mixed $composer */
                 $composer = json_decode(file_get_contents($composerFile), true);
@@ -81,7 +81,7 @@ SHELL;
         }
 
         assert(is_string($configName));
-        $configFile = $this->directoryResolver->getConfigurationPath($configName);
+        $configFile = $this->directoryResolver->configurationPath($configName);
         if (!file_exists($configFile)) {
             throw ConfigurationNotFound::fromMissingFile($configName);
         }
@@ -97,10 +97,10 @@ SHELL;
             throw CacheDirConfigurationNotFound::fromBuildCommand();
         }
 
-        $cacheDir = $this->directoryResolver->getCachePath($cacheDir);
+        $cacheDir = $this->directoryResolver->cachePath($cacheDir);
         $scanDirs = [];
         foreach ($config->scanDirectories() as $scanDirectory) {
-            $scanDirs[] = $this->directoryResolver->getPathFromRoot($scanDirectory);
+            $scanDirs[] = $this->directoryResolver->pathFromRoot($scanDirectory);
         }
 
         $compileOptions = ContainerDefinitionAnalysisOptionsBuilder::scanDirectories(...$scanDirs);

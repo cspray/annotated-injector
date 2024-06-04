@@ -12,7 +12,7 @@ final class RootDirectoryBootstrappingDirectoryResolverTest extends TestCase {
 
         self::assertSame(
             '/root/dir/annotated-container.xml',
-            $subject->getConfigurationPath('annotated-container.xml')
+            $subject->configurationPath('annotated-container.xml')
         );
     }
 
@@ -21,7 +21,7 @@ final class RootDirectoryBootstrappingDirectoryResolverTest extends TestCase {
 
         self::assertSame(
             '/root/dir/cache-dir',
-            $subject->getCachePath('cache-dir')
+            $subject->cachePath('cache-dir')
         );
     }
 
@@ -30,7 +30,7 @@ final class RootDirectoryBootstrappingDirectoryResolverTest extends TestCase {
 
         self::assertSame(
             '/root/path/src',
-            $subject->getPathFromRoot('src')
+            $subject->pathFromRoot('src')
         );
     }
 
@@ -39,7 +39,7 @@ final class RootDirectoryBootstrappingDirectoryResolverTest extends TestCase {
 
         self::assertSame(
             '/root/path/vendor',
-            $subject->getVendorPath()
+            $subject->vendorPath()
         );
     }
 }

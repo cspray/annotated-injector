@@ -197,7 +197,7 @@ SHELL;
     public function handle(Input $input, TerminalOutput $output) : int {
         $this->validateInput($input);
 
-        $composerFile = $this->directoryResolver->getConfigurationPath('composer.json');
+        $composerFile = $this->directoryResolver->configurationPath('composer.json');
         if (!file_exists($composerFile)) {
             throw ComposerConfigurationNotFound::fromMissingComposerJson();
         }
@@ -210,7 +210,7 @@ SHELL;
             $configName = $composer['extra']['annotatedContainer']['configFile'] ?? 'annotated-container.xml';
         }
 
-        $configFile = $this->directoryResolver->getConfigurationPath($configName);
+        $configFile = $this->directoryResolver->configurationPath($configName);
         if (file_exists($configFile)) {
             throw new PotentialConfigurationOverwrite(
                 sprintf('The configuration file "%s" is already present and cannot be overwritten.', $configName)
@@ -221,7 +221,7 @@ SHELL;
 
         /** @var ?string $cacheDirOpt */
         $cacheDirOpt = $input->getOption('cache-dir');
-        $cacheDir = $this->directoryResolver->getCachePath(
+        $cacheDir = $this->directoryResolver->cachePath(
             $cacheDirOpt ?? '.annotated-container-cache'
         );
         if (!is_dir($cacheDir)) {

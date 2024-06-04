@@ -132,7 +132,7 @@ final class Bootstrap {
     }
 
     private function bootstrappingConfiguration(string $configurationFile) : BootstrappingConfiguration {
-        $configFile = $this->directoryResolver->getConfigurationPath($configurationFile);
+        $configFile = $this->directoryResolver->configurationPath($configurationFile);
         return new XmlBootstrappingConfiguration(
             $configFile,
             parameterStoreFactory: $this->parameterStoreFactory,
@@ -144,7 +144,7 @@ final class Bootstrap {
     private function analysisOptions(BootstrappingConfiguration $configuration) : ContainerDefinitionAnalysisOptions {
         $scanPaths = [];
         foreach ($configuration->scanDirectories() as $scanDirectory) {
-            $scanPaths[] = $this->directoryResolver->getPathFromRoot($scanDirectory);
+            $scanPaths[] = $this->directoryResolver->pathFromRoot($scanDirectory);
         }
         $analysisOptions = ContainerDefinitionAnalysisOptionsBuilder::scanDirectories(...$scanPaths);
         $containerDefinitionConsumer = $configuration->containerDefinitionProvider();
@@ -162,7 +162,7 @@ final class Bootstrap {
         $cacheDir = null;
         $configuredCacheDir = $configuration->cacheDirectory();
         if ($configuredCacheDir !== null) {
-            $cacheDir = $this->directoryResolver->getCachePath($configuredCacheDir);
+            $cacheDir = $this->directoryResolver->cachePath($configuredCacheDir);
         }
         return $this->containerDefinitionAnalyzer($cacheDir)->analyze($analysisOptions);
     }

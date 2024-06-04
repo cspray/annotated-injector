@@ -124,7 +124,7 @@ TEXT;
             return 0;
         }
         $configOption = $input->getOption('config-file')  ?? 'annotated-container.xml';
-        $configFile = $this->directoryResolver->getConfigurationPath($configOption);
+        $configFile = $this->directoryResolver->configurationPath($configOption);
         if (!is_file($configFile)) {
             throw ConfigurationNotFound::fromMissingFile($configFile);
         }

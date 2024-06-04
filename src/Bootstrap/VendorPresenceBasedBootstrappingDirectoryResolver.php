@@ -15,19 +15,19 @@ final class VendorPresenceBasedBootstrappingDirectoryResolver implements Bootstr
         $this->resolver = new RootDirectoryBootstrappingDirectoryResolver($rootDir);
     }
 
-    public function getConfigurationPath(string $subPath) : string {
-        return $this->resolver->getConfigurationPath($subPath);
+    public function configurationPath(string $subPath) : string {
+        return $this->resolver->configurationPath($subPath);
     }
 
-    public function getPathFromRoot(string $subPath) : string {
-        return $this->resolver->getPathFromRoot($subPath);
+    public function pathFromRoot(string $subPath) : string {
+        return $this->resolver->pathFromRoot($subPath);
     }
 
-    public function getCachePath(string $subPath) : string {
-        return $this->resolver->getCachePath($subPath);
+    public function cachePath(string $subPath) : string {
+        return $this->resolver->cachePath($subPath);
     }
 
-    public function getVendorPath() : string {
-        return $this->resolver->getVendorPath();
+    public function vendorPath() : string {
+        return $this->resolver->vendorPath();
     }
 }
