@@ -48,15 +48,6 @@ This document lists the functions for each purpose.
     string $from = null
 ) : \Cspray\AnnotatedContainer\Definition\InjectDefinition;
 
-\Cspray\AnnotatedContainer\injectProperty(
-    \Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProviderContext $context,
-    \Cspray\Typiphy\ObjectType $service,
-    string $property,
-    \Cspray\Typiphy\Type|\Cspray\Typiphy\TypeUnion|\Cspray\Typiphy\TypeIntersect $type,
-    mixed $value,
-    array $profiles = [],
-    string $from = null
-) : \Cspray\AnnotatedContainer\Definition\InjectDefinition;
 ```
 
 ## Autowireable Parameters

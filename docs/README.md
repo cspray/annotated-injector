@@ -8,10 +8,9 @@
 4. [Using Service Factories](./tutorials/04-using-service-factories.md)
 5. [Calling Post Construct Methods](./tutorials/05-calling-post-construct-methods.md)
 6. [Injecting Scalar Values](./tutorials/06-injecting-scalar-values.md)
-7. [Using Configuration Objects](./tutorials/07-using-configuration-objects.md)
-8. [Autowire Aware Factory](./tutorials/08-autowire-aware-factory.md)
-9. [Autowire aware Invoker](./tutorials/09-autowire-aware-invoker.md)
-10. [Annotated Container Observer](./tutorials/10-annotated-container-observers.md)
+7. [Autowire Aware Factory](./tutorials/08-autowire-aware-factory.md)
+8. [Autowire aware Invoker](./tutorials/09-autowire-aware-invoker.md)
+9. [Annotated Container Observer](./tutorials/10-annotated-container-observers.md)
 
 ## How To
 

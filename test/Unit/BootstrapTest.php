@@ -68,7 +68,7 @@ XML;
             new DefaultDefinitionProviderFactory(),
             new Stopwatch()
         );
-        $container = $bootstrap->bootstrapContainer(Profiles::fromList(['default']));
+        $container = $bootstrap->bootstrapContainer();
 
         $service = $container->get(Fixtures::singleConcreteService()->fooImplementation()->getName());
 
@@ -109,7 +109,7 @@ XML;
             new DefaultDefinitionProviderFactory(),
             new Stopwatch()
         );
-        $bootstrap->bootstrapContainer(Profiles::fromList(['default']));
+        $bootstrap->bootstrapContainer();
         $expected = md5(Fixtures::singleConcreteService()->getPath());
 
         self::assertFileExists('vfs://root/.annotated-container-cache/' . $expected);
@@ -145,7 +145,7 @@ XML;
             new DefaultDefinitionProviderFactory(),
             new Stopwatch()
         );
-        $container = $bootstrap->bootstrapContainer(Profiles::fromList(['default']));
+        $container = $bootstrap->bootstrapContainer();
 
         $service = $container->get(Fixtures::thirdPartyServices()->fooInterface()->getName());
         self::assertInstanceOf(Fixtures::thirdPartyServices()->fooImplementation()->getName(), $service);
@@ -181,7 +181,7 @@ XML;
             new DefaultDefinitionProviderFactory(),
             new Stopwatch()
         );
-        $container = $bootstrap->bootstrapContainer(Profiles::fromList(['default']));
+        $container = $bootstrap->bootstrapContainer();
 
         $service = $container->get(Fixtures::injectCustomStoreServices()->scalarInjector()->getName());
         self::assertInstanceOf(Fixtures::injectCustomStoreServices()->scalarInjector()->getName(), $service);
@@ -247,7 +247,7 @@ XML;
             new DefaultDefinitionProviderFactory(),
             new Stopwatch()
         );
-        $container = $bootstrap->bootstrapContainer(profiles: Profiles::fromList(['default']), configurationFile: 'my-container.xml.dist');
+        $container = $bootstrap->bootstrapContainer(configurationFile: 'my-container.xml.dist');
 
         $service = $container->get(Fixtures::singleConcreteService()->fooImplementation()->getName());
 
@@ -297,7 +297,7 @@ XML;
             new DefaultParameterStoreFactory(),
             $factory,
             new Stopwatch()
-        )->bootstrapContainer(Profiles::fromList(['default']));
+        )->bootstrapContainer();
 
         $service = $container->get(Fixtures::thirdPartyServices()->fooInterface()->getName());
 
@@ -344,7 +344,7 @@ XML;
             $factory,
             new DefaultDefinitionProviderFactory(),
             new Stopwatch()
-        )->bootstrapContainer(Profiles::fromList(['default']));
+        )->bootstrapContainer();
 
         $service = $container->get(Fixtures::injectCustomStoreServices()->scalarInjector()->getName());
 
@@ -400,7 +400,7 @@ XML;
 
         $emitter->addListener($listener);
 
-        $container = $bootstrap->bootstrapContainer(Profiles::fromList(['default']));
+        $container = $bootstrap->bootstrapContainer();
 
         $actual = $listener->getServices();
 
@@ -638,7 +638,7 @@ XML;
 
         $emitter->addListener($listener);
 
-        $subject->bootstrapContainer(Profiles::fromList(['default']));
+        $subject->bootstrapContainer();
 
         $analytics = $listener->getAnalytics();
         self::assertNotNull($analytics);
@@ -682,7 +682,7 @@ XML;
             new Stopwatch()
         );
 
-        $actual = $subject->bootstrapContainer(Profiles::fromList(['default']));
+        $actual = $subject->bootstrapContainer();
 
         self::assertSame($container, $actual);
     }
@@ -717,7 +717,7 @@ XML;
             new DefaultDefinitionProviderFactory(),
             new Stopwatch()
         );
-        $bootstrap->bootstrapContainer(Profiles::fromList(['default']));
+        $bootstrap->bootstrapContainer();
 
         self::assertSame(
             [StubBootstrapListener::class . '::handleBeforeBootstrap', StubBootstrapListener::class . '::handleAfterBootstrap'],
