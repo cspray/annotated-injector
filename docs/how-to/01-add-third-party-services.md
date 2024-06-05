@@ -47,12 +47,15 @@ use function Cspray\Typiphy\objectType;
 class ThirdPartyServicesProvider implements DefinitionProvider {
 
     public function consume(DefinitionProviderContext $context) : void {
-        service($context, $loggerType = objectType(LoggerInterface::class));
-        serviceDelegate($context, $loggerType, objectType(MonologLoggerFactory::class), 'createLogger');
-        servicePrepare(
-            $context,
-            objectType(LoggerAwareInterface::class),
-            'setLogger'
+        $context->addServiceDefinition(service($loggerType = objectType(LoggerInterface::class)));
+        $context->addServiceDelegateDefinition(
+            serviceDelegate($loggerType, objectType(MonologLoggerFactory::class), 'createLogger')
+        );
+        $context->addServicePrepareDefinition(
+            servicePrepare(
+                objectType(LoggerAwareInterface::class),
+                'setLogger'
+            )
         );
     }
 }
@@ -70,7 +73,6 @@ class ThirdPartyServicesProvider implements DefinitionProvider {
       <dir>tests</dir>
     </source>
   </scanDirectories>
-  <cacheDir>.annotated-container-cache</cacheDir>
   <definitionProviders>
     <definitionProvider>ThirdPartyServicesProvider</definitionProvider>
   </definitionProviders>

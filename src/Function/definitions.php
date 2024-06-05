@@ -21,7 +21,6 @@ use ReflectionClass;
 use ReflectionException;
 
 /**
- * @param DefinitionProviderContext $context
  * @param ObjectType $type
  * @param string|null $name
  * @param list<non-empty-string> $profiles
@@ -29,7 +28,7 @@ use ReflectionException;
  * @return ServiceDefinition
  * @throws ReflectionException
  */
-function service(DefinitionProviderContext $context, ObjectType $type, ?string $name = null, array $profiles = [], bool $isPrimary = false) : ServiceDefinition {
+function service(ObjectType $type, ?string $name = null, array $profiles = [], bool $isPrimary = false) : ServiceDefinition {
     $typeName = $type->getName();
     $reflection = new ReflectionClass($typeName);
     $methodArgs = [$type];
@@ -49,30 +48,23 @@ function service(DefinitionProviderContext $context, ObjectType $type, ?string $
     }
     $serviceDefinitionBuilder = $serviceDefinitionBuilder->withProfiles($profiles);
 
-    $serviceDefinition = $serviceDefinitionBuilder->build();
-    $context->addServiceDefinition($serviceDefinition);
-    return $serviceDefinition;
+    return $serviceDefinitionBuilder->build();
 }
 
-function alias(DefinitionProviderContext $context, ObjectType $abstract, ObjectType $concrete) : AliasDefinition {
-    $aliasDefinition = AliasDefinitionBuilder::forAbstract($abstract)->withConcrete($concrete)->build();
-    $context->addAliasDefinition($aliasDefinition);
-    return $aliasDefinition;
+function alias(ObjectType $abstract, ObjectType $concrete) : AliasDefinition {
+    return AliasDefinitionBuilder::forAbstract($abstract)->withConcrete($concrete)->build();
 }
 
-function serviceDelegate(DefinitionProviderContext $context, ObjectType $service, ObjectType $factoryClass, string $factoryMethod) : ServiceDelegateDefinition {
-    $serviceDelegateDefinition = ServiceDelegateDefinitionBuilder::forService($service)->withDelegateMethod($factoryClass, $factoryMethod)->build();
-    $context->addServiceDelegateDefinition($serviceDelegateDefinition);
-    return $serviceDelegateDefinition;
+function serviceDelegate(ObjectType $service, ObjectType $factoryClass, string $factoryMethod) : ServiceDelegateDefinition {
+    return ServiceDelegateDefinitionBuilder::forService($service)
+        ->withDelegateMethod($factoryClass, $factoryMethod)->build();
 }
 
-function servicePrepare(DefinitionProviderContext $context, ObjectType $service, string $method) : ServicePrepareDefinition {
-    $servicePrepareDefinition = ServicePrepareDefinitionBuilder::forMethod($service, $method)->build();
-    $context->addServicePrepareDefinition($servicePrepareDefinition);
-    return $servicePrepareDefinition;
+function servicePrepare(ObjectType $service, string $method) : ServicePrepareDefinition {
+    return ServicePrepareDefinitionBuilder::forMethod($service, $method)->build();
 }
 
-function injectMethodParam(DefinitionProviderContext $context, ObjectType $service, string $method, string $paramName, Type|TypeUnion|TypeIntersect $type, mixed $value, array $profiles = [], string $from = null) : InjectDefinition {
+function inject(ObjectType $service, string $method, string $paramName, Type|TypeUnion|TypeIntersect $type, mixed $value, array $profiles = [], string $from = null) : InjectDefinition {
     $injectDefinitionBuilder = InjectDefinitionBuilder::forService($service)
         ->withMethod($method, $type, $paramName)
         ->withValue($value);
@@ -85,7 +77,5 @@ function injectMethodParam(DefinitionProviderContext $context, ObjectType $servi
         $injectDefinitionBuilder = $injectDefinitionBuilder->withStore($from);
     }
 
-    $injectDefinition = $injectDefinitionBuilder->build();
-    $context->addInjectDefinition($injectDefinition);
-    return $injectDefinition;
+    return $injectDefinitionBuilder->build();
 }

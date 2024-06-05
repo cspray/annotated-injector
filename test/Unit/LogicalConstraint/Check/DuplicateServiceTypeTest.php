@@ -15,6 +15,7 @@ use Cspray\AnnotatedContainerFixture\LogicalConstraints\DuplicateServiceType\Dum
 use Cspray\AnnotatedContainerFixture\LogicalConstraints\DuplicateServiceType\FooService as DuplicateAttributeFooService;
 use Cspray\AnnotatedContainerFixture\LogicalConstraints\LogicalConstraintFixtures;
 use Cspray\AnnotatedContainerFixture\NonAnnotatedServices\NotAnnotatedObject;
+use function Cspray\AnnotatedContainer\service;
 use function Cspray\Typiphy\objectType;
 
 final class DuplicateServiceTypeTest extends LogicalConstraintTestCase {
@@ -80,8 +81,8 @@ TEXT;
                 new class implements DefinitionProvider {
 
                     public function consume(DefinitionProviderContext $context) : void {
-                        \Cspray\AnnotatedContainer\service($context, objectType(NotAnnotatedObject::class));
-                        \Cspray\AnnotatedContainer\service($context, objectType(NotAnnotatedObject::class));
+                        $context->addServiceDefinition(service(objectType(NotAnnotatedObject::class)));
+                        $context->addServiceDefinition(service(objectType(NotAnnotatedObject::class)));
                     }
                 }
             )->build()
