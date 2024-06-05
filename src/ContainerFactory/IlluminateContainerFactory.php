@@ -98,9 +98,9 @@ final class IlluminateContainerFactory extends AbstractContainerFactory {
     protected function handleInjectDefinition(ContainerFactoryState $state, InjectDefinition $definition) : void {
         assert($state instanceof IlluminateContainerFactoryState);
         $state->addMethodInject(
-            $definition->targetIdentifier()->class()->getName(),
-            $definition->targetIdentifier()->methodName(),
-            $definition->targetIdentifier()->name(),
+            $definition->class()->getName(),
+            $definition->methodName(),
+            $definition->parameterName(),
             $this->injectDefinitionValue($definition)
         );
     }

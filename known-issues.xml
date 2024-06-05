@@ -172,9 +172,6 @@
                     $this->convertAutowireableParameterSet($parameters)
                 )]]></code>
     </MixedReturnStatement>
-    <PossiblyNullArgument>
-      <code><![CDATA[$method]]></code>
-    </PossiblyNullArgument>
   </file>
   <file src="src/ContainerFactory/AurynContainerFactoryState.php">
     <MissingClosureReturnType>
@@ -250,9 +247,6 @@
     <MixedReturnStatement>
       <code><![CDATA[$this->state->container->make($classType, $params)]]></code>
     </MixedReturnStatement>
-    <PossiblyNullArgument>
-      <code><![CDATA[$definition->targetIdentifier()->methodName()]]></code>
-    </PossiblyNullArgument>
   </file>
   <file src="src/ContainerFactory/IlluminateContainerFactoryState.php">
     <PropertyTypeCoercion>
@@ -296,7 +290,6 @@
                 )]]></code>
     </MixedReturnStatement>
     <PossiblyNullArgument>
-      <code><![CDATA[$definition->targetIdentifier()->methodName()]]></code>
       <code><![CDATA[$state->serviceKey($aliasDefinition->abstractService()->getName())]]></code>
     </PossiblyNullArgument>
   </file>
@@ -322,17 +315,19 @@
     </PropertyNotSetInConstructor>
   </file>
   <file src="src/Definition/InjectDefinitionBuilder.php">
-    <ArgumentTypeCoercion>
-      <code><![CDATA[$this->method]]></code>
-      <code><![CDATA[$this->paramName]]></code>
-      <code><![CDATA[$this->property]]></code>
-    </ArgumentTypeCoercion>
     <LessSpecificReturnStatement>
+      <code><![CDATA[$this->methodName]]></code>
+      <code><![CDATA[$this->paramName]]></code>
       <code><![CDATA[$this->store]]></code>
     </LessSpecificReturnStatement>
     <MoreSpecificReturnType>
       <code><![CDATA[?string]]></code>
+      <code><![CDATA[string]]></code>
+      <code><![CDATA[string]]></code>
     </MoreSpecificReturnType>
+    <PossiblyNullArgument>
+      <code><![CDATA[$this->paramName]]></code>
+    </PossiblyNullArgument>
     <PropertyNotSetInConstructor>
       <code><![CDATA[$service]]></code>
       <code><![CDATA[$type]]></code>
@@ -405,6 +400,10 @@
     <PossiblyNullArgument>
       <code><![CDATA[$injectProfiles]]></code>
     </PossiblyNullArgument>
+    <RedundantCondition>
+      <code><![CDATA[$methodName !== null]]></code>
+      <code><![CDATA[assert($methodName !== null)]]></code>
+    </RedundantCondition>
     <UndefinedPropertyFetch>
       <code><![CDATA[$xpath->query('@isPrimary', $serviceDefinition)[0]?->value]]></code>
       <code><![CDATA[$xpath->query('@isPrimary', $serviceDefinition)[0]?->value]]></code>

@@ -3,6 +3,7 @@
 namespace Cspray\AnnotatedContainer\Definition;
 
 use Cspray\AnnotatedContainer\Attribute\InjectAttribute;
+use Cspray\Typiphy\ObjectType;
 use Cspray\Typiphy\Type;
 use Cspray\Typiphy\TypeIntersect;
 use Cspray\Typiphy\TypeUnion;
@@ -14,13 +15,6 @@ use Cspray\Typiphy\TypeUnion;
  * @see InjectDefinitionBuilder
  */
 interface InjectDefinition {
-
-    /**
-     * Defines which code construct is the injection target.
-     *
-     * @return InjectTargetIdentifier
-     */
-    public function targetIdentifier() : InjectTargetIdentifier;
 
     /**
      * Returns the type of the method parameter or property that is being injected into.
@@ -52,4 +46,23 @@ interface InjectDefinition {
     public function storeName() : ?string;
 
     public function attribute() : ?InjectAttribute;
+
+    /**
+     * The class that has the method being injected into.
+     *
+     * @return ObjectType
+     */
+    public function class() : ObjectType;
+
+    /**
+     * @return non-empty-string
+     */
+    public function methodName() : string;
+
+    /**
+     * The name of the parameter or property that should have a value injected.
+     *
+     * @return non-empty-string
+     */
+    public function parameterName() : string;
 }

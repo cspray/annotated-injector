@@ -26,15 +26,15 @@ class InjectIntMethodParamTest extends AnnotatedTargetDefinitionConverterTestCas
     }
 
     public function testDefinitionGetService() {
-        $this->assertSame(Fixtures::injectConstructorServices()->injectIntService(), $this->definition->targetIdentifier()->class());
+        $this->assertSame(Fixtures::injectConstructorServices()->injectIntService(), $this->definition->class());
     }
 
     public function testDefinitionGetMethod() {
-        $this->assertSame('__construct', $this->definition->targetIdentifier()->methodName());
+        $this->assertSame('__construct', $this->definition->methodName());
     }
 
     public function testDefinitionGetParamName() {
-        $this->assertSame('meaningOfLife', $this->definition->targetIdentifier()->name());
+        $this->assertSame('meaningOfLife', $this->definition->parameterName());
     }
 
     public function testDefinitionGetType() {

@@ -4,8 +4,6 @@ namespace Cspray\AnnotatedContainer\Definition;
 
 use Cspray\AnnotatedContainer\Attribute\InjectAttribute;
 use Cspray\AnnotatedContainer\Exception\InvalidInjectDefinition;
-use Cspray\AnnotatedContainer\Internal\MethodParameterInjectTargetIdentifier;
-use Cspray\AnnotatedContainer\Internal\PropertyInjectTargetIdentifier;
 use Cspray\Typiphy\ObjectType;
 use Cspray\Typiphy\Type;
 use Cspray\Typiphy\TypeIntersect;
@@ -16,7 +14,6 @@ final class InjectDefinitionBuilder {
     private ObjectType $service;
     private ?string $method = null;
     private ?string $paramName = null;
-    private ?string $property = null;
     private Type|TypeUnion|TypeIntersect $type;
     private mixed $value;
     private bool $isValueCalled = false;
@@ -42,13 +39,6 @@ final class InjectDefinitionBuilder {
         $instance->method = $method;
         $instance->paramName = $paramName;
         $instance->type = $type;
-        return $instance;
-    }
-
-    public function withProperty(Type|TypeUnion|TypeIntersect $type, string $name) : self {
-        $instance = clone $this;
-        $instance->type = $type;
-        $instance->property = $name;
         return $instance;
     }
 
@@ -85,20 +75,10 @@ final class InjectDefinitionBuilder {
     }
 
     public function build() : InjectDefinition {
-        if (!isset($this->method) && !isset($this->property)) {
-            throw InvalidInjectDefinition::fromMissingMethodAndProperty();
-        } elseif (isset($this->method) && isset($this->property)) {
-            throw InvalidInjectDefinition::fromMethodAndPropertySet();
+        if (!isset($this->method)) {
+            throw InvalidInjectDefinition::fromMissingMethod();
         } elseif (!$this->isValueCalled) {
             throw InvalidInjectDefinition::fromMissingValue();
-        }
-
-        if (isset($this->method)) {
-            assert(isset($this->paramName));
-            $targetIdentifier = new MethodParameterInjectTargetIdentifier($this->paramName, $this->method, $this->service);
-        } else {
-            assert(isset($this->property));
-            $targetIdentifier = new PropertyInjectTargetIdentifier($this->property, $this->service);
         }
 
         $profiles = $this->profiles;
@@ -106,26 +86,23 @@ final class InjectDefinitionBuilder {
             $profiles[] = 'default';
         }
 
-        return new class($targetIdentifier, $this->type, $this->value, $this->store, $profiles, $this->attribute) implements InjectDefinition {
+        return new class($this->service, $this->method, $this->paramName, $this->type, $this->value, $this->store, $profiles, $this->attribute) implements InjectDefinition {
 
             /**
-             * @param InjectTargetIdentifier $targetIdentifier
              * @param Type|TypeUnion|TypeIntersect $type
              * @param string|null $store
              * @param list<non-empty-string> $profiles
              */
             public function __construct(
-                private readonly InjectTargetIdentifier $targetIdentifier,
+                private readonly ObjectType $class,
+                private readonly string $methodName,
+                private readonly string $paramName,
                 private readonly Type|TypeUnion|TypeIntersect $type,
                 private readonly mixed $annotationValue,
                 private readonly ?string $store,
                 private readonly array $profiles,
                 private readonly ?InjectAttribute $attribute
             ) {
-            }
-
-            public function targetIdentifier() : InjectTargetIdentifier {
-                return $this->targetIdentifier;
             }
 
             public function type() : Type|TypeUnion|TypeIntersect {
@@ -146,6 +123,18 @@ final class InjectDefinitionBuilder {
 
             public function attribute() : ?InjectAttribute {
                 return $this->attribute;
+            }
+
+            public function class() : ObjectType {
+                return $this->class;
+            }
+
+            public function methodName() : string {
+                return $this->methodName;
+            }
+
+            public function parameterName() : string {
+                return $this->paramName;
             }
         };
     }

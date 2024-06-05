@@ -6,12 +6,8 @@ use Throwable;
 
 final class InvalidInjectDefinition extends Exception {
 
-    public static function fromMissingMethodAndProperty() : self {
-        return new self('A method or property to inject into MUST be provided before building an InjectDefinition.');
-    }
-
-    public static function fromMethodAndPropertySet() : self {
-        return new self('A method and property MUST NOT be set together when building an InjectDefinition.');
+    public static function fromMissingMethod() : self {
+        return new self('A method to inject into MUST be provided before building an InjectDefinition.');
     }
 
     public static function fromMissingValue() : self {

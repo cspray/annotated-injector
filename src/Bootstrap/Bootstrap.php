@@ -82,7 +82,7 @@ final class Bootstrap {
         BootstrappingDirectoryResolver $resolver,
         ParameterStoreFactory $parameterStoreFactory,
         DefinitionProviderFactory $definitionProviderFactory,
-        Stopwatch $stopwatch
+        Stopwatch $stopwatch = new Stopwatch()
     ) : self {
         return new Bootstrap(
             $containerFactory,
@@ -95,9 +95,10 @@ final class Bootstrap {
     }
 
     public function bootstrapContainer(
-        Profiles $profiles,
+        Profiles $profiles = null,
         string $configurationFile = 'annotated-container.xml'
     ) : AnnotatedContainer {
+        $profiles ??= Profiles::defaultOnly();
 
         $this->stopwatch->start();
 

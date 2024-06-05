@@ -151,10 +151,6 @@ final class AnnotatedTargetDefinitionConverter {
     }
 
     private function buildInjectDefinition(AnnotatedTarget $target) : InjectDefinition {
-        if ($target->getTargetReflection() instanceof \ReflectionProperty) {
-            return $this->buildPropertyInjectDefinition($target);
-        }
-
         return $this->buildMethodInjectDefinition($target);
     }
 
@@ -172,23 +168,6 @@ final class AnnotatedTargetDefinitionConverter {
         assert($attributeInstance instanceof InjectAttribute);
 
         $builder = InjectDefinitionBuilder::forService($serviceType)->withMethod($method, $paramType, $param);
-
-        return $this->buildInjectFromAttributeData($builder, $attributeInstance);
-    }
-
-    private function buildPropertyInjectDefinition(AnnotatedTarget $target) : InjectDefinition {
-        $targetReflection = $target->getTargetReflection();
-        assert($targetReflection instanceof \ReflectionProperty);
-
-        $propType = $this->convertReflectionType($targetReflection->getType());
-        $attributeInstance = $target->getAttributeInstance();
-        assert($attributeInstance instanceof InjectAttribute);
-
-        $builder = InjectDefinitionBuilder::forService(objectType($targetReflection->getDeclaringClass()->getName()))
-            ->withProperty(
-                $propType,
-                $target->getTargetReflection()->getName()
-            );
 
         return $this->buildInjectFromAttributeData($builder, $attributeInstance);
     }

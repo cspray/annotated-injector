@@ -52,25 +52,6 @@ class AssertExpectedInjectDefinitionTest extends TestCase {
         );
     }
 
-    public function testExpectedInjectConstructorParamTargetTypeNotFound() : void {
-        $assertion = new AssertExpectedInjectDefinition($this);
-        $containerDefinition = ContainerDefinitionBuilder::newDefinition()
-            ->withInjectDefinition(
-                InjectDefinitionBuilder::forService(Fixtures::injectConstructorServices()->injectArrayService())
-                    ->withProperty(arrayType(), 'propName')
-                    ->withValue(['a', 'b', 'c'])
-                    ->build()
-            )->build();
-
-        $this->expectException(AssertionFailedError::class);
-        $this->expectExceptionMessage(sprintf(
-            'Could not find an InjectDefinition for %s that is a MethodParameter injection.',
-            Fixtures::injectConstructorServices()->injectArrayService()
-        ));
-
-        $assertion->assert($this->getArrayConstructorExpectedInject(), $containerDefinition);
-    }
-
     public function testExpectedInjectMethodNameNotFound() : void {
         $assertion = new AssertExpectedInjectDefinition($this);
         $containerDefinition = ContainerDefinitionBuilder::newDefinition()

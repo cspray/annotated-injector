@@ -90,11 +90,18 @@ Now, bootstrap your Container in your app.
 require __DIR__ . '/vendor/autoload.php';
 
 use Cspray\AnnotatedContainer\Bootstrap\Bootstrap;
+use Cspray\AnnotatedContainer\Event\Emitter;
+use Cspray\AnnotatedContainer\Profiles;
+
+$emitter = new Emitter();
+
+// Add whatever Listeners are required for your application
 
 // Include other active profiles in this list
 // If the only active profile is default you can call this method without any arguments
-$profiles = ['default'];
-$container = (new Bootstrap())->bootstrapContainer($profiles);
+$container = Bootstrap::fromMinimalSetup($emitter)->bootstrapContainer(
+    Profiles::fromList(['default'])
+);
 
 $storage = $container->get(BlobStorage::class);     // instanceof FilesystemStorage
 ```

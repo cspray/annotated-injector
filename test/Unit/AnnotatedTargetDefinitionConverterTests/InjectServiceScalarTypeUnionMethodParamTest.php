@@ -24,15 +24,15 @@ class InjectServiceScalarTypeUnionMethodParamTest extends AnnotatedTargetDefinit
     }
 
     public function testDefinitionGetService() {
-        $this->assertSame(Fixtures::injectPrepareServices()->serviceScalarUnionPrepareInjector(), $this->definition->targetIdentifier()->class());
+        $this->assertSame(Fixtures::injectPrepareServices()->serviceScalarUnionPrepareInjector(), $this->definition->class());
     }
 
     public function testDefinitionGetMethod() {
-        $this->assertSame('setValue', $this->definition->targetIdentifier()->methodName());
+        $this->assertSame('setValue', $this->definition->methodName());
     }
 
     public function testDefinitionGetParamName() {
-        $this->assertSame('val', $this->definition->targetIdentifier()->name());
+        $this->assertSame('val', $this->definition->parameterName());
     }
 
     public function testDefinitionGetTypeUnion() {

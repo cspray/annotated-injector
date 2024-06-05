@@ -26,15 +26,15 @@ class InjectImplicitMixedMethodParamTest extends AnnotatedTargetDefinitionConver
     }
 
     public function testDefinitionGetService() {
-        $this->assertSame(Fixtures::injectConstructorServices()->injectImplicitMixedService(), $this->definition->targetIdentifier()->class());
+        $this->assertSame(Fixtures::injectConstructorServices()->injectImplicitMixedService(), $this->definition->class());
     }
 
     public function testDefinitionGetMethod() {
-        $this->assertSame('__construct', $this->definition->targetIdentifier()->methodName());
+        $this->assertSame('__construct', $this->definition->methodName());
     }
 
     public function testDefinitionGetParamName() {
-        $this->assertSame('val', $this->definition->targetIdentifier()->name());
+        $this->assertSame('val', $this->definition->parameterName());
     }
 
     public function testDefinitionGetType() {

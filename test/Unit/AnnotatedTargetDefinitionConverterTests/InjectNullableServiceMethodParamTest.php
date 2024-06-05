@@ -24,15 +24,15 @@ class InjectNullableServiceMethodParamTest extends AnnotatedTargetDefinitionConv
     }
 
     public function testDefinitionGetService() {
-        $this->assertSame(Fixtures::injectServiceConstructorServices()->nullableServiceInjector(), $this->definition->targetIdentifier()->class());
+        $this->assertSame(Fixtures::injectServiceConstructorServices()->nullableServiceInjector(), $this->definition->class());
     }
 
     public function testDefinitionGetMethod() {
-        $this->assertSame('__construct', $this->definition->targetIdentifier()->methodName());
+        $this->assertSame('__construct', $this->definition->methodName());
     }
 
     public function testDefinitionGetParamName() {
-        $this->assertSame('maybeFoo', $this->definition->targetIdentifier()->name());
+        $this->assertSame('maybeFoo', $this->definition->parameterName());
     }
 
     public function testDefinitionGetType() {

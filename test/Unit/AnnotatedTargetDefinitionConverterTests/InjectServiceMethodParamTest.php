@@ -22,15 +22,15 @@ class InjectServiceMethodParamTest extends AnnotatedTargetDefinitionConverterTes
     }
 
     public function testDefinitionGetService() {
-        $this->assertSame(Fixtures::injectServiceConstructorServices()->serviceInjector(), $this->definition->targetIdentifier()->class());
+        $this->assertSame(Fixtures::injectServiceConstructorServices()->serviceInjector(), $this->definition->class());
     }
 
     public function testDefinitionGetMethod() {
-        $this->assertSame('__construct', $this->definition->targetIdentifier()->methodName());
+        $this->assertSame('__construct', $this->definition->methodName());
     }
 
     public function testDefinitionGetParamName() {
-        $this->assertSame('foo', $this->definition->targetIdentifier()->name());
+        $this->assertSame('foo', $this->definition->parameterName());
     }
 
     public function testDefinitionGetType() {

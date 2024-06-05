@@ -23,15 +23,15 @@ class InjectServiceTypeIntersectMethodParamTest extends AnnotatedTargetDefinitio
     }
 
     public function testDefinitionGetService() {
-        $this->assertSame(Fixtures::injectServiceIntersectConstructorServices()->fooBarConsumer(), $this->definition->targetIdentifier()->class());
+        $this->assertSame(Fixtures::injectServiceIntersectConstructorServices()->fooBarConsumer(), $this->definition->class());
     }
 
     public function testDefinitionGetMethod() {
-        $this->assertSame('__construct', $this->definition->targetIdentifier()->methodName());
+        $this->assertSame('__construct', $this->definition->methodName());
     }
 
     public function testDefinitionGetParamName() {
-        $this->assertSame('fooBar', $this->definition->targetIdentifier()->name());
+        $this->assertSame('fooBar', $this->definition->parameterName());
     }
 
     public function testDefinitionGetTypeIntersect() {
