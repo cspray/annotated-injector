@@ -8,5 +8,5 @@ use Cspray\AnnotatedContainer\Autowire\AutowireableInvoker;
 
 interface AnnotatedContainer extends ContainerInterface, AutowireableFactory, AutowireableInvoker {
 
-    public function getBackingContainer() : object;
+    public function backingContainer() : object;
 }

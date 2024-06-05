@@ -204,7 +204,7 @@ final class IlluminateContainerFactory extends AbstractContainerFactory {
                 $this->state->container->instance(AutowireableInvoker::class, $this);
             }
 
-            public function getBackingContainer() : Container {
+            public function backingContainer() : Container {
                 return $this->state->container;
             }
 

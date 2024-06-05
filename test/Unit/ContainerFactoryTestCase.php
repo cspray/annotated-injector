@@ -300,7 +300,7 @@ abstract class ContainerFactoryTestCase extends TestCase {
         $containerDefinition = ContainerDefinitionBuilder::newDefinition()->build();
         self::assertInstanceOf(
             $this->getBackingContainerInstanceOf()->getName(),
-            $this->getContainerFactory()->createContainer($containerDefinition)->getBackingContainer()
+            $this->getContainerFactory()->createContainer($containerDefinition)->backingContainer()
         );
     }
 

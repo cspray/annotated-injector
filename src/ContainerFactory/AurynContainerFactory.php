@@ -163,7 +163,7 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
                 );
             }
 
-            public function getBackingContainer() : Injector {
+            public function backingContainer() : Injector {
                 return $this->state->injector;
             }
 

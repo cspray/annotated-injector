@@ -204,7 +204,7 @@ TEXT;
             public function createContainer(ContainerDefinition $containerDefinition, ContainerFactoryOptions $containerFactoryOptions = null) : AnnotatedContainer {
                 return new class implements AnnotatedContainer {
 
-                    public function getBackingContainer() : object {
+                    public function backingContainer() : object {
                         throw new \RuntimeException(__METHOD__);
                     }
 

@@ -154,7 +154,7 @@ final class PhpDiContainerFactory extends AbstractContainerFactory implements Co
                 return in_array($id, $this->serviceTypes);
             }
 
-            public function getBackingContainer() : Container {
+            public function backingContainer() : Container {
                 return $this->container;
             }
 
