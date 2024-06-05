@@ -33,6 +33,7 @@
       <xs:element name="definitionProviders" type="definitionProvidersType" minOccurs="0" maxOccurs="1" />
       <xs:element name="parameterStores" type="parameterStoresType" minOccurs="0" maxOccurs="1" />
     </xs:all>
+    <xs:attribute name="version" type="xs:string" use="required" />
   </xs:complexType>
 
   <xs:complexType name="scanDirectoriesType">
@@ -78,5 +79,6 @@
       <xs:element name="definitionProvider" type="xs:token" />
     </xs:sequence>
   </xs:complexType>
+
 
 </xs:schema>

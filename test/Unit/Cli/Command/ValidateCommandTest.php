@@ -116,7 +116,7 @@ TEXT;
     public function testHandleWithConfigurationFilePresentShowsNoLogicalConstraints() : void {
         $config = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
   <scanDirectories>
     <source>
       <dir>SingleConcreteService</dir>
@@ -149,7 +149,7 @@ TEXT;
     public function testHandleWithConfigurationFilePresentShowsLogicalConstraints() : void {
         $config = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
   <scanDirectories>
     <source>
       <dir>LogicalConstraints/DuplicateServiceName</dir>
@@ -193,7 +193,7 @@ TEXT;
     public function testViolationWithWarningHasCorrectColorEncoded() : void {
         $config = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
   <scanDirectories>
     <source>
       <dir>LogicalConstraints/DuplicateServiceType</dir>
@@ -270,7 +270,7 @@ TEXT;
     public function testConfigFileOptionPassedRespected() : void {
         $config = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
   <scanDirectories>
     <source>
       <dir>SingleConcreteService</dir>
@@ -303,7 +303,7 @@ TEXT;
     public function testProfilesRespectedInOutputAndContainerAnalysis() : void {
         $config = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
   <scanDirectories>
     <source>
       <dir>SingleConcreteService</dir>
@@ -336,7 +336,7 @@ TEXT;
     public function testSingleProfileRespected() : void {
         $config = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
   <scanDirectories>
     <source>
       <dir>SingleConcreteService</dir>

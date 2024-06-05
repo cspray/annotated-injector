@@ -50,7 +50,7 @@ XML;
     public function testValidXmlReturnsScanDirectories() : void {
         $goodXml = <<<XML
 <?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
     <scanDirectories>
         <source>
             <dir>src</dir>
@@ -78,7 +78,7 @@ XML;
     public function testValidXmlReturnsDefinitionProvider() : void {
         $goodXml = <<<XML
 <?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
     <scanDirectories>
         <source>
             <dir>src</dir>
@@ -112,7 +112,7 @@ XML;
     public function testDefinitionProviderEmptyIfNoneDefined() : void {
         $goodXml = <<<XML
 <?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
     <scanDirectories>
         <source>
             <dir>src</dir>
@@ -137,7 +137,7 @@ XML;
     public function testCacheDirNotSpecifiedReturnsNull() : void {
         $goodXml = <<<XML
 <?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
     <scanDirectories>
         <source>
             <dir>src</dir>
@@ -161,7 +161,7 @@ XML;
     public function testCacheIsAlwaysNull() : void {
         $goodXml = <<<XML
 <?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
     <scanDirectories>
         <source>
             <dir>src</dir>
@@ -186,7 +186,7 @@ XML;
     public function testParameterStoresReturned() : void {
         $goodXml = <<<XML
 <?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
   <scanDirectories>
     <source>
       <dir>src</dir>
@@ -215,7 +215,7 @@ XML;
     public function testParameterStoreFactoryPresentRespected() : void {
         $goodXml = <<<XML
 <?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
   <scanDirectories>
     <source>
       <dir>src</dir>
@@ -255,7 +255,7 @@ XML;
     public function testDefinitionProviderFactoryPresentRespected() : void {
         $goodXml = <<<XML
 <?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
   <scanDirectories>
     <source>
       <dir>src</dir>
@@ -291,7 +291,7 @@ XML;
     public function testVendorScanDirectoriesIncludedInList() : void {
         $goodXml = <<<XML
 <?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
     <scanDirectories>
         <source>
             <dir>src</dir>

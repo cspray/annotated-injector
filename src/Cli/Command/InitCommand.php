@@ -2,6 +2,7 @@
 
 namespace Cspray\AnnotatedContainer\Cli\Command;
 
+use Cspray\AnnotatedContainer\AnnotatedContainerVersion;
 use Cspray\AnnotatedContainer\Bootstrap\BootstrappingDirectoryResolver;
 use Cspray\AnnotatedContainer\Bootstrap\ThirdPartyInitializer;
 use Cspray\AnnotatedContainer\Bootstrap\ThirdPartyInitializerProvider;
@@ -274,6 +275,7 @@ SHELL;
         $dom->formatOutput = true;
 
         $root = $dom->appendChild($dom->createElementNS(self::XML_SCHEMA, 'annotatedContainer'));
+        $root->setAttribute('version', AnnotatedContainerVersion::version());
 
         $scanDirectories = $root->appendChild($dom->createElementNS(self::XML_SCHEMA, 'scanDirectories'));
         $source = $scanDirectories->appendChild($dom->createElementNS(self::XML_SCHEMA, 'source'));

@@ -51,7 +51,7 @@ final class BootstrapTest extends TestCase {
 
         $goodXml = <<<XML
 <?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
     <scanDirectories>
         <source>
             <dir>SingleConcreteService</dir>
@@ -88,7 +88,7 @@ XML;
 
         $goodXml = <<<XML
 <?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
     <scanDirectories>
         <source>
             <dir>ThirdPartyServices</dir>
@@ -124,7 +124,7 @@ XML;
 
         $goodXml = <<<XML
 <?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
   <scanDirectories>
     <source>
       <dir>InjectCustomStoreServices</dir>
@@ -161,7 +161,7 @@ XML;
 
         $goodXml = <<<XML
 <?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
     <scanDirectories>
         <source>
             <dir>ProfileResolvedServices</dir>
@@ -193,7 +193,7 @@ XML;
 
         $goodXml = <<<XML
 <?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
     <scanDirectories>
         <source>
             <dir>SingleConcreteService</dir>
@@ -232,7 +232,7 @@ XML;
 
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
     <scanDirectories>
         <source>
             <dir>ThirdPartyServices</dir>
@@ -279,7 +279,7 @@ XML;
 
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
     <scanDirectories>
         <source>
             <dir>InjectCustomStoreServices</dir>
@@ -326,7 +326,7 @@ XML;
 
         $goodXml = <<<XML
 <?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
     <scanDirectories>
         <source>
             <dir>AmbiguousAliasedServices</dir>
@@ -391,7 +391,7 @@ XML;
 
         $goodXml = <<<XML
 <?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
     <scanDirectories>
         <source>
             <dir>CustomServiceAttribute</dir>
@@ -451,7 +451,7 @@ XML;
 
         $goodXml = <<<XML
 <?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
     <scanDirectories>
         <source>
             <dir>ProfileResolvedServices</dir>
@@ -515,7 +515,7 @@ XML;
 
         $goodXml = <<<XML
 <?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
     <scanDirectories>
         <source>
             <dir>CustomServiceAttribute</dir>
@@ -571,7 +571,7 @@ XML;
 
         $goodXml = <<<XML
 <?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
     <scanDirectories>
         <source>
             <dir>SingleConcreteService</dir>
@@ -624,7 +624,7 @@ XML;
 
         $goodXml = <<<XML
 <?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
     <scanDirectories>
         <source>
             <dir>SingleConcreteService</dir>
@@ -663,7 +663,7 @@ XML;
 
         $goodXml = <<<XML
 <?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
     <scanDirectories>
         <source>
             <dir>SingleConcreteService</dir>
@@ -701,7 +701,7 @@ XML;
 
         $goodXml = <<<XML
 <?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
     <scanDirectories>
         <source>
             <dir>SingleConcreteService</dir>
