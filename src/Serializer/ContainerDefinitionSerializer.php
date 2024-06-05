@@ -36,7 +36,7 @@ final class ContainerDefinitionSerializer {
         $dom = new DOMDocument(encoding: 'UTF-8');
         $dom->formatOutput = true;
         $root = $dom->createElementNS(self::XML_SCHEMA, self::ROOT_ELEMENT);
-        $root->setAttribute('version', AnnotatedContainerVersion::getVersion());
+        $root->setAttribute('version', AnnotatedContainerVersion::version());
 
         $dom->appendChild($root);
 
@@ -306,7 +306,7 @@ final class ContainerDefinitionSerializer {
         $xpath->registerNamespace('cd', self::XML_SCHEMA);
 
         $version = (string) $xpath->query('/cd:annotatedContainerDefinition/@version')[0]?->nodeValue;
-        if ($version !== AnnotatedContainerVersion::getVersion()) {
+        if ($version !== AnnotatedContainerVersion::version()) {
             return null;
         }
 

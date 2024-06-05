@@ -11,6 +11,6 @@ class ConsoleCommandTest extends TestCase {
         exec(__DIR__ . '/../../bin/annotated-container', $output, $result);
 
         self::assertSame(0, $result);
-        self::assertStringContainsString('Annotated Container ' . AnnotatedContainerVersion::getVersion(), implode(PHP_EOL, $output));
+        self::assertStringContainsString('Annotated Container ' . AnnotatedContainerVersion::version(), implode(PHP_EOL, $output));
     }
 }

@@ -20,7 +20,7 @@ final class HelpCommand implements Command {
     }
 
     public function help() : string {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         return <<<SHELL
 <bold>Annotated Container $version</bold>
 

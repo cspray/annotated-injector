@@ -9,7 +9,7 @@ final class AnnotatedContainerVersion {
     private function __construct() {
     }
 
-    public static function getVersion() : string {
+    public static function version() : string {
         return Versions::getVersion('cspray/annotated-container');
     }
 }

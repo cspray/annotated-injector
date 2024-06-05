@@ -37,7 +37,7 @@ class ContainerDefinitionSerializerTest extends TestCase {
     private const BASE_64_ENCODED_CARDINAL_DIRECTIONS = 'Q3NwcmF5XEFubm90YXRlZENvbnRhaW5lckZpeHR1cmVcSW5qZWN0RW51bUNvbnN0cnVjdG9yU2VydmljZXNcQ2FyZGluYWxEaXJlY3Rpb25z';
 
     public function testSerializingSingleConcreteService() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -74,7 +74,7 @@ XML;
 
     public function testSerializingSingleConcreteServiceWithAttribute() : void {
         $attributeVal = base64_encode(serialize($attr = new Service()));
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -112,7 +112,7 @@ XML;
     }
 
     public function testSerializingServiceWithExplicitProfiles() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -151,7 +151,7 @@ XML;
     }
 
     public function testSerializingServicesWithAliases() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -207,7 +207,7 @@ XML;
     }
 
     public function testSerializingServiceIsPrimary() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -243,7 +243,7 @@ XML;
     }
 
     public function testSerializingServiceWithName() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -281,7 +281,7 @@ XML;
     }
 
     public function testSerializingServicePrepareDefinition() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -330,7 +330,7 @@ XML;
 
     public function testSerializingServicePrepareDefinitionWithAttribute() : void {
         $attrVal = base64_encode(serialize(new ServicePrepare()));
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -378,7 +378,7 @@ XML;
     }
 
     public function testSerializingServiceDelegateDefinition() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -426,7 +426,7 @@ XML;
 
     public function testSerializingServiceDelegateDefinitionWithAttribute() : void {
         $attrVal = base64_encode(serialize(new ServiceDelegate()));
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -475,7 +475,7 @@ XML;
 
     public function testSerializingInjectMethodParameterStringValue() : void {
         $attrVal = base64_encode(serialize(new Inject('foobar')));
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $encodedVal = base64_encode(serialize('foobar'));
         $type = self::BASE_64_ENCODED_STRING;
         $expected = <<<XML
@@ -536,7 +536,7 @@ XML;
     }
 
     public function testSerializingInjectMethodParameterIntValue() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $encodedVal = base64_encode(serialize(42));
         $type = self::BASE_64_ENCODED_INT;
         $expected = <<<XML
@@ -596,7 +596,7 @@ XML;
     }
 
     public function testSerializingInjectMethodParameterUnitEnumValue() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $encodedVal = base64_encode(serialize(CardinalDirections::West));
         $type = self::BASE_64_ENCODED_CARDINAL_DIRECTIONS;
         $expected = <<<XML
@@ -655,7 +655,7 @@ XML;
     }
 
     public function testSerializingInjectMethodParameterWithStore() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $encodedVal = base64_encode(serialize('key'));
         $type = self::BASE_64_ENCODED_STRING;
         $expected = <<<XML
@@ -716,7 +716,7 @@ XML;
     }
 
     public function testSerializingInjectMethodParameterExplicitProfiles() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $encodedVal = base64_encode(serialize('foobar'));
         $type = self::BASE_64_ENCODED_STRING;
         $expected = <<<XML
@@ -797,7 +797,7 @@ XML;
     }
 
     public function testDeserializingConcreteServiceDefinition() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -838,7 +838,7 @@ XML;
     }
 
     public function testDeserializingNamedConcreteServiceDefinition() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -879,7 +879,7 @@ XML;
     }
 
     public function testDeserializingPrimaryConcreteServiceDefinition() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -920,7 +920,7 @@ XML;
     }
 
     public function testDeserializingServiceDefinitionWithProfiles() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -963,7 +963,7 @@ XML;
     }
 
     public function testDeserializeAbstractServiceDefinition() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -1003,7 +1003,7 @@ XML;
     }
 
     public function testDeserializeAliasDefinitions() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -1050,7 +1050,7 @@ XML;
     }
 
     public function testDeserializeServicePrepareDefinitions() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -1089,7 +1089,7 @@ XML;
     }
 
     public function testDeserializeServiceDelegateDefinitions() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -1132,7 +1132,7 @@ XML;
 
     public function testDeserializeInjectMethodParameter() : void {
         $type = self::BASE_64_ENCODED_STRING;
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $encodedVal = base64_encode(serialize('foobar'));
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
@@ -1196,7 +1196,7 @@ XML;
     }
 
     public function testDeserializeInjectDefinitionUnitEnumValueMethodParameter() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $encodedVal = base64_encode(serialize(CardinalDirections::West));
         $type = self::BASE_64_ENCODED_CARDINAL_DIRECTIONS;
         $xml = <<<XML
@@ -1261,7 +1261,7 @@ XML;
     }
 
     public function testDeserializeInjectDefinitionMethodParameterWithStore() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $encodedVal = base64_encode(serialize('key'));
         $type = self::BASE_64_ENCODED_STRING;
         $xml = <<<XML
@@ -1326,7 +1326,7 @@ XML;
     }
 
     public function testDeserializeInjectMethodWithProfiles() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $encodedVal = base64_encode(serialize('annotated container'));
         $type = self::BASE_64_ENCODED_STRING;
         $xml = <<<XML

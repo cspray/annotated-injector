@@ -11,7 +11,7 @@ class AnnotatedContainerVersionTest extends TestCase {
     public function testGetApiVersionReturnsVersionFileContents() : void {
         self::assertSame(
             Versions::getVersion('cspray/annotated-container'),
-            AnnotatedContainerVersion::getVersion()
+            AnnotatedContainerVersion::version()
         );
     }
 }
