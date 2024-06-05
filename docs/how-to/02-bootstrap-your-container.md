@@ -168,11 +168,13 @@ Perhaps you didn't name your configuration file the default, it is recommended y
 namespace Acme\Demo;
 
 use Cspray\AnnotatedContainer\Bootstrap\Bootstrap;
-use Cspray\AnnotatedContainer\Event\Emitter;use Cspray\AnnotatedContainer\Profiles;
+use Cspray\AnnotatedContainer\Bootstrap\XmlBootstrappingConfigurationProvider;use Cspray\AnnotatedContainer\Event\Emitter;use Cspray\AnnotatedContainer\Profiles;
 
 $container = Bootstrap::fromMinimalSetup(new Emitter)
-    ->bootstrapContainer(configurationFile: 'my-container.xml');
+    ->bootstrapContainer(bootstrappingConfigurationProvider: new XmlBootstrappingConfigurationProvider('my-container.xml'));
 ```
+
+If you require a configuration that is not the default XML files, you can implement your own `Cspray\AnnotatedContainer\Bootstrap\BootstrappingConfigurationProvider` instead.
 
 #### Constructing DefinitionProvider 
 

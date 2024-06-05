@@ -13,6 +13,7 @@ use Cspray\AnnotatedContainer\Bootstrap\ParameterStoreFactory;
 use Cspray\AnnotatedContainer\Bootstrap\ServiceFromServiceDefinition;
 use Cspray\AnnotatedContainer\Bootstrap\ServiceGatherer;
 use Cspray\AnnotatedContainer\Bootstrap\ServiceWiringListener;
+use Cspray\AnnotatedContainer\Bootstrap\XmlBootstrappingConfigurationProvider;
 use Cspray\AnnotatedContainer\ContainerFactory\AurynContainerFactory;
 use Cspray\AnnotatedContainer\ContainerFactory\ContainerFactory;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
@@ -247,7 +248,9 @@ XML;
             new DefaultDefinitionProviderFactory(),
             new Stopwatch()
         );
-        $container = $bootstrap->bootstrapContainer(configurationFile: 'my-container.xml.dist');
+        $container = $bootstrap->bootstrapContainer(
+            bootstrappingConfigurationProvider: new XmlBootstrappingConfigurationProvider('my-container.xml.dist')
+        );
 
         $service = $container->get(Fixtures::singleConcreteService()->fooImplementation()->getName());
 

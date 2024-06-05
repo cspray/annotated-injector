@@ -96,13 +96,17 @@ final class Bootstrap {
 
     public function bootstrapContainer(
         Profiles $profiles = null,
-        string $configurationFile = 'annotated-container.xml'
+        BootstrappingConfigurationProvider $bootstrappingConfigurationProvider = new XmlBootstrappingConfigurationProvider()
     ) : AnnotatedContainer {
         $profiles ??= Profiles::defaultOnly();
 
         $this->stopwatch->start();
 
-        $configuration = $this->bootstrappingConfiguration($configurationFile);
+        $configuration = $bootstrappingConfigurationProvider->bootstrappingConfiguration(
+            $this->directoryResolver,
+            $this->parameterStoreFactory,
+            $this->definitionProviderFactory
+        );
         $analysisOptions = $this->analysisOptions($configuration);
 
         $this->emitter->emitBeforeBootstrap($configuration);
@@ -131,16 +135,6 @@ final class Bootstrap {
 
         return $container;
     }
-
-    private function bootstrappingConfiguration(string $configurationFile) : BootstrappingConfiguration {
-        $configFile = $this->directoryResolver->configurationPath($configurationFile);
-        return new XmlBootstrappingConfiguration(
-            $configFile,
-            parameterStoreFactory: $this->parameterStoreFactory,
-            definitionProviderFactory: $this->definitionProviderFactory
-        );
-    }
-
 
     private function analysisOptions(BootstrappingConfiguration $configuration) : ContainerDefinitionAnalysisOptions {
         $scanPaths = [];

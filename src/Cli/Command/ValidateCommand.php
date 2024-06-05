@@ -12,6 +12,7 @@ use Cspray\AnnotatedContainer\Bootstrap\ContainerAnalytics;
 use Cspray\AnnotatedContainer\Bootstrap\DefaultDefinitionProviderFactory;
 use Cspray\AnnotatedContainer\Bootstrap\DefaultParameterStoreFactory;
 use Cspray\AnnotatedContainer\Bootstrap\PostAnalysisObserver;
+use Cspray\AnnotatedContainer\Bootstrap\XmlBootstrappingConfigurationProvider;
 use Cspray\AnnotatedContainer\Cli\Command;
 use Cspray\AnnotatedContainer\Cli\Exception\ConfigurationNotFound;
 use Cspray\AnnotatedContainer\Cli\Input;
@@ -156,8 +157,8 @@ TEXT;
         $profiles = Profiles::fromList($inputProfiles);
 
         $bootstrap->bootstrapContainer(
-            profiles: $profiles,
-            configurationFile: $configOption
+            $profiles,
+            new XmlBootstrappingConfigurationProvider($configOption)
         );
         assert($containerDefinition instanceof ContainerDefinition);
 
