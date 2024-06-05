@@ -1,6 +1,6 @@
 <?php
 
-namespace Cspray\AnnotatedContainer\Serializer;
+namespace Cspray\AnnotatedContainer\Definition\Serializer;
 
 use Cspray\AnnotatedContainer\AnnotatedContainerVersion;
 use Cspray\AnnotatedContainer\Definition\AliasDefinitionBuilder;
@@ -12,6 +12,7 @@ use Cspray\AnnotatedContainer\Definition\ServiceDefinitionBuilder;
 use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinitionBuilder;
 use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinitionBuilder;
 use Cspray\AnnotatedContainer\Exception\InvalidInjectDefinition;
+use Cspray\AnnotatedContainer\Exception\MismatchedContainerDefinitionSerializerVersions;
 use Cspray\AnnotatedContainer\Internal\SerializerInjectValueParser;
 use DOMDocument;
 use DOMElement;
@@ -20,7 +21,10 @@ use DOMXPath;
 use Exception as PhpException;
 use function Cspray\Typiphy\objectType;
 
-final class ContainerDefinitionSerializer {
+/**
+ * @internal
+ */
+final class XmlContainerDefinitionSerializer implements ContainerDefinitionSerializer {
 
     private const XML_SCHEMA = 'https://annotated-container.cspray.io/schema/annotated-container-definition.xsd';
 
@@ -32,7 +36,7 @@ final class ContainerDefinitionSerializer {
         $this->injectValueParser = new SerializerInjectValueParser();
     }
 
-    public function serialize(ContainerDefinition $containerDefinition) : string {
+    public function serialize(ContainerDefinition $containerDefinition) : SerializedContainerDefinition {
         $dom = new DOMDocument(encoding: 'UTF-8');
         $dom->formatOutput = true;
         $root = $dom->createElementNS(self::XML_SCHEMA, self::ROOT_ELEMENT);
@@ -46,9 +50,10 @@ final class ContainerDefinitionSerializer {
         $this->addServiceDelegateDefinitionsToDom($root, $containerDefinition);
         $this->addInjectDefinitionsToDom($root, $containerDefinition);
 
-        $schemaPath = dirname(__DIR__, 2) . '/annotated-container-definition.xsd';
+        $schemaPath = dirname(__DIR__, 3) . '/annotated-container-definition.xsd';
         $dom->schemaValidate($schemaPath);
-        return $dom->saveXML();
+
+        return SerializedContainerDefinition::fromString($dom->saveXML());
     }
 
     private function addServiceDefinitionsToDom(DOMElement $root, ContainerDefinition $containerDefinition) : void {
@@ -270,16 +275,16 @@ final class ContainerDefinitionSerializer {
         );
     }
 
-    public function deserialize(string $serializedDefinition) : ?ContainerDefinition {
+    public function deserialize(SerializedContainerDefinition $serializedContainerDefinition) : ContainerDefinition {
         $dom = new DOMDocument(encoding: 'UTF-8');
-        $dom->loadXML($serializedDefinition);
+        $dom->loadXML($serializedContainerDefinition->asString());
 
         $xpath = new DOMXPath($dom);
         $xpath->registerNamespace('cd', self::XML_SCHEMA);
 
         $version = (string) $xpath->query('/cd:annotatedContainerDefinition/@version')[0]?->nodeValue;
         if ($version !== AnnotatedContainerVersion::version()) {
-            return null;
+            throw MismatchedContainerDefinitionSerializerVersions::fromVersionIsNotInstalledAnnotatedContainerVersion($version);
         }
 
         $builder = ContainerDefinitionBuilder::newDefinition();

@@ -2,15 +2,15 @@
 
 namespace Cspray\AnnotatedContainer\Unit;
 
+use Composer\InstalledVersions;
 use Cspray\AnnotatedContainer\AnnotatedContainerVersion;
-use PackageVersions\Versions;
 use PHPUnit\Framework\TestCase;
 
 class AnnotatedContainerVersionTest extends TestCase {
 
     public function testGetApiVersionReturnsVersionFileContents() : void {
         self::assertSame(
-            Versions::getVersion('cspray/annotated-container'),
+            InstalledVersions::getVersion('cspray/annotated-container'),
             AnnotatedContainerVersion::version()
         );
     }

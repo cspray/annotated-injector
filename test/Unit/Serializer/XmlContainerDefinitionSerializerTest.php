@@ -7,18 +7,20 @@ use Cspray\AnnotatedContainer\Attribute\Inject;
 use Cspray\AnnotatedContainer\Attribute\Service;
 use Cspray\AnnotatedContainer\Attribute\ServiceDelegate;
 use Cspray\AnnotatedContainer\Attribute\ServicePrepare;
-use Cspray\AnnotatedContainer\Event\Emitter;
-use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalyzer;
-use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
-use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetDefinitionConverter;
 use Cspray\AnnotatedContainer\Definition\AliasDefinitionBuilder;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinitionBuilder;
 use Cspray\AnnotatedContainer\Definition\InjectDefinitionBuilder;
+use Cspray\AnnotatedContainer\Definition\Serializer\SerializedContainerDefinition;
+use Cspray\AnnotatedContainer\Definition\Serializer\XmlContainerDefinitionSerializer;
 use Cspray\AnnotatedContainer\Definition\ServiceDefinitionBuilder;
 use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinitionBuilder;
 use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinitionBuilder;
+use Cspray\AnnotatedContainer\Event\Emitter;
 use Cspray\AnnotatedContainer\Exception\InvalidInjectDefinition;
-use Cspray\AnnotatedContainer\Serializer\ContainerDefinitionSerializer;
+use Cspray\AnnotatedContainer\Exception\MismatchedContainerDefinitionSerializerVersions;
+use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalyzer;
+use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetDefinitionConverter;
+use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
 use Cspray\AnnotatedContainer\Unit\Helper\UnserializableObject;
 use Cspray\AnnotatedContainerFixture\Fixture;
 use Cspray\AnnotatedContainerFixture\Fixtures;
@@ -30,7 +32,7 @@ use function Cspray\Typiphy\intType;
 use function Cspray\Typiphy\objectType;
 use function Cspray\Typiphy\stringType;
 
-class ContainerDefinitionSerializerTest extends TestCase {
+class XmlContainerDefinitionSerializerTest extends TestCase {
 
     private const BASE_64_ENCODED_STRING = 'c3RyaW5n';
     private const BASE_64_ENCODED_INT = 'aW50';
@@ -60,7 +62,7 @@ class ContainerDefinitionSerializerTest extends TestCase {
 
 XML;
 
-        $subject = new ContainerDefinitionSerializer();
+        $subject = new XmlContainerDefinitionSerializer();
 
         $containerDefinition = ContainerDefinitionBuilder::newDefinition()
             ->withServiceDefinition(
@@ -69,7 +71,7 @@ XML;
 
         $actual = $subject->serialize($containerDefinition);
 
-        self::assertSame($expected, $actual);
+        self::assertSame($expected, $actual->asString());
     }
 
     public function testSerializingSingleConcreteServiceWithAttribute() : void {
@@ -97,7 +99,7 @@ XML;
 
 XML;
 
-        $subject = new ContainerDefinitionSerializer();
+        $subject = new XmlContainerDefinitionSerializer();
 
         $containerDefinition = ContainerDefinitionBuilder::newDefinition()
             ->withServiceDefinition(
@@ -108,7 +110,7 @@ XML;
 
         $actual = $subject->serialize($containerDefinition);
 
-        self::assertSame($expected, $actual);
+        self::assertSame($expected, $actual->asString());
     }
 
     public function testSerializingServiceWithExplicitProfiles() : void {
@@ -136,7 +138,7 @@ XML;
 
 XML;
 
-        $subject = new ContainerDefinitionSerializer();
+        $subject = new XmlContainerDefinitionSerializer();
 
         $containerDefinition = ContainerDefinitionBuilder::newDefinition()
             ->withServiceDefinition(
@@ -147,7 +149,7 @@ XML;
 
         $actual = $subject->serialize($containerDefinition);
 
-        self::assertSame($expected, $actual);
+        self::assertSame($expected, $actual->asString());
     }
 
     public function testSerializingServicesWithAliases() : void {
@@ -188,7 +190,7 @@ XML;
 
 XML;
 
-        $subject = new ContainerDefinitionSerializer();
+        $subject = new XmlContainerDefinitionSerializer();
 
         $containerDefinition = ContainerDefinitionBuilder::newDefinition()
             ->withServiceDefinition(
@@ -203,7 +205,7 @@ XML;
 
         $actual = $subject->serialize($containerDefinition);
 
-        self::assertSame($expected, $actual);
+        self::assertSame($expected, $actual->asString());
     }
 
     public function testSerializingServiceIsPrimary() : void {
@@ -230,7 +232,7 @@ XML;
 
 XML;
 
-        $subject = new ContainerDefinitionSerializer();
+        $subject = new XmlContainerDefinitionSerializer();
 
         $containerDefinition = ContainerDefinitionBuilder::newDefinition()
             ->withServiceDefinition(
@@ -239,7 +241,7 @@ XML;
 
         $actual = $subject->serialize($containerDefinition);
 
-        self::assertSame($expected, $actual);
+        self::assertSame($expected, $actual->asString());
     }
 
     public function testSerializingServiceWithName() : void {
@@ -266,7 +268,7 @@ XML;
 
 XML;
 
-        $subject = new ContainerDefinitionSerializer();
+        $subject = new XmlContainerDefinitionSerializer();
 
         $containerDefinition = ContainerDefinitionBuilder::newDefinition()
             ->withServiceDefinition(
@@ -277,7 +279,7 @@ XML;
 
         $actual = $subject->serialize($containerDefinition);
 
-        self::assertSame($expected, $actual);
+        self::assertSame($expected, $actual->asString());
     }
 
     public function testSerializingServicePrepareDefinition() : void {
@@ -310,7 +312,7 @@ XML;
 
 XML;
 
-        $subject = new ContainerDefinitionSerializer();
+        $subject = new XmlContainerDefinitionSerializer();
 
         $containerDefinition = ContainerDefinitionBuilder::newDefinition()
             ->withServiceDefinition(
@@ -325,7 +327,7 @@ XML;
 
         $actual = $subject->serialize($containerDefinition);
 
-        self::assertSame($expected, $actual);
+        self::assertSame($expected, $actual->asString());
     }
 
     public function testSerializingServicePrepareDefinitionWithAttribute() : void {
@@ -359,7 +361,7 @@ XML;
 
 XML;
 
-        $subject = new ContainerDefinitionSerializer();
+        $subject = new XmlContainerDefinitionSerializer();
 
         $containerDefinition = ContainerDefinitionBuilder::newDefinition()
             ->withServiceDefinition(
@@ -374,7 +376,7 @@ XML;
 
         $actual = $subject->serialize($containerDefinition);
 
-        self::assertSame($expected, $actual);
+        self::assertSame($expected, $actual->asString());
     }
 
     public function testSerializingServiceDelegateDefinition() : void {
@@ -408,7 +410,7 @@ XML;
 
 XML;
 
-        $subject = new ContainerDefinitionSerializer();
+        $subject = new XmlContainerDefinitionSerializer();
 
         $containerDefinition = ContainerDefinitionBuilder::newDefinition()
             ->withServiceDefinition(
@@ -421,7 +423,7 @@ XML;
 
         $actual = $subject->serialize($containerDefinition);
 
-        self::assertSame($expected, $actual);
+        self::assertSame($expected, $actual->asString());
     }
 
     public function testSerializingServiceDelegateDefinitionWithAttribute() : void {
@@ -456,7 +458,7 @@ XML;
 
 XML;
 
-        $subject = new ContainerDefinitionSerializer();
+        $subject = new XmlContainerDefinitionSerializer();
 
         $containerDefinition = ContainerDefinitionBuilder::newDefinition()
             ->withServiceDefinition(
@@ -470,7 +472,7 @@ XML;
 
         $actual = $subject->serialize($containerDefinition);
 
-        self::assertSame($expected, $actual);
+        self::assertSame($expected, $actual->asString());
     }
 
     public function testSerializingInjectMethodParameterStringValue() : void {
@@ -513,7 +515,7 @@ XML;
 
 XML;
 
-        $subject = new ContainerDefinitionSerializer();
+        $subject = new XmlContainerDefinitionSerializer();
 
         $containerDefinition = ContainerDefinitionBuilder::newDefinition()
             ->withServiceDefinition(
@@ -528,7 +530,7 @@ XML;
 
         $actual = $subject->serialize($containerDefinition);
 
-        self::assertSame($expected, $actual);
+        self::assertSame($expected, $actual->asString());
     }
 
     public function testSerializingInjectMethodParameterIntValue() : void {
@@ -570,7 +572,7 @@ XML;
 
 XML;
 
-        $subject = new ContainerDefinitionSerializer();
+        $subject = new XmlContainerDefinitionSerializer();
 
         $containerDefinition = ContainerDefinitionBuilder::newDefinition()
             ->withServiceDefinition(
@@ -584,7 +586,7 @@ XML;
 
         $actual = $subject->serialize($containerDefinition);
 
-        self::assertSame($expected, $actual);
+        self::assertSame($expected, $actual->asString());
     }
 
     public function testSerializingInjectMethodParameterUnitEnumValue() : void {
@@ -636,10 +638,10 @@ XML;
                     ->build()
             )->build();
 
-        $subject = new ContainerDefinitionSerializer();
+        $subject = new XmlContainerDefinitionSerializer();
         $actual = $subject->serialize($containerDefinition);
 
-        self::assertSame($expected, $actual);
+        self::assertSame($expected, $actual->asString());
     }
 
     public function testSerializingInjectMethodParameterWithStore() : void {
@@ -693,10 +695,10 @@ XML;
                     ->build()
             )->build();
 
-        $subject = new ContainerDefinitionSerializer();
+        $subject = new XmlContainerDefinitionSerializer();
         $actual = $subject->serialize($containerDefinition);
 
-        self::assertSame($expected, $actual);
+        self::assertSame($expected, $actual->asString());
     }
 
     public function testSerializingInjectMethodParameterExplicitProfiles() : void {
@@ -739,7 +741,7 @@ XML;
 
 XML;
 
-        $subject = new ContainerDefinitionSerializer();
+        $subject = new XmlContainerDefinitionSerializer();
 
         $containerDefinition = ContainerDefinitionBuilder::newDefinition()
             ->withServiceDefinition(
@@ -754,7 +756,7 @@ XML;
 
         $actual = $subject->serialize($containerDefinition);
 
-        self::assertSame($expected, $actual);
+        self::assertSame($expected, $actual->asString());
     }
 
     public function testSerializingInjectDefinitionWithUnserializableValueThrowsException() : void {
@@ -768,7 +770,7 @@ XML;
                     ->build()
             )->build();
 
-        $subject = new ContainerDefinitionSerializer();
+        $subject = new XmlContainerDefinitionSerializer();
 
         $this->expectException(InvalidInjectDefinition::class);
         $this->expectExceptionMessage('An InjectDefinition with a value that cannot be serialized was provided.');
@@ -800,9 +802,9 @@ XML;
 
 XML;
 
-        $subject = new ContainerDefinitionSerializer();
+        $subject = new XmlContainerDefinitionSerializer();
 
-        $actual = $subject->deserialize($xml);
+        $actual = $subject->deserialize(SerializedContainerDefinition::fromString($xml));
 
         $serviceDefinitions = $actual->serviceDefinitions();
 
@@ -841,9 +843,9 @@ XML;
 
 XML;
 
-        $subject = new ContainerDefinitionSerializer();
+        $subject = new XmlContainerDefinitionSerializer();
 
-        $actual = $subject->deserialize($xml);
+        $actual = $subject->deserialize(SerializedContainerDefinition::fromString($xml));
 
         $serviceDefinitions = $actual->serviceDefinitions();
 
@@ -882,9 +884,9 @@ XML;
 
 XML;
 
-        $subject = new ContainerDefinitionSerializer();
+        $subject = new XmlContainerDefinitionSerializer();
 
-        $actual = $subject->deserialize($xml);
+        $actual = $subject->deserialize(SerializedContainerDefinition::fromString($xml));
 
         $serviceDefinitions = $actual->serviceDefinitions();
 
@@ -925,9 +927,9 @@ XML;
 
 XML;
 
-        $subject = new ContainerDefinitionSerializer();
+        $subject = new XmlContainerDefinitionSerializer();
 
-        $actual = $subject->deserialize($xml);
+        $actual = $subject->deserialize(SerializedContainerDefinition::fromString($xml));
 
         $serviceDefinitions = $actual->serviceDefinitions();
 
@@ -965,9 +967,9 @@ XML;
 </annotatedContainerDefinition>
 
 XML;
-        $subject = new ContainerDefinitionSerializer();
+        $subject = new XmlContainerDefinitionSerializer();
 
-        $actual = $subject->deserialize($xml);
+        $actual = $subject->deserialize(SerializedContainerDefinition::fromString($xml));
 
         $serviceDefinitions = $actual->serviceDefinitions();
 
@@ -1020,8 +1022,8 @@ XML;
 
 XML;
 
-        $subject = new ContainerDefinitionSerializer();
-        $actual = $subject->deserialize($xml);
+        $subject = new XmlContainerDefinitionSerializer();
+        $actual = $subject->deserialize(SerializedContainerDefinition::fromString($xml));
 
         self::assertCount(1, $actual->aliasDefinitions());
         $aliasDefinition = $actual->aliasDefinitions()[0];
@@ -1059,8 +1061,8 @@ XML;
 
 XML;
 
-        $subject = new ContainerDefinitionSerializer();
-        $actual = $subject->deserialize($xml);
+        $subject = new XmlContainerDefinitionSerializer();
+        $actual = $subject->deserialize(SerializedContainerDefinition::fromString($xml));
 
         self::assertCount(1, $actual->servicePrepareDefinitions());
         $prepareDefinition = $actual->servicePrepareDefinitions()[0];
@@ -1099,8 +1101,8 @@ XML;
 
 XML;
 
-        $subject = new ContainerDefinitionSerializer();
-        $actual = $subject->deserialize($xml);
+        $subject = new XmlContainerDefinitionSerializer();
+        $actual = $subject->deserialize(SerializedContainerDefinition::fromString($xml));
 
         self::assertCount(1, $actual->serviceDelegateDefinitions());
         $delegateDefinition = $actual->serviceDelegateDefinitions()[0];
@@ -1149,9 +1151,9 @@ XML;
 
 XML;
 
-        $subject = new ContainerDefinitionSerializer();
+        $subject = new XmlContainerDefinitionSerializer();
 
-        $actual = $subject->deserialize($xml);
+        $actual = $subject->deserialize(SerializedContainerDefinition::fromString($xml));
 
         self::assertCount(1, $actual->injectDefinitions());
         $injectDefinition = $actual->injectDefinitions()[0];
@@ -1207,9 +1209,9 @@ XML;
 
 XML;
 
-        $subject = new ContainerDefinitionSerializer();
+        $subject = new XmlContainerDefinitionSerializer();
 
-        $actual = $subject->deserialize($xml);
+        $actual = $subject->deserialize(SerializedContainerDefinition::fromString($xml));
 
         self::assertCount(1, $actual->injectDefinitions());
         $injectDefinition = $actual->injectDefinitions()[0];
@@ -1265,9 +1267,9 @@ XML;
 
 XML;
 
-        $subject = new ContainerDefinitionSerializer();
+        $subject = new XmlContainerDefinitionSerializer();
 
-        $actual = $subject->deserialize($xml);
+        $actual = $subject->deserialize(SerializedContainerDefinition::fromString($xml));
 
         self::assertCount(1, $actual->injectDefinitions());
         $injectDefinition = $actual->injectDefinitions()[0];
@@ -1324,9 +1326,9 @@ XML;
 
 XML;
 
-        $subject = new ContainerDefinitionSerializer();
+        $subject = new XmlContainerDefinitionSerializer();
 
-        $actual = $subject->deserialize($xml);
+        $actual = $subject->deserialize(SerializedContainerDefinition::fromString($xml));
 
         self::assertCount(1, $actual->injectDefinitions());
         $injectDefinition = $actual->injectDefinitions()[0];
@@ -1343,7 +1345,7 @@ XML;
         self::assertNull($injectDefinition->storeName());
     }
 
-    public function testDeserializeWithMismatchedVersionReturnsNull() : void {
+    public function testDeserializeWithMismatchedVersionThrowsException() : void {
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="not-up-to-date">
@@ -1366,11 +1368,16 @@ XML;
 
 XML;
 
-        $subject = new ContainerDefinitionSerializer();
+        $subject = new XmlContainerDefinitionSerializer();
 
-        $actual = $subject->deserialize($xml);
+        $this->expectException(MismatchedContainerDefinitionSerializerVersions::class);
+        $this->expectExceptionMessage(sprintf(
+            'The cached ContainerDefinition is from a version of Annotated Container, "not-up-to-date", that is not the ' .
+            'currently installed version, "%s". Whenever Annotated Container is upgraded this cache must be ',
+            AnnotatedContainerVersion::version()
+        ));
 
-        self::assertNull($actual);
+        $actual = $subject->deserialize(SerializedContainerDefinition::fromString($xml));
     }
 
     public static function fixturesDirProvider() : array {
@@ -1393,7 +1400,7 @@ XML;
             new Emitter()
         );
 
-        $subject = new ContainerDefinitionSerializer();
+        $subject = new XmlContainerDefinitionSerializer();
 
         $containerDefinition = $compiler->analyze(
             ContainerDefinitionAnalysisOptionsBuilder::scanDirectories($fixture->getPath())->build()
@@ -1402,6 +1409,6 @@ XML;
         $expected = $subject->serialize($containerDefinition);
         $actual = $subject->serialize($subject->deserialize($expected));
 
-        self::assertSame($expected, $actual);
+        self::assertSame($expected->asString(), $actual->asString());
     }
 }

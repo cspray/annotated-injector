@@ -111,37 +111,20 @@ DESCRIPTION
        "lib", and "test". By default we'll look for these directories in the root 
        of your project. If you need to scan directories outside your project 
        root please review the Caveats & Other Concerns detailed below.
-       
-    3. Setup configuration to cache your ContainerDefinition in a directory in 
-       the root of your project. If this directory doesn't already exist it will
-       be created. You can change the directory that is used for caching by passing 
-       the --cache-dir option when executing this command. This command will always 
-       enable caching. Caching your ContainerDefinition is HIGHLY recommended as 
-       statically analysing your codebase can be quite costly. If you need to 
-       disable caching for some reason, you're in early development and services 
-       are likely to change frequently, you can remove this configuration.
 
-    4. Setup configuration to include a DefinitionProvider when you need to 
+    3. Setup configuration to include a DefinitionProvider when you need to 
        configure third-party services. You can provide a single --definition-provider 
        option when executing this command to define configured value. The value
        passed to this option MUST be a fully-qualified class name. By default, 
        no provider will be defined unless an option is passed. If you use this 
        configuration option please review Defining Class Configurations below.
        
-    5. Setup configuration to include ParameterStore implementations in the 
+    4. Setup configuration to include ParameterStore implementations in the 
        ContainerFactory. You can provide multiple --parameter-store options when 
        executing this command to define configured values. The value passed to 
        this option MUST be a fully-qualified class name. By default, no stores 
        will be defined unless options are passed. If you use this configuration 
        option please review Defining Class Configurations detailed below.
-       
-    6. Setup configuration to include Observer implementations to respond to 
-       events that happen during Annotated Container's bootstrapping. You can 
-       provide multiple --observer options when executing this command to 
-       define configured values. The value passed to this option MUST be a 
-       fully-qualified class name. By default, no observers will be defined 
-       unless options are passed. If you use this configuration option please 
-       review Defining Class Configurations detailed below.
        
     Resolving File Paths
     ============================================================================
@@ -166,12 +149,6 @@ DESCRIPTION
    
 OPTIONS
 
-    --cache-dir="cache/dir"
-    
-        Specify the directory that ContainerDefinition will be cached in. If this
-        option is not provided the cache directory will be ".annotated-container-cache".
-        This option can only be defined 1 time.
-    
     --config-file="file-path.xml"
     
         Set the name of the configuration file that is created. If this option 
@@ -191,11 +168,6 @@ OPTIONS
         injecting custom values with the Inject Attribute. Please be sure to 
         review Defining Class Configurations if you use this value.
     
-    --observer="Fully\Qualified\Class\Name"
-
-        Add an Observer to the bootstrapping process. This can be used to respond 
-        to events during the compilation and creation of your Container.
-
 SHELL;
 
         self::assertSame($expected, $this->subject->help());
@@ -293,30 +265,10 @@ SHELL;
   <definitionProviders>
     <definitionProvider>Cspray\AnnotatedContainerFixture\VendorScanningInitializers\DependencyDefinitionProvider</definitionProvider>
   </definitionProviders>
-  <cacheDir>.annotated-container-cache</cacheDir>
 </annotatedContainer>
 
 XML;
         self::assertStringEqualsFile('vfs://root/annotated-container.xml', $expected);
-    }
-
-    public function testDefaultInitCreatesCacheDirIfNotPresent() : void {
-        VirtualFilesystem::newFile('composer.json')
-            ->withContent(json_encode([
-                'autoload' => [
-                    'psr-0' => [
-                        'Namespace\\' => 'src'
-                    ],
-                ],
-            ], JSON_THROW_ON_ERROR))->at($this->vfs);
-
-        self::assertDirectoryDoesNotExist('vfs:///root/.annotated-container-cache');
-
-        $input = new StubInput([], ['init']);
-        $exitCode = $this->subject->handle($input, $this->output);
-
-        self::assertSame(0, $exitCode);
-        self::assertDirectoryExists('vfs://root/.annotated-container-cache');
     }
 
     public function testDefaultInitTakesConfigurationNameFromOption() : void {
@@ -350,7 +302,6 @@ XML;
     <vendor/>
   </scanDirectories>
   <definitionProviders/>
-  <cacheDir>.annotated-container-cache</cacheDir>
 </annotatedContainer>
 
 XML;
@@ -393,7 +344,6 @@ XML;
     <vendor/>
   </scanDirectories>
   <definitionProviders/>
-  <cacheDir>.annotated-container-cache</cacheDir>
 </annotatedContainer>
 
 XML;
@@ -420,127 +370,6 @@ XML;
 
         $stubInput = new StubInput([], ['init']);
         $this->subject->handle($stubInput, $this->output);
-    }
-
-    public function testHandlesCacheDirAlreadyPresent() : void {
-        VirtualFilesystem::newFile('composer.json')
-            ->withContent(json_encode([
-                'autoload' => [
-                    'psr-0' => [
-                        'Namespace\\' => ['src']
-                    ],
-                ],
-                'autoload-dev' => [
-                    'psr-4' => [
-                        'Namespace\\Test\\' => ['lib']
-                    ]
-                ]
-            ], JSON_THROW_ON_ERROR))->at($this->vfs);
-        VirtualFilesystem::newDirectory('.annotated-container-cache')->at($this->vfs);
-
-        $input = new StubInput([], ['init']);
-        $exitCode = $this->subject->handle($input, $this->output);
-
-        self::assertSame(0, $exitCode);
-
-        $expected = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
-  <scanDirectories>
-    <source>
-      <dir>src</dir>
-      <dir>lib</dir>
-    </source>
-    <vendor/>
-  </scanDirectories>
-  <definitionProviders/>
-  <cacheDir>.annotated-container-cache</cacheDir>
-</annotatedContainer>
-
-XML;
-        self::assertStringEqualsFile('vfs://root/annotated-container.xml', $expected);
-    }
-
-    public function testRespectCacheDirProvidedAsOption() : void {
-        VirtualFilesystem::newFile('composer.json')
-            ->withContent(json_encode([
-                'autoload' => [
-                    'psr-0' => [
-                        'Namespace\\' => 'src'
-                    ],
-                ],
-                'autoload-dev' => [
-                    'psr-4' => [
-                        'Namespace\\Test\\' => 'tests'
-                    ]
-                ]
-            ], JSON_THROW_ON_ERROR))->at($this->vfs);
-
-        self::assertDirectoryDoesNotExist('vfs://root/my-cache-dir');
-
-        $input = new StubInput(['cache-dir' => 'my-cache-dir'], ['init']);
-        $exitCode = $this->subject->handle($input, $this->output);
-
-        self::assertSame(0, $exitCode);
-
-        $expected = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
-  <scanDirectories>
-    <source>
-      <dir>src</dir>
-      <dir>tests</dir>
-    </source>
-    <vendor/>
-  </scanDirectories>
-  <definitionProviders/>
-  <cacheDir>my-cache-dir</cacheDir>
-</annotatedContainer>
-
-XML;
-        self::assertStringEqualsFile('vfs://root/annotated-container.xml', $expected);
-        self::assertDirectoryExists('vfs://root/my-cache-dir');
-    }
-
-    public function testRespectsNestedCacheDir() : void {
-        VirtualFilesystem::newFile('composer.json')
-            ->withContent(json_encode([
-                'autoload' => [
-                    'psr-0' => [
-                        'Namespace\\' => 'src'
-                    ],
-                ],
-                'autoload-dev' => [
-                    'psr-4' => [
-                        'Namespace\\Test\\' => 'tests'
-                    ]
-                ]
-            ], JSON_THROW_ON_ERROR))->at($this->vfs);
-
-        self::assertDirectoryDoesNotExist('vfs://root/path/cache/my-cache-dir');
-
-        $input = new StubInput(['cache-dir' => 'path/cache/my-cache-dir'], ['init']);
-        $exitCode = $this->subject->handle($input, $this->output);
-
-        self::assertSame(0, $exitCode);
-
-        $expected = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
-  <scanDirectories>
-    <source>
-      <dir>src</dir>
-      <dir>tests</dir>
-    </source>
-    <vendor/>
-  </scanDirectories>
-  <definitionProviders/>
-  <cacheDir>path/cache/my-cache-dir</cacheDir>
-</annotatedContainer>
-
-XML;
-        self::assertStringEqualsFile('vfs://root/annotated-container.xml', $expected);
-        self::assertDirectoryExists('vfs://root/path/cache/my-cache-dir');
     }
 
     public function testSingleDefinitionProviderRespected() : void {
@@ -570,7 +399,6 @@ XML;
   <definitionProviders>
     <definitionProvider>ConsumerClass</definitionProvider>
   </definitionProviders>
-  <cacheDir>.annotated-container-cache</cacheDir>
 </annotatedContainer>
 
 XML;
@@ -605,7 +433,6 @@ XML;
   <parameterStores>
     <parameterStore>MyParameterStoreClass</parameterStore>
   </parameterStores>
-  <cacheDir>.annotated-container-cache</cacheDir>
 </annotatedContainer>
 
 XML;
@@ -641,7 +468,6 @@ XML;
     <parameterStore>MyParameterStoreClassOne</parameterStore>
     <parameterStore>MyParameterStoreClassTwo</parameterStore>
   </parameterStores>
-  <cacheDir>.annotated-container-cache</cacheDir>
 </annotatedContainer>
 
 XML;
@@ -661,22 +487,6 @@ XML;
         $this->expectExceptionMessage('The option "config-file" MUST NOT be provided multiple times.');
 
         $input = new StubInput(['config-file' => ['a', 'b']], ['init']);
-        $this->subject->handle($input, $this->output);
-    }
-
-    public function testCacheDirBooleanThrowsException() : void {
-        $this->expectException(InvalidOptionType::class);
-        $this->expectExceptionMessage('The option "cache-dir" MUST NOT be a flag-only option.');
-
-        $input = new StubInput(['cache-dir' => true], ['init']);
-        $this->subject->handle($input, $this->output);
-    }
-
-    public function testCacheDirArrayThrowsException() : void {
-        $this->expectException(InvalidOptionType::class);
-        $this->expectExceptionMessage('The option "cache-dir" MUST NOT be provided multiple times.');
-
-        $input = new StubInput(['cache-dir' => ['a', 'b']], ['init']);
         $this->subject->handle($input, $this->output);
     }
 

@@ -2,30 +2,30 @@
 
 namespace Cspray\AnnotatedContainer\Bootstrap;
 
+use Auryn\Injector as AurynContainer;
 use Cspray\AnnotatedContainer\AnnotatedContainer;
 use Cspray\AnnotatedContainer\ContainerFactory\AurynContainerFactory;
+use Cspray\AnnotatedContainer\ContainerFactory\ContainerFactory;
+use Cspray\AnnotatedContainer\ContainerFactory\ContainerFactoryOptionsBuilder;
 use Cspray\AnnotatedContainer\ContainerFactory\IlluminateContainerFactory;
 use Cspray\AnnotatedContainer\ContainerFactory\PhpDiContainerFactory;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
+use Cspray\AnnotatedContainer\Definition\Serializer\XmlContainerDefinitionSerializer;
 use Cspray\AnnotatedContainer\Event\ContainerFactoryEmitter;
 use Cspray\AnnotatedContainer\Event\Emitter;
 use Cspray\AnnotatedContainer\Profiles;
 use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalyzer;
+use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetDefinitionConverter;
 use Cspray\AnnotatedContainer\StaticAnalysis\CacheAwareContainerDefinitionAnalyzer;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptions;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalyzer;
-use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetDefinitionConverter;
-use Cspray\AnnotatedContainer\ContainerFactory\ContainerFactory;
-use Cspray\AnnotatedContainer\ContainerFactory\ContainerFactoryOptionsBuilder;
-use Cspray\AnnotatedContainer\Serializer\ContainerDefinitionSerializer;
 use Cspray\AnnotatedTarget\PhpParserAnnotatedTargetParser;
 use Cspray\PrecisionStopwatch\Marker;
 use Cspray\PrecisionStopwatch\Metrics;
 use Cspray\PrecisionStopwatch\Stopwatch;
 use DI\Container as PhpDiContainer;
 use Illuminate\Container\Container as IlluminateContainer;
-use Auryn\Injector as AurynContainer;
 use RuntimeException;
 
 final class Bootstrap {
@@ -154,25 +154,20 @@ final class Bootstrap {
         BootstrappingConfiguration $configuration,
         ContainerDefinitionAnalysisOptions $analysisOptions
     ) : ContainerDefinition {
-        $cacheDir = null;
-        $configuredCacheDir = $configuration->cacheDirectory();
-        if ($configuredCacheDir !== null) {
-            $cacheDir = $this->directoryResolver->cachePath($configuredCacheDir);
-        }
-        return $this->containerDefinitionAnalyzer($cacheDir)->analyze($analysisOptions);
-    }
-
-    private function containerDefinitionAnalyzer(?string $cacheDir) : ContainerDefinitionAnalyzer {
-        $compiler = new AnnotatedTargetContainerDefinitionAnalyzer(
+        $analyzer = new AnnotatedTargetContainerDefinitionAnalyzer(
             new PhpParserAnnotatedTargetParser(),
             new AnnotatedTargetDefinitionConverter(),
             $this->emitter
         );
-        if ($cacheDir !== null) {
-            $compiler = new CacheAwareContainerDefinitionAnalyzer($compiler, new ContainerDefinitionSerializer(), $cacheDir);
+        $cache = $configuration->cache();
+        if ($cache !== null) {
+            $analyzer = new CacheAwareContainerDefinitionAnalyzer(
+                $analyzer,
+                $cache
+            );
         }
 
-        return $compiler;
+        return $analyzer->analyze($analysisOptions);
     }
 
     private function createContainer(

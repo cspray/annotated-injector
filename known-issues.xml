@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files psalm-version="5.24.0@462c80e31c34e58cc4f750c656be3927e80e550e">
+  <file src="src/AnnotatedContainerVersion.php">
+    <InvalidNullableReturnType>
+      <code><![CDATA[string]]></code>
+    </InvalidNullableReturnType>
+    <NullableReturnStatement>
+      <code><![CDATA[InstalledVersions::getVersion('cspray/annotated-container')]]></code>
+    </NullableReturnStatement>
+  </file>
   <file src="src/Bootstrap/ComposerJsonScanningThirdPartyInitializerProvider.php">
     <MixedArrayAccess>
       <code><![CDATA[$composerData['extra']]]></code>
@@ -52,6 +60,12 @@
     </MixedReturnTypeCoercion>
   </file>
   <file src="src/Bootstrap/XmlBootstrappingConfiguration.php">
+    <InvalidReturnStatement>
+      <code><![CDATA[$this->cacheDir]]></code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code><![CDATA[?ContainerDefinitionCache]]></code>
+    </InvalidReturnType>
     <MixedAssignment>
       <code><![CDATA[$scanDirectories[]]]></code>
     </MixedAssignment>
@@ -63,14 +77,26 @@
     </UndefinedPropertyFetch>
   </file>
   <file src="src/Cli/Command/BuildCommand.php">
+    <InvalidArgument>
+      <code><![CDATA[$cacheDir]]></code>
+      <code><![CDATA[new XmlContainerDefinitionSerializer()]]></code>
+    </InvalidArgument>
     <MixedArrayAccess>
       <code><![CDATA[$composer['extra']['annotatedContainer']['configFile']]]></code>
     </MixedArrayAccess>
     <MixedAssignment>
       <code><![CDATA[$configName]]></code>
     </MixedAssignment>
+    <TooManyArguments>
+      <code><![CDATA[new CacheAwareContainerDefinitionAnalyzer($compiler, new XmlContainerDefinitionSerializer(), $cacheDir)]]></code>
+    </TooManyArguments>
   </file>
   <file src="src/Cli/Command/CacheClearCommand.php">
+    <InvalidArgument>
+      <code><![CDATA[$cacheDir]]></code>
+      <code><![CDATA[$cacheDir]]></code>
+      <code><![CDATA[$cacheDir]]></code>
+    </InvalidArgument>
     <MixedArgument>
       <code><![CDATA[$configName]]></code>
     </MixedArgument>
@@ -314,6 +340,11 @@
       <code><![CDATA[$concreteType]]></code>
     </PropertyNotSetInConstructor>
   </file>
+  <file src="src/Definition/Cache/FileBackedContainerDefinitionCache.php">
+    <ArgumentTypeCoercion>
+      <code><![CDATA[file_get_contents($filePath)]]></code>
+    </ArgumentTypeCoercion>
+  </file>
   <file src="src/Definition/InjectDefinitionBuilder.php">
     <LessSpecificReturnStatement>
       <code><![CDATA[$this->methodName]]></code>
@@ -337,6 +368,39 @@
     <InvalidArgument>
       <code><![CDATA[$definition->profiles()]]></code>
     </InvalidArgument>
+  </file>
+  <file src="src/Definition/Serializer/XmlContainerDefinitionSerializer.php">
+    <ArgumentTypeCoercion>
+      <code><![CDATA[$dom->saveXML()]]></code>
+      <code><![CDATA[$name]]></code>
+    </ArgumentTypeCoercion>
+    <InvalidArgument>
+      <code><![CDATA[$serviceProfiles]]></code>
+    </InvalidArgument>
+    <InvalidScalarArgument>
+      <code><![CDATA[$injectProfiles]]></code>
+    </InvalidScalarArgument>
+    <MixedArgument>
+      <code><![CDATA[unserialize(base64_decode($attr))]]></code>
+      <code><![CDATA[unserialize(base64_decode($attr))]]></code>
+      <code><![CDATA[unserialize(base64_decode($attr))]]></code>
+      <code><![CDATA[unserialize(base64_decode($attr))]]></code>
+    </MixedArgument>
+    <MixedAssignment>
+      <code><![CDATA[$isPrimary]]></code>
+      <code><![CDATA[$value]]></code>
+    </MixedAssignment>
+    <PossiblyNullArgument>
+      <code><![CDATA[$injectProfiles]]></code>
+    </PossiblyNullArgument>
+    <RedundantCondition>
+      <code><![CDATA[$methodName !== null]]></code>
+      <code><![CDATA[assert($methodName !== null)]]></code>
+    </RedundantCondition>
+    <UndefinedPropertyFetch>
+      <code><![CDATA[$xpath->query('@isPrimary', $serviceDefinition)[0]?->value]]></code>
+      <code><![CDATA[$xpath->query('@isPrimary', $serviceDefinition)[0]?->value]]></code>
+    </UndefinedPropertyFetch>
   </file>
   <file src="src/Definition/ServiceDefinitionBuilder.php">
     <PropertyNotSetInConstructor>
@@ -376,38 +440,6 @@
     <InvalidScalarArgument>
       <code><![CDATA[$types]]></code>
     </InvalidScalarArgument>
-  </file>
-  <file src="src/Serializer/ContainerDefinitionSerializer.php">
-    <ArgumentTypeCoercion>
-      <code><![CDATA[$name]]></code>
-    </ArgumentTypeCoercion>
-    <InvalidArgument>
-      <code><![CDATA[$serviceProfiles]]></code>
-    </InvalidArgument>
-    <InvalidScalarArgument>
-      <code><![CDATA[$injectProfiles]]></code>
-    </InvalidScalarArgument>
-    <MixedArgument>
-      <code><![CDATA[unserialize(base64_decode($attr))]]></code>
-      <code><![CDATA[unserialize(base64_decode($attr))]]></code>
-      <code><![CDATA[unserialize(base64_decode($attr))]]></code>
-      <code><![CDATA[unserialize(base64_decode($attr))]]></code>
-    </MixedArgument>
-    <MixedAssignment>
-      <code><![CDATA[$isPrimary]]></code>
-      <code><![CDATA[$value]]></code>
-    </MixedAssignment>
-    <PossiblyNullArgument>
-      <code><![CDATA[$injectProfiles]]></code>
-    </PossiblyNullArgument>
-    <RedundantCondition>
-      <code><![CDATA[$methodName !== null]]></code>
-      <code><![CDATA[assert($methodName !== null)]]></code>
-    </RedundantCondition>
-    <UndefinedPropertyFetch>
-      <code><![CDATA[$xpath->query('@isPrimary', $serviceDefinition)[0]?->value]]></code>
-      <code><![CDATA[$xpath->query('@isPrimary', $serviceDefinition)[0]?->value]]></code>
-    </UndefinedPropertyFetch>
   </file>
   <file src="src/StaticAnalysis/AnnotatedTargetDefinitionConverter.php">
     <ArgumentTypeCoercion>

@@ -30,7 +30,6 @@
         </xs:annotation>
       </xs:element>
 
-      <xs:element name="cacheDir" type="xs:token" minOccurs="0" maxOccurs="1"/>
       <xs:element name="definitionProviders" type="definitionProvidersType" minOccurs="0" maxOccurs="1" />
       <xs:element name="parameterStores" type="parameterStoresType" minOccurs="0" maxOccurs="1" />
     </xs:all>
