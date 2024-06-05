@@ -26,15 +26,15 @@ class InjectFloatMethodParamTest extends AnnotatedTargetDefinitionConverterTestC
     }
 
     public function testDefinitionGetService() {
-        $this->assertSame(Fixtures::injectConstructorServices()->injectFloatService(), $this->definition->targetIdentifier()->class());
+        $this->assertSame(Fixtures::injectConstructorServices()->injectFloatService(), $this->definition->class());
     }
 
     public function testDefinitionGetMethod() {
-        $this->assertSame('__construct', $this->definition->targetIdentifier()->methodName());
+        $this->assertSame('__construct', $this->definition->methodName());
     }
 
     public function testDefinitionGetParamName() {
-        $this->assertSame('dessert', $this->definition->targetIdentifier()->name());
+        $this->assertSame('dessert', $this->definition->parameterName());
     }
 
     public function testDefinitionGetType() {

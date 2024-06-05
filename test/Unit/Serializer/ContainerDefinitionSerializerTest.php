@@ -497,13 +497,9 @@ XML;
   <serviceDelegateDefinitions/>
   <injectDefinitions>
     <injectDefinition>
-      <target>
-        <classMethod>
-          <class>Cspray\AnnotatedContainerFixture\InjectConstructorServices\StringInjectService</class>
-          <method>__construct</method>
-          <parameter>val</parameter>
-        </classMethod>
-      </target>
+      <class>Cspray\AnnotatedContainerFixture\InjectConstructorServices\StringInjectService</class>
+      <method>__construct</method>
+      <parameter>val</parameter>
       <valueType>{$type}</valueType>
       <value><![CDATA[{$encodedVal}]]></value>
       <profiles>
@@ -558,13 +554,9 @@ XML;
   <serviceDelegateDefinitions/>
   <injectDefinitions>
     <injectDefinition>
-      <target>
-        <classMethod>
-          <class>Cspray\AnnotatedContainerFixture\InjectConstructorServices\IntInjectService</class>
-          <method>__construct</method>
-          <parameter>meaningOfLife</parameter>
-        </classMethod>
-      </target>
+      <class>Cspray\AnnotatedContainerFixture\InjectConstructorServices\IntInjectService</class>
+      <method>__construct</method>
+      <parameter>meaningOfLife</parameter>
       <valueType>{$type}</valueType>
       <value><![CDATA[{$encodedVal}]]></value>
       <profiles>
@@ -618,13 +610,9 @@ XML;
   <serviceDelegateDefinitions/>
   <injectDefinitions>
     <injectDefinition>
-      <target>
-        <classMethod>
-          <class>Cspray\AnnotatedContainerFixture\InjectEnumConstructorServices\EnumInjector</class>
-          <method>__construct</method>
-          <parameter>directions</parameter>
-        </classMethod>
-      </target>
+      <class>Cspray\AnnotatedContainerFixture\InjectEnumConstructorServices\EnumInjector</class>
+      <method>__construct</method>
+      <parameter>directions</parameter>
       <valueType>{$type}</valueType>
       <value><![CDATA[{$encodedVal}]]></value>
       <profiles>
@@ -677,13 +665,9 @@ XML;
   <serviceDelegateDefinitions/>
   <injectDefinitions>
     <injectDefinition>
-      <target>
-        <classMethod>
-          <class>Cspray\AnnotatedContainerFixture\InjectCustomStoreServices\ScalarInjector</class>
-          <method>__construct</method>
-          <parameter>key</parameter>
-        </classMethod>
-      </target>
+      <class>Cspray\AnnotatedContainerFixture\InjectCustomStoreServices\ScalarInjector</class>
+      <method>__construct</method>
+      <parameter>key</parameter>
       <valueType>{$type}</valueType>
       <value><![CDATA[{$encodedVal}]]></value>
       <profiles>
@@ -738,13 +722,9 @@ XML;
   <serviceDelegateDefinitions/>
   <injectDefinitions>
     <injectDefinition>
-      <target>
-        <classMethod>
-          <class>Cspray\AnnotatedContainerFixture\InjectConstructorServices\StringInjectService</class>
-          <method>__construct</method>
-          <parameter>val</parameter>
-        </classMethod>
-      </target>
+      <class>Cspray\AnnotatedContainerFixture\InjectConstructorServices\StringInjectService</class>
+      <method>__construct</method>
+      <parameter>val</parameter>
       <valueType>{$type}</valueType>
       <value><![CDATA[{$encodedVal}]]></value>
       <profiles>
@@ -1153,13 +1133,9 @@ XML;
   <serviceDelegateDefinitions/>
   <injectDefinitions>
     <injectDefinition>
-      <target>
-        <classMethod>
-          <class>Cspray\AnnotatedContainerFixture\InjectConstructorServices\StringInjectService</class>
-          <method>__construct</method>
-          <parameter>val</parameter>
-        </classMethod>
-      </target>
+      <class>Cspray\AnnotatedContainerFixture\InjectConstructorServices\StringInjectService</class>
+      <method>__construct</method>
+      <parameter>val</parameter>
       <valueType>{$type}</valueType>
       <value><![CDATA[{$encodedVal}]]></value>
       <profiles>
@@ -1180,15 +1156,12 @@ XML;
         self::assertCount(1, $actual->injectDefinitions());
         $injectDefinition = $actual->injectDefinitions()[0];
 
-        self::assertTrue(
-            $injectDefinition->targetIdentifier()->isMethodParameter()
-        );
         self::assertSame(
             Fixtures::injectConstructorServices()->injectStringService(),
-            $injectDefinition->targetIdentifier()->class()
+            $injectDefinition->class()
         );
-        self::assertSame('__construct', $injectDefinition->targetIdentifier()->methodName());
-        self::assertSame('val', $injectDefinition->targetIdentifier()->name());
+        self::assertSame('__construct', $injectDefinition->methodName());
+        self::assertSame('val', $injectDefinition->parameterName());
         self::assertSame(stringType(), $injectDefinition->type());
         self::assertSame('foobar', $injectDefinition->value());
         self::assertSame(['default'], $injectDefinition->profiles());
@@ -1218,13 +1191,9 @@ XML;
   <serviceDelegateDefinitions/>
   <injectDefinitions>
     <injectDefinition>
-      <target>
-        <classMethod>
-          <class>Cspray\AnnotatedContainerFixture\InjectEnumConstructorServices\EnumInjector</class>
-          <method>__construct</method>
-          <parameter>directions</parameter>
-        </classMethod>
-      </target>
+      <class>Cspray\AnnotatedContainerFixture\InjectEnumConstructorServices\EnumInjector</class>
+      <method>__construct</method>
+      <parameter>directions</parameter>
       <valueType>{$type}</valueType>
       <value><![CDATA[{$encodedVal}]]></value>
       <profiles>
@@ -1245,15 +1214,12 @@ XML;
         self::assertCount(1, $actual->injectDefinitions());
         $injectDefinition = $actual->injectDefinitions()[0];
 
-        self::assertTrue(
-            $injectDefinition->targetIdentifier()->isMethodParameter()
-        );
         self::assertSame(
             Fixtures::injectEnumConstructorServices()->enumInjector(),
-            $injectDefinition->targetIdentifier()->class()
+            $injectDefinition->class()
         );
-        self::assertSame('__construct', $injectDefinition->targetIdentifier()->methodName());
-        self::assertSame('directions', $injectDefinition->targetIdentifier()->name());
+        self::assertSame('__construct', $injectDefinition->methodName());
+        self::assertSame('directions', $injectDefinition->parameterName());
         self::assertSame(objectType(CardinalDirections::class), $injectDefinition->type());
         self::assertSame(CardinalDirections::West, $injectDefinition->value());
         self::assertSame(['default'], $injectDefinition->profiles());
@@ -1283,13 +1249,9 @@ XML;
   <serviceDelegateDefinitions/>
   <injectDefinitions>
     <injectDefinition>
-      <target>
-        <classMethod>
-          <class>Cspray\AnnotatedContainerFixture\InjectCustomStoreServices\ScalarInjector</class>
-          <method>__construct</method>
-          <parameter>key</parameter>
-        </classMethod>
-      </target>
+      <class>Cspray\AnnotatedContainerFixture\InjectCustomStoreServices\ScalarInjector</class>
+      <method>__construct</method>
+      <parameter>key</parameter>
       <valueType>{$type}</valueType>
       <value><![CDATA[{$encodedVal}]]></value>
       <profiles>
@@ -1310,15 +1272,12 @@ XML;
         self::assertCount(1, $actual->injectDefinitions());
         $injectDefinition = $actual->injectDefinitions()[0];
 
-        self::assertTrue(
-            $injectDefinition->targetIdentifier()->isMethodParameter()
-        );
         self::assertSame(
             Fixtures::injectCustomStoreServices()->scalarInjector(),
-            $injectDefinition->targetIdentifier()->class()
+            $injectDefinition->class()
         );
-        self::assertSame('__construct', $injectDefinition->targetIdentifier()->methodName());
-        self::assertSame('key', $injectDefinition->targetIdentifier()->name());
+        self::assertSame('__construct', $injectDefinition->methodName());
+        self::assertSame('key', $injectDefinition->parameterName());
         self::assertSame(stringType(), $injectDefinition->type());
         self::assertSame('key', $injectDefinition->value());
         self::assertSame(['default'], $injectDefinition->profiles());
@@ -1348,13 +1307,9 @@ XML;
   <serviceDelegateDefinitions/>
   <injectDefinitions>
     <injectDefinition>
-      <target>
-        <classMethod>
-          <class>Cspray\AnnotatedContainerFixture\InjectConstructorServices\StringInjectService</class>
-          <method>__construct</method>
-          <parameter>val</parameter>
-        </classMethod>
-      </target>
+      <class>Cspray\AnnotatedContainerFixture\InjectConstructorServices\StringInjectService</class>
+      <method>__construct</method>
+      <parameter>val</parameter>
       <valueType>{$type}</valueType>
       <value><![CDATA[{$encodedVal}]]></value>
       <profiles>
@@ -1376,15 +1331,12 @@ XML;
         self::assertCount(1, $actual->injectDefinitions());
         $injectDefinition = $actual->injectDefinitions()[0];
 
-        self::assertTrue(
-            $injectDefinition->targetIdentifier()->isMethodParameter()
-        );
         self::assertSame(
             Fixtures::injectConstructorServices()->injectStringService(),
-            $injectDefinition->targetIdentifier()->class()
+            $injectDefinition->class()
         );
-        self::assertSame('__construct', $injectDefinition->targetIdentifier()->methodName());
-        self::assertSame('val', $injectDefinition->targetIdentifier()->name());
+        self::assertSame('__construct', $injectDefinition->methodName());
+        self::assertSame('val', $injectDefinition->parameterName());
         self::assertSame(stringType(), $injectDefinition->type());
         self::assertSame('annotated container', $injectDefinition->value());
         self::assertSame(['foo', 'baz'], $injectDefinition->profiles());

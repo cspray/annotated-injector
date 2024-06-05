@@ -101,20 +101,15 @@
 
   <xs:complexType name="injectDefinitionType">
     <xs:all>
-      <xs:element name="target" type="injectTargetType" />
+      <xs:element name="class" type="xs:token" />
+      <xs:element name="method" type="xs:token" />
+      <xs:element name="parameter" type="xs:token" />
       <xs:element name="valueType" type="xs:token" />
       <xs:element name="value" type="xs:string" />
       <xs:element name="profiles" type="profilesType" />
       <xs:element name="store" type="xs:token" />
       <xs:element name="attribute" type="xs:string" />
     </xs:all>
-  </xs:complexType>
-
-  <xs:complexType name="injectTargetType">
-    <xs:choice>
-      <xs:element name="classMethod" type="classMethodType" />
-      <xs:element name="classProperty" type="classPropertyType" />
-    </xs:choice>
   </xs:complexType>
 
   <xs:complexType name="profilesType">
@@ -129,19 +124,4 @@
       <xs:enumeration value="Abstract" />
     </xs:restriction>
   </xs:simpleType>
-
-  <xs:complexType name="classMethodType">
-    <xs:all>
-      <xs:element name="class" type="xs:token" />
-      <xs:element name="method" type="xs:token" />
-      <xs:element name="parameter" type="xs:token" />
-    </xs:all>
-  </xs:complexType>
-
-  <xs:complexType name="classPropertyType">
-    <xs:all>
-      <xs:element name="class" type="xs:token" />
-      <xs:element name="property" type="xs:token" />
-    </xs:all>
-  </xs:complexType>
 </xs:schema>

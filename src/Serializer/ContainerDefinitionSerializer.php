@@ -208,15 +208,7 @@ final class ContainerDefinitionSerializer {
                 $injectDefinitionNode = $dom->createElementNS(self::XML_SCHEMA, 'injectDefinition')
             );
 
-            $injectDefinitionNode->appendChild(
-                $targetNode = $dom->createElementNS(self::XML_SCHEMA, 'target')
-            );
-
-            if ($injectDefinition->targetIdentifier()->isMethodParameter()) {
-                $this->addMethodParameterInjectDefinitionToDom($targetNode, $injectDefinition);
-            } else {
-                $this->addClassPropertyInjectDefinitionToDom($targetNode, $injectDefinition);
-            }
+            $this->addMethodParameterInjectDefinitionToDom($injectDefinitionNode, $injectDefinition);
 
             $injectDefinitionNode->appendChild(
                 $dom->createElementNS(self::XML_SCHEMA, 'valueType', base64_encode($injectDefinition->type()->getName()))
@@ -264,37 +256,17 @@ final class ContainerDefinitionSerializer {
         $dom = $root->ownerDocument;
 
         $root->appendChild(
-            $classMethodNode = $dom->createElementNS(self::XML_SCHEMA, 'classMethod')
+            $dom->createElementNS(self::XML_SCHEMA, 'class', $injectDefinition->class()->getName())
         );
 
-        $classMethodNode->appendChild(
-            $dom->createElementNS(self::XML_SCHEMA, 'class', $injectDefinition->targetIdentifier()->class()->getName())
-        );
-
-        $methodName = $injectDefinition->targetIdentifier()->methodName();
+        $methodName = $injectDefinition->methodName();
         assert($methodName !== null);
-        $classMethodNode->appendChild(
+        $root->appendChild(
             $dom->createElementNS(self::XML_SCHEMA, 'method', $methodName)
         );
 
-        $classMethodNode->appendChild(
-            $dom->createElementNS(self::XML_SCHEMA, 'parameter', $injectDefinition->targetIdentifier()->name())
-        );
-    }
-
-    private function addClassPropertyInjectDefinitionToDom(DOMElement $root, InjectDefinition $injectDefinition) : void {
-        $dom = $root->ownerDocument;
-
         $root->appendChild(
-            $classPropertyNode = $dom->createElementNS(self::XML_SCHEMA, 'classProperty')
-        );
-
-        $classPropertyNode->appendChild(
-            $dom->createElementNS(self::XML_SCHEMA, 'class', $injectDefinition->targetIdentifier()->class()->getName())
-        );
-
-        $classPropertyNode->appendChild(
-            $dom->createElementNS(self::XML_SCHEMA, 'property', $injectDefinition->targetIdentifier()->name())
+            $dom->createElementNS(self::XML_SCHEMA, 'parameter', $injectDefinition->parameterName())
         );
     }
 
@@ -438,19 +410,11 @@ final class ContainerDefinitionSerializer {
             $value = unserialize($serializedValue);
             $valueType = $this->injectValueParser->convertStringToType(base64_decode($valueType));
 
-            $hasClassMethod = $xpath->query('cd:target/cd:classMethod', $injectDefinition)->count() === 1;
-            if ($hasClassMethod) {
-                $type = $xpath->query('cd:target/cd:classMethod/cd:class/text()', $injectDefinition)[0]->nodeValue;
-                $methodName = $xpath->query('cd:target/cd:classMethod/cd:method/text()', $injectDefinition)[0]->nodeValue;
-                $parameter = $xpath->query('cd:target/cd:classMethod/cd:parameter/text()', $injectDefinition)[0]->nodeValue;
-                $injectBuilder = InjectDefinitionBuilder::forService(objectType($type))
-                    ->withMethod($methodName, $valueType, $parameter);
-            } else {
-                $type = $xpath->query('cd:target/cd:classProperty/cd:class/text()', $injectDefinition)[0]->nodeValue;
-                $name = $xpath->query('cd:target/cd:classProperty/cd:property/text()', $injectDefinition)[0]->nodeValue;
-                $injectBuilder = InjectDefinitionBuilder::forService(objectType($type))
-                    ->withProperty($valueType, $name);
-            }
+            $type = $xpath->query('cd:class/text()', $injectDefinition)[0]->nodeValue;
+            $methodName = $xpath->query('cd:method/text()', $injectDefinition)[0]->nodeValue;
+            $parameter = $xpath->query('cd:parameter/text()', $injectDefinition)[0]->nodeValue;
+            $injectBuilder = InjectDefinitionBuilder::forService(objectType($type))
+                ->withMethod($methodName, $valueType, $parameter);
 
             $injectBuilder = $injectBuilder->withValue($value);
 

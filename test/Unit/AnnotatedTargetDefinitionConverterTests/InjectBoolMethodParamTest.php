@@ -26,15 +26,15 @@ class InjectBoolMethodParamTest extends AnnotatedTargetDefinitionConverterTestCa
     }
 
     public function testDefinitionGetService() {
-        $this->assertSame(Fixtures::injectConstructorServices()->injectBoolService(), $this->definition->targetIdentifier()->class());
+        $this->assertSame(Fixtures::injectConstructorServices()->injectBoolService(), $this->definition->class());
     }
 
     public function testDefinitionGetMethod() {
-        $this->assertSame('__construct', $this->definition->targetIdentifier()->methodName());
+        $this->assertSame('__construct', $this->definition->methodName());
     }
 
     public function testDefinitionGetParamName() {
-        $this->assertSame('flag', $this->definition->targetIdentifier()->name());
+        $this->assertSame('flag', $this->definition->parameterName());
     }
 
     public function testDefinitionGetType() {

@@ -83,9 +83,9 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
 
     protected function handleInjectDefinition(ContainerFactoryState $state, InjectDefinition $definition) : void {
         assert($state instanceof AurynContainerFactoryState);
-        $injectTargetType = $definition->targetIdentifier()->class()->getName();
-        $method = $definition->targetIdentifier()->methodName();
-        $parameterName = $definition->targetIdentifier()->name();
+        $injectTargetType = $definition->class()->getName();
+        $method = $definition->methodName();
+        $parameterName = $definition->parameterName();
         $value = $this->injectDefinitionValue($definition);
 
         $state->addMethodInject($injectTargetType, $method, $parameterName, $value);

@@ -23,15 +23,15 @@ class InjectEnvMethodParamTest extends AnnotatedTargetDefinitionConverterTestCas
     }
 
     public function testDefinitionGetService() {
-        $this->assertSame(Fixtures::injectConstructorServices()->injectEnvService(), $this->definition->targetIdentifier()->class());
+        $this->assertSame(Fixtures::injectConstructorServices()->injectEnvService(), $this->definition->class());
     }
 
     public function testDefinitionGetMethod() {
-        $this->assertSame('__construct', $this->definition->targetIdentifier()->methodName());
+        $this->assertSame('__construct', $this->definition->methodName());
     }
 
     public function testDefinitionGetParamName() {
-        $this->assertSame('user', $this->definition->targetIdentifier()->name());
+        $this->assertSame('user', $this->definition->parameterName());
     }
 
     public function testDefinitionGetType() {

@@ -26,15 +26,15 @@ class InjectArrayMethodParamTest extends AnnotatedTargetDefinitionConverterTestC
     }
 
     public function testDefinitionGetService() : void {
-        self::assertSame(Fixtures::injectConstructorServices()->injectArrayService(), $this->definition->targetIdentifier()->class());
+        self::assertSame(Fixtures::injectConstructorServices()->injectArrayService(), $this->definition->class());
     }
 
     public function testDefinitionGetMethod() : void {
-        self::assertSame('__construct', $this->definition->targetIdentifier()->methodName());
+        self::assertSame('__construct', $this->definition->methodName());
     }
 
     public function testDefinitionGetParamName() : void {
-        self::assertSame('values', $this->definition->targetIdentifier()->name());
+        self::assertSame('values', $this->definition->parameterName());
     }
 
     public function testDefinitionGetType() : void {

@@ -14,6 +14,10 @@ final class Profiles {
     ) {
     }
 
+    public static function defaultOnly() : self {
+        return new self(['default']);
+    }
+
     /**
      * @param list<string> $profiles
      * @return self

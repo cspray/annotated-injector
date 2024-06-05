@@ -179,10 +179,9 @@ class ThirdPartyFunctionsTest extends TestCase {
 
         $inject = $injects[0];
 
-        $this->assertTrue($inject->targetIdentifier()->isMethodParameter());
-        $this->assertSame(Fixtures::injectConstructorServices()->injectFloatService(), $inject->targetIdentifier()->class());
-        $this->assertSame('__construct', $inject->targetIdentifier()->methodName());
-        $this->assertSame('dessert', $inject->targetIdentifier()->name());
+        $this->assertSame(Fixtures::injectConstructorServices()->injectFloatService(), $inject->class());
+        $this->assertSame('__construct', $inject->methodName());
+        $this->assertSame('dessert', $inject->parameterName());
         $this->assertSame(intType(), $inject->type());
         $this->assertSame(42, $inject->value());
         $this->assertSame(['default'], $inject->profiles());
@@ -210,7 +209,6 @@ class ThirdPartyFunctionsTest extends TestCase {
 
         $inject = $injects[0];
 
-        $this->assertTrue($inject->targetIdentifier()->isMethodParameter());
         $this->assertSame(['foo', 'bar', 'baz'], $inject->profiles());
     }
 
@@ -233,7 +231,6 @@ class ThirdPartyFunctionsTest extends TestCase {
 
         $inject = $injects[0];
 
-        $this->assertTrue($inject->targetIdentifier()->isMethodParameter());
         $this->assertSame('store-name', $inject->storeName());
     }
 }

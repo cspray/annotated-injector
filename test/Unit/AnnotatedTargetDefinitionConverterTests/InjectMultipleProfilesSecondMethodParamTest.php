@@ -23,15 +23,15 @@ class InjectMultipleProfilesSecondMethodParamTest extends AnnotatedTargetDefinit
     }
 
     public function testDefinitionGetService() {
-        $this->assertSame(Fixtures::injectConstructorServices()->injectProfilesStringService(), $this->definition->targetIdentifier()->class());
+        $this->assertSame(Fixtures::injectConstructorServices()->injectProfilesStringService(), $this->definition->class());
     }
 
     public function testDefinitionGetMethod() {
-        $this->assertSame('__construct', $this->definition->targetIdentifier()->methodName());
+        $this->assertSame('__construct', $this->definition->methodName());
     }
 
     public function testDefinitionGetParamName() {
-        $this->assertSame('val', $this->definition->targetIdentifier()->name());
+        $this->assertSame('val', $this->definition->parameterName());
     }
 
     public function testDefinitionGetType() {
