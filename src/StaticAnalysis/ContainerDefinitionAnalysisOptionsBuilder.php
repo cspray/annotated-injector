@@ -25,7 +25,7 @@ final class ContainerDefinitionAnalysisOptionsBuilder {
      */
     public static function scanDirectories(string...$directories) : self {
         $instance = new self();
-        $instance->directories = $directories;
+        $instance->directories = array_values($directories);
         return $instance;
     }
 
@@ -47,6 +47,10 @@ final class ContainerDefinitionAnalysisOptionsBuilder {
             $this->directories,
             $this->consumer,
         ) implements ContainerDefinitionAnalysisOptions {
+            /**
+             * @param list<string> $directories
+             * @param DefinitionProvider|null $consumer
+             */
             public function __construct(
                 private readonly array               $directories,
                 private readonly ?DefinitionProvider $consumer,
@@ -57,7 +61,8 @@ final class ContainerDefinitionAnalysisOptionsBuilder {
                 return $this->directories;
             }
 
-            #[SingleEntrypointDefinitionProvider] public function getDefinitionProvider(): ?DefinitionProvider {
+            #[SingleEntrypointDefinitionProvider]
+            public function getDefinitionProvider(): ?DefinitionProvider {
                 return $this->consumer;
             }
         };

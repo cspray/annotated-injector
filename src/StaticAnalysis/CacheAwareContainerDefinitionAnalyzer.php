@@ -46,7 +46,7 @@ final class CacheAwareContainerDefinitionAnalyzer implements ContainerDefinition
         $containerDefinition = $this->containerDefinitionCompiler->analyze($containerDefinitionAnalysisOptions);
         $serialized = $this->containerDefinitionSerializer->serialize($containerDefinition);
         $contentWritten = @file_put_contents($cacheFile, $serialized);
-        if (!$contentWritten) {
+        if ($contentWritten === false) {
             throw InvalidCache::fromUnwritableDirectory($this->cacheDir);
         }
         return $containerDefinition;

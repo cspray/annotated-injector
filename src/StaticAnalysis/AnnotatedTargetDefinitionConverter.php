@@ -219,13 +219,11 @@ final class AnnotatedTargetDefinitionConverter {
         } elseif ($reflectionType instanceof ReflectionUnionType || $reflectionType instanceof ReflectionIntersectionType) {
             $types = [];
             foreach ($reflectionType->getTypes() as $type) {
-                assert($type instanceof ReflectionNamedType);
                 $types[] = $this->convertReflectionNamedType($type);
             }
             if ($reflectionType instanceof ReflectionUnionType) {
                 $paramType = typeUnion(...$types);
             } else {
-                /** @psalm-var list<ObjectType> $types */
                 $paramType = typeIntersect(...$types);
             }
         } else {
