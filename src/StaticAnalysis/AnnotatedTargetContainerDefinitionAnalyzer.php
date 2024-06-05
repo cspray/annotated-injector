@@ -151,13 +151,13 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
         }
 
         foreach ($consumer['serviceDelegateDefinitions'] as $serviceDelegateDefinition) {
-            $serviceDef = $this->getServiceDefinition($containerDefinitionBuilder, $serviceDelegateDefinition->getServiceType());
+            $serviceDef = $this->serviceDefinition($containerDefinitionBuilder, $serviceDelegateDefinition->serviceType());
             if ($serviceDef === null) {
-                $reflection = new ReflectionClass($serviceDelegateDefinition->getServiceType()->getName());
+                $reflection = new ReflectionClass($serviceDelegateDefinition->serviceType()->getName());
                 if ($reflection->isInterface() || $reflection->isAbstract()) {
-                    $serviceDef = ServiceDefinitionBuilder::forAbstract($serviceDelegateDefinition->getServiceType())->build();
+                    $serviceDef = ServiceDefinitionBuilder::forAbstract($serviceDelegateDefinition->serviceType())->build();
                 } else {
-                    $serviceDef = ServiceDefinitionBuilder::forConcrete($serviceDelegateDefinition->getServiceType())->build();
+                    $serviceDef = ServiceDefinitionBuilder::forConcrete($serviceDelegateDefinition->serviceType())->build();
                 }
                 $containerDefinitionBuilder = $containerDefinitionBuilder->withServiceDefinition($serviceDef);
             }
@@ -165,15 +165,15 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
         }
 
         $concretePrepareDefinitions = array_filter($consumer['servicePrepareDefinitions'], function (ServicePrepareDefinition $prepareDef) use ($containerDefinitionBuilder) {
-            $serviceDef = $this->getServiceDefinition($containerDefinitionBuilder, $prepareDef->getService());
+            $serviceDef = $this->serviceDefinition($containerDefinitionBuilder, $prepareDef->service());
             if (is_null($serviceDef)) {
-                $exception = InvalidServicePrepare::fromClassNotService($prepareDef->getService()->getName(), $prepareDef->getMethod());
+                $exception = InvalidServicePrepare::fromClassNotService($prepareDef->service()->getName(), $prepareDef->methodName());
                 throw $exception;
             }
             return $serviceDef->isConcrete();
         });
         $abstractPrepareDefinitions = array_filter($consumer['servicePrepareDefinitions'], function (ServicePrepareDefinition $prepareDef) use ($containerDefinitionBuilder) {
-            $serviceDef = $this->getServiceDefinition($containerDefinitionBuilder, $prepareDef->getService());
+            $serviceDef = $this->serviceDefinition($containerDefinitionBuilder, $prepareDef->service());
             return $serviceDef?->isAbstract() ?? false;
         });
 
@@ -184,8 +184,8 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
         foreach ($concretePrepareDefinitions as $concretePrepareDefinition) {
             $hasAbstractPrepare = false;
             foreach ($abstractPrepareDefinitions as $abstractPrepareDefinition) {
-                $concreteServiceName = $concretePrepareDefinition->getService()->getName();
-                $abstractServiceName = $abstractPrepareDefinition->getService()->getName();
+                $concreteServiceName = $concretePrepareDefinition->service()->getName();
+                $abstractServiceName = $abstractPrepareDefinition->service()->getName();
                 if (is_subclass_of($concreteServiceName, $abstractServiceName)) {
                     $hasAbstractPrepare = true;
                     break;
@@ -203,10 +203,10 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
         return $containerDefinitionBuilder;
     }
 
-    private function getServiceDefinition(ContainerDefinitionBuilder $containerDefinitionBuilder, ObjectType $objectType) : ?ServiceDefinition {
+    private function serviceDefinition(ContainerDefinitionBuilder $containerDefinitionBuilder, ObjectType $objectType) : ?ServiceDefinition {
         $return = null;
         foreach ($containerDefinitionBuilder->serviceDefinitions() as $serviceDefinition) {
-            if ($serviceDefinition->getType() === $objectType) {
+            if ($serviceDefinition->type() === $objectType) {
                 $return = $serviceDefinition;
                 break;
             }
@@ -272,9 +272,9 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
 
         foreach ($containerDefinitionBuilder->serviceDefinitions() as $serviceDefinition) {
             if ($serviceDefinition->isAbstract()) {
-                $abstractTypes[] = $serviceDefinition->getType();
+                $abstractTypes[] = $serviceDefinition->type();
             } else {
-                $concreteTypes[] = $serviceDefinition->getType();
+                $concreteTypes[] = $serviceDefinition->type();
             }
         }
 

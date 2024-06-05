@@ -20,9 +20,9 @@ final class DuplicateServiceType implements LogicalConstraint {
         $serviceTypeMap = [];
 
         foreach ($containerDefinition->serviceDefinitions() as $definition) {
-            $type = $definition->getType()->getName();
+            $type = $definition->type()->getName();
             $serviceTypeMap[$type] ??= [];
-            $serviceTypeMap[$type][] = $definition->getAttribute();
+            $serviceTypeMap[$type][] = $definition->attribute();
         }
 
         foreach ($serviceTypeMap as $type => $attributes) {

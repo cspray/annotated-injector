@@ -14,13 +14,13 @@ class ServicePrepareDefinitionBuilderTest extends TestCase {
     public function testBuildHasService() {
         $prepareDefinition = ServicePrepareDefinitionBuilder::forMethod(Fixtures::interfacePrepareServices()->fooInterface(), 'setBar')->build();
 
-        $this->assertSame(Fixtures::interfacePrepareServices()->fooInterface(), $prepareDefinition->getService());
+        $this->assertSame(Fixtures::interfacePrepareServices()->fooInterface(), $prepareDefinition->service());
     }
 
     public function testBuildHasMethod() {
         $prepareDefinition = ServicePrepareDefinitionBuilder::forMethod(Fixtures::interfacePrepareServices()->fooInterface(), 'setBar')->build();
 
-        $this->assertSame('setBar', $prepareDefinition->getMethod());
+        $this->assertSame('setBar', $prepareDefinition->methodName());
     }
 
     public function testExceptionThrownIfMethodEmpty() {
@@ -43,7 +43,7 @@ class ServicePrepareDefinitionBuilderTest extends TestCase {
             'setBar'
         )->build();
 
-        self::assertNull($prepareDefinition->getAttribute());
+        self::assertNull($prepareDefinition->attribute());
     }
 
     public function testWithAttributeDefinitionAttributeIsSameInstance() : void {
@@ -52,6 +52,6 @@ class ServicePrepareDefinitionBuilderTest extends TestCase {
             'setBar'
         )->withAttribute($attr = new ServicePrepare())->build();
 
-        self::assertSame($attr, $prepareDefinition->getAttribute());
+        self::assertSame($attr, $prepareDefinition->attribute());
     }
 }

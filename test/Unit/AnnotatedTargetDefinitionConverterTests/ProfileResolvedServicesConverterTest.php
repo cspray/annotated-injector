@@ -20,7 +20,7 @@ class ProfileResolvedServicesConverterTest extends AnnotatedTargetDefinitionConv
     }
 
     public function testGetServiceDefinitionType() {
-        $this->assertSame(Fixtures::profileResolvedServices()->devImplementation(), $this->definition->getType());
+        $this->assertSame(Fixtures::profileResolvedServices()->devImplementation(), $this->definition->type());
     }
 
     public function testServiceIsConcrete() {
@@ -28,7 +28,7 @@ class ProfileResolvedServicesConverterTest extends AnnotatedTargetDefinitionConv
     }
 
     public function testServiceNameIsNull() {
-        $this->assertNull($this->definition->getName());
+        $this->assertNull($this->definition->name());
     }
 
     public function testServiceIsPrimary() {
@@ -36,11 +36,11 @@ class ProfileResolvedServicesConverterTest extends AnnotatedTargetDefinitionConv
     }
 
     public function testServiceProfiles() {
-        $this->assertSame(['dev'], $this->definition->getProfiles());
+        $this->assertSame(['dev'], $this->definition->profiles());
     }
 
     public function testGetAttribute() : void {
-        self::assertInstanceOf(Service::class, $this->definition->getAttribute());
-        self::assertSame(['dev'], $this->definition->getAttribute()->getProfiles());
+        self::assertInstanceOf(Service::class, $this->definition->attribute());
+        self::assertSame(['dev'], $this->definition->attribute()->getProfiles());
     }
 }

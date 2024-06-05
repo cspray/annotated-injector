@@ -25,15 +25,15 @@ final class MethodParameterInjectTargetIdentifier implements InjectTargetIdentif
         return false;
     }
 
-    public function getName() : string {
+    public function name() : string {
         return $this->name;
     }
 
-    public function getClass() : ObjectType {
+    public function class() : ObjectType {
         return $this->class;
     }
 
-    public function getMethodName() : string {
+    public function methodName() : string {
         return $this->methodName;
     }
 }

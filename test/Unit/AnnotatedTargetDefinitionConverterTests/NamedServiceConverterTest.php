@@ -19,7 +19,7 @@ class NamedServiceConverterTest extends AnnotatedTargetDefinitionConverterTestCa
     }
 
     public function testGetServiceDefinitionType() {
-        $this->assertSame(Fixtures::namedServices()->fooInterface(), $this->definition->getType());
+        $this->assertSame(Fixtures::namedServices()->fooInterface(), $this->definition->type());
     }
 
     public function testServiceIsAbstract() {
@@ -27,7 +27,7 @@ class NamedServiceConverterTest extends AnnotatedTargetDefinitionConverterTestCa
     }
 
     public function testServiceName() {
-        $this->assertSame('foo', $this->definition->getName());
+        $this->assertSame('foo', $this->definition->name());
     }
 
     public function testServiceIsPrimary() {
@@ -35,11 +35,11 @@ class NamedServiceConverterTest extends AnnotatedTargetDefinitionConverterTestCa
     }
 
     public function testServiceProfiles() {
-        $this->assertSame(['default'], $this->definition->getProfiles());
+        $this->assertSame(['default'], $this->definition->profiles());
     }
 
     public function testGetAttribute() : void {
-        self::assertInstanceOf(Service::class, $this->definition->getAttribute());
-        self::assertSame('foo', $this->definition->getAttribute()->getName());
+        self::assertInstanceOf(Service::class, $this->definition->attribute());
+        self::assertSame('foo', $this->definition->attribute()->getName());
     }
 }

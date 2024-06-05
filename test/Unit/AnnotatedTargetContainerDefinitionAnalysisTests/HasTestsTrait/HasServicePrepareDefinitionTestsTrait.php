@@ -23,10 +23,10 @@ trait HasServicePrepareDefinitionTestsTrait {
     final public function testServicePrepareDefinitionMethod(ExpectedServicePrepare $expectedServicePrepare) : void {
         $preparesForService = array_filter(
             $this->getSubject()->servicePrepareDefinitions(),
-            fn(ServicePrepareDefinition $servicePrepareDefinition) => $servicePrepareDefinition->getService() === $expectedServicePrepare->type
+            fn(ServicePrepareDefinition $servicePrepareDefinition) => $servicePrepareDefinition->service() === $expectedServicePrepare->type
         );
         $prepareMethods = array_map(
-            fn(ServicePrepareDefinition $servicePrepareDefinition) => $servicePrepareDefinition->getMethod(),
+            fn(ServicePrepareDefinition $servicePrepareDefinition) => $servicePrepareDefinition->methodName(),
             $preparesForService
         );
 

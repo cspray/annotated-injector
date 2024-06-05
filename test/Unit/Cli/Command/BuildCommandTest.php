@@ -259,11 +259,11 @@ XML;
         self::assertCount(2, $containerDefinition->serviceDefinitions());
         self::assertSame(
             Fixtures::thirdPartyServices()->fooImplementation(),
-            $containerDefinition->serviceDefinitions()[0]->getType()
+            $containerDefinition->serviceDefinitions()[0]->type()
         );
         self::assertSame(
             Fixtures::thirdPartyServices()->fooInterface(),
-            $containerDefinition->serviceDefinitions()[1]->getType()
+            $containerDefinition->serviceDefinitions()[1]->type()
         );
     }
 

@@ -23,15 +23,15 @@ final class PropertyInjectTargetIdentifier implements InjectTargetIdentifier {
         return true;
     }
 
-    public function getName() : string {
+    public function name() : string {
         return $this->name;
     }
 
-    public function getClass() : ObjectType {
+    public function class() : ObjectType {
         return $this->class;
     }
 
-    public function getMethodName() : ?string {
+    public function methodName() : ?string {
         return null;
     }
 }

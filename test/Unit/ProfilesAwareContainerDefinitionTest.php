@@ -44,7 +44,7 @@ class ProfilesAwareContainerDefinitionTest extends TestCase {
             ->build();
         $concrete = ServiceDefinitionBuilder::forConcrete(Fixtures::ambiguousAliasedServices()->barImplementation())
             ->build();
-        $alias = AliasDefinitionBuilder::forAbstract($abstract->getType())->withConcrete($concrete->getType())->build();
+        $alias = AliasDefinitionBuilder::forAbstract($abstract->type())->withConcrete($concrete->type())->build();
         $containerDefinition = ContainerDefinitionBuilder::newDefinition()
             ->withServiceDefinition($abstract)
             ->withServiceDefinition($concrete)
@@ -63,7 +63,7 @@ class ProfilesAwareContainerDefinitionTest extends TestCase {
         $concrete = ServiceDefinitionBuilder::forConcrete(Fixtures::ambiguousAliasedServices()->barImplementation())
             ->withProfiles(['foo'])
             ->build();
-        $alias = AliasDefinitionBuilder::forAbstract($abstract->getType())->withConcrete($concrete->getType())->build();
+        $alias = AliasDefinitionBuilder::forAbstract($abstract->type())->withConcrete($concrete->type())->build();
         $containerDefinition = ContainerDefinitionBuilder::newDefinition()
             ->withServiceDefinition($abstract)
             ->withServiceDefinition($concrete)
@@ -80,7 +80,7 @@ class ProfilesAwareContainerDefinitionTest extends TestCase {
             ->build();
         $concrete = ServiceDefinitionBuilder::forConcrete(Fixtures::ambiguousAliasedServices()->barImplementation())
             ->build();
-        $alias = AliasDefinitionBuilder::forAbstract($abstract->getType())->withConcrete($concrete->getType())->build();
+        $alias = AliasDefinitionBuilder::forAbstract($abstract->type())->withConcrete($concrete->type())->build();
         $containerDefinition = ContainerDefinitionBuilder::newDefinition()
             ->withServiceDefinition($abstract)
             ->withServiceDefinition($concrete)
@@ -96,7 +96,7 @@ class ProfilesAwareContainerDefinitionTest extends TestCase {
         $concrete = ServiceDefinitionBuilder::forConcrete(Fixtures::ambiguousAliasedServices()->barImplementation())
             ->build();
         $alias = AliasDefinitionBuilder::forAbstract(Fixtures::ambiguousAliasedServices()->fooInterface())
-            ->withConcrete($concrete->getType())
+            ->withConcrete($concrete->type())
             ->build();
         $containerDefinition = ContainerDefinitionBuilder::newDefinition()
             ->withServiceDefinition($concrete)
@@ -117,7 +117,7 @@ class ProfilesAwareContainerDefinitionTest extends TestCase {
     public function testGetAliasDefinitionConcreteNotServiceDefinitionThrowsException() : void {
         $abstract = ServiceDefinitionBuilder::forAbstract(Fixtures::ambiguousAliasedServices()->fooInterface())
             ->build();
-        $alias = AliasDefinitionBuilder::forAbstract($abstract->getType())
+        $alias = AliasDefinitionBuilder::forAbstract($abstract->type())
             ->withConcrete(Fixtures::ambiguousAliasedServices()->barImplementation())
             ->build();
         $containerDefinition = ContainerDefinitionBuilder::newDefinition()
@@ -161,12 +161,12 @@ class ProfilesAwareContainerDefinitionTest extends TestCase {
     public function testGetInjectDefinitionsRespectProfiles() : void {
         $service = ServiceDefinitionBuilder::forConcrete(Fixtures::injectConstructorServices()->injectProfilesStringService())
             ->build();
-        $injectDefinition1 = InjectDefinitionBuilder::forService($service->getType())
+        $injectDefinition1 = InjectDefinitionBuilder::forService($service->type())
             ->withMethod('__construct', stringType(), 'val')
             ->withValue('a string')
             ->withProfiles('test')
             ->build();
-        $injectDefinition2 = InjectDefinitionBuilder::forService($service->getType())
+        $injectDefinition2 = InjectDefinitionBuilder::forService($service->type())
             ->withMethod('__construct', stringType(), 'val')
             ->withValue('a different string')
             ->withProfiles('prod')

@@ -50,8 +50,8 @@ final class PhpDiContainerFactoryState implements ContainerFactoryState {
                     continue;
                 }
 
-                if (is_a($serviceDefinition->getType()->getName(), $value->valueType->getName(), true)) {
-                    $values[] = get($serviceDefinition->getType()->getName());
+                if (is_a($serviceDefinition->type()->getName(), $value->valueType->getName(), true)) {
+                    $values[] = get($serviceDefinition->type()->getName());
                 }
             }
 

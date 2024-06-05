@@ -16,13 +16,13 @@ trait HasServiceDelegateDefinitionTestsTrait {
     final public function testServiceDelegateDefinition(ExpectedServiceDelegate $expectedServiceDelegate) : void {
         $definition = null;
         foreach ($this->getSubject()->serviceDelegateDefinitions() as $delegateDefinition) {
-            if ($delegateDefinition->getServiceType() === $expectedServiceDelegate->service) {
+            if ($delegateDefinition->serviceType() === $expectedServiceDelegate->service) {
                 $definition = $delegateDefinition;
                 break;
             }
         }
 
-        $this->assertSame($expectedServiceDelegate->factory, $definition?->getDelegateType());
-        $this->assertSame($expectedServiceDelegate->method, $definition?->getDelegateMethod());
+        $this->assertSame($expectedServiceDelegate->factory, $definition?->delegateType());
+        $this->assertSame($expectedServiceDelegate->method, $definition?->delegateMethod());
     }
 }

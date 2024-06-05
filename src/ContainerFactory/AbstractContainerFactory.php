@@ -97,24 +97,24 @@ abstract class AbstractContainerFactory implements ContainerFactory {
     }
 
     final protected function injectDefinitionValue(InjectDefinition $definition) : mixed {
-        $value = $definition->getValue();
-        $store = $definition->getStoreName();
+        $value = $definition->value();
+        $store = $definition->storeName();
         if ($store !== null) {
             $parameterStore = $this->parameterStore($store);
             if ($parameterStore === null) {
                 throw ParameterStoreNotFound::fromParameterStoreNotAddedToContainerFactory($store);
             }
-            $value = $parameterStore->fetch($definition->getType(), $value);
+            $value = $parameterStore->fetch($definition->type(), $value);
         }
 
-        $type = $definition->getType();
+        $type = $definition->type();
         if ($value instanceof ListOf) {
             $value = new ServiceCollectorReference(
                 $value,
                 $value->type(),
                 $type
             );
-        } elseif ($type instanceof ObjectType && !is_a($definition->getType()->getName(), UnitEnum::class, true)) {
+        } elseif ($type instanceof ObjectType && !is_a($definition->type()->getName(), UnitEnum::class, true)) {
             $value = new ContainerReference($value, $type);
         }
 

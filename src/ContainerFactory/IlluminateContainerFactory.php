@@ -53,13 +53,13 @@ final class IlluminateContainerFactory extends AbstractContainerFactory {
     protected function handleServiceDefinition(ContainerFactoryState $state, ServiceDefinition $definition) : void {
         assert($state instanceof IlluminateContainerFactoryState);
         if ($definition->isConcrete()) {
-            $state->addConcreteService($definition->getType()->getName());
+            $state->addConcreteService($definition->type()->getName());
         } else {
-            $state->addAbstractService($definition->getType()->getName());
+            $state->addAbstractService($definition->type()->getName());
         }
-        $name = $definition->getName();
+        $name = $definition->name();
         if ($name !== null) {
-            $state->addNamedService($definition->getType()->getName(), $name);
+            $state->addNamedService($definition->type()->getName(), $name);
         }
     }
 
@@ -74,33 +74,33 @@ final class IlluminateContainerFactory extends AbstractContainerFactory {
     protected function handleServiceDelegateDefinition(ContainerFactoryState $state, ServiceDelegateDefinition $definition) : void {
         assert($state instanceof IlluminateContainerFactoryState);
 
-        $reflectionMethod = new \ReflectionMethod($definition->getDelegateType()->getName(), $definition->getDelegateMethod());
+        $reflectionMethod = new \ReflectionMethod($definition->delegateType()->getName(), $definition->delegateMethod());
         if ($reflectionMethod->isStatic()) {
             $state->addStaticDelegate(
-                $definition->getServiceType()->getName(),
-                $definition->getDelegateType()->getName(),
-                $definition->getDelegateMethod()
+                $definition->serviceType()->getName(),
+                $definition->delegateType()->getName(),
+                $definition->delegateMethod()
             );
         } else {
             $state->addInstanceDelegate(
-                $definition->getServiceType()->getName(),
-                $definition->getDelegateType()->getName(),
-                $definition->getDelegateMethod()
+                $definition->serviceType()->getName(),
+                $definition->delegateType()->getName(),
+                $definition->delegateMethod()
             );
         }
     }
 
     protected function handleServicePrepareDefinition(ContainerFactoryState $state, ServicePrepareDefinition $definition) : void {
         assert($state instanceof IlluminateContainerFactoryState);
-        $state->addServicePrepare($definition->getService()->getName(), $definition->getMethod());
+        $state->addServicePrepare($definition->service()->getName(), $definition->methodName());
     }
 
     protected function handleInjectDefinition(ContainerFactoryState $state, InjectDefinition $definition) : void {
         assert($state instanceof IlluminateContainerFactoryState);
         $state->addMethodInject(
-            $definition->getTargetIdentifier()->getClass()->getName(),
-            $definition->getTargetIdentifier()->getMethodName(),
-            $definition->getTargetIdentifier()->getName(),
+            $definition->targetIdentifier()->class()->getName(),
+            $definition->targetIdentifier()->methodName(),
+            $definition->targetIdentifier()->name(),
             $this->injectDefinitionValue($definition)
         );
     }
@@ -173,8 +173,8 @@ final class IlluminateContainerFactory extends AbstractContainerFactory {
                                             continue;
                                         }
 
-                                        if (is_a($serviceDefinition->getType()->getName(), $value->valueType->getName(), true)) {
-                                            $values[] = $container->get($serviceDefinition->getType()->getName());
+                                        if (is_a($serviceDefinition->type()->getName(), $value->valueType->getName(), true)) {
+                                            $values[] = $container->get($serviceDefinition->type()->getName());
                                         }
                                     }
                                     return $value->listOf->toCollection($values);

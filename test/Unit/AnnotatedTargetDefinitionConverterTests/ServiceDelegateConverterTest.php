@@ -23,18 +23,18 @@ class ServiceDelegateConverterTest extends AnnotatedTargetDefinitionConverterTes
     }
 
     public function testGetDelegateTypeIsServiceFactory() {
-        $this->assertSame(Fixtures::delegatedService()->serviceFactory(), $this->definition->getDelegateType());
+        $this->assertSame(Fixtures::delegatedService()->serviceFactory(), $this->definition->delegateType());
     }
 
     public function testGetDelegateMethodIsCorrect() {
-        $this->assertSame('createService', $this->definition->getDelegateMethod());
+        $this->assertSame('createService', $this->definition->delegateMethod());
     }
 
     public function testGetServiceType() {
-        $this->assertSame(Fixtures::delegatedService()->serviceInterface(), $this->definition->getServiceType());
+        $this->assertSame(Fixtures::delegatedService()->serviceInterface(), $this->definition->serviceType());
     }
 
     public function testGetAttribute() : void {
-        self::assertInstanceOf(ServiceDelegate::class, $this->definition->getAttribute());
+        self::assertInstanceOf(ServiceDelegate::class, $this->definition->attribute());
     }
 }

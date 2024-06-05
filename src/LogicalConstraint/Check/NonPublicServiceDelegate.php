@@ -15,7 +15,7 @@ final class NonPublicServiceDelegate implements LogicalConstraint {
         $violations = new LogicalConstraintViolationCollection();
 
         foreach ($containerDefinition->serviceDelegateDefinitions() as $delegateDefinition) {
-            $reflection = new \ReflectionMethod(sprintf('%s::%s', $delegateDefinition->getDelegateType()->getName(), $delegateDefinition->getDelegateMethod()));
+            $reflection = new \ReflectionMethod(sprintf('%s::%s', $delegateDefinition->delegateType()->getName(), $delegateDefinition->delegateMethod()));
             if ($reflection->isProtected() || $reflection->isPrivate()) {
                 $protectedOrPrivate = $reflection->isProtected() ? 'protected' : 'private';
                 $violations->add(
@@ -23,8 +23,8 @@ final class NonPublicServiceDelegate implements LogicalConstraint {
                         sprintf(
                             'A %s method, %s::%s, is marked as a service delegate. Service delegates MUST be marked public.',
                             $protectedOrPrivate,
-                            $delegateDefinition->getDelegateType()->getName(),
-                            $delegateDefinition->getDelegateMethod()
+                            $delegateDefinition->delegateType()->getName(),
+                            $delegateDefinition->delegateMethod()
                         )
                     )
                 );

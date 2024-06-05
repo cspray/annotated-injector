@@ -18,12 +18,12 @@ final class MultiplePrimaryForAbstractService implements LogicalConstraint {
         $abstractPrimaryMap = [];
 
         foreach ($this->getAbstractServices($containerDefinition) as $abstract) {
-            $abstractService = $abstract->getType()->getName();
+            $abstractService = $abstract->type()->getName();
             $abstractPrimaryMap[$abstractService] ??= [];
             $concreteServices = $this->getConcreteServicesInstanceOf($containerDefinition, $abstract);
             foreach ($concreteServices as $concrete) {
                 if ($concrete->isPrimary()) {
-                    $abstractPrimaryMap[$abstractService][] = $concrete->getType()->getName() . PHP_EOL;
+                    $abstractPrimaryMap[$abstractService][] = $concrete->type()->getName() . PHP_EOL;
                 }
             }
         }
@@ -67,7 +67,7 @@ TEXT;
     private function getConcreteServicesInstanceOf(ContainerDefinition $containerDefinition, ServiceDefinition $serviceDefinition) : Generator {
         foreach ($containerDefinition->serviceDefinitions() as $service) {
             if ($service->isConcrete()) {
-                if (is_subclass_of($service->getType()->getName(), $serviceDefinition->getType()->getName())) {
+                if (is_subclass_of($service->type()->getName(), $serviceDefinition->type()->getName())) {
                     yield $service;
                 }
             }

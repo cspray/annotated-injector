@@ -35,7 +35,7 @@ abstract class ServiceWiringListener implements AfterContainerCreation {
                         continue;
                     }
 
-                    $serviceType = $serviceDefinition->getType()->getName();
+                    $serviceType = $serviceDefinition->type()->getName();
                     if (is_a($serviceType, $type, true)) {
                         $service = $this->container->get($serviceType);
                         assert($service instanceof $type);
@@ -53,12 +53,12 @@ abstract class ServiceWiringListener implements AfterContainerCreation {
                         continue;
                     }
 
-                    $serviceAttribute = $serviceDefinition->getAttribute();
+                    $serviceAttribute = $serviceDefinition->attribute();
                     if (!($serviceAttribute instanceof $attributeType)) {
                         continue;
                     }
 
-                    $service = $this->container->get($serviceDefinition->getType()->getName());
+                    $service = $this->container->get($serviceDefinition->type()->getName());
                     assert(is_object($service));
                     $services[] = $this->createServiceFromServiceDefinition($service, $serviceDefinition);
                 }

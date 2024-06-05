@@ -15,14 +15,14 @@ interface ServiceDefinition {
     /**
      * @return non-empty-string|null
      */
-    public function getName() : ?string;
+    public function name() : ?string;
 
     /**
      * Returns the fully-qualified class/interface name for the given Service.
      *
      * @return ObjectType
      */
-    public function getType() : ObjectType;
+    public function type() : ObjectType;
 
     /**
      * Returns an array of profiles that this service is attached to.
@@ -32,7 +32,7 @@ interface ServiceDefinition {
      *
      * @return list<non-empty-string>
      */
-    public function getProfiles() : array;
+    public function profiles() : array;
 
     /**
      * Return whether the Service is the Primary for this type and will be used by default if there are multiple aliases
@@ -56,5 +56,5 @@ interface ServiceDefinition {
      */
     public function isAbstract() : bool;
 
-    public function getAttribute() : ?ServiceAttribute;
+    public function attribute() : ?ServiceAttribute;
 }

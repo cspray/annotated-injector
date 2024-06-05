@@ -88,18 +88,18 @@ final class ServiceDefinitionBuilder {
             /**
              * @return ?non-empty-string
              */
-            public function getName() : ?string {
+            public function name() : ?string {
                 return $this->name;
             }
 
-            public function getType() : ObjectType {
+            public function type() : ObjectType {
                 return $this->type;
             }
 
             /**
              * @return list<non-empty-string>
              */
-            public function getProfiles() : array {
+            public function profiles() : array {
                 return $this->profiles;
             }
 
@@ -115,7 +115,7 @@ final class ServiceDefinitionBuilder {
                 return $this->isAbstract;
             }
 
-            public function getAttribute() : ?ServiceAttribute {
+            public function attribute() : ?ServiceAttribute {
                 return $this->attribute;
             }
         };

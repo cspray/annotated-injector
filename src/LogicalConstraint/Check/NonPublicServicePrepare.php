@@ -15,7 +15,7 @@ final class NonPublicServicePrepare implements LogicalConstraint {
         $violations =  new LogicalConstraintViolationCollection();
 
         foreach ($containerDefinition->servicePrepareDefinitions() as $prepareDefinition) {
-            $reflection = new \ReflectionMethod(sprintf('%s::%s', $prepareDefinition->getService()->getName(), $prepareDefinition->getMethod()));
+            $reflection = new \ReflectionMethod(sprintf('%s::%s', $prepareDefinition->service()->getName(), $prepareDefinition->methodName()));
             if ($reflection->isPrivate() || $reflection->isProtected()) {
                 $protectedOrPrivate = $reflection->isProtected() ? 'protected' : 'private';
                 $violations->add(
@@ -23,8 +23,8 @@ final class NonPublicServicePrepare implements LogicalConstraint {
                         sprintf(
                             'A %s method, %s::%s, is marked as a service prepare. Service prepare methods MUST be marked public.',
                             $protectedOrPrivate,
-                            $prepareDefinition->getService()->getName(),
-                            $prepareDefinition->getMethod()
+                            $prepareDefinition->service()->getName(),
+                            $prepareDefinition->methodName()
                         )
                     )
                 );

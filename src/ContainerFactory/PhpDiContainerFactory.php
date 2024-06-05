@@ -46,14 +46,14 @@ final class PhpDiContainerFactory extends AbstractContainerFactory implements Co
 
     protected function handleServiceDefinition(ContainerFactoryState $state, ServiceDefinition $definition) : void {
         assert($state instanceof PhpDiContainerFactoryState);
-        $serviceType = $definition->getType()->getName();
+        $serviceType = $definition->type()->getName();
         $state->addService($serviceType);
         $state->autowireService($serviceType);
         $key = $serviceType;
-        $name = $definition->getName();
+        $name = $definition->name();
         if ($name !== null) {
             $state->addService($name);
-            $state->referenceService($name, $definition->getType()->getName());
+            $state->referenceService($name, $definition->type()->getName());
             $key = $name;
         }
         $state->setServiceKey($serviceType, $key);
@@ -72,24 +72,24 @@ final class PhpDiContainerFactory extends AbstractContainerFactory implements Co
 
     public function handleServiceDelegateDefinition(ContainerFactoryState $state, ServiceDelegateDefinition $definition) : void {
         assert($state instanceof PhpDiContainerFactoryState);
-        $serviceName = $definition->getServiceType()->getName();
+        $serviceName = $definition->serviceType()->getName();
         $state->factoryService($serviceName, static fn(Container $container) => $container->call(
-            [$definition->getDelegateType()->getName(), $definition->getDelegateMethod()]
+            [$definition->delegateType()->getName(), $definition->delegateMethod()]
         ));
     }
 
     public function handleServicePrepareDefinition(ContainerFactoryState $state, ServicePrepareDefinition $definition) : void {
         assert($state instanceof PhpDiContainerFactoryState);
 
-        $state->addServicePrepare($definition->getService()->getName(), $definition->getMethod());
+        $state->addServicePrepare($definition->service()->getName(), $definition->methodName());
     }
 
     public function handleInjectDefinition(ContainerFactoryState $state, InjectDefinition $definition) : void {
         assert($state instanceof PhpDiContainerFactoryState);
         $state->addMethodInject(
-            $definition->getTargetIdentifier()->getClass()->getName(),
-            $definition->getTargetIdentifier()->getMethodName(),
-            $definition->getTargetIdentifier()->getName(),
+            $definition->targetIdentifier()->class()->getName(),
+            $definition->targetIdentifier()->methodName(),
+            $definition->targetIdentifier()->name(),
             $this->injectDefinitionValue($definition)
         );
     }

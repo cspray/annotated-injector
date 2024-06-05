@@ -133,9 +133,9 @@ class AnnotatedTargetContainerDefinitionAnalyzerTest extends TestCase {
         );
 
         self::assertNotNull($serviceDef);
-        self::assertSame($serviceDef->getType(), Fixtures::beanLikeConfigConcrete()->fooService());
-        self::assertSame(['default'], $serviceDef->getProfiles());
-        self::assertNull($serviceDef->getName());
+        self::assertSame($serviceDef->type(), Fixtures::beanLikeConfigConcrete()->fooService());
+        self::assertSame(['default'], $serviceDef->profiles());
+        self::assertNull($serviceDef->name());
         self::assertFalse($serviceDef->isPrimary());
         self::assertTrue($serviceDef->isConcrete());
         self::assertFalse($serviceDef->isAbstract());
@@ -150,9 +150,9 @@ class AnnotatedTargetContainerDefinitionAnalyzerTest extends TestCase {
         );
 
         self::assertNotNull($serviceDef);
-        self::assertSame($serviceDef->getType(), Fixtures::beanLikeConfigInterface()->fooInterface());
-        self::assertSame(['default'], $serviceDef->getProfiles());
-        self::assertNull($serviceDef->getName());
+        self::assertSame($serviceDef->type(), Fixtures::beanLikeConfigInterface()->fooInterface());
+        self::assertSame(['default'], $serviceDef->profiles());
+        self::assertNull($serviceDef->name());
         self::assertFalse($serviceDef->isPrimary());
         self::assertFalse($serviceDef->isConcrete());
         self::assertTrue($serviceDef->isAbstract());
@@ -167,9 +167,9 @@ class AnnotatedTargetContainerDefinitionAnalyzerTest extends TestCase {
         );
 
         self::assertNotNull($serviceDef);
-        self::assertSame($serviceDef->getType(), Fixtures::beanLikeConfigAbstract()->abstractFooService());
-        self::assertSame(['default'], $serviceDef->getProfiles());
-        self::assertNull($serviceDef->getName());
+        self::assertSame($serviceDef->type(), Fixtures::beanLikeConfigAbstract()->abstractFooService());
+        self::assertSame(['default'], $serviceDef->profiles());
+        self::assertNull($serviceDef->name());
         self::assertFalse($serviceDef->isPrimary());
         self::assertFalse($serviceDef->isConcrete());
         self::assertTrue($serviceDef->isAbstract());

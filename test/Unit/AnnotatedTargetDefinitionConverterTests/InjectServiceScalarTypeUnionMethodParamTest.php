@@ -24,35 +24,35 @@ class InjectServiceScalarTypeUnionMethodParamTest extends AnnotatedTargetDefinit
     }
 
     public function testDefinitionGetService() {
-        $this->assertSame(Fixtures::injectPrepareServices()->serviceScalarUnionPrepareInjector(), $this->definition->getTargetIdentifier()->getClass());
+        $this->assertSame(Fixtures::injectPrepareServices()->serviceScalarUnionPrepareInjector(), $this->definition->targetIdentifier()->class());
     }
 
     public function testDefinitionGetMethod() {
-        $this->assertSame('setValue', $this->definition->getTargetIdentifier()->getMethodName());
+        $this->assertSame('setValue', $this->definition->targetIdentifier()->methodName());
     }
 
     public function testDefinitionGetParamName() {
-        $this->assertSame('val', $this->definition->getTargetIdentifier()->getName());
+        $this->assertSame('val', $this->definition->targetIdentifier()->name());
     }
 
     public function testDefinitionGetTypeUnion() {
-        $this->assertSame(typeUnion(floatType(), Fixtures::injectPrepareServices()->fooInterface()), $this->definition->getType());
+        $this->assertSame(typeUnion(floatType(), Fixtures::injectPrepareServices()->fooInterface()), $this->definition->type());
     }
 
     public function testGetValue() {
-        $this->assertSame(3.14, $this->definition->getValue());
+        $this->assertSame(3.14, $this->definition->value());
     }
 
     public function testGetStore() {
-        $this->assertNull($this->definition->getStoreName());
+        $this->assertNull($this->definition->storeName());
     }
 
     public function testGetProfiles() {
-        $this->assertSame(['default'], $this->definition->getProfiles());
+        $this->assertSame(['default'], $this->definition->profiles());
     }
 
     public function testGetAttribute() {
-        self::assertInstanceOf(Inject::class, $this->definition->getAttribute());
-        self::assertSame(3.14, $this->definition->getAttribute()->getValue());
+        self::assertInstanceOf(Inject::class, $this->definition->attribute());
+        self::assertSame(3.14, $this->definition->attribute()->getValue());
     }
 }

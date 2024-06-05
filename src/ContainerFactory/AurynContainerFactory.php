@@ -44,10 +44,10 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
 
     protected function handleServiceDefinition(ContainerFactoryState $state, ServiceDefinition $definition) : void {
         assert($state instanceof AurynContainerFactoryState);
-        $state->injector->share($definition->getType()->getName());
-        $name = $definition->getName();
+        $state->injector->share($definition->type()->getName());
+        $name = $definition->name();
         if ($name !== null) {
-            $state->addNameType($name, $definition->getType());
+            $state->addNameType($name, $definition->type());
         }
     }
 
@@ -64,28 +64,28 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
 
     protected function handleServiceDelegateDefinition(ContainerFactoryState $state, ServiceDelegateDefinition $definition) : void {
         assert($state instanceof AurynContainerFactoryState);
-        $delegateType = $definition->getDelegateType()->getName();
-        $delegateMethod = $definition->getDelegateMethod();
+        $delegateType = $definition->delegateType()->getName();
+        $delegateMethod = $definition->delegateMethod();
 
         $parameters = $state->parametersForMethod($delegateType, $delegateMethod);
         $state->injector->delegate(
-            $definition->getServiceType()->getName(),
+            $definition->serviceType()->getName(),
             static fn() : mixed => $state->injector->execute([$delegateType, $delegateMethod], $parameters)
         );
     }
 
     protected function handleServicePrepareDefinition(ContainerFactoryState $state, ServicePrepareDefinition $definition) : void {
         assert($state instanceof AurynContainerFactoryState);
-        $serviceType = $definition->getService()->getName();
+        $serviceType = $definition->service()->getName();
 
-        $state->addServicePrepare($serviceType, $definition->getMethod());
+        $state->addServicePrepare($serviceType, $definition->methodName());
     }
 
     protected function handleInjectDefinition(ContainerFactoryState $state, InjectDefinition $definition) : void {
         assert($state instanceof AurynContainerFactoryState);
-        $injectTargetType = $definition->getTargetIdentifier()->getClass()->getName();
-        $method = $definition->getTargetIdentifier()->getMethodName();
-        $parameterName = $definition->getTargetIdentifier()->getName();
+        $injectTargetType = $definition->targetIdentifier()->class()->getName();
+        $method = $definition->targetIdentifier()->methodName();
+        $parameterName = $definition->targetIdentifier()->name();
         $value = $this->injectDefinitionValue($definition);
 
         $state->addMethodInject($injectTargetType, $method, $parameterName, $value);

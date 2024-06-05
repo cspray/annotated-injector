@@ -829,9 +829,9 @@ XML;
         self::assertCount(1, $serviceDefinitions);
         $serviceDefinition = $serviceDefinitions[0];
 
-        self::assertSame(Fixtures::singleConcreteService()->fooImplementation(), $serviceDefinition->getType());
-        self::assertSame(['default'], $serviceDefinition->getProfiles());
-        self::assertNull($serviceDefinition->getName());
+        self::assertSame(Fixtures::singleConcreteService()->fooImplementation(), $serviceDefinition->type());
+        self::assertSame(['default'], $serviceDefinition->profiles());
+        self::assertNull($serviceDefinition->name());
         self::assertFalse($serviceDefinition->isPrimary());
         self::assertTrue($serviceDefinition->isConcrete());
         self::assertFalse($serviceDefinition->isAbstract());
@@ -870,9 +870,9 @@ XML;
         self::assertCount(1, $serviceDefinitions);
         $serviceDefinition = $serviceDefinitions[0];
 
-        self::assertSame(Fixtures::singleConcreteService()->fooImplementation(), $serviceDefinition->getType());
-        self::assertSame(['default'], $serviceDefinition->getProfiles());
-        self::assertSame('my_service_name', $serviceDefinition->getName());
+        self::assertSame(Fixtures::singleConcreteService()->fooImplementation(), $serviceDefinition->type());
+        self::assertSame(['default'], $serviceDefinition->profiles());
+        self::assertSame('my_service_name', $serviceDefinition->name());
         self::assertFalse($serviceDefinition->isPrimary());
         self::assertTrue($serviceDefinition->isConcrete());
         self::assertFalse($serviceDefinition->isAbstract());
@@ -911,9 +911,9 @@ XML;
         self::assertCount(1, $serviceDefinitions);
         $serviceDefinition = $serviceDefinitions[0];
 
-        self::assertSame(Fixtures::singleConcreteService()->fooImplementation(), $serviceDefinition->getType());
-        self::assertSame(['default'], $serviceDefinition->getProfiles());
-        self::assertNull($serviceDefinition->getName());
+        self::assertSame(Fixtures::singleConcreteService()->fooImplementation(), $serviceDefinition->type());
+        self::assertSame(['default'], $serviceDefinition->profiles());
+        self::assertNull($serviceDefinition->name());
         self::assertTrue($serviceDefinition->isPrimary());
         self::assertTrue($serviceDefinition->isConcrete());
         self::assertFalse($serviceDefinition->isAbstract());
@@ -954,9 +954,9 @@ XML;
         self::assertCount(1, $serviceDefinitions);
         $serviceDefinition = $serviceDefinitions[0];
 
-        self::assertSame(Fixtures::singleConcreteService()->fooImplementation(), $serviceDefinition->getType());
-        self::assertSame(['foo', 'bar', 'baz'], $serviceDefinition->getProfiles());
-        self::assertNull($serviceDefinition->getName());
+        self::assertSame(Fixtures::singleConcreteService()->fooImplementation(), $serviceDefinition->type());
+        self::assertSame(['foo', 'bar', 'baz'], $serviceDefinition->profiles());
+        self::assertNull($serviceDefinition->name());
         self::assertFalse($serviceDefinition->isPrimary());
         self::assertTrue($serviceDefinition->isConcrete());
         self::assertFalse($serviceDefinition->isAbstract());
@@ -994,9 +994,9 @@ XML;
         self::assertCount(1, $serviceDefinitions);
         $serviceDefinition = $serviceDefinitions[0];
 
-        self::assertSame(Fixtures::implicitAliasedServices()->fooInterface(), $serviceDefinition->getType());
-        self::assertSame(['default'], $serviceDefinition->getProfiles());
-        self::assertNull($serviceDefinition->getName());
+        self::assertSame(Fixtures::implicitAliasedServices()->fooInterface(), $serviceDefinition->type());
+        self::assertSame(['default'], $serviceDefinition->profiles());
+        self::assertNull($serviceDefinition->name());
         self::assertFalse($serviceDefinition->isPrimary());
         self::assertFalse($serviceDefinition->isConcrete());
         self::assertTrue($serviceDefinition->isAbstract());
@@ -1084,8 +1084,8 @@ XML;
 
         self::assertCount(1, $actual->servicePrepareDefinitions());
         $prepareDefinition = $actual->servicePrepareDefinitions()[0];
-        self::assertSame(Fixtures::interfacePrepareServices()->fooInterface(), $prepareDefinition->getService());
-        self::assertSame('setBar', $prepareDefinition->getMethod());
+        self::assertSame(Fixtures::interfacePrepareServices()->fooInterface(), $prepareDefinition->service());
+        self::assertSame('setBar', $prepareDefinition->methodName());
     }
 
     public function testDeserializeServiceDelegateDefinitions() : void {
@@ -1125,9 +1125,9 @@ XML;
         self::assertCount(1, $actual->serviceDelegateDefinitions());
         $delegateDefinition = $actual->serviceDelegateDefinitions()[0];
 
-        self::assertSame(Fixtures::delegatedService()->serviceInterface(), $delegateDefinition->getServiceType());
-        self::assertSame(Fixtures::delegatedService()->serviceFactory(), $delegateDefinition->getDelegateType());
-        self::assertSame('createService', $delegateDefinition->getDelegateMethod());
+        self::assertSame(Fixtures::delegatedService()->serviceInterface(), $delegateDefinition->serviceType());
+        self::assertSame(Fixtures::delegatedService()->serviceFactory(), $delegateDefinition->delegateType());
+        self::assertSame('createService', $delegateDefinition->delegateMethod());
     }
 
     public function testDeserializeInjectMethodParameter() : void {
@@ -1181,18 +1181,18 @@ XML;
         $injectDefinition = $actual->injectDefinitions()[0];
 
         self::assertTrue(
-            $injectDefinition->getTargetIdentifier()->isMethodParameter()
+            $injectDefinition->targetIdentifier()->isMethodParameter()
         );
         self::assertSame(
             Fixtures::injectConstructorServices()->injectStringService(),
-            $injectDefinition->getTargetIdentifier()->getClass()
+            $injectDefinition->targetIdentifier()->class()
         );
-        self::assertSame('__construct', $injectDefinition->getTargetIdentifier()->getMethodName());
-        self::assertSame('val', $injectDefinition->getTargetIdentifier()->getName());
-        self::assertSame(stringType(), $injectDefinition->getType());
-        self::assertSame('foobar', $injectDefinition->getValue());
-        self::assertSame(['default'], $injectDefinition->getProfiles());
-        self::assertNull($injectDefinition->getStoreName());
+        self::assertSame('__construct', $injectDefinition->targetIdentifier()->methodName());
+        self::assertSame('val', $injectDefinition->targetIdentifier()->name());
+        self::assertSame(stringType(), $injectDefinition->type());
+        self::assertSame('foobar', $injectDefinition->value());
+        self::assertSame(['default'], $injectDefinition->profiles());
+        self::assertNull($injectDefinition->storeName());
     }
 
     public function testDeserializeInjectDefinitionUnitEnumValueMethodParameter() : void {
@@ -1246,18 +1246,18 @@ XML;
         $injectDefinition = $actual->injectDefinitions()[0];
 
         self::assertTrue(
-            $injectDefinition->getTargetIdentifier()->isMethodParameter()
+            $injectDefinition->targetIdentifier()->isMethodParameter()
         );
         self::assertSame(
             Fixtures::injectEnumConstructorServices()->enumInjector(),
-            $injectDefinition->getTargetIdentifier()->getClass()
+            $injectDefinition->targetIdentifier()->class()
         );
-        self::assertSame('__construct', $injectDefinition->getTargetIdentifier()->getMethodName());
-        self::assertSame('directions', $injectDefinition->getTargetIdentifier()->getName());
-        self::assertSame(objectType(CardinalDirections::class), $injectDefinition->getType());
-        self::assertSame(CardinalDirections::West, $injectDefinition->getValue());
-        self::assertSame(['default'], $injectDefinition->getProfiles());
-        self::assertNull($injectDefinition->getStoreName());
+        self::assertSame('__construct', $injectDefinition->targetIdentifier()->methodName());
+        self::assertSame('directions', $injectDefinition->targetIdentifier()->name());
+        self::assertSame(objectType(CardinalDirections::class), $injectDefinition->type());
+        self::assertSame(CardinalDirections::West, $injectDefinition->value());
+        self::assertSame(['default'], $injectDefinition->profiles());
+        self::assertNull($injectDefinition->storeName());
     }
 
     public function testDeserializeInjectDefinitionMethodParameterWithStore() : void {
@@ -1311,18 +1311,18 @@ XML;
         $injectDefinition = $actual->injectDefinitions()[0];
 
         self::assertTrue(
-            $injectDefinition->getTargetIdentifier()->isMethodParameter()
+            $injectDefinition->targetIdentifier()->isMethodParameter()
         );
         self::assertSame(
             Fixtures::injectCustomStoreServices()->scalarInjector(),
-            $injectDefinition->getTargetIdentifier()->getClass()
+            $injectDefinition->targetIdentifier()->class()
         );
-        self::assertSame('__construct', $injectDefinition->getTargetIdentifier()->getMethodName());
-        self::assertSame('key', $injectDefinition->getTargetIdentifier()->getName());
-        self::assertSame(stringType(), $injectDefinition->getType());
-        self::assertSame('key', $injectDefinition->getValue());
-        self::assertSame(['default'], $injectDefinition->getProfiles());
-        self::assertSame('test-store', $injectDefinition->getStoreName());
+        self::assertSame('__construct', $injectDefinition->targetIdentifier()->methodName());
+        self::assertSame('key', $injectDefinition->targetIdentifier()->name());
+        self::assertSame(stringType(), $injectDefinition->type());
+        self::assertSame('key', $injectDefinition->value());
+        self::assertSame(['default'], $injectDefinition->profiles());
+        self::assertSame('test-store', $injectDefinition->storeName());
     }
 
     public function testDeserializeInjectMethodWithProfiles() : void {
@@ -1377,18 +1377,18 @@ XML;
         $injectDefinition = $actual->injectDefinitions()[0];
 
         self::assertTrue(
-            $injectDefinition->getTargetIdentifier()->isMethodParameter()
+            $injectDefinition->targetIdentifier()->isMethodParameter()
         );
         self::assertSame(
             Fixtures::injectConstructorServices()->injectStringService(),
-            $injectDefinition->getTargetIdentifier()->getClass()
+            $injectDefinition->targetIdentifier()->class()
         );
-        self::assertSame('__construct', $injectDefinition->getTargetIdentifier()->getMethodName());
-        self::assertSame('val', $injectDefinition->getTargetIdentifier()->getName());
-        self::assertSame(stringType(), $injectDefinition->getType());
-        self::assertSame('annotated container', $injectDefinition->getValue());
-        self::assertSame(['foo', 'baz'], $injectDefinition->getProfiles());
-        self::assertNull($injectDefinition->getStoreName());
+        self::assertSame('__construct', $injectDefinition->targetIdentifier()->methodName());
+        self::assertSame('val', $injectDefinition->targetIdentifier()->name());
+        self::assertSame(stringType(), $injectDefinition->type());
+        self::assertSame('annotated container', $injectDefinition->value());
+        self::assertSame(['foo', 'baz'], $injectDefinition->profiles());
+        self::assertNull($injectDefinition->storeName());
     }
 
     public function testDeserializeWithMismatchedVersionReturnsNull() : void {

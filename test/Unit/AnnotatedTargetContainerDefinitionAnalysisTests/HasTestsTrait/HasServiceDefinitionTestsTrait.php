@@ -114,7 +114,7 @@ trait HasServiceDefinitionTestsTrait {
     final public function testExpectedServiceNames(ExpectedServiceName $expectedServiceName) : void {
         $serviceDefinition = $this->getServiceDefinition($this->getSubject()->serviceDefinitions(), $expectedServiceName->type->getName());
 
-        $this->assertSame($expectedServiceName->name, $serviceDefinition?->getName());
+        $this->assertSame($expectedServiceName->name, $serviceDefinition?->name());
     }
 
     #[DataProvider('serviceIsPrimaryProvider')]
@@ -142,6 +142,6 @@ trait HasServiceDefinitionTestsTrait {
     final public function testExpectedServiceProfiles(ExpectedServiceProfiles $expectedServiceProfiles) : void {
         $serviceDefinition = $this->getServiceDefinition($this->getSubject()->serviceDefinitions(), $expectedServiceProfiles->type->getName());
 
-        $this->assertSame($expectedServiceProfiles->profiles, $serviceDefinition?->getProfiles());
+        $this->assertSame($expectedServiceProfiles->profiles, $serviceDefinition?->profiles());
     }
 }

@@ -92,7 +92,7 @@ class ThirdPartyFunctionsTest extends TestCase {
         $containerDefinition = $context->getBuilder()->build();
         $serviceDefinition = $this->getServiceDefinition($containerDefinition->serviceDefinitions(), Fixtures::implicitAliasedServices()->fooInterface()->getName());
 
-        $this->assertSame('fooService', $serviceDefinition?->getName());
+        $this->assertSame('fooService', $serviceDefinition?->name());
     }
 
     public function testAbstractDefinedServiceGetProfiles() {
@@ -102,7 +102,7 @@ class ThirdPartyFunctionsTest extends TestCase {
         $containerDefinition = $context->getBuilder();
         $serviceDefinition = $this->getServiceDefinition($containerDefinition->serviceDefinitions(), Fixtures::implicitAliasedServices()->fooInterface()->getName());
 
-        $this->assertSame(['default', 'dev'], $serviceDefinition->getProfiles());
+        $this->assertSame(['default', 'dev'], $serviceDefinition->profiles());
     }
 
     public function testSingleConcreteServiceIsConcrete() {
@@ -145,9 +145,9 @@ class ThirdPartyFunctionsTest extends TestCase {
         $containerDefinition = $context->getBuilder()->build();
 
         $this->assertCount(1, $containerDefinition->serviceDelegateDefinitions());
-        $this->assertSame(Fixtures::delegatedService()->serviceInterface()->getName(), $containerDefinition->serviceDelegateDefinitions()[0]->getServiceType()->getName());
-        $this->assertSame(Fixtures::delegatedService()->serviceFactory()->getName(), $containerDefinition->serviceDelegateDefinitions()[0]->getDelegateType()->getName());
-        $this->assertSame('createService', $containerDefinition->serviceDelegateDefinitions()[0]->getDelegateMethod());
+        $this->assertSame(Fixtures::delegatedService()->serviceInterface()->getName(), $containerDefinition->serviceDelegateDefinitions()[0]->serviceType()->getName());
+        $this->assertSame(Fixtures::delegatedService()->serviceFactory()->getName(), $containerDefinition->serviceDelegateDefinitions()[0]->delegateType()->getName());
+        $this->assertSame('createService', $containerDefinition->serviceDelegateDefinitions()[0]->delegateMethod());
     }
 
     public function testServicePrepareDefinition() {
@@ -179,14 +179,14 @@ class ThirdPartyFunctionsTest extends TestCase {
 
         $inject = $injects[0];
 
-        $this->assertTrue($inject->getTargetIdentifier()->isMethodParameter());
-        $this->assertSame(Fixtures::injectConstructorServices()->injectFloatService(), $inject->getTargetIdentifier()->getClass());
-        $this->assertSame('__construct', $inject->getTargetIdentifier()->getMethodName());
-        $this->assertSame('dessert', $inject->getTargetIdentifier()->getName());
-        $this->assertSame(intType(), $inject->getType());
-        $this->assertSame(42, $inject->getValue());
-        $this->assertSame(['default'], $inject->getProfiles());
-        $this->assertNull($inject->getStoreName());
+        $this->assertTrue($inject->targetIdentifier()->isMethodParameter());
+        $this->assertSame(Fixtures::injectConstructorServices()->injectFloatService(), $inject->targetIdentifier()->class());
+        $this->assertSame('__construct', $inject->targetIdentifier()->methodName());
+        $this->assertSame('dessert', $inject->targetIdentifier()->name());
+        $this->assertSame(intType(), $inject->type());
+        $this->assertSame(42, $inject->value());
+        $this->assertSame(['default'], $inject->profiles());
+        $this->assertNull($inject->storeName());
 
         $this->assertSame($actualInject, $inject);
     }
@@ -210,8 +210,8 @@ class ThirdPartyFunctionsTest extends TestCase {
 
         $inject = $injects[0];
 
-        $this->assertTrue($inject->getTargetIdentifier()->isMethodParameter());
-        $this->assertSame(['foo', 'bar', 'baz'], $inject->getProfiles());
+        $this->assertTrue($inject->targetIdentifier()->isMethodParameter());
+        $this->assertSame(['foo', 'bar', 'baz'], $inject->profiles());
     }
 
     public function testInjectMethodParamStoreName() {
@@ -233,7 +233,7 @@ class ThirdPartyFunctionsTest extends TestCase {
 
         $inject = $injects[0];
 
-        $this->assertTrue($inject->getTargetIdentifier()->isMethodParameter());
-        $this->assertSame('store-name', $inject->getStoreName());
+        $this->assertTrue($inject->targetIdentifier()->isMethodParameter());
+        $this->assertSame('store-name', $inject->storeName());
     }
 }

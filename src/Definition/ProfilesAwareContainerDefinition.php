@@ -65,7 +65,7 @@ final class ProfilesAwareContainerDefinition implements ContainerDefinition {
 
     private function getServiceDefinition(ObjectType $objectType) : ?ServiceDefinition {
         foreach ($this->containerDefinition->serviceDefinitions() as $serviceDefinition) {
-            if ($serviceDefinition->getType() === $objectType) {
+            if ($serviceDefinition->type() === $objectType) {
                 return $serviceDefinition;
             }
         }
@@ -74,6 +74,6 @@ final class ProfilesAwareContainerDefinition implements ContainerDefinition {
     }
 
     private function hasActiveProfile(ServiceDefinition|InjectDefinition $definition) : bool {
-        return $this->activeProfiles->isAnyActive($definition->getProfiles());
+        return $this->activeProfiles->isAnyActive($definition->profiles());
     }
 }

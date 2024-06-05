@@ -22,7 +22,7 @@ class MultipleServicesWithPrimaryTest extends AnnotatedTargetDefinitionConverter
     }
 
     public function testGetServiceDefinitionType() {
-        $this->assertSame(Fixtures::primaryAliasedServices()->fooImplementation(), $this->definition->getType());
+        $this->assertSame(Fixtures::primaryAliasedServices()->fooImplementation(), $this->definition->type());
     }
 
     public function testServiceIsConcrete() {
@@ -30,7 +30,7 @@ class MultipleServicesWithPrimaryTest extends AnnotatedTargetDefinitionConverter
     }
 
     public function testServiceNameIsNull() {
-        $this->assertNull($this->definition->getName());
+        $this->assertNull($this->definition->name());
     }
 
     public function testServiceIsPrimary() {
@@ -38,11 +38,11 @@ class MultipleServicesWithPrimaryTest extends AnnotatedTargetDefinitionConverter
     }
 
     public function testServiceProfiles() {
-        $this->assertSame(['default'], $this->definition->getProfiles());
+        $this->assertSame(['default'], $this->definition->profiles());
     }
 
     public function testGetAttribute() : void {
-        self::assertInstanceOf(Service::class, $this->definition->getAttribute());
-        self::assertTrue($this->definition->getAttribute()->isPrimary());
+        self::assertInstanceOf(Service::class, $this->definition->attribute());
+        self::assertTrue($this->definition->attribute()->isPrimary());
     }
 }

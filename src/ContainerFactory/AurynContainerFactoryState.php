@@ -51,8 +51,8 @@ final class AurynContainerFactoryState implements ContainerFactoryState {
                     continue;
                 }
 
-                if (is_a($serviceDefinition->getType()->getName(), $value->valueType->getName(), true)) {
-                    $values[] = $this->injector->make($serviceDefinition->getType()->getName());
+                if (is_a($serviceDefinition->type()->getName(), $value->valueType->getName(), true)) {
+                    $values[] = $this->injector->make($serviceDefinition->type()->getName());
                 }
             }
 

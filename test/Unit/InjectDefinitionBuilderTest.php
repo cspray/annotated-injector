@@ -81,7 +81,7 @@ class InjectDefinitionBuilderTest extends TestCase {
             ->withValue('foobar')
             ->build();
 
-        $this->assertTrue($injectDefinition->getTargetIdentifier()->isMethodParameter());
+        $this->assertTrue($injectDefinition->targetIdentifier()->isMethodParameter());
     }
 
     public function testValidMethodInjectDefinitionGetTargetIdentifierIsProperty() {
@@ -90,7 +90,7 @@ class InjectDefinitionBuilderTest extends TestCase {
             ->withValue('foobar')
             ->build();
 
-        $this->assertFalse($injectDefinition->getTargetIdentifier()->isClassProperty());
+        $this->assertFalse($injectDefinition->targetIdentifier()->isClassProperty());
     }
 
     public function testValidMethodInjectDefinitionGetTargetIdentifierGetName() {
@@ -99,7 +99,7 @@ class InjectDefinitionBuilderTest extends TestCase {
             ->withValue('foobar')
             ->build();
 
-        $this->assertSame('paramName', $injectDefinition->getTargetIdentifier()->getName());
+        $this->assertSame('paramName', $injectDefinition->targetIdentifier()->name());
     }
 
     public function testValidMethodInjectDefinitionTargetIdentifierGetValue() {
@@ -108,7 +108,7 @@ class InjectDefinitionBuilderTest extends TestCase {
             ->withValue('foobar')
             ->build();
 
-        $this->assertSame('methodName', $injectDefinition->getTargetIdentifier()->getMethodName());
+        $this->assertSame('methodName', $injectDefinition->targetIdentifier()->methodName());
     }
 
     public function testValidMethodInjectDefinitionTargetIdentifierGetClass() {
@@ -117,7 +117,7 @@ class InjectDefinitionBuilderTest extends TestCase {
             ->withValue('foobar')
             ->build();
 
-        $this->assertSame(Fixtures::injectPrepareServices()->prepareInjector(), $injectDefinition->getTargetIdentifier()->getClass());
+        $this->assertSame(Fixtures::injectPrepareServices()->prepareInjector(), $injectDefinition->targetIdentifier()->class());
     }
 
     public function testValidMethodInjectDefinitionGetType() {
@@ -126,7 +126,7 @@ class InjectDefinitionBuilderTest extends TestCase {
             ->withValue('foobar')
             ->build();
 
-        $this->assertSame($expectedType, $injectDefinition->getType());
+        $this->assertSame($expectedType, $injectDefinition->type());
     }
 
     public function testValidMethodInjectDefinitionGetValue() {
@@ -135,7 +135,7 @@ class InjectDefinitionBuilderTest extends TestCase {
             ->withValue('foobar')
             ->build();
 
-        $this->assertSame('foobar', $injectDefinition->getValue());
+        $this->assertSame('foobar', $injectDefinition->value());
     }
 
     public function testValidMethodInjectDefinitionWithNoProfilesGetProfiles() {
@@ -144,7 +144,7 @@ class InjectDefinitionBuilderTest extends TestCase {
             ->withValue('foobar')
             ->build();
 
-        $this->assertSame(['default'], $injectDefinition->getProfiles());
+        $this->assertSame(['default'], $injectDefinition->profiles());
     }
 
     public function testValidMethodInjectDefinitionWithOneProfileGetProfiles() {
@@ -154,7 +154,7 @@ class InjectDefinitionBuilderTest extends TestCase {
             ->withProfiles('foo')
             ->build();
 
-        $this->assertSame(['foo'], $injectDefinition->getProfiles());
+        $this->assertSame(['foo'], $injectDefinition->profiles());
     }
 
     public function testValidMethodInjectDefinitionWithAdditionalProfilesGetProfiles() {
@@ -164,7 +164,7 @@ class InjectDefinitionBuilderTest extends TestCase {
             ->withProfiles('foo', 'bar', 'baz')
             ->build();
 
-        $this->assertSame(['foo', 'bar', 'baz'], $injectDefinition->getProfiles());
+        $this->assertSame(['foo', 'bar', 'baz'], $injectDefinition->profiles());
     }
 
     public function testValidPropertyInjectDefinitionGetTargetIdentifierIsMethod() {
@@ -173,7 +173,7 @@ class InjectDefinitionBuilderTest extends TestCase {
             ->withValue('my-api-key')
             ->build();
 
-        $this->assertFalse($injectDefinition->getTargetIdentifier()->isMethodParameter());
+        $this->assertFalse($injectDefinition->targetIdentifier()->isMethodParameter());
     }
 
     public function testValidPropertyInjectDefinitionGetTargetIdentifierIsProperty() {
@@ -182,7 +182,7 @@ class InjectDefinitionBuilderTest extends TestCase {
             ->withValue('my-api-key')
             ->build();
 
-        $this->assertTrue($injectDefinition->getTargetIdentifier()->isClassProperty());
+        $this->assertTrue($injectDefinition->targetIdentifier()->isClassProperty());
     }
 
     public function testValidPropertyInjectDefinitionGetTargetIdentifierGetName() {
@@ -191,7 +191,7 @@ class InjectDefinitionBuilderTest extends TestCase {
             ->withValue('my-api-key')
             ->build();
 
-        $this->assertSame('key', $injectDefinition->getTargetIdentifier()->getName());
+        $this->assertSame('key', $injectDefinition->targetIdentifier()->name());
     }
 
     public function testValidPropertyInjectDefinitionGetTargetIdentifierGetClass() {
@@ -200,7 +200,7 @@ class InjectDefinitionBuilderTest extends TestCase {
             ->withValue('my-api-key')
             ->build();
 
-        $this->assertSame($classType, $injectDefinition->getTargetIdentifier()->getClass());
+        $this->assertSame($classType, $injectDefinition->targetIdentifier()->class());
     }
 
     public function testValidPropertyInjectDefinitionGetTargetIdentifierGetMethod() {
@@ -209,7 +209,7 @@ class InjectDefinitionBuilderTest extends TestCase {
             ->withValue('my-api-key')
             ->build();
 
-        $this->assertNull($injectDefinition->getTargetIdentifier()->getMethodName());
+        $this->assertNull($injectDefinition->targetIdentifier()->methodName());
     }
 
     public function testWithNoAttributeReturnsInjectDefinitionWithNullAttribute() : void {
@@ -218,7 +218,7 @@ class InjectDefinitionBuilderTest extends TestCase {
             ->withValue('my-api-key')
             ->build();
 
-        self::assertNull($injectDefinition->getAttribute());
+        self::assertNull($injectDefinition->attribute());
     }
 
     public function testWithAttributeReturnsSameInstance() : void {
@@ -228,6 +228,6 @@ class InjectDefinitionBuilderTest extends TestCase {
             ->withAttribute($attr = new Inject("my-inject-value"))
             ->build();
 
-        self::assertSame($attr, $injectDefinition->getAttribute());
+        self::assertSame($attr, $injectDefinition->attribute());
     }
 }
