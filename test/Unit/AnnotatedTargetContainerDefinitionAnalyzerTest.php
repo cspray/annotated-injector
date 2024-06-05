@@ -2,36 +2,18 @@
 
 namespace Cspray\AnnotatedContainer\Unit;
 
-use Cspray\AnnotatedContainer\Attribute\Configuration;
-use Cspray\AnnotatedContainer\Attribute\Inject;
-use Cspray\AnnotatedContainer\Attribute\Service;
-use Cspray\AnnotatedContainer\Attribute\ServiceDelegate;
-use Cspray\AnnotatedContainer\Attribute\ServicePrepare;
-use Cspray\AnnotatedContainer\Definition\ConfigurationDefinition;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
-use Cspray\AnnotatedContainer\Definition\InjectDefinition;
-use Cspray\AnnotatedContainer\Definition\ServiceDefinition;
-use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinition;
-use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinition;
 use Cspray\AnnotatedContainer\Event\Emitter;
 use Cspray\AnnotatedContainer\Exception\InvalidScanDirectories;
 use Cspray\AnnotatedContainer\Exception\InvalidServiceDelegate;
 use Cspray\AnnotatedContainer\Exception\InvalidServicePrepare;
 use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalyzer;
 use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetDefinitionConverter;
-use Cspray\AnnotatedContainer\StaticAnalysis\CompositeDefinitionProvider;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
 use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProvider;
-use Cspray\AnnotatedContainer\Unit\Helper\AnotherDefinitionProvider;
-use Cspray\AnnotatedContainer\Unit\Helper\StubDefinitionProvider;
-use Cspray\AnnotatedContainer\Unit\Helper\TestLogger;
-use Cspray\AnnotatedContainerFixture\ConfigurationWithArrayEnum\FooEnum;
-use Cspray\AnnotatedContainerFixture\ConfigurationWithEnum\MyEnum;
-use Cspray\AnnotatedContainerFixture\CustomServiceAttribute\Repository;
 use Cspray\AnnotatedContainerFixture\Fixtures;
 use Cspray\AnnotatedTarget\PhpParserAnnotatedTargetParser;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\LogLevel;
 
 class AnnotatedTargetContainerDefinitionAnalyzerTest extends TestCase {
 

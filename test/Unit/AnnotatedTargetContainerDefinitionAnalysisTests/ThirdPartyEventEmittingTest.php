@@ -26,7 +26,7 @@ use Cspray\AnnotatedContainerFixture\Fixture;
 use Cspray\AnnotatedContainerFixture\Fixtures;
 use Cspray\AnnotatedContainerFixture\ThirdPartyKitchenSink\NonAnnotatedInterface;
 use Cspray\AnnotatedContainerFixture\ThirdPartyKitchenSink\NonAnnotatedService;
-use function Cspray\AnnotatedContainer\injectMethodParam;
+use function Cspray\AnnotatedContainer\inject;
 use function Cspray\AnnotatedContainer\service;
 use function Cspray\AnnotatedContainer\serviceDelegate;
 use function Cspray\AnnotatedContainer\servicePrepare;
@@ -47,26 +47,29 @@ class ThirdPartyEventEmittingTest extends AnnotatedTargetContainerDefinitionAnal
 
     protected function getDefinitionProvider() : ?DefinitionProvider {
         return new CallableDefinitionProvider(static function(DefinitionProviderContext $context) {
-            service($context, objectType(NonAnnotatedInterface::class));
-            service($context, objectType(NonAnnotatedService::class));
-            serviceDelegate(
-                $context,
-                objectType(NonAnnotatedService::class),
-                objectType(NonAnnotatedService::class),
-                'create'
+            $context->addServiceDefinition(service(objectType(NonAnnotatedInterface::class)));
+            $context->addServiceDefinition(service(objectType(NonAnnotatedService::class)));
+            $context->addServiceDelegateDefinition(
+                serviceDelegate(
+                    objectType(NonAnnotatedService::class),
+                    objectType(NonAnnotatedService::class),
+                    'create'
+                )
             );
-            servicePrepare(
-                $context,
-                objectType(NonAnnotatedService::class),
-                'init'
+            $context->addServicePrepareDefinition(
+                servicePrepare(
+                    objectType(NonAnnotatedService::class),
+                    'init'
+                )
             );
-            injectMethodParam(
-                $context,
-                objectType(NonAnnotatedService::class),
-                'init',
-                'value',
-                stringType(),
-                'calledFromApi'
+            $context->addInjectDefinition(
+                inject(
+                    objectType(NonAnnotatedService::class),
+                    'init',
+                    'value',
+                    stringType(),
+                    'calledFromApi'
+                )
             );
         });
     }

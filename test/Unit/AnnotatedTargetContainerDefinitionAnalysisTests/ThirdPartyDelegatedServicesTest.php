@@ -41,7 +41,7 @@ class ThirdPartyDelegatedServicesTest extends AnnotatedTargetContainerDefinition
 
     protected function getDefinitionProvider() : ?DefinitionProvider {
         return new CallableDefinitionProvider(function(DefinitionProviderContext $context) {
-            service($context, objectType(LoggerInterface::class));
+            $context->addServiceDefinition(service(objectType(LoggerInterface::class)));
         });
     }
 

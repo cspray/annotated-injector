@@ -12,6 +12,7 @@ use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProvider;
 use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProviderContext;
 use Cspray\AnnotatedContainerFixture\Fixtures;
 use Cspray\AnnotatedContainerFixture\LogicalConstraints\LogicalConstraintFixtures;
+use function Cspray\AnnotatedContainer\serviceDelegate;
 
 final class DuplicateServiceDelegateTest extends LogicalConstraintTestCase {
 
@@ -74,11 +75,12 @@ TEXT;
                 new class implements DefinitionProvider {
 
                     public function consume(DefinitionProviderContext $context) : void {
-                        \Cspray\AnnotatedContainer\serviceDelegate(
-                            $context,
-                            Fixtures::implicitServiceDelegateType()->fooService(),
-                            Fixtures::implicitServiceDelegateType()->fooServiceFactory(),
-                            'create'
+                        $context->addServiceDelegateDefinition(
+                            serviceDelegate(
+                                Fixtures::implicitServiceDelegateType()->fooService(),
+                                Fixtures::implicitServiceDelegateType()->fooServiceFactory(),
+                                'create'
+                            )
                         );
                     }
                 }

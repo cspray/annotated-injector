@@ -11,7 +11,6 @@ This document lists the functions for each purpose.
 
 ```php
 \Cspray\AnnotatedContainer\service(
-    \Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProviderContext $context,
     \Cspray\Typiphy\ObjectType $service,
     ?string $name = null,
     array $profiles = [],
@@ -19,26 +18,22 @@ This document lists the functions for each purpose.
 ) : \Cspray\AnnotatedContainer\Definition\ServiceDefinition;
 
 \Cspray\AnnotatedContainer\alias(
-    \Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProviderContext $context,
     \Cspray\Typiphy\ObjectType $abstract,
     \Cspray\Typiphy\ObjectType $concrete
 ) : \Cspray\AnnotatedContainer\Definition\AliasDefinition;
 
 \Cspray\AnnotatedContainer\serviceDelegate(
-    \Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProviderContext $context,
     \Cspray\Typiphy\ObjectType $service,
     \Cspray\Typiphy\ObjectType $factoryClass,
     string $factoryMethod
 ) : \Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinition;
 
 \Cspray\AnnotatedContainer\servicePrepare(
-    \Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProviderContext $context,
     \Cspray\Typiphy\ObjectType $service,
     string $method
 ) : \Cspray\AnnotatedContainer\Definition\ServicePrepareDefinition;
 
-\Cspray\AnnotatedContainer\injectMethodParam(
-    \Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProviderContext $context,
+\Cspray\AnnotatedContainer\inject(
     \Cspray\Typiphy\ObjectType $service,
     string $method,
     string $paramName,

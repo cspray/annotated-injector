@@ -13,6 +13,6 @@ final class StubDefinitionProviderWithDependencies implements DefinitionProvider
     }
 
     public function consume(DefinitionProviderContext $context) : void {
-        service($context, $this->service);
+        $context->addServiceDefinition(service($this->service));
     }
 }

@@ -10,6 +10,8 @@ use function Cspray\AnnotatedContainer\service;
 final class StubDefinitionProvider implements DefinitionProvider {
 
     public function consume(DefinitionProviderContext $context) : void {
-        service($context, Fixtures::thirdPartyServices()->fooImplementation());
+        $context->addServiceDefinition(
+            service(Fixtures::thirdPartyServices()->fooImplementation())
+        );
     }
 }

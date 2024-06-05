@@ -4,6 +4,7 @@ namespace Cspray\AnnotatedContainer\Unit\AnnotatedTargetContainerDefinitionAnaly
 
 use Cspray\AnnotatedContainer\StaticAnalysis\CallableDefinitionProvider;
 use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProvider;
+use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProviderContext;
 use Cspray\AnnotatedContainer\Unit\AnnotatedTargetContainerDefinitionAnalysisTests\DataProviderExpects\ExpectedAliasDefinition;
 use Cspray\AnnotatedContainer\Unit\AnnotatedTargetContainerDefinitionAnalysisTests\DataProviderExpects\ExpectedServiceIsAbstract;
 use Cspray\AnnotatedContainer\Unit\AnnotatedTargetContainerDefinitionAnalysisTests\DataProviderExpects\ExpectedServiceIsConcrete;
@@ -36,8 +37,8 @@ class ThirdPartyServicesTest extends AnnotatedTargetContainerDefinitionAnalyzerT
     }
 
     protected function getDefinitionProvider() : ?DefinitionProvider {
-        return new CallableDefinitionProvider(function($context) {
-            service($context, Fixtures::thirdPartyServices()->fooImplementation());
+        return new CallableDefinitionProvider(function(DefinitionProviderContext $context) {
+            $context->addServiceDefinition(service(Fixtures::thirdPartyServices()->fooImplementation()));
         });
     }
 

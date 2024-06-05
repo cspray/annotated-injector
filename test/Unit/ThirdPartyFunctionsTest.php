@@ -12,7 +12,7 @@ use Cspray\AnnotatedContainer\Definition\ContainerDefinitionBuilder;
 use Cspray\AnnotatedContainerFixture\Fixtures;
 use PHPUnit\Framework\TestCase;
 use function Cspray\AnnotatedContainer\alias;
-use function Cspray\AnnotatedContainer\injectMethodParam;
+use function Cspray\AnnotatedContainer\inject;
 use function Cspray\AnnotatedContainer\serviceDelegate;
 use function Cspray\AnnotatedContainer\servicePrepare;
 use function Cspray\Typiphy\intType;
@@ -56,128 +56,80 @@ class ThirdPartyFunctionsTest extends TestCase {
     }
 
     public function testHasServiceDefinitionForType() : void {
-        $context = $this->getContext();
         $type = Fixtures::singleConcreteService()->fooImplementation();
-        service($context, $type);
+        $serviceDefinition = service($type);
 
-        $containerDefinition = $context->getBuilder()->build();
-
-        $this->assertServiceDefinitionsHaveTypes([$type->getName()], $containerDefinition->serviceDefinitions());
-    }
-
-    public function testServiceDefinitionReturnsIsInContainerDefinition() {
-        $context = $this->getContext();
-        $def = service($context, Fixtures::singleConcreteService()->fooImplementation());
-
-        $containerDefinition = $context->getBuilder()->build();
-        $serviceDefinition = $this->getServiceDefinition($containerDefinition->serviceDefinitions(), Fixtures::singleConcreteService()->fooImplementation()->getName());
-
-        $this->assertSame($serviceDefinition, $def);
+        self::assertSame(
+            $serviceDefinition->type(),
+            $type
+        );
     }
 
     public function testAbstractDefinedServiceIsAbstract() {
-        $context = $this->getContext();
-        service($context, Fixtures::implicitAliasedServices()->fooInterface());
+        $serviceDefinition = service(Fixtures::implicitAliasedServices()->fooInterface());
 
-        $containerDefinition = $context->getBuilder()->build();
-        $serviceDefinition = $this->getServiceDefinition($containerDefinition->serviceDefinitions(), Fixtures::implicitAliasedServices()->fooInterface()->getName());
-
-        $this->assertTrue($serviceDefinition?->isAbstract());
+        self::assertTrue($serviceDefinition->isAbstract());
     }
 
     public function testAbstractDefinedServiceGetName() {
-        $context = $this->getContext();
-        service($context, Fixtures::implicitAliasedServices()->fooInterface(), 'fooService');
+        $serviceDefinition = service(Fixtures::implicitAliasedServices()->fooInterface(), 'fooService');
 
-        $containerDefinition = $context->getBuilder()->build();
-        $serviceDefinition = $this->getServiceDefinition($containerDefinition->serviceDefinitions(), Fixtures::implicitAliasedServices()->fooInterface()->getName());
-
-        $this->assertSame('fooService', $serviceDefinition?->name());
+        $this->assertSame('fooService', $serviceDefinition->name());
     }
 
     public function testAbstractDefinedServiceGetProfiles() {
-        $context = $this->getContext();
-        service($context, Fixtures::implicitAliasedServices()->fooInterface(), profiles: ['default', 'dev']);
-
-        $containerDefinition = $context->getBuilder();
-        $serviceDefinition = $this->getServiceDefinition($containerDefinition->serviceDefinitions(), Fixtures::implicitAliasedServices()->fooInterface()->getName());
+        $serviceDefinition = service(Fixtures::implicitAliasedServices()->fooInterface(), profiles: ['default', 'dev']);
 
         $this->assertSame(['default', 'dev'], $serviceDefinition->profiles());
     }
 
     public function testSingleConcreteServiceIsConcrete() {
-        $context = $this->getContext();
-        service($context, Fixtures::singleConcreteService()->fooImplementation());
+        $serviceDefinition = service(Fixtures::singleConcreteService()->fooImplementation());
 
-        $containerDefinition = $context->getBuilder()->build();
-        $serviceDefinition = $this->getServiceDefinition($containerDefinition->serviceDefinitions(), Fixtures::singleConcreteService()->fooImplementation()->getName());
-
-        $this->assertTrue($serviceDefinition?->isConcrete());
+        $this->assertTrue($serviceDefinition->isConcrete());
     }
 
     public function testSingleConcreteServiceIsPrimary() {
-        $context = $this->getContext();
-        service($context, Fixtures::singleConcreteService()->fooImplementation(), isPrimary: true);
-
-        $containerDefinition = $context->getBuilder()->build();
-        $serviceDefinition = $this->getServiceDefinition($containerDefinition->serviceDefinitions(), Fixtures::singleConcreteService()->fooImplementation()->getName());
+        $serviceDefinition = service(Fixtures::singleConcreteService()->fooImplementation(), isPrimary: true);
 
         $this->assertTrue($serviceDefinition->isPrimary());
     }
 
     public function testAddAliasDefinition() {
-        $context = $this->getContext();
         $abstract = Fixtures::implicitAliasedServices()->fooInterface();
         $concrete = Fixtures::implicitAliasedServices()->fooImplementation();
-        alias($context, $abstract, $concrete);
+        $aliasDefinition = alias($abstract, $concrete);
 
-        $containerDefinition = $context->getBuilder()->build();
         $this->assertAliasDefinitionsMap([
             [Fixtures::implicitAliasedServices()->fooInterface()->getName(), Fixtures::implicitAliasedServices()->fooImplementation()->getName()]
-        ], $containerDefinition->aliasDefinitions());
+        ], [$aliasDefinition]);
     }
 
     public function testServiceDelegateDefinition() {
-        $context = $this->getContext();
         $service = Fixtures::delegatedService()->serviceInterface();
-        serviceDelegate($context, $service, Fixtures::delegatedService()->serviceFactory(), 'createService');
+        $serviceDelegateDefinition = serviceDelegate($service, Fixtures::delegatedService()->serviceFactory(), 'createService');
 
-        $containerDefinition = $context->getBuilder()->build();
-
-        $this->assertCount(1, $containerDefinition->serviceDelegateDefinitions());
-        $this->assertSame(Fixtures::delegatedService()->serviceInterface()->getName(), $containerDefinition->serviceDelegateDefinitions()[0]->serviceType()->getName());
-        $this->assertSame(Fixtures::delegatedService()->serviceFactory()->getName(), $containerDefinition->serviceDelegateDefinitions()[0]->delegateType()->getName());
-        $this->assertSame('createService', $containerDefinition->serviceDelegateDefinitions()[0]->delegateMethod());
+        $this->assertSame(Fixtures::delegatedService()->serviceInterface()->getName(), $serviceDelegateDefinition->serviceType()->getName());
+        $this->assertSame(Fixtures::delegatedService()->serviceFactory()->getName(), $serviceDelegateDefinition->delegateType()->getName());
+        $this->assertSame('createService', $serviceDelegateDefinition->delegateMethod());
     }
 
     public function testServicePrepareDefinition() {
-        $context = $this->getContext();
-        servicePrepare($context, Fixtures::interfacePrepareServices()->fooInterface(), 'setBar');
-
-        $containerDefinition = $context->getBuilder()->build();
+        $servicePrepareDefinition = servicePrepare(Fixtures::interfacePrepareServices()->fooInterface(), 'setBar');
 
         $this->assertServicePrepareTypes([
             [Fixtures::interfacePrepareServices()->fooInterface()->getName(), 'setBar']
-        ], $containerDefinition->servicePrepareDefinitions());
+        ], [$servicePrepareDefinition]);
     }
 
     public function testInjectMethodParam() {
-        $context = $this->getContext();
-        $actualInject = injectMethodParam(
-            $context,
+        $inject = inject(
             Fixtures::injectConstructorServices()->injectFloatService(),
             '__construct',
             'dessert',
             intType(),
             42
         );
-
-        $containerDefinition = $context->getBuilder()->build();
-
-        $injects = $containerDefinition->injectDefinitions();
-        $this->assertCount(1, $injects);
-
-        $inject = $injects[0];
 
         $this->assertSame(Fixtures::injectConstructorServices()->injectFloatService(), $inject->class());
         $this->assertSame('__construct', $inject->methodName());
@@ -186,14 +138,10 @@ class ThirdPartyFunctionsTest extends TestCase {
         $this->assertSame(42, $inject->value());
         $this->assertSame(['default'], $inject->profiles());
         $this->assertNull($inject->storeName());
-
-        $this->assertSame($actualInject, $inject);
     }
 
     public function testInjectMethodParamProfiles() {
-        $context = $this->getContext();
-        injectMethodParam(
-            $context,
+        $inject = inject(
             Fixtures::injectConstructorServices()->injectFloatService(),
             '__construct',
             'dessert',
@@ -202,20 +150,11 @@ class ThirdPartyFunctionsTest extends TestCase {
             ['foo', 'bar', 'baz']
         );
 
-        $containerDefinition = $context->getBuilder()->build();
-
-        $injects = $containerDefinition->injectDefinitions();
-        $this->assertCount(1, $injects);
-
-        $inject = $injects[0];
-
         $this->assertSame(['foo', 'bar', 'baz'], $inject->profiles());
     }
 
     public function testInjectMethodParamStoreName() {
-        $context = $this->getContext();
-        injectMethodParam(
-            $context,
+        $inject = inject(
             Fixtures::injectConstructorServices()->injectFloatService(),
             '__construct',
             'dessert',
@@ -223,13 +162,6 @@ class ThirdPartyFunctionsTest extends TestCase {
             42,
             from: 'store-name'
         );
-
-        $containerDefinition = $context->getBuilder()->build();
-
-        $injects = $containerDefinition->injectDefinitions();
-        $this->assertCount(1, $injects);
-
-        $inject = $injects[0];
 
         $this->assertSame('store-name', $inject->storeName());
     }

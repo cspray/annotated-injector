@@ -14,6 +14,7 @@ use Cspray\AnnotatedContainerFixture\Fixtures;
 use Cspray\AnnotatedContainerFixture\LogicalConstraints\DuplicateServicePrepare\DummyPrepare;
 use Cspray\AnnotatedContainerFixture\LogicalConstraints\LogicalConstraintFixtures;
 use function Cspray\Typiphy\objectType;
+use function Cspray\AnnotatedContainer\servicePrepare;
 
 final class DuplicateServicePrepareTest extends LogicalConstraintTestCase {
 
@@ -79,12 +80,16 @@ TEXT;
             )->withDefinitionProvider(
                 new class implements DefinitionProvider {
                     public function consume(DefinitionProviderContext $context) : void {
-                        \Cspray\AnnotatedContainer\servicePrepare($context, objectType(
-                            Fixtures::singleConcreteService()->fooImplementation()->getName()
-                        ), 'postConstruct');
-                        \Cspray\AnnotatedContainer\servicePrepare($context, objectType(
-                            Fixtures::singleConcreteService()->fooImplementation()->getName()
-                        ), 'postConstruct');
+                        $context->addServicePrepareDefinition(
+                            servicePrepare(objectType(
+                                Fixtures::singleConcreteService()->fooImplementation()->getName()
+                            ), 'postConstruct')
+                        );
+                        $context->addServicePrepareDefinition(
+                            servicePrepare(objectType(
+                                Fixtures::singleConcreteService()->fooImplementation()->getName()
+                            ), 'postConstruct')
+                        );
                     }
                 }
             )->build()
