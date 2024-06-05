@@ -2,6 +2,7 @@
 
 namespace Cspray\AnnotatedContainer\Unit\Cli\Command;
 
+use Cspray\AnnotatedContainer\AnnotatedContainerVersion;
 use Cspray\AnnotatedContainer\Bootstrap\ComposerJsonScanningThirdPartyInitializerProvider;
 use Cspray\AnnotatedContainer\Cli\Command\InitCommand;
 use Cspray\AnnotatedContainer\Cli\Exception\ComposerConfigurationNotFound;
@@ -241,10 +242,11 @@ SHELL;
         $exitCode = $subject->handle($input, $this->output);
 
         self::assertSame(0, $exitCode);
+        $version = AnnotatedContainerVersion::version();
 
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="$version">
   <scanDirectories>
     <source>
       <dir>src</dir>
@@ -290,10 +292,11 @@ XML;
         $exitCode = $this->subject->handle($input, $this->output);
 
         self::assertSame(0, $exitCode);
+        $version = AnnotatedContainerVersion::version();
 
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="$version">
   <scanDirectories>
     <source>
       <dir>src</dir>
@@ -333,9 +336,11 @@ XML;
 
         self::assertSame(0, $exitCode);
 
+        $version = AnnotatedContainerVersion::version();
+
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="$version">
   <scanDirectories>
     <source>
       <dir>src</dir>
@@ -387,9 +392,11 @@ XML;
 
         self::assertSame(0, $exitCode);
 
+        $version = AnnotatedContainerVersion::version();
+
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="$version">
   <scanDirectories>
     <source>
       <dir>src</dir>
@@ -420,9 +427,11 @@ XML;
 
         self::assertSame(0, $exitCode);
 
+        $version = AnnotatedContainerVersion::version();
+
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="$version">
   <scanDirectories>
     <source>
       <dir>src</dir>
@@ -454,9 +463,11 @@ XML;
 
         self::assertSame(0, $exitCode);
 
+        $version = AnnotatedContainerVersion::version();
+
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="$version">
   <scanDirectories>
     <source>
       <dir>src</dir>
