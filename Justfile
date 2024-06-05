@@ -32,11 +32,14 @@ static-analysis:
 
 # Set the baseline of known issues to be used during static analysis
 static-analysis-set-baseline:
-    @./tools/psalm/vendor/bin/psalm --set-baseline=known-issues.xml
+    @./tools/psalm/vendor/bin/psalm --set-baseline=known-issues.xml --no-cache
 
 # Update the baseline to _remove_ fixed issues. If new issues are to be added please use static-analysis-set-baseline
 static-analysis-update-baseline:
     @./tools/psalm/vendor/bin/psalm --update-baseline --no-cache
+
+static-analysis-clear-cache:
+    @./tools/psalm/vendor/bin/psalm --clear-cache
 
 # Run code-linting tools on src and test
 code-lint:

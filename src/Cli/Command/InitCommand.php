@@ -100,37 +100,20 @@ DESCRIPTION
        "lib", and "test". By default we'll look for these directories in the root 
        of your project. If you need to scan directories outside your project 
        root please review the Caveats & Other Concerns detailed below.
-       
-    3. Setup configuration to cache your ContainerDefinition in a directory in 
-       the root of your project. If this directory doesn't already exist it will
-       be created. You can change the directory that is used for caching by passing 
-       the --cache-dir option when executing this command. This command will always 
-       enable caching. Caching your ContainerDefinition is HIGHLY recommended as 
-       statically analysing your codebase can be quite costly. If you need to 
-       disable caching for some reason, you're in early development and services 
-       are likely to change frequently, you can remove this configuration.
 
-    4. Setup configuration to include a DefinitionProvider when you need to 
+    3. Setup configuration to include a DefinitionProvider when you need to 
        configure third-party services. You can provide a single --definition-provider 
        option when executing this command to define configured value. The value
        passed to this option MUST be a fully-qualified class name. By default, 
        no provider will be defined unless an option is passed. If you use this 
        configuration option please review Defining Class Configurations below.
        
-    5. Setup configuration to include ParameterStore implementations in the 
+    4. Setup configuration to include ParameterStore implementations in the 
        ContainerFactory. You can provide multiple --parameter-store options when 
        executing this command to define configured values. The value passed to 
        this option MUST be a fully-qualified class name. By default, no stores 
        will be defined unless options are passed. If you use this configuration 
        option please review Defining Class Configurations detailed below.
-       
-    6. Setup configuration to include Observer implementations to respond to 
-       events that happen during Annotated Container's bootstrapping. You can 
-       provide multiple --observer options when executing this command to 
-       define configured values. The value passed to this option MUST be a 
-       fully-qualified class name. By default, no observers will be defined 
-       unless options are passed. If you use this configuration option please 
-       review Defining Class Configurations detailed below.
        
     Resolving File Paths
     ============================================================================
@@ -155,12 +138,6 @@ DESCRIPTION
    
 OPTIONS
 
-    --cache-dir="cache/dir"
-    
-        Specify the directory that ContainerDefinition will be cached in. If this
-        option is not provided the cache directory will be ".annotated-container-cache".
-        This option can only be defined 1 time.
-    
     --config-file="file-path.xml"
     
         Set the name of the configuration file that is created. If this option 
@@ -180,11 +157,6 @@ OPTIONS
         injecting custom values with the Inject Attribute. Please be sure to 
         review Defining Class Configurations if you use this value.
     
-    --observer="Fully\Qualified\Class\Name"
-
-        Add an Observer to the bootstrapping process. This can be used to respond 
-        to events during the compilation and creation of your Container.
-
 SHELL;
     }
 
@@ -218,15 +190,6 @@ SHELL;
         }
 
         $this->generateAndSaveConfiguration($input, $composer, $configFile);
-
-        /** @var ?string $cacheDirOpt */
-        $cacheDirOpt = $input->option('cache-dir');
-        $cacheDir = $this->directoryResolver->cachePath(
-            $cacheDirOpt ?? '.annotated-container-cache'
-        );
-        if (!is_dir($cacheDir)) {
-            mkdir($cacheDir, recursive: true);
-        }
 
         $output->stdout->write('<fg:green>Annotated Container initialized successfully!</fg:green>');
         $output->stdout->br();
@@ -372,12 +335,6 @@ SHELL;
                 );
             }
         }
-
-        /** @var string|null $cacheDirOpt */
-        $cacheDirOpt = $input->option('cache-dir');
-        $cacheName = $cacheDirOpt ?? '.annotated-container-cache';
-
-        $root->appendChild($dom->createElementNS(self::XML_SCHEMA, 'cacheDir', $cacheName));
 
         $schemaPath = dirname(__DIR__, 3) . '/annotated-container.xsd';
         $dom->schemaValidate($schemaPath);

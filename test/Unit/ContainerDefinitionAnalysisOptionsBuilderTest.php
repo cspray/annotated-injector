@@ -12,7 +12,7 @@ class ContainerDefinitionAnalysisOptionsBuilderTest extends TestCase {
     public function testByDefaultDefinitionProviderIsNull() : void {
         $compilerOptions = ContainerDefinitionAnalysisOptionsBuilder::scanDirectories(Fixtures::singleConcreteService()->getPath())->build();
 
-        self::assertNull($compilerOptions->getDefinitionProvider());
+        self::assertNull($compilerOptions->definitionProvider());
     }
 
     public function testWithDefinitionProviderImmutable() : void {
@@ -29,6 +29,6 @@ class ContainerDefinitionAnalysisOptionsBuilderTest extends TestCase {
             }))
             ->build();
 
-        self::assertSame($expected, $compilerOptions->getDefinitionProvider());
+        self::assertSame($expected, $compilerOptions->definitionProvider());
     }
 }

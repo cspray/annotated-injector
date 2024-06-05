@@ -80,7 +80,7 @@ SHELL;
         }
 
         $config = new XmlBootstrappingConfiguration($configPath, new DefaultParameterStoreFactory(), new DefaultDefinitionProviderFactory());
-        $cacheDir = $config->cacheDirectory();
+        $cacheDir = $config->cache();
         if (!isset($cacheDir)) {
             throw CacheDirConfigurationNotFound::fromCacheCommand();
         }

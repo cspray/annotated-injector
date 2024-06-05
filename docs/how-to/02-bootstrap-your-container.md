@@ -21,11 +21,10 @@ If successful you'll get a configuration file named `annotated-container.xml` in
       <dir>tests</dir>
     </source>
   </scanDirectories>
-  <cacheDir>.annotated-container-cache</cacheDir>
 </annotatedContainer>
 ```
 
-The most important, and the only thing that's actually required, is to define at least 1 source directory to scan. By default, we also include a directory that stores a cached ContainerDefinition. Though the cache directory is not strictly required it is a good practice to include it. Caching drastically increases the performance of creating your Container. It is also required if you want to use the `./vendor/bin/annotated-container build` command to generate a ContainerDefinition ahead-of-time, for example in production.
+The most important, and the only thing that's actually required, is to define at least 1 source directory to scan. It should be noted that **all** directories autoloaded in your `composer.json` will be scanned, including any `autoload-dev` entries. If this is not desired, be sure to remove these directories after the configuration is generated.
 
 The rest of this guide will add new elements to this configuration. The steps below are optional, if you don't require any "bells & whistles" skip to Step 4.
 
@@ -63,7 +62,6 @@ Now, upgrade the configuration to let bootstrapping know which class to use.
       <dir>tests</dir>
     </source>
   </scanDirectories>
-  <cacheDir>.annotated-container-cache</cacheDir>
   <definitionProviders>
     <definitionProvider>Acme\Demo\ThirdPartyServicesProvider</definitionProvider>
   </definitionProviders>
@@ -109,7 +107,6 @@ Next, update your configuration.
       <dir>tests</dir>
     </source>
   </scanDirectories>
-  <cacheDir>.annotated-container-cache</cacheDir>
   <parameterStores>
     <parameterStore>Acme\Demo\MyCustomParameterStore</parameterStore>
   </parameterStores>
@@ -243,3 +240,35 @@ $container = Bootstrap::fromCompleteSetup(
     new DefaultDefinitionProviderFactory()
 ))->bootstrapContainer();
 ```
+
+#### Caching ContainerDefinition
+
+The static analysis portion of Annotated Container can, like most static analysis tools, be relatively time-consuming. In PHP applications that act as long-running processes, the type this maintainer tends to develop using Annotated Container, this cost is negligible. It happens just 1 time and is just a small part of the initial startup costs. However, in traditional PHP applications that only live for the length of the request this can be costly. In this situation, it is recommended you configure your bootstrap to cache the ContainerDefinition.
+
+Setting up caching is something that you must explicitly opt into during your bootstrapping. In the 2.x series it was possible to configure a directory to use as a cache. This was removed in 3.0 in favor of a much more robust caching mechanism. The below snippet of code is how to effectively setup your 3.0 Annotated Container to cache similarly to 2.0.
+
+```php
+<?php declare(strict_types=1);
+
+namespace Acme\Demo;
+
+use Cspray\AnnotatedContainer\Bootstrap\Bootstrap;
+use Cspray\AnnotatedContainer\Bootstrap\CacheAwareBootstrappingConfigurationProvider;
+use Cspray\AnnotatedContainer\Bootstrap\DefaultDefinitionProviderFactory;
+use Cspray\AnnotatedContainer\Bootstrap\DefaultParameterStoreFactory;
+use Cspray\AnnotatedContainer\Bootstrap\XmlBootstrappingConfigurationProvider;use Cspray\AnnotatedContainer\ContainerFactory\PhpDiContainerFactory;
+use Cspray\AnnotatedContainer\Definition\Cache\FileBackedContainerDefinitionCache;use Cspray\AnnotatedContainer\Definition\Serializer\XmlContainerDefinitionSerializer;use Cspray\AnnotatedContainer\Event\Emitter;
+
+$container = Bootstrap::fromMinimalSetup(new Emitter())
+    ->bootstrapContainer(
+        bootstrappingConfigurationProvider: new CacheAwareBootstrappingConfigurationProvider(
+            new XmlBootstrappingConfigurationProvider(),
+            new FileBackedContainerDefinitionCache(
+                new XmlContainerDefinitionSerializer(),
+                __DIR__ . '/.annotated-container-cache'
+            )
+        )
+    );
+```
+
+If the cache implementations provided by Annotated Container are not sufficient, you can create your own `Cspray\AnnotatedContainer\Definition\Cache\ContainerDefinitionCache` appropriate for your use case.

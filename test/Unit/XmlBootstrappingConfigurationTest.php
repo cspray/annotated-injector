@@ -155,10 +155,10 @@ XML;
             new DefaultParameterStoreFactory(),
             new DefaultDefinitionProviderFactory(),
         );
-        self::assertNull($config->cacheDirectory());
+        self::assertNull($config->cache());
     }
 
-    public function testCacheDirSpecifiedIsReturned() : void {
+    public function testCacheIsAlwaysNull() : void {
         $goodXml = <<<XML
 <?xml version="1.0" encoding="UTF-8" ?>
 <annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
@@ -167,7 +167,6 @@ XML;
             <dir>src</dir>
         </source>
     </scanDirectories>
-    <cacheDir>cache</cacheDir>
 </annotatedContainer>
 XML;
 
@@ -180,7 +179,8 @@ XML;
             new DefaultParameterStoreFactory(),
             new DefaultDefinitionProviderFactory(),
         );
-        self::assertSame('cache', $config->cacheDirectory());
+
+        self::assertNull($config->cache());
     }
 
     public function testParameterStoresReturned() : void {

@@ -57,12 +57,12 @@ final class ContainerDefinitionAnalysisOptionsBuilder {
             ) {
             }
 
-            public function getScanDirectories(): array {
+            public function scanDirectories(): array {
                 return $this->directories;
             }
 
             #[SingleEntrypointDefinitionProvider]
-            public function getDefinitionProvider(): ?DefinitionProvider {
+            public function definitionProvider(): ?DefinitionProvider {
                 return $this->consumer;
             }
         };

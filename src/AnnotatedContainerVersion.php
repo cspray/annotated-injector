@@ -2,7 +2,7 @@
 
 namespace Cspray\AnnotatedContainer;
 
-use PackageVersions\Versions;
+use Composer\InstalledVersions;
 
 final class AnnotatedContainerVersion {
 
@@ -10,6 +10,6 @@ final class AnnotatedContainerVersion {
     }
 
     public static function version() : string {
-        return Versions::getVersion('cspray/annotated-container');
+        return InstalledVersions::getVersion('cspray/annotated-container');
     }
 }

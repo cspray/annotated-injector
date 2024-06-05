@@ -2,6 +2,7 @@
 
 namespace Cspray\AnnotatedContainer\Bootstrap;
 
+use Cspray\AnnotatedContainer\Definition\Cache\ContainerDefinitionCache;
 use Cspray\AnnotatedContainer\StaticAnalysis\CompositeDefinitionProvider;
 use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProvider;
 use Cspray\AnnotatedContainer\ContainerFactory\ParameterStore;
@@ -145,7 +146,7 @@ final class XmlBootstrappingConfiguration implements BootstrappingConfiguration 
         return $this->parameterStores;
     }
 
-    public function cacheDirectory() : ?string {
+    public function cache() : ?ContainerDefinitionCache {
         return $this->cacheDir;
     }
 }

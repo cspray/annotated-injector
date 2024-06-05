@@ -3,6 +3,7 @@
 namespace Cspray\AnnotatedContainer\Bootstrap;
 
 use Cspray\AnnotatedContainer\ArchitecturalDecisionRecords\SingleEntrypointDefinitionProvider;
+use Cspray\AnnotatedContainer\Definition\Cache\ContainerDefinitionCache;
 use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProvider;
 use Cspray\AnnotatedContainer\ContainerFactory\ParameterStore;
 
@@ -13,7 +14,7 @@ interface BootstrappingConfiguration {
      */
     public function scanDirectories() : array;
 
-    public function cacheDirectory() : ?string;
+    public function cache() : ?ContainerDefinitionCache;
 
     #[SingleEntrypointDefinitionProvider]
     public function containerDefinitionProvider() : ?DefinitionProvider;

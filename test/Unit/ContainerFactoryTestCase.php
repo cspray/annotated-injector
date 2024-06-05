@@ -2,27 +2,27 @@
 
 namespace Cspray\AnnotatedContainer\Unit;
 
+use Cspray\AnnotatedContainer\AnnotatedContainer;
 use Cspray\AnnotatedContainer\Autowire\AutowireableFactory;
 use Cspray\AnnotatedContainer\Autowire\AutowireableInvoker;
-use Cspray\AnnotatedContainer\Event\Emitter;
-use Cspray\AnnotatedContainer\Exception\InvalidAlias;
-use Cspray\AnnotatedContainer\Profiles;
-use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalyzer;
-use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
-use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalyzer;
-use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetDefinitionConverter;
 use Cspray\AnnotatedContainer\ContainerFactory\ContainerFactory;
 use Cspray\AnnotatedContainer\ContainerFactory\ContainerFactoryOptionsBuilder;
 use Cspray\AnnotatedContainer\ContainerFactory\ParameterStore;
 use Cspray\AnnotatedContainer\Definition\AliasDefinitionBuilder;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinitionBuilder;
+use Cspray\AnnotatedContainer\Definition\Serializer\XmlContainerDefinitionSerializer;
 use Cspray\AnnotatedContainer\Definition\ServiceDefinitionBuilder;
+use Cspray\AnnotatedContainer\Event\Emitter;
+use Cspray\AnnotatedContainer\Exception\InvalidAlias;
 use Cspray\AnnotatedContainer\Exception\ParameterStoreNotFound;
-use Cspray\AnnotatedContainer\Serializer\ContainerDefinitionSerializer;
-use Cspray\AnnotatedContainer\AnnotatedContainer;
-use Cspray\AnnotatedContainer\Unit\Helper\StubParameterStore;
+use Cspray\AnnotatedContainer\Profiles;
+use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalyzer;
+use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetDefinitionConverter;
+use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
+use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalyzer;
 use Cspray\AnnotatedContainer\Unit\Helper\StubContainerFactoryListener;
+use Cspray\AnnotatedContainer\Unit\Helper\StubParameterStore;
 use Cspray\AnnotatedContainerFixture;
 use Cspray\AnnotatedContainerFixture\Fixture;
 use Cspray\AnnotatedContainerFixture\Fixtures;
@@ -444,7 +444,7 @@ abstract class ContainerFactoryTestCase extends TestCase {
 
     #[DataProvider('deserializeContainerProvider')]
     public function testDeserializingContainerWithInjectAllowsServiceCreation(Fixture $fixture, callable $assertions) {
-        $serializer = new ContainerDefinitionSerializer();
+        $serializer = new XmlContainerDefinitionSerializer();
         $containerDefinition = $this->getContainerDefinitionCompiler()->analyze(
             ContainerDefinitionAnalysisOptionsBuilder::scanDirectories($fixture->getPath())->build()
         );

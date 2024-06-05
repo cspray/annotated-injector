@@ -57,7 +57,7 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
      * @throws InvalidServicePrepare
      */
     public function analyze(ContainerDefinitionAnalysisOptions $containerDefinitionAnalysisOptions) : ContainerDefinition {
-        $scanDirs = $containerDefinitionAnalysisOptions->getScanDirectories();
+        $scanDirs = $containerDefinitionAnalysisOptions->scanDirectories();
         if (empty($scanDirs)) {
             throw InvalidScanDirectories::fromEmptyList();
         }
@@ -104,7 +104,7 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
             static fn(AttributeType $attributeType) => objectType($attributeType->value),
             AttributeType::cases()
         );
-        $dirs = $containerDefinitionAnalysisOptions->getScanDirectories();
+        $dirs = $containerDefinitionAnalysisOptions->scanDirectories();
         $options = AnnotatedTargetParserOptionsBuilder::scanDirectories(...$dirs)
             ->filterAttributes(...$attributeTypes)
             ->build();
@@ -218,7 +218,7 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
         ContainerDefinitionAnalysisOptions $compileOptions,
         ContainerDefinitionBuilder         $builder,
     ) : ContainerDefinitionBuilder {
-        $definitionProvider = $compileOptions->getDefinitionProvider();
+        $definitionProvider = $compileOptions->definitionProvider();
         if ($definitionProvider !== null) {
             $context = new class($builder, $this->emitter) implements DefinitionProviderContext {
                 public function __construct(

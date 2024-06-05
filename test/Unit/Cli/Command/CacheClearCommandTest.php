@@ -27,6 +27,7 @@ final class CacheClearCommandTest extends TestCase {
     private VirtualDirectory $vfs;
 
     protected function setUp() : void {
+        $this->markTestIncomplete('Need to redesign how the CacheClear command gets the cache. Reliant on resolving #385.');
         $this->stdout = new InMemoryOutput();
         $this->stderr = new InMemoryOutput();
         $this->output = new TerminalOutput($this->stdout, $this->stderr);

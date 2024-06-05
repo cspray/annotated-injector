@@ -14,7 +14,7 @@ interface ContainerDefinitionAnalysisOptions {
      *
      * @return list<string>
      */
-    public function getScanDirectories() : array;
+    public function scanDirectories() : array;
 
     /**
      * If you need to modify the ContainerDefinitionBuilder return a proper consumer, otherwise null.
@@ -24,5 +24,5 @@ interface ContainerDefinitionAnalysisOptions {
      * @return DefinitionProvider|null
      */
     #[SingleEntrypointDefinitionProvider]
-    public function getDefinitionProvider() : ?DefinitionProvider;
+    public function definitionProvider() : ?DefinitionProvider;
 }

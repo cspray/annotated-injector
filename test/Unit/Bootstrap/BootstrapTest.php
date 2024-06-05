@@ -1,10 +1,11 @@
 <?php
 
-namespace Cspray\AnnotatedContainer\Unit;
+namespace Cspray\AnnotatedContainer\Unit\Bootstrap;
 
 use Cspray\AnnotatedContainer\AnnotatedContainer;
 use Cspray\AnnotatedContainer\Bootstrap\Bootstrap;
 use Cspray\AnnotatedContainer\Bootstrap\BootstrappingConfiguration;
+use Cspray\AnnotatedContainer\Bootstrap\CacheAwareBootstrappingConfigurationProvider;
 use Cspray\AnnotatedContainer\Bootstrap\ContainerAnalytics;
 use Cspray\AnnotatedContainer\Bootstrap\DefaultDefinitionProviderFactory;
 use Cspray\AnnotatedContainer\Bootstrap\DefaultParameterStoreFactory;
@@ -16,12 +17,15 @@ use Cspray\AnnotatedContainer\Bootstrap\ServiceWiringListener;
 use Cspray\AnnotatedContainer\Bootstrap\XmlBootstrappingConfigurationProvider;
 use Cspray\AnnotatedContainer\ContainerFactory\AurynContainerFactory;
 use Cspray\AnnotatedContainer\ContainerFactory\ContainerFactory;
+use Cspray\AnnotatedContainer\ContainerFactory\ParameterStore;
+use Cspray\AnnotatedContainer\Definition\Cache\CacheKey;
+use Cspray\AnnotatedContainer\Definition\Cache\ContainerDefinitionCache;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 use Cspray\AnnotatedContainer\Event\Emitter;
 use Cspray\AnnotatedContainer\Event\Listener\Bootstrap\AfterBootstrap;
 use Cspray\AnnotatedContainer\Profiles;
+use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
 use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProvider;
-use Cspray\AnnotatedContainer\ContainerFactory\ParameterStore;
 use Cspray\AnnotatedContainer\Unit\Helper\FixtureBootstrappingDirectoryResolver;
 use Cspray\AnnotatedContainer\Unit\Helper\StubBootstrapListener;
 use Cspray\AnnotatedContainer\Unit\Helper\StubDefinitionProviderWithDependencies;
@@ -77,43 +81,6 @@ XML;
             Fixtures::singleConcreteService()->fooImplementation()->getName(),
             $service
         );
-    }
-
-    public function testBootstrapSingleConcreteServiceWithCache() : void {
-        $directoryResolver = new FixtureBootstrappingDirectoryResolver();
-
-        $goodXml = <<<XML
-<?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
-    <scanDirectories>
-        <source>
-            <dir>SingleConcreteService</dir>
-        </source>
-    </scanDirectories>
-    <cacheDir>.annotated-container-cache</cacheDir>
-</annotatedContainer>
-XML;
-
-        VirtualFilesystem::newFile('annotated-container.xml')
-            ->withContent($goodXml)
-            ->at($this->vfs);
-
-        VirtualFilesystem::newDirectory('.annotated-container-cache')
-            ->at($this->vfs);
-
-        $emitter = new Emitter();
-        $bootstrap = Bootstrap::fromCompleteSetup(
-            new AurynContainerFactory($emitter),
-            $emitter,
-            $directoryResolver,
-            new DefaultParameterStoreFactory(),
-            new DefaultDefinitionProviderFactory(),
-            new Stopwatch()
-        );
-        $bootstrap->bootstrapContainer();
-        $expected = md5(Fixtures::singleConcreteService()->getPath());
-
-        self::assertFileExists('vfs://root/.annotated-container-cache/' . $expected);
     }
 
     public function testBootstrapWithValidDefinitionProvider() : void {
@@ -725,6 +692,52 @@ XML;
         self::assertSame(
             [StubBootstrapListener::class . '::handleBeforeBootstrap', StubBootstrapListener::class . '::handleAfterBootstrap'],
             $listener->getTriggeredEvents()
+        );
+    }
+
+    public function testBootstrapHandlesConfigurationWithCacheCorrectly() : void {
+        $emitter = new Emitter();
+        $directoryResolver = new FixtureBootstrappingDirectoryResolver();
+
+        $goodXml = <<<XML
+<?xml version="1.0" encoding="UTF-8" ?>
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+    <scanDirectories>
+        <source>
+            <dir>SingleConcreteService</dir>
+        </source>
+    </scanDirectories>
+</annotatedContainer>
+XML;
+
+        VirtualFilesystem::newFile('annotated-container.xml')
+            ->withContent($goodXml)
+            ->at($this->vfs);
+
+        $cacheKey = CacheKey::fromContainerDefinitionAnalysisOptions(
+            ContainerDefinitionAnalysisOptionsBuilder::scanDirectories(
+                $directoryResolver->pathFromRoot('SingleConcreteService')
+            )->build()
+        );
+        $cache = $this->getMockBuilder(ContainerDefinitionCache::class)->getMock();
+        $cache->expects($this->once())
+            ->method('get')
+            ->with($this->callback(fn(CacheKey $key) => $key->asString() === $cacheKey->asString()))
+            ->willReturn(null);
+
+        $bootstrap = Bootstrap::fromCompleteSetup(
+            new AurynContainerFactory($emitter),
+            $emitter,
+            $directoryResolver,
+            new DefaultParameterStoreFactory(),
+            new DefaultDefinitionProviderFactory(),
+            new Stopwatch()
+        );
+        $bootstrap->bootstrapContainer(
+            bootstrappingConfigurationProvider: new CacheAwareBootstrappingConfigurationProvider(
+                new XmlBootstrappingConfigurationProvider(),
+                $cache
+            )
         );
     }
 }

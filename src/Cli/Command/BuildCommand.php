@@ -12,13 +12,13 @@ use Cspray\AnnotatedContainer\Cli\Exception\ConfigurationNotFound;
 use Cspray\AnnotatedContainer\Cli\Exception\InvalidOptionType;
 use Cspray\AnnotatedContainer\Cli\Input;
 use Cspray\AnnotatedContainer\Cli\TerminalOutput;
+use Cspray\AnnotatedContainer\Definition\Serializer\XmlContainerDefinitionSerializer;
 use Cspray\AnnotatedContainer\Event\Emitter;
 use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalyzer;
+use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetDefinitionConverter;
 use Cspray\AnnotatedContainer\StaticAnalysis\CacheAwareContainerDefinitionAnalyzer;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalyzer;
-use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetDefinitionConverter;
-use Cspray\AnnotatedContainer\Serializer\ContainerDefinitionSerializer;
 use Cspray\AnnotatedTarget\PhpParserAnnotatedTargetParser;
 
 final class BuildCommand implements Command {
@@ -92,7 +92,7 @@ SHELL;
             new DefaultDefinitionProviderFactory(),
         );
 
-        $cacheDir = $config->cacheDirectory();
+        $cacheDir = $config->cache();
         if (!isset($cacheDir)) {
             throw CacheDirConfigurationNotFound::fromBuildCommand();
         }
@@ -123,7 +123,7 @@ SHELL;
             new Emitter()
         );
         if ($cacheDir !== null) {
-            $compiler = new CacheAwareContainerDefinitionAnalyzer($compiler, new ContainerDefinitionSerializer(), $cacheDir);
+            $compiler = new CacheAwareContainerDefinitionAnalyzer($compiler, new XmlContainerDefinitionSerializer(), $cacheDir);
         }
 
         return $compiler;

@@ -22,7 +22,6 @@
     "cspray/precision-stopwatch": "^0.2.0",
     "cspray/typiphy": "^0.3",
     "nikic/php-parser": "^5",
-    "ocramius/package-versions": "^2.7",
     "psr/container": "^2.0"
   },
   "require-dev": {
