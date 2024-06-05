@@ -30,7 +30,7 @@ final class DuplicateServiceNameTest extends LogicalConstraintTestCase {
 
         $definition = $this->analyzer->analyze($options);
 
-        $violations = $this->subject->getConstraintViolations($definition, Profiles::fromList(['default']));
+        $violations = $this->subject->constraintViolations($definition, Profiles::fromList(['default']));
 
         $barService = BarService::class;
         $fooService = FooService::class;
@@ -63,7 +63,7 @@ TEXT;
 
         $definition = $this->getAnalyzer()->analyze($options);
 
-        $violations = $this->subject->getConstraintViolations($definition, Profiles::fromList([$profile]));
+        $violations = $this->subject->constraintViolations($definition, Profiles::fromList([$profile]));
 
         self::assertCount(0, $violations);
     }

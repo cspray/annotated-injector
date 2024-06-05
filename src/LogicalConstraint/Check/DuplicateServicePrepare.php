@@ -11,7 +11,7 @@ use Cspray\AnnotatedContainer\Profiles;
 
 final class DuplicateServicePrepare implements LogicalConstraint {
 
-    public function getConstraintViolations(ContainerDefinition $containerDefinition, Profiles $profiles) : LogicalConstraintViolationCollection {
+    public function constraintViolations(ContainerDefinition $containerDefinition, Profiles $profiles) : LogicalConstraintViolationCollection {
         $violations = new LogicalConstraintViolationCollection();
 
         /** @var array<non-empty-string, list<ServicePrepareAttribute|null>> $servicePrepareMap */

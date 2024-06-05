@@ -29,7 +29,7 @@ final class NonPublicServiceDelegateTest extends LogicalConstraintTestCase {
 
         $definition = $this->analyzer->analyze($options);
 
-        $violations = $this->subject->getConstraintViolations($definition, Profiles::fromList(['default']));
+        $violations = $this->subject->constraintViolations($definition, Profiles::fromList(['default']));
 
         self::assertCount(0, $violations);
     }
@@ -41,7 +41,7 @@ final class NonPublicServiceDelegateTest extends LogicalConstraintTestCase {
 
         $definition = $this->analyzer->analyze($options);
 
-        $violations = $this->subject->getConstraintViolations($definition, Profiles::fromList(['default']));
+        $violations = $this->subject->constraintViolations($definition, Profiles::fromList(['default']));
 
         self::assertCount(1, $violations);
         self::assertSame(LogicalConstraintViolationType::Critical, $violations->get(0)->violationType);
@@ -58,7 +58,7 @@ final class NonPublicServiceDelegateTest extends LogicalConstraintTestCase {
 
         $definition = $this->analyzer->analyze($options);
 
-        $violations = $this->subject->getConstraintViolations($definition, Profiles::fromList(['default']));
+        $violations = $this->subject->constraintViolations($definition, Profiles::fromList(['default']));
 
         self::assertCount(1, $violations);
         self::assertSame(LogicalConstraintViolationType::Critical, $violations->get(0)->violationType);

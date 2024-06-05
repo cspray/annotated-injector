@@ -19,7 +19,7 @@ interface LogicalConstraint {
      * @param Profiles $profiles
      * @return LogicalConstraintViolationCollection
      */
-    public function getConstraintViolations(
+    public function constraintViolations(
         ContainerDefinition $containerDefinition,
         Profiles $profiles
     ) : LogicalConstraintViolationCollection;
