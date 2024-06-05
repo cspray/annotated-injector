@@ -40,7 +40,7 @@ class LogicalConstraintValidatorTest extends TestCase {
 
         $mock = $this->getMockBuilder(LogicalConstraint::class)->getMock();
         $mock->expects($this->once())
-            ->method('getConstraintViolations')
+            ->method('constraintViolations')
             ->with($definition, $profiles)
             ->willReturn(new LogicalConstraintViolationCollection());
 
@@ -63,7 +63,7 @@ class LogicalConstraintValidatorTest extends TestCase {
         $coll1->add(LogicalConstraintViolation::critical('message one'));
         $mock1 = $this->getMockBuilder(LogicalConstraint::class)->getMock();
         $mock1->expects($this->once())
-            ->method('getConstraintViolations')
+            ->method('constraintViolations')
             ->with($definition, $profiles)
             ->willReturn($coll1);
 
@@ -71,7 +71,7 @@ class LogicalConstraintValidatorTest extends TestCase {
         $coll2->add(LogicalConstraintViolation::warning('message two'));
         $mock2 = $this->getMockBuilder(LogicalConstraint::class)->getMock();
         $mock2->expects($this->once())
-            ->method('getConstraintViolations')
+            ->method('constraintViolations')
             ->with($definition, $profiles)
             ->willReturn($coll2);
 

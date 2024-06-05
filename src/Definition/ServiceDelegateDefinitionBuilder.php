@@ -50,19 +50,19 @@ final class ServiceDelegateDefinitionBuilder {
             ) {
             }
 
-            public function getDelegateType() : ObjectType {
+            public function delegateType() : ObjectType {
                 return $this->delegateType;
             }
 
-            public function getDelegateMethod() : string {
+            public function delegateMethod() : string {
                 return $this->delegateMethod;
             }
 
-            public function getServiceType() : ObjectType {
+            public function serviceType() : ObjectType {
                 return $this->serviceDefinition;
             }
 
-            public function getAttribute() : ?ServiceDelegateAttribute {
+            public function attribute() : ?ServiceDelegateAttribute {
                 return $this->attribute;
             }
         };

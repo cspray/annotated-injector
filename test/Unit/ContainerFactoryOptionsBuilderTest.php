@@ -12,6 +12,6 @@ final class ContainerFactoryOptionsBuilderTest extends TestCase {
         $options = ContainerFactoryOptionsBuilder::forProfiles(Profiles::fromList(['default', 'dev', 'local']))
             ->build();
 
-        self::assertSame(['default', 'dev', 'local'], $options->getProfiles()->toArray());
+        self::assertSame(['default', 'dev', 'local'], $options->profiles()->toArray());
     }
 }

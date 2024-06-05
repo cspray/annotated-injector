@@ -34,59 +34,59 @@ if (!class_exists(Injector::class)) {
  */
 final class AurynContainerFactory extends AbstractContainerFactory implements ContainerFactory {
 
-    protected function getBackingContainerType() : ObjectType {
+    protected function backingContainerType() : ObjectType {
         return objectType(Injector::class);
     }
 
-    protected function getContainerFactoryState(ContainerDefinition $containerDefinition) : AurynContainerFactoryState {
+    protected function containerFactoryState(ContainerDefinition $containerDefinition) : AurynContainerFactoryState {
         return new AurynContainerFactoryState($containerDefinition);
     }
 
     protected function handleServiceDefinition(ContainerFactoryState $state, ServiceDefinition $definition) : void {
         assert($state instanceof AurynContainerFactoryState);
-        $state->injector->share($definition->getType()->getName());
-        $name = $definition->getName();
+        $state->injector->share($definition->type()->getName());
+        $name = $definition->name();
         if ($name !== null) {
-            $state->addNameType($name, $definition->getType());
+            $state->addNameType($name, $definition->type());
         }
     }
 
     protected function handleAliasDefinition(ContainerFactoryState $state, AliasDefinitionResolution $resolution) : void {
         assert($state instanceof AurynContainerFactoryState);
-        $alias = $resolution->getAliasDefinition();
+        $alias = $resolution->aliasDefinition();
         if ($alias !== null) {
             $state->injector->alias(
-                $alias->getAbstractService()->getName(),
-                $alias->getConcreteService()->getName()
+                $alias->abstractService()->getName(),
+                $alias->concreteService()->getName()
             );
         }
     }
 
     protected function handleServiceDelegateDefinition(ContainerFactoryState $state, ServiceDelegateDefinition $definition) : void {
         assert($state instanceof AurynContainerFactoryState);
-        $delegateType = $definition->getDelegateType()->getName();
-        $delegateMethod = $definition->getDelegateMethod();
+        $delegateType = $definition->delegateType()->getName();
+        $delegateMethod = $definition->delegateMethod();
 
         $parameters = $state->parametersForMethod($delegateType, $delegateMethod);
         $state->injector->delegate(
-            $definition->getServiceType()->getName(),
+            $definition->serviceType()->getName(),
             static fn() : mixed => $state->injector->execute([$delegateType, $delegateMethod], $parameters)
         );
     }
 
     protected function handleServicePrepareDefinition(ContainerFactoryState $state, ServicePrepareDefinition $definition) : void {
         assert($state instanceof AurynContainerFactoryState);
-        $serviceType = $definition->getService()->getName();
+        $serviceType = $definition->service()->getName();
 
-        $state->addServicePrepare($serviceType, $definition->getMethod());
+        $state->addServicePrepare($serviceType, $definition->methodName());
     }
 
     protected function handleInjectDefinition(ContainerFactoryState $state, InjectDefinition $definition) : void {
         assert($state instanceof AurynContainerFactoryState);
-        $injectTargetType = $definition->getTargetIdentifier()->getClass()->getName();
-        $method = $definition->getTargetIdentifier()->getMethodName();
-        $parameterName = $definition->getTargetIdentifier()->getName();
-        $value = $this->getInjectDefinitionValue($definition);
+        $injectTargetType = $definition->targetIdentifier()->class()->getName();
+        $method = $definition->targetIdentifier()->methodName();
+        $parameterName = $definition->targetIdentifier()->name();
+        $value = $this->injectDefinitionValue($definition);
 
         $state->addMethodInject($injectTargetType, $method, $parameterName, $value);
     }
@@ -94,7 +94,7 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
     protected function createAnnotatedContainer(ContainerFactoryState $state, Profiles $activeProfiles) : AnnotatedContainer {
         assert($state instanceof AurynContainerFactoryState);
 
-        foreach ($state->getMethodInject() as $service => $methods) {
+        foreach ($state->methodInject() as $service => $methods) {
             if (array_key_exists('__construct', $methods)) {
                 $state->injector->define($service, $methods['__construct']);
             }
@@ -104,7 +104,7 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
          * @var class-string $serviceType
          * @var list<string> $methods
          */
-        foreach ($state->getServicePrepares() as $serviceType => $methods) {
+        foreach ($state->servicePrepares() as $serviceType => $methods) {
             $state->injector->prepare(
                 $serviceType,
                 static function(object $object) use($state, $methods) : void {
@@ -133,7 +133,7 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
                         throw ServiceNotFound::fromServiceNotInContainer($id);
                     }
 
-                    $namedType = $this->state->getTypeForName($id);
+                    $namedType = $this->state->typeForName($id);
                     if ($namedType !== null) {
                         $id = $namedType->getName();
                     }
@@ -144,7 +144,7 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
             }
 
             public function has(string $id): bool {
-                $namedType = $this->state->getTypeForName($id);
+                $namedType = $this->state->typeForName($id);
                 if ($namedType !== null) {
                     return true;
                 }
@@ -163,7 +163,7 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
                 );
             }
 
-            public function getBackingContainer() : Injector {
+            public function backingContainer() : Injector {
                 return $this->state->injector;
             }
 
@@ -179,8 +179,8 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
                 if (!is_null($parameters)) {
                     /** @var AutowireableParameter $parameter */
                     foreach ($parameters as $parameter) {
-                        $name = $parameter->isServiceIdentifier() ? $parameter->getName() : ':' . $parameter->getName();
-                        $params[$name] = $parameter->isServiceIdentifier() ? $parameter->getValue()->getName() : $parameter->getValue();
+                        $name = $parameter->isServiceIdentifier() ? $parameter->name() : ':' . $parameter->name();
+                        $params[$name] = $parameter->isServiceIdentifier() ? $parameter->value()->getName() : $parameter->value();
                     }
                 }
                 return $params;

@@ -18,14 +18,14 @@ interface ServicePrepareDefinition {
      *
      * @return ObjectType
      */
-    public function getService() : ObjectType;
+    public function service() : ObjectType;
 
     /**
      * The method that should be invoked on the Service.
      *
      * @return string
      */
-    public function getMethod() : string;
+    public function methodName() : string;
 
-    public function getAttribute() : ?ServicePrepareAttribute;
+    public function attribute() : ?ServicePrepareAttribute;
 }

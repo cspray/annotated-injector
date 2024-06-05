@@ -12,24 +12,24 @@ class InputParserTest extends TestCase {
         $subject = new InputParser();
         $input = $subject->parse(['script.php']);
 
-        self::assertEmpty($input->getOptions());
-        self::assertEmpty($input->getArguments());
+        self::assertEmpty($input->options());
+        self::assertEmpty($input->arguments());
     }
 
     public function testArgvWithScriptAndOnlyOneArgument() : void {
         $subject = new InputParser();
         $input = $subject->parse(['script.php', 'arg1']);
 
-        self::assertEmpty($input->getOptions());
-        self::assertSame(['arg1'], $input->getArguments());
+        self::assertEmpty($input->options());
+        self::assertSame(['arg1'], $input->arguments());
     }
 
     public function testArgvWithScriptAndMultipleArguments() : void {
         $subject = new InputParser();
         $input = $subject->parse(['script.php', 'arg1', 'arg2']);
 
-        self::assertEmpty($input->getOptions());
-        self::assertSame(['arg1', 'arg2'], $input->getArguments());
+        self::assertEmpty($input->options());
+        self::assertSame(['arg1', 'arg2'], $input->arguments());
     }
 
     public function testArgvWithScriptAndBoolOptions() : void {
@@ -39,8 +39,8 @@ class InputParserTest extends TestCase {
         self::assertSame([
             'foo' => true,
             'bar' => true
-        ], $input->getOptions());
-        self::assertEmpty($input->getArguments());
+        ], $input->options());
+        self::assertEmpty($input->arguments());
     }
 
     public function testArgvWithScriptAndSingleOptionValues() : void {
@@ -50,8 +50,8 @@ class InputParserTest extends TestCase {
         self::assertSame([
             'foo' => 'bar',
             'baz' => 'qux'
-        ], $input->getOptions());
-        self::assertEmpty($input->getArguments());
+        ], $input->options());
+        self::assertEmpty($input->arguments());
     }
 
     public function testArgvWithScriptAndArrayOptionValues() : void {
@@ -60,8 +60,8 @@ class InputParserTest extends TestCase {
 
         self::assertSame([
             'foo' => ['bar', 'baz', 'qux']
-        ], $input->getOptions());
-        self::assertEmpty($input->getArguments());
+        ], $input->options());
+        self::assertEmpty($input->arguments());
     }
 
     public function testArgvWithScriptAndMixedBooleanAndStringValues() : void {
@@ -70,8 +70,8 @@ class InputParserTest extends TestCase {
 
         self::assertSame([
             'foo' => [true, 'bar', 'qux']
-        ], $input->getOptions());
-        self::assertEmpty($input->getArguments());
+        ], $input->options());
+        self::assertEmpty($input->arguments());
     }
 
     public function testArgvWithScriptSingleShortOptBoolean() : void {
@@ -80,8 +80,8 @@ class InputParserTest extends TestCase {
 
         self::assertSame([
             'a' => true
-        ], $input->getOptions());
-        self::assertEmpty($input->getArguments());
+        ], $input->options());
+        self::assertEmpty($input->arguments());
     }
 
     public function testArgvWithScriptSingleShortOptWithMultipleValues() : void {
@@ -92,8 +92,8 @@ class InputParserTest extends TestCase {
             'a' => true,
             'b' => true,
             'c' => true
-        ], $input->getOptions());
-        self::assertEmpty($input->getArguments());
+        ], $input->options());
+        self::assertEmpty($input->arguments());
     }
 
     public function testArgvWithScriptMultipleShortOpts() : void {
@@ -104,8 +104,8 @@ class InputParserTest extends TestCase {
             'a' => true,
             'b' => true,
             'c' => true
-        ], $input->getOptions());
-        self::assertEmpty($input->getArguments());
+        ], $input->options());
+        self::assertEmpty($input->arguments());
     }
 
     public function testArgvWithScriptShortOptStringValue() : void {
@@ -116,22 +116,22 @@ class InputParserTest extends TestCase {
             'a' => 'b',
             'b' => 'c',
             'c' => 'd'
-        ], $input->getOptions());
-        self::assertEmpty($input->getArguments());
+        ], $input->options());
+        self::assertEmpty($input->arguments());
     }
 
     public function testArgvWithNoOptionsGetOptionReturnsNull() : void {
         $subject = new InputParser();
         $input = $subject->parse(['script.php']);
 
-        self::assertNull($input->getOption('not-found'));
+        self::assertNull($input->option('not-found'));
     }
 
     public function testArgvWithOptionGetsValue() : void {
         $subject = new InputParser();
         $input = $subject->parse(['script.php', '--foo']);
 
-        self::assertTrue($input->getOption('foo'));
+        self::assertTrue($input->option('foo'));
     }
 
     public function testArgvWithNoOptionRequireOptionThrowsException() : void {

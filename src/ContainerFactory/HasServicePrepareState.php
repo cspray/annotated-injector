@@ -14,7 +14,7 @@ trait HasServicePrepareState {
         $this->servicePrepares[$class][] = $method;
     }
 
-    public function getServicePrepares() : array {
+    public function servicePrepares() : array {
         return $this->servicePrepares;
     }
 }

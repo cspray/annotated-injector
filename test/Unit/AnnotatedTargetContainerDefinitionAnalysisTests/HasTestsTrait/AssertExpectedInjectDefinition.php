@@ -35,7 +35,7 @@ final class AssertExpectedInjectDefinition {
     }
 
     private function getDefinitionsForService(ExpectedInject $expectedInject, ContainerDefinition $containerDefinition) : array {
-        $definitionsForService = array_filter($containerDefinition->getInjectDefinitions(), fn($injectDefinition) => $injectDefinition->getTargetIdentifier()->getClass() === $expectedInject->service);
+        $definitionsForService = array_filter($containerDefinition->injectDefinitions(), fn($injectDefinition) => $injectDefinition->targetIdentifier()->class() === $expectedInject->service);
         if (empty($definitionsForService)) {
             Assert::fail(sprintf(
                 'Could not find an InjectDefinition for %s in the provided ContainerDefinition.',
@@ -46,7 +46,7 @@ final class AssertExpectedInjectDefinition {
     }
 
     private function filterTargetType(ExpectedInject $expectedInject, array $injectDefinitions) : array {
-        $definitionsForTargetType = array_filter($injectDefinitions, fn($injectDefinition) => $expectedInject->injectTargetType->isValidTargetIdentifier($injectDefinition->getTargetIdentifier()));
+        $definitionsForTargetType = array_filter($injectDefinitions, fn($injectDefinition) => $expectedInject->injectTargetType->isValidTargetIdentifier($injectDefinition->targetIdentifier()));
         if (empty($definitionsForTargetType)) {
             Assert::fail(sprintf(
                 'Could not find an InjectDefinition for %s that is a %s injection.',
@@ -58,7 +58,7 @@ final class AssertExpectedInjectDefinition {
     }
 
     private function filterMethodName(ExpectedInject $expectedInject, array $injectDefinitions) : array {
-        $definitionsForInjectTarget = array_filter($injectDefinitions, fn($injectDefinition) => $injectDefinition->getTargetIdentifier()->getMethodName() === $expectedInject->methodName);
+        $definitionsForInjectTarget = array_filter($injectDefinitions, fn($injectDefinition) => $injectDefinition->targetIdentifier()->methodName() === $expectedInject->methodName);
         if (empty($definitionsForInjectTarget)) {
             Assert::fail(sprintf(
                 'Could not find an InjectDefinition for method %s::%s.',
@@ -70,7 +70,7 @@ final class AssertExpectedInjectDefinition {
     }
 
     private function filterPropertyName(ExpectedInject $expectedInject, array $injectDefinitions) : array {
-        $definitionsForInjectTarget = array_filter($injectDefinitions, fn($injectDefinition) => $injectDefinition->getTargetIdentifier()->getName() === $expectedInject->targetName);
+        $definitionsForInjectTarget = array_filter($injectDefinitions, fn($injectDefinition) => $injectDefinition->targetIdentifier()->name() === $expectedInject->targetName);
         if (empty($definitionsForInjectTarget)) {
             Assert::fail(sprintf(
                 'Could not find an InjectDefinition for property %s::%s.',
@@ -82,7 +82,7 @@ final class AssertExpectedInjectDefinition {
     }
 
     private function filterMethodParameter(ExpectedInject $expectedInject, array $injectDefinitions) : array {
-        $definitionsForParam = array_filter($injectDefinitions, fn($injectDefinition) => $injectDefinition->getTargetIdentifier()->getName() === $expectedInject->targetName);
+        $definitionsForParam = array_filter($injectDefinitions, fn($injectDefinition) => $injectDefinition->targetIdentifier()->name() === $expectedInject->targetName);
         if (empty($definitionsForParam)) {
             Assert::fail(sprintf(
                 'Could not find an InjectDefinition for parameter \'%s\' on method %s::%s.',
@@ -95,7 +95,7 @@ final class AssertExpectedInjectDefinition {
     }
 
     private function validateMethodType(ExpectedInject $expectedInject, array $injectDefinitions) : void {
-        $definitionsWithTypes = array_filter($injectDefinitions, fn($injectDefinition) => $injectDefinition->getType() === $expectedInject->type);
+        $definitionsWithTypes = array_filter($injectDefinitions, fn($injectDefinition) => $injectDefinition->type() === $expectedInject->type);
         if (empty($definitionsWithTypes)) {
             Assert::fail(sprintf(
                 'Could not find an InjectDefinition for parameter \'%s\' on method %s::%s with type \'%s\'.',
@@ -108,7 +108,7 @@ final class AssertExpectedInjectDefinition {
     }
 
     private function validatePropertyType(ExpectedInject $expectedInject, array $injectDefinitions) : void {
-        $definitionsWithType = array_filter($injectDefinitions, fn($injectDefinition) => $injectDefinition->getType() === $expectedInject->type);
+        $definitionsWithType = array_filter($injectDefinitions, fn($injectDefinition) => $injectDefinition->type() === $expectedInject->type);
         if (empty($definitionsWithType)) {
             Assert::fail(sprintf(
                 'Could not find an InjectDefinition for property \'%s\' on %s with type \'%s\'.',
@@ -120,7 +120,7 @@ final class AssertExpectedInjectDefinition {
     }
 
     private function validateValue(ExpectedInject $expectedInject, array $injectDefinitions) : void {
-        $definitionsWithValues = array_filter($injectDefinitions, fn($injectDefinition) => $injectDefinition->getValue() === $expectedInject->value);
+        $definitionsWithValues = array_filter($injectDefinitions, fn($injectDefinition) => $injectDefinition->value() === $expectedInject->value);
         if (empty($definitionsWithValues)) {
             $message = '';
             if ($expectedInject->injectTargetType === InjectTargetType::MethodParameter) {
@@ -146,7 +146,7 @@ final class AssertExpectedInjectDefinition {
     }
 
     private function validateProfiles(ExpectedInject $expectedInject, array $injectDefinitions) : void {
-        $definitionsWithProfiles = array_filter($injectDefinitions, fn($injectDefinition) => $injectDefinition->getProfiles() === $expectedInject->profiles);
+        $definitionsWithProfiles = array_filter($injectDefinitions, fn($injectDefinition) => $injectDefinition->profiles() === $expectedInject->profiles);
         $profileDescriptor = fn() => (empty($expectedInject->profiles) ?
             'no profiles' :
             'profiles: ' . join(', ', array_map(fn($profile) => "'$profile'", $expectedInject->profiles)));
@@ -173,7 +173,7 @@ final class AssertExpectedInjectDefinition {
     }
 
     private function validateStoreName(ExpectedInject $expectedInject, array $injectDefinitions) : void {
-        $definitionsWithNames = array_filter($injectDefinitions, fn($injectDefinition) => $injectDefinition->getStoreName() === $expectedInject->store);
+        $definitionsWithNames = array_filter($injectDefinitions, fn($injectDefinition) => $injectDefinition->storeName() === $expectedInject->store);
         $storeDescriptor = fn() => ($expectedInject->store === null ? 'no store name' : 'store name: \'' . $expectedInject->store . '\'');
         if (empty($definitionsWithNames)) {
             $message = '';

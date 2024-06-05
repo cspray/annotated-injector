@@ -21,10 +21,10 @@ final class StandardAliasDefinitionResolverTest extends TestCase {
             ->withServiceDefinition($serviceDefinition)
             ->build();
 
-        $resolution = $subject->resolveAlias($containerDefinition, $serviceDefinition->getType());
+        $resolution = $subject->resolveAlias($containerDefinition, $serviceDefinition->type());
 
-        self::assertSame(AliasResolutionReason::NoConcreteService, $resolution->getAliasResolutionReason());
-        self::assertNull($resolution->getAliasDefinition());
+        self::assertSame(AliasResolutionReason::NoConcreteService, $resolution->aliasResolutionReason());
+        self::assertNull($resolution->aliasDefinition());
     }
 
     public function testPassAbstractServiceDefinitionWithSingleConcreteDefinitionReturnsCorrectResolution() : void {
@@ -41,15 +41,15 @@ final class StandardAliasDefinitionResolverTest extends TestCase {
             ->withServiceDefinition($concrete1)
             ->withServiceDefinition($concrete2)
             ->withAliasDefinition(
-                $aliasDefinition = AliasDefinitionBuilder::forAbstract($serviceDefinition->getType())
-                    ->withConcrete($concrete2->getType())
+                $aliasDefinition = AliasDefinitionBuilder::forAbstract($serviceDefinition->type())
+                    ->withConcrete($concrete2->type())
                     ->build()
             )->build();
 
-        $resolution = $subject->resolveAlias($containerDefinition, $serviceDefinition->getType());
+        $resolution = $subject->resolveAlias($containerDefinition, $serviceDefinition->type());
 
-        self::assertSame(AliasResolutionReason::SingleConcreteService, $resolution->getAliasResolutionReason());
-        self::assertSame($aliasDefinition, $resolution->getAliasDefinition());
+        self::assertSame(AliasResolutionReason::SingleConcreteService, $resolution->aliasResolutionReason());
+        self::assertSame($aliasDefinition, $resolution->aliasDefinition());
     }
 
     public function testPassAbstractServiceDefinitionWithMultipleConcreteDefinitionReturnsCorrectResolution() : void {
@@ -66,19 +66,19 @@ final class StandardAliasDefinitionResolverTest extends TestCase {
             ->withServiceDefinition($concrete1)
             ->withServiceDefinition($concrete2)
             ->withAliasDefinition(
-                AliasDefinitionBuilder::forAbstract($serviceDefinition->getType())
-                    ->withConcrete($concrete1->getType())
+                AliasDefinitionBuilder::forAbstract($serviceDefinition->type())
+                    ->withConcrete($concrete1->type())
                     ->build()
             )->withAliasDefinition(
-                AliasDefinitionBuilder::forAbstract($serviceDefinition->getType())
-                    ->withConcrete($concrete2->getType())
+                AliasDefinitionBuilder::forAbstract($serviceDefinition->type())
+                    ->withConcrete($concrete2->type())
                     ->build()
             )->build();
 
-        $resolution = $subject->resolveAlias($containerDefinition, $serviceDefinition->getType());
+        $resolution = $subject->resolveAlias($containerDefinition, $serviceDefinition->type());
 
-        self::assertSame(AliasResolutionReason::MultipleConcreteService, $resolution->getAliasResolutionReason());
-        self::assertNull($resolution->getAliasDefinition());
+        self::assertSame(AliasResolutionReason::MultipleConcreteService, $resolution->aliasResolutionReason());
+        self::assertNull($resolution->aliasDefinition());
     }
 
     public function testPassAbstractServiceDefinitionWithMultipleConcreteDefinitionWithPrimaryReturnsCorrectResolution() : void {
@@ -95,19 +95,19 @@ final class StandardAliasDefinitionResolverTest extends TestCase {
             ->withServiceDefinition($concrete1)
             ->withServiceDefinition($concrete2)
             ->withAliasDefinition(
-                AliasDefinitionBuilder::forAbstract($serviceDefinition->getType())
-                    ->withConcrete($concrete1->getType())
+                AliasDefinitionBuilder::forAbstract($serviceDefinition->type())
+                    ->withConcrete($concrete1->type())
                     ->build()
             )->withAliasDefinition(
-                $aliasDefinition = AliasDefinitionBuilder::forAbstract($serviceDefinition->getType())
-                    ->withConcrete($concrete2->getType())
+                $aliasDefinition = AliasDefinitionBuilder::forAbstract($serviceDefinition->type())
+                    ->withConcrete($concrete2->type())
                     ->build()
             )->build();
 
-        $resolution = $subject->resolveAlias($containerDefinition, $serviceDefinition->getType());
+        $resolution = $subject->resolveAlias($containerDefinition, $serviceDefinition->type());
 
-        self::assertSame(AliasResolutionReason::ConcreteServiceIsPrimary, $resolution->getAliasResolutionReason());
-        self::assertSame($aliasDefinition, $resolution->getAliasDefinition());
+        self::assertSame(AliasResolutionReason::ConcreteServiceIsPrimary, $resolution->aliasResolutionReason());
+        self::assertSame($aliasDefinition, $resolution->aliasDefinition());
     }
 
     public function testDelegatedAbstractServiceHasNoAlias() : void {
@@ -119,8 +119,8 @@ final class StandardAliasDefinitionResolverTest extends TestCase {
         $concrete = ServiceDefinitionBuilder::forConcrete(
             Fixtures::delegatedService()->fooService()
         )->build();
-        $alias = AliasDefinitionBuilder::forAbstract($abstract->getType())->withConcrete($concrete->getType())->build();
-        $delegate = ServiceDelegateDefinitionBuilder::forService($abstract->getType())
+        $alias = AliasDefinitionBuilder::forAbstract($abstract->type())->withConcrete($concrete->type())->build();
+        $delegate = ServiceDelegateDefinitionBuilder::forService($abstract->type())
             ->withDelegateMethod(
                 Fixtures::delegatedService()->serviceFactory(),
                 'createService'
@@ -132,10 +132,10 @@ final class StandardAliasDefinitionResolverTest extends TestCase {
             ->withServiceDelegateDefinition($delegate)
             ->build();
 
-        $resolution = $subject->resolveAlias($containerDefinition, $abstract->getType());
+        $resolution = $subject->resolveAlias($containerDefinition, $abstract->type());
 
-        self::assertNull($resolution->getAliasDefinition());
-        self::assertSame(AliasResolutionReason::ServiceIsDelegated, $resolution->getAliasResolutionReason());
+        self::assertNull($resolution->aliasDefinition());
+        self::assertSame(AliasResolutionReason::ServiceIsDelegated, $resolution->aliasResolutionReason());
     }
 
     public function testMultiplePrimaryServiceIsNull() : void {
@@ -152,11 +152,11 @@ final class StandardAliasDefinitionResolverTest extends TestCase {
             Fixtures::ambiguousAliasedServices()->bazImplementation(),
             true
         )->build();
-        $oneAlias = AliasDefinitionBuilder::forAbstract($abstract->getType())
-            ->withConcrete($one->getType())
+        $oneAlias = AliasDefinitionBuilder::forAbstract($abstract->type())
+            ->withConcrete($one->type())
             ->build();
-        $twoAlias = AliasDefinitionBuilder::forAbstract($abstract->getType())
-            ->withConcrete($two->getType())
+        $twoAlias = AliasDefinitionBuilder::forAbstract($abstract->type())
+            ->withConcrete($two->type())
             ->build();
         $containerDefinition = ContainerDefinitionBuilder::newDefinition()
             ->withServiceDefinition($abstract)
@@ -166,9 +166,9 @@ final class StandardAliasDefinitionResolverTest extends TestCase {
             ->withAliasDefinition($twoAlias)
             ->build();
 
-        $resolution = $subject->resolveAlias($containerDefinition, $abstract->getType());
+        $resolution = $subject->resolveAlias($containerDefinition, $abstract->type());
 
-        self::assertNull($resolution->getAliasDefinition());
-        self::assertSame(AliasResolutionReason::MultiplePrimaryService, $resolution->getAliasResolutionReason());
+        self::assertNull($resolution->aliasDefinition());
+        self::assertSame(AliasResolutionReason::MultiplePrimaryService, $resolution->aliasResolutionReason());
     }
 }

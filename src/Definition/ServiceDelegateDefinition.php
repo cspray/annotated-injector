@@ -18,7 +18,7 @@ interface ServiceDelegateDefinition {
      *
      * @return ObjectType
      */
-    public function getDelegateType() : ObjectType;
+    public function delegateType() : ObjectType;
 
     /**
      * Return the method on the delegateType that should be invoked to create the Service.
@@ -28,9 +28,9 @@ interface ServiceDelegateDefinition {
      *
      * @return non-empty-string
      */
-    public function getDelegateMethod() : string;
+    public function delegateMethod() : string;
 
-    public function getServiceType() : ObjectType;
+    public function serviceType() : ObjectType;
 
-    public function getAttribute() : ?ServiceDelegateAttribute;
+    public function attribute() : ?ServiceDelegateAttribute;
 }

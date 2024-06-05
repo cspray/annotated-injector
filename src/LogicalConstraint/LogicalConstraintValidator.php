@@ -28,7 +28,7 @@ final class LogicalConstraintValidator {
 
         foreach ($this->logicalConstraints as $constraint) {
             $collection->addAll(
-                $constraint->getConstraintViolations($containerDefinition, $profiles)
+                $constraint->constraintViolations($containerDefinition, $profiles)
             );
         }
 

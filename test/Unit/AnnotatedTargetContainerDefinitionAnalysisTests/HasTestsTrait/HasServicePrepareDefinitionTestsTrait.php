@@ -16,17 +16,17 @@ trait HasServicePrepareDefinitionTestsTrait {
     final public function testServicePrepareDefinitionsCount() : void {
         $expectedCount = count($this->servicePrepareProvider());
 
-        $this->assertSame($expectedCount, count($this->getSubject()->getServicePrepareDefinitions()));
+        $this->assertSame($expectedCount, count($this->getSubject()->servicePrepareDefinitions()));
     }
 
     #[DataProvider('servicePrepareProvider')]
     final public function testServicePrepareDefinitionMethod(ExpectedServicePrepare $expectedServicePrepare) : void {
         $preparesForService = array_filter(
-            $this->getSubject()->getServicePrepareDefinitions(),
-            fn(ServicePrepareDefinition $servicePrepareDefinition) => $servicePrepareDefinition->getService() === $expectedServicePrepare->type
+            $this->getSubject()->servicePrepareDefinitions(),
+            fn(ServicePrepareDefinition $servicePrepareDefinition) => $servicePrepareDefinition->service() === $expectedServicePrepare->type
         );
         $prepareMethods = array_map(
-            fn(ServicePrepareDefinition $servicePrepareDefinition) => $servicePrepareDefinition->getMethod(),
+            fn(ServicePrepareDefinition $servicePrepareDefinition) => $servicePrepareDefinition->methodName(),
             $preparesForService
         );
 

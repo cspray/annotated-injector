@@ -12,20 +12,20 @@ use Cspray\AnnotatedContainer\Profiles;
 
 final class DuplicateServiceName implements LogicalConstraint {
 
-    public function getConstraintViolations(ContainerDefinition $containerDefinition, Profiles $profiles) : LogicalConstraintViolationCollection {
+    public function constraintViolations(ContainerDefinition $containerDefinition, Profiles $profiles) : LogicalConstraintViolationCollection {
         $containerDefinition = new ProfilesAwareContainerDefinition($containerDefinition, $profiles);
         $violations = new LogicalConstraintViolationCollection();
 
         /** @var array<string, list<class-string>> $namedServiceMap */
         $namedServiceMap = [];
-        foreach ($containerDefinition->getServiceDefinitions() as $definition) {
-            $name = $definition->getName();
+        foreach ($containerDefinition->serviceDefinitions() as $definition) {
+            $name = $definition->name();
             if ($name === null) {
                 continue;
             }
 
             $namedServiceMap[$name] ??= [];
-            $namedServiceMap[$name][] = $definition->getType()->getName();
+            $namedServiceMap[$name][] = $definition->type()->getName();
         }
 
         foreach ($namedServiceMap as $name => $services) {

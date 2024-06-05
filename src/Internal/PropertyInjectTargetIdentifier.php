@@ -9,6 +9,10 @@ use Cspray\Typiphy\ObjectType;
  * @Internal
  */
 final class PropertyInjectTargetIdentifier implements InjectTargetIdentifier {
+    /**
+     * @param non-empty-string $name
+     * @param ObjectType $class
+     */
     public function __construct(
         private readonly string $name,
         private readonly ObjectType $class
@@ -23,15 +27,15 @@ final class PropertyInjectTargetIdentifier implements InjectTargetIdentifier {
         return true;
     }
 
-    public function getName() : string {
+    public function name() : string {
         return $this->name;
     }
 
-    public function getClass() : ObjectType {
+    public function class() : ObjectType {
         return $this->class;
     }
 
-    public function getMethodName() : ?string {
+    public function methodName() : ?string {
         return null;
     }
 }

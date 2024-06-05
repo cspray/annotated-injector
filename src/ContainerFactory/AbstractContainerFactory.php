@@ -39,7 +39,7 @@ abstract class AbstractContainerFactory implements ContainerFactory {
     }
 
     final public function createContainer(ContainerDefinition $containerDefinition, ContainerFactoryOptions $containerFactoryOptions = null) : AnnotatedContainer {
-        $activeProfiles = $containerFactoryOptions?->getProfiles() ?? Profiles::fromList(['default']);
+        $activeProfiles = $containerFactoryOptions?->profiles() ?? Profiles::fromList(['default']);
 
         $this->emitter?->emitBeforeContainerCreation($activeProfiles, $containerDefinition);
 
@@ -55,26 +55,26 @@ abstract class AbstractContainerFactory implements ContainerFactory {
 
     private function createContainerState(ContainerDefinition $containerDefinition, Profiles $activeProfiles) : ContainerFactoryState {
         $definition = new ProfilesAwareContainerDefinition($containerDefinition, $activeProfiles);
-        $state = $this->getContainerFactoryState($definition);
+        $state = $this->containerFactoryState($definition);
 
-        foreach ($definition->getServiceDefinitions() as $serviceDefinition) {
+        foreach ($definition->serviceDefinitions() as $serviceDefinition) {
             $this->handleServiceDefinition($state, $serviceDefinition);
         }
 
-        foreach ($definition->getServiceDelegateDefinitions() as $serviceDelegateDefinition) {
+        foreach ($definition->serviceDelegateDefinitions() as $serviceDelegateDefinition) {
             $this->handleServiceDelegateDefinition($state, $serviceDelegateDefinition);
         }
 
-        foreach ($definition->getServicePrepareDefinitions() as $servicePrepareDefinition) {
+        foreach ($definition->servicePrepareDefinitions() as $servicePrepareDefinition) {
             $this->handleServicePrepareDefinition($state, $servicePrepareDefinition);
         }
 
-        foreach ($definition->getAliasDefinitions() as $aliasDefinition) {
-            $resolution = $this->aliasDefinitionResolver->resolveAlias($definition, $aliasDefinition->getAbstractService());
+        foreach ($definition->aliasDefinitions() as $aliasDefinition) {
+            $resolution = $this->aliasDefinitionResolver->resolveAlias($definition, $aliasDefinition->abstractService());
             $this->handleAliasDefinition($state, $resolution);
         }
 
-        foreach ($definition->getInjectDefinitions() as $injectDefinition) {
+        foreach ($definition->injectDefinitions() as $injectDefinition) {
             $this->handleInjectDefinition($state, $injectDefinition);
         }
 
@@ -89,32 +89,32 @@ abstract class AbstractContainerFactory implements ContainerFactory {
      * @see Inject
      */
     final public function addParameterStore(ParameterStore $parameterStore): void {
-        $this->parameterStores[$parameterStore->getName()] = $parameterStore;
+        $this->parameterStores[$parameterStore->name()] = $parameterStore;
     }
 
-    final protected function getParameterStore(string $storeName) : ?ParameterStore {
+    final protected function parameterStore(string $storeName) : ?ParameterStore {
         return $this->parameterStores[$storeName] ?? null;
     }
 
-    final protected function getInjectDefinitionValue(InjectDefinition $definition) : mixed {
-        $value = $definition->getValue();
-        $store = $definition->getStoreName();
+    final protected function injectDefinitionValue(InjectDefinition $definition) : mixed {
+        $value = $definition->value();
+        $store = $definition->storeName();
         if ($store !== null) {
-            $parameterStore = $this->getParameterStore($store);
+            $parameterStore = $this->parameterStore($store);
             if ($parameterStore === null) {
                 throw ParameterStoreNotFound::fromParameterStoreNotAddedToContainerFactory($store);
             }
-            $value = $parameterStore->fetch($definition->getType(), $value);
+            $value = $parameterStore->fetch($definition->type(), $value);
         }
 
-        $type = $definition->getType();
+        $type = $definition->type();
         if ($value instanceof ListOf) {
             $value = new ServiceCollectorReference(
                 $value,
                 $value->type(),
                 $type
             );
-        } elseif ($type instanceof ObjectType && !is_a($definition->getType()->getName(), UnitEnum::class, true)) {
+        } elseif ($type instanceof ObjectType && !is_a($definition->type()->getName(), UnitEnum::class, true)) {
             $value = new ContainerReference($value, $type);
         }
 
@@ -122,9 +122,9 @@ abstract class AbstractContainerFactory implements ContainerFactory {
     }
 
 
-    abstract protected function getBackingContainerType() : ObjectType;
+    abstract protected function backingContainerType() : ObjectType;
 
-    abstract protected function getContainerFactoryState(ContainerDefinition $containerDefinition) : ContainerFactoryState;
+    abstract protected function containerFactoryState(ContainerDefinition $containerDefinition) : ContainerFactoryState;
 
     abstract protected function handleServiceDefinition(ContainerFactoryState $state, ServiceDefinition $definition) : void;
 

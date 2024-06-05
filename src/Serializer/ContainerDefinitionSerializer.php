@@ -36,7 +36,7 @@ final class ContainerDefinitionSerializer {
         $dom = new DOMDocument(encoding: 'UTF-8');
         $dom->formatOutput = true;
         $root = $dom->createElementNS(self::XML_SCHEMA, self::ROOT_ELEMENT);
-        $root->setAttribute('version', AnnotatedContainerVersion::getVersion());
+        $root->setAttribute('version', AnnotatedContainerVersion::version());
 
         $dom->appendChild($root);
 
@@ -58,7 +58,7 @@ final class ContainerDefinitionSerializer {
             $serviceDefinitionsNode = $dom->createElementNS(self::XML_SCHEMA, 'serviceDefinitions')
         );
 
-        foreach ($containerDefinition->getServiceDefinitions() as $serviceDefinition) {
+        foreach ($containerDefinition->serviceDefinitions() as $serviceDefinition) {
             $serviceDefinitionsNode->appendChild(
                 $serviceDefinitionNode = $dom->createElementNS(self::XML_SCHEMA, 'serviceDefinition')
             );
@@ -68,13 +68,13 @@ final class ContainerDefinitionSerializer {
             }
 
             $serviceDefinitionNode->appendChild(
-                $dom->createElementNS(self::XML_SCHEMA, 'type', $serviceDefinition->getType()->getName())
+                $dom->createElementNS(self::XML_SCHEMA, 'type', $serviceDefinition->type()->getName())
             );
             $serviceDefinitionNode->appendChild(
                 $nameNode = $dom->createElementNS(self::XML_SCHEMA, 'name')
             );
 
-            $name = $serviceDefinition->getName();
+            $name = $serviceDefinition->name();
             if ($name !== null) {
                 $nameNode->nodeValue = $name;
             }
@@ -83,7 +83,7 @@ final class ContainerDefinitionSerializer {
                 $profilesNode = $dom->createElementNS(self::XML_SCHEMA, 'profiles')
             );
 
-            foreach ($serviceDefinition->getProfiles() as $profile) {
+            foreach ($serviceDefinition->profiles() as $profile) {
                 $profilesNode->appendChild(
                     $dom->createElementNS(self::XML_SCHEMA, 'profile', $profile)
                 );
@@ -97,7 +97,7 @@ final class ContainerDefinitionSerializer {
                 $attrNode = $dom->createElementNS(self::XML_SCHEMA, 'attribute')
             );
 
-            $attr = $serviceDefinition->getAttribute();
+            $attr = $serviceDefinition->attribute();
             if ($attr !== null) {
                 $attrNode->nodeValue = base64_encode(serialize($attr));
             }
@@ -111,16 +111,16 @@ final class ContainerDefinitionSerializer {
             $aliasDefinitionsNode = $dom->createElementNS(self::XML_SCHEMA, 'aliasDefinitions')
         );
 
-        foreach ($containerDefinition->getAliasDefinitions() as $aliasDefinition) {
+        foreach ($containerDefinition->aliasDefinitions() as $aliasDefinition) {
             $aliasDefinitionsNode->appendChild(
                 $aliasDefinitionNode = $dom->createElementNS(self::XML_SCHEMA, 'aliasDefinition')
             );
 
             $aliasDefinitionNode->appendChild(
-                $dom->createElementNS(self::XML_SCHEMA, 'abstractService', $aliasDefinition->getAbstractService()->getName())
+                $dom->createElementNS(self::XML_SCHEMA, 'abstractService', $aliasDefinition->abstractService()->getName())
             );
             $aliasDefinitionNode->appendChild(
-                $dom->createElementNS(self::XML_SCHEMA, 'concreteService', $aliasDefinition->getConcreteService()->getName())
+                $dom->createElementNS(self::XML_SCHEMA, 'concreteService', $aliasDefinition->concreteService()->getName())
             );
         }
     }
@@ -132,24 +132,24 @@ final class ContainerDefinitionSerializer {
             $servicePrepareDefinitionsNode = $dom->createElementNS(self::XML_SCHEMA, 'servicePrepareDefinitions')
         );
 
-        foreach ($containerDefinition->getServicePrepareDefinitions() as $servicePrepareDefinition) {
+        foreach ($containerDefinition->servicePrepareDefinitions() as $servicePrepareDefinition) {
             $servicePrepareDefinitionsNode->appendChild(
                 $servicePrepareDefinitionNode = $dom->createElementNS(self::XML_SCHEMA, 'servicePrepareDefinition')
             );
 
             $servicePrepareDefinitionNode->appendChild(
-                $dom->createElementNS(self::XML_SCHEMA, 'type', $servicePrepareDefinition->getService()->getName())
+                $dom->createElementNS(self::XML_SCHEMA, 'type', $servicePrepareDefinition->service()->getName())
             );
 
             $servicePrepareDefinitionNode->appendChild(
-                $dom->createElementNS(self::XML_SCHEMA, 'method', $servicePrepareDefinition->getMethod())
+                $dom->createElementNS(self::XML_SCHEMA, 'method', $servicePrepareDefinition->methodName())
             );
 
             $servicePrepareDefinitionNode->appendChild(
                 $attrNode = $dom->createElementNS(self::XML_SCHEMA, 'attribute')
             );
 
-            $attr = $servicePrepareDefinition->getAttribute();
+            $attr = $servicePrepareDefinition->attribute();
             if ($attr !== null) {
                 $attrNode->nodeValue = base64_encode(serialize($attr));
             }
@@ -163,25 +163,25 @@ final class ContainerDefinitionSerializer {
             $serviceDelegateDefinitionsNode = $dom->createElementNS(self::XML_SCHEMA, 'serviceDelegateDefinitions')
         );
 
-        foreach ($containerDefinition->getServiceDelegateDefinitions() as $serviceDelegateDefinition) {
+        foreach ($containerDefinition->serviceDelegateDefinitions() as $serviceDelegateDefinition) {
             $serviceDelegateDefinitionsNode->appendChild(
                 $serviceDelegateDefinitionNode = $dom->createElementNS(self::XML_SCHEMA, 'serviceDelegateDefinition')
             );
 
             $serviceDelegateDefinitionNode->appendChild(
-                $dom->createElementNS(self::XML_SCHEMA, 'service', $serviceDelegateDefinition->getServiceType()->getName())
+                $dom->createElementNS(self::XML_SCHEMA, 'service', $serviceDelegateDefinition->serviceType()->getName())
             );
             $serviceDelegateDefinitionNode->appendChild(
-                $dom->createElementNS(self::XML_SCHEMA, 'delegateType', $serviceDelegateDefinition->getDelegateType()->getName())
+                $dom->createElementNS(self::XML_SCHEMA, 'delegateType', $serviceDelegateDefinition->delegateType()->getName())
             );
             $serviceDelegateDefinitionNode->appendChild(
-                $dom->createElementNS(self::XML_SCHEMA, 'delegateMethod', $serviceDelegateDefinition->getDelegateMethod())
+                $dom->createElementNS(self::XML_SCHEMA, 'delegateMethod', $serviceDelegateDefinition->delegateMethod())
             );
             $serviceDelegateDefinitionNode->appendChild(
                 $attrNode = $dom->createElementNS(self::XML_SCHEMA, 'attribute')
             );
 
-            $attr = $serviceDelegateDefinition->getAttribute();
+            $attr = $serviceDelegateDefinition->attribute();
             if ($attr !== null) {
                 $attrNode->nodeValue = base64_encode(serialize($attr));
             }
@@ -195,15 +195,14 @@ final class ContainerDefinitionSerializer {
             $injectDefinitionsNode = $dom->createElementNS(self::XML_SCHEMA, 'injectDefinitions')
         );
 
-        foreach ($containerDefinition->getInjectDefinitions() as $injectDefinition) {
+        foreach ($containerDefinition->injectDefinitions() as $injectDefinition) {
             try {
-                $serializedValue = serialize($injectDefinition->getValue());
+                $serializedValue = serialize($injectDefinition->value());
             } catch (PhpException $exception) {
                 throw InvalidInjectDefinition::fromValueNotSerializable($exception);
             }
 
             $dom = $root->ownerDocument;
-            assert($dom instanceof DOMDocument);
 
             $injectDefinitionsNode->appendChild(
                 $injectDefinitionNode = $dom->createElementNS(self::XML_SCHEMA, 'injectDefinition')
@@ -213,14 +212,14 @@ final class ContainerDefinitionSerializer {
                 $targetNode = $dom->createElementNS(self::XML_SCHEMA, 'target')
             );
 
-            if ($injectDefinition->getTargetIdentifier()->isMethodParameter()) {
+            if ($injectDefinition->targetIdentifier()->isMethodParameter()) {
                 $this->addMethodParameterInjectDefinitionToDom($targetNode, $injectDefinition);
             } else {
                 $this->addClassPropertyInjectDefinitionToDom($targetNode, $injectDefinition);
             }
 
             $injectDefinitionNode->appendChild(
-                $dom->createElementNS(self::XML_SCHEMA, 'valueType', base64_encode($injectDefinition->getType()->getName()))
+                $dom->createElementNS(self::XML_SCHEMA, 'valueType', base64_encode($injectDefinition->type()->getName()))
             );
 
             $injectDefinitionNode->appendChild(
@@ -235,7 +234,7 @@ final class ContainerDefinitionSerializer {
                 $profilesNode = $dom->createElementNS(self::XML_SCHEMA, 'profiles')
             );
 
-            foreach ($injectDefinition->getProfiles() as $profile) {
+            foreach ($injectDefinition->profiles() as $profile) {
                 $profilesNode->appendChild(
                     $dom->createElementNS(self::XML_SCHEMA, 'profile', $profile)
                 );
@@ -249,12 +248,12 @@ final class ContainerDefinitionSerializer {
                 $attrNode = $dom->createElementNS(self::XML_SCHEMA, 'attribute')
             );
 
-            $store = $injectDefinition->getStoreName();
+            $store = $injectDefinition->storeName();
             if ($store !== null) {
                 $storeNode->nodeValue = $store;
             }
 
-            $attr = $injectDefinition->getAttribute();
+            $attr = $injectDefinition->attribute();
             if ($attr !== null) {
                 $attrNode->nodeValue = base64_encode(serialize($attr));
             }
@@ -269,17 +268,17 @@ final class ContainerDefinitionSerializer {
         );
 
         $classMethodNode->appendChild(
-            $dom->createElementNS(self::XML_SCHEMA, 'class', $injectDefinition->getTargetIdentifier()->getClass()->getName())
+            $dom->createElementNS(self::XML_SCHEMA, 'class', $injectDefinition->targetIdentifier()->class()->getName())
         );
 
-        $methodName = $injectDefinition->getTargetIdentifier()->getMethodName();
+        $methodName = $injectDefinition->targetIdentifier()->methodName();
         assert($methodName !== null);
         $classMethodNode->appendChild(
             $dom->createElementNS(self::XML_SCHEMA, 'method', $methodName)
         );
 
         $classMethodNode->appendChild(
-            $dom->createElementNS(self::XML_SCHEMA, 'parameter', $injectDefinition->getTargetIdentifier()->getName())
+            $dom->createElementNS(self::XML_SCHEMA, 'parameter', $injectDefinition->targetIdentifier()->name())
         );
     }
 
@@ -291,11 +290,11 @@ final class ContainerDefinitionSerializer {
         );
 
         $classPropertyNode->appendChild(
-            $dom->createElementNS(self::XML_SCHEMA, 'class', $injectDefinition->getTargetIdentifier()->getClass()->getName())
+            $dom->createElementNS(self::XML_SCHEMA, 'class', $injectDefinition->targetIdentifier()->class()->getName())
         );
 
         $classPropertyNode->appendChild(
-            $dom->createElementNS(self::XML_SCHEMA, 'property', $injectDefinition->getTargetIdentifier()->getName())
+            $dom->createElementNS(self::XML_SCHEMA, 'property', $injectDefinition->targetIdentifier()->name())
         );
     }
 
@@ -307,7 +306,7 @@ final class ContainerDefinitionSerializer {
         $xpath->registerNamespace('cd', self::XML_SCHEMA);
 
         $version = (string) $xpath->query('/cd:annotatedContainerDefinition/@version')[0]?->nodeValue;
-        if ($version !== AnnotatedContainerVersion::getVersion()) {
+        if ($version !== AnnotatedContainerVersion::version()) {
             return null;
         }
 

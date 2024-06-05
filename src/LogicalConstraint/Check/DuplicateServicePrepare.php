@@ -11,21 +11,21 @@ use Cspray\AnnotatedContainer\Profiles;
 
 final class DuplicateServicePrepare implements LogicalConstraint {
 
-    public function getConstraintViolations(ContainerDefinition $containerDefinition, Profiles $profiles) : LogicalConstraintViolationCollection {
+    public function constraintViolations(ContainerDefinition $containerDefinition, Profiles $profiles) : LogicalConstraintViolationCollection {
         $violations = new LogicalConstraintViolationCollection();
 
         /** @var array<non-empty-string, list<ServicePrepareAttribute|null>> $servicePrepareMap */
         $servicePrepareMap = [];
 
-        foreach ($containerDefinition->getServicePrepareDefinitions() as $prepareDefinition) {
+        foreach ($containerDefinition->servicePrepareDefinitions() as $prepareDefinition) {
             $classMethod = sprintf(
                 '%s::%s',
-                $prepareDefinition->getService()->getName(),
-                $prepareDefinition->getMethod()
+                $prepareDefinition->service()->getName(),
+                $prepareDefinition->methodName()
             );
 
             $servicePrepareMap[$classMethod] ??= [];
-            $servicePrepareMap[$classMethod][] = $prepareDefinition->getAttribute();
+            $servicePrepareMap[$classMethod][] = $prepareDefinition->attribute();
         }
 
         foreach ($servicePrepareMap as $classMethod => $attributes) {

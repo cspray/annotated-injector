@@ -26,7 +26,7 @@ class AutowireableFunctionsTest extends TestCase {
     public function testRawParameterGetName(string $name) {
         $param = rawParam($name, 'value');
 
-        $this->assertSame($name, $param->getName());
+        $this->assertSame($name, $param->name());
     }
 
     public function testRawParameterWithEmptyNameThrowsException() {
@@ -39,7 +39,7 @@ class AutowireableFunctionsTest extends TestCase {
     public function testServiceParameterGetName(string $name) {
         $param = serviceParam($name, objectType(static::class));
 
-        $this->assertSame($name, $param->getName());
+        $this->assertSame($name, $param->name());
     }
 
     public function testServiceParameterWithEmptyNameThrowsException() {
@@ -63,13 +63,13 @@ class AutowireableFunctionsTest extends TestCase {
     public function testRawParameterGetValue(mixed $value) {
         $param = rawParam('name', $value);
 
-        $this->assertSame($value, $param->getValue());
+        $this->assertSame($value, $param->value());
     }
 
     public function testServiceParameterGetValue() {
         $param = serviceParam('foo', $type = objectType(static::class));
 
-        $this->assertSame($type, $param->getValue());
+        $this->assertSame($type, $param->value());
     }
 
     public function testRawParameterIsServiceIdentifier() {

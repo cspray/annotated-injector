@@ -155,7 +155,7 @@ XML;
             ContainerDefinitionAnalysisOptionsBuilder::scanDirectories($dir)->build()
         );
 
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">

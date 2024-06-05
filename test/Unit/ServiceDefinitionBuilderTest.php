@@ -29,7 +29,7 @@ class ServiceDefinitionBuilderTest extends TestCase {
         $type = objectType($this->getAbstractType());
         $serviceDefinition = ServiceDefinitionBuilder::forAbstract($type)->build();
 
-        $this->assertSame($type, $serviceDefinition->getType());
+        $this->assertSame($type, $serviceDefinition->type());
     }
 
     public function testBuildingTypeForAbstractIsAbstract() {
@@ -47,14 +47,14 @@ class ServiceDefinitionBuilderTest extends TestCase {
     public function testBuildingTypeForAbstractWithNoProfilesSpecifiedIncludesDefault() {
         $serviceDefinition = ServiceDefinitionBuilder::forAbstract(objectType($this->getAbstractType()))->build();
 
-        $this->assertSame(['default'], $serviceDefinition->getProfiles());
+        $this->assertSame(['default'], $serviceDefinition->profiles());
     }
 
     public function testBuildingTypeForConcreteHasCorrectServiceDefinitionType() {
         $type = objectType($this->getConcreteType());
         $serviceDefinition = ServiceDefinitionBuilder::forConcrete($type)->build();
 
-        $this->assertSame($type, $serviceDefinition->getType());
+        $this->assertSame($type, $serviceDefinition->type());
     }
 
     public function testBuildingTypeForConcreteIsNotAbstract() {
@@ -94,7 +94,7 @@ class ServiceDefinitionBuilderTest extends TestCase {
         $serviceDefinition = ServiceDefinitionBuilder::forConcrete(objectType($this->getConcreteType()))
             ->withProfiles(['dev'])->build();
 
-        $this->assertSame(['dev'], $serviceDefinition->getProfiles());
+        $this->assertSame(['dev'], $serviceDefinition->profiles());
     }
 
     public function testWithMultipleProfilesAllIncluded() {
@@ -102,13 +102,13 @@ class ServiceDefinitionBuilderTest extends TestCase {
             ->withProfiles(['default', 'dev', 'local'])
             ->build();
 
-        $this->assertSame(['default', 'dev', 'local'], $serviceDefinition->getProfiles());
+        $this->assertSame(['default', 'dev', 'local'], $serviceDefinition->profiles());
     }
 
     public function testWithNoAttributeDefinitionAttributeIsNull() : void {
         $serviceDefinition = ServiceDefinitionBuilder::forAbstract(objectType($this->getAbstractType()))->build();
 
-        self::assertNull($serviceDefinition->getAttribute());
+        self::assertNull($serviceDefinition->attribute());
     }
 
     public function testWithAttributeDefinitionAttributeIsSame() : void {
@@ -116,6 +116,6 @@ class ServiceDefinitionBuilderTest extends TestCase {
             ->withAttribute($attr = new Service())
             ->build();
 
-        self::assertSame($attr, $serviceDefinition->getAttribute());
+        self::assertSame($attr, $serviceDefinition->attribute());
     }
 }

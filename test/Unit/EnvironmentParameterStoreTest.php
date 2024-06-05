@@ -10,7 +10,7 @@ use function Cspray\Typiphy\stringType;
 class EnvironmentParameterStoreTest extends TestCase {
 
     public function testGetEnvironmentParameterStoreName() {
-        $this->assertSame('env', (new EnvironmentParameterStore())->getName());
+        $this->assertSame('env', (new EnvironmentParameterStore())->name());
     }
 
     public function testGetEnvironmentVariableExists() {

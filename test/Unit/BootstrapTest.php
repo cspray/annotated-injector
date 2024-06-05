@@ -394,7 +394,7 @@ XML;
 
             protected function wireServices(AnnotatedContainer $container, ServiceGatherer $gatherer) : void {
                 $this->container = $container;
-                $this->services = $gatherer->getServicesForType(Fixtures::ambiguousAliasedServices()->fooInterface()->getName());
+                $this->services = $gatherer->servicesForType(Fixtures::ambiguousAliasedServices()->fooInterface()->getName());
             }
         };
 
@@ -404,7 +404,7 @@ XML;
 
         $actual = $listener->getServices();
 
-        $actualServices = array_map(fn(ServiceFromServiceDefinition $fromServiceDefinition) => $fromServiceDefinition->getService(), $actual);
+        $actualServices = array_map(fn(ServiceFromServiceDefinition $fromServiceDefinition) => $fromServiceDefinition->service(), $actual);
 
         usort($actualServices, fn($a, $b) => $a::class <=> $b::class);
 
@@ -459,7 +459,7 @@ XML;
 
             protected function wireServices(AnnotatedContainer $container, ServiceGatherer $gatherer) : void {
                 $this->container = $container;
-                $this->services = $gatherer->getServicesWithAttribute(Repository::class);
+                $this->services = $gatherer->servicesWithAttribute(Repository::class);
             }
         };
 
@@ -468,7 +468,7 @@ XML;
         $container = $bootstrap->bootstrapContainer(Profiles::fromList(['default', 'test']));
 
         $actual = $listener->getServices();
-        $actualServices = array_map(fn(ServiceFromServiceDefinition $fromServiceDefinition) => $fromServiceDefinition->getService(), $actual);
+        $actualServices = array_map(fn(ServiceFromServiceDefinition $fromServiceDefinition) => $fromServiceDefinition->service(), $actual);
 
         self::assertSame($container, $listener->getAnnotatedContainer());
         self::assertSame([
@@ -520,7 +520,7 @@ XML;
 
             protected function wireServices(AnnotatedContainer $container, ServiceGatherer $gatherer) : void {
                 $this->container = $container;
-                $this->services = $gatherer->getServicesForType(Fixtures::profileResolvedServices()->fooInterface()->getName());
+                $this->services = $gatherer->servicesForType(Fixtures::profileResolvedServices()->fooInterface()->getName());
             }
         };
 
@@ -530,7 +530,7 @@ XML;
 
         $actual = $listener->getServices();
 
-        $actualServices = array_map(fn(ServiceFromServiceDefinition $fromServiceDefinition) => $fromServiceDefinition->getService(), $actual);
+        $actualServices = array_map(fn(ServiceFromServiceDefinition $fromServiceDefinition) => $fromServiceDefinition->service(), $actual);
 
         usort($actualServices, fn($a, $b) => $a::class <=> $b::class);
 
@@ -583,7 +583,7 @@ XML;
 
             protected function wireServices(AnnotatedContainer $container, ServiceGatherer $gatherer) : void {
                 $this->container = $container;
-                $this->services = $gatherer->getServicesWithAttribute(Repository::class);
+                $this->services = $gatherer->servicesWithAttribute(Repository::class);
             }
         };
 

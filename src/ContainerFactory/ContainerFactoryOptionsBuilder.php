@@ -24,7 +24,7 @@ final class ContainerFactoryOptionsBuilder {
             ) {
             }
 
-            public function getProfiles(): Profiles {
+            public function profiles(): Profiles {
                 return $this->activeProfiles;
             }
         };

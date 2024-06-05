@@ -76,7 +76,7 @@ final class ContainerDefinitionBuilder {
     /**
      * @return list<ServiceDefinition>
      */
-    public function getServiceDefinitions() : array {
+    public function serviceDefinitions() : array {
         return $this->serviceDefinitions;
     }
 
@@ -105,23 +105,23 @@ final class ContainerDefinitionBuilder {
             ) {
             }
 
-            public function getServiceDefinitions(): array {
+            public function serviceDefinitions(): array {
                 return $this->serviceDefinitions;
             }
 
-            public function getAliasDefinitions(): array {
+            public function aliasDefinitions(): array {
                 return $this->aliasDefinitions;
             }
 
-            public function getServicePrepareDefinitions(): array {
+            public function servicePrepareDefinitions(): array {
                 return $this->servicePrepareDefinitions;
             }
 
-            public function getInjectDefinitions(): array {
+            public function injectDefinitions(): array {
                 return $this->injectDefinitions;
             }
 
-            public function getServiceDelegateDefinitions(): array {
+            public function serviceDelegateDefinitions(): array {
                 return $this->serviceDelegateDefinitions;
             }
         };

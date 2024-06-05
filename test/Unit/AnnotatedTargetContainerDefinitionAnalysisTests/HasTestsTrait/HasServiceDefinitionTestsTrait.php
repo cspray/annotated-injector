@@ -35,7 +35,7 @@ trait HasServiceDefinitionTestsTrait {
 
         $this->assertSame(
             $expectedCount,
-            count($this->getSubject()->getServiceDefinitions()),
+            count($this->getSubject()->serviceDefinitions()),
             'The number of entries in \'serviceTypeProvider\' does not match the number of service definitions.'
         );
     }
@@ -45,7 +45,7 @@ trait HasServiceDefinitionTestsTrait {
 
         $this->assertSame(
             $expected,
-            count($this->getSubject()->getServiceDefinitions()),
+            count($this->getSubject()->serviceDefinitions()),
             'The number of entries in \'serviceNameProvider\' does not match the number of service definitions.'
         );
     }
@@ -55,7 +55,7 @@ trait HasServiceDefinitionTestsTrait {
 
         $this->assertSame(
             $expected,
-            count($this->getSubject()->getServiceDefinitions()),
+            count($this->getSubject()->serviceDefinitions()),
             'The number of entries in \'serviceIsPrimaryProvider\' does not match the number of service definitions.'
         );
     }
@@ -65,7 +65,7 @@ trait HasServiceDefinitionTestsTrait {
 
         $this->assertSame(
             $expected,
-            count($this->getSubject()->getServiceDefinitions()),
+            count($this->getSubject()->serviceDefinitions()),
             'The number of entries in \'serviceIsConcreteProvider\' does not match the number of service definitions.'
         );
     }
@@ -75,7 +75,7 @@ trait HasServiceDefinitionTestsTrait {
 
         $this->assertSame(
             $expected,
-            count($this->getSubject()->getServiceDefinitions()),
+            count($this->getSubject()->serviceDefinitions()),
             'The number of entries in \'serviceIsAbstractProvides\' does not match the number of service definitions.'
         );
     }
@@ -85,7 +85,7 @@ trait HasServiceDefinitionTestsTrait {
 
         $this->assertSame(
             $expected,
-            count($this->getSubject()->getServiceDefinitions()),
+            count($this->getSubject()->serviceDefinitions()),
             'The number of entries in \'serviceIsSharedProvider\' does not match the number of service definitions.'
         );
     }
@@ -95,14 +95,14 @@ trait HasServiceDefinitionTestsTrait {
 
         $this->assertSame(
             $expected,
-            count($this->getSubject()->getServiceDefinitions()),
+            count($this->getSubject()->serviceDefinitions()),
             'The number of entries in \'serviceProfilesProvider\' does not match the number of service definitions.'
         );
     }
 
     #[DataProvider('serviceTypeProvider')]
     final public function testExpectedServiceTypes(ExpectedServiceType $expectedServiceType) : void {
-        $serviceDefinition = $this->getServiceDefinition($this->getSubject()->getServiceDefinitions(), $expectedServiceType->type->getName());
+        $serviceDefinition = $this->getServiceDefinition($this->getSubject()->serviceDefinitions(), $expectedServiceType->type->getName());
 
         $this->assertNotNull(
             $serviceDefinition,
@@ -112,36 +112,36 @@ trait HasServiceDefinitionTestsTrait {
 
     #[DataProvider('serviceNameProvider')]
     final public function testExpectedServiceNames(ExpectedServiceName $expectedServiceName) : void {
-        $serviceDefinition = $this->getServiceDefinition($this->getSubject()->getServiceDefinitions(), $expectedServiceName->type->getName());
+        $serviceDefinition = $this->getServiceDefinition($this->getSubject()->serviceDefinitions(), $expectedServiceName->type->getName());
 
-        $this->assertSame($expectedServiceName->name, $serviceDefinition?->getName());
+        $this->assertSame($expectedServiceName->name, $serviceDefinition?->name());
     }
 
     #[DataProvider('serviceIsPrimaryProvider')]
     final public function testExpectedServiceIsPrimary(ExpectedServiceIsPrimary $expectedServiceIsPrimary) : void {
-        $serviceDefinition = $this->getServiceDefinition($this->getSubject()->getServiceDefinitions(), $expectedServiceIsPrimary->type->getName());
+        $serviceDefinition = $this->getServiceDefinition($this->getSubject()->serviceDefinitions(), $expectedServiceIsPrimary->type->getName());
 
         $this->assertSame($expectedServiceIsPrimary->isPrimary, $serviceDefinition?->isPrimary());
     }
 
     #[DataProvider('serviceIsConcreteProvider')]
     final public function testExpectedServiceIsConcrete(ExpectedServiceIsConcrete $expectedServiceIsConcrete) : void {
-        $serviceDefinition = $this->getServiceDefinition($this->getSubject()->getServiceDefinitions(), $expectedServiceIsConcrete->type->getName());
+        $serviceDefinition = $this->getServiceDefinition($this->getSubject()->serviceDefinitions(), $expectedServiceIsConcrete->type->getName());
 
         $this->assertSame($expectedServiceIsConcrete->isConcrete, $serviceDefinition?->isConcrete());
     }
 
     #[DataProvider('serviceIsAbstractProvider')]
     final public function testExpectedServiceIsAbstract(ExpectedServiceIsAbstract $expectedServiceIsAbstract) : void {
-        $serviceDefinition = $this->getServiceDefinition($this->getSubject()->getServiceDefinitions(), $expectedServiceIsAbstract->type->getName());
+        $serviceDefinition = $this->getServiceDefinition($this->getSubject()->serviceDefinitions(), $expectedServiceIsAbstract->type->getName());
 
         $this->assertSame($expectedServiceIsAbstract->isAbstract, $serviceDefinition?->isAbstract());
     }
 
     #[DataProvider('serviceProfilesProvider')]
     final public function testExpectedServiceProfiles(ExpectedServiceProfiles $expectedServiceProfiles) : void {
-        $serviceDefinition = $this->getServiceDefinition($this->getSubject()->getServiceDefinitions(), $expectedServiceProfiles->type->getName());
+        $serviceDefinition = $this->getServiceDefinition($this->getSubject()->serviceDefinitions(), $expectedServiceProfiles->type->getName());
 
-        $this->assertSame($expectedServiceProfiles->profiles, $serviceDefinition?->getProfiles());
+        $this->assertSame($expectedServiceProfiles->profiles, $serviceDefinition?->profiles());
     }
 }

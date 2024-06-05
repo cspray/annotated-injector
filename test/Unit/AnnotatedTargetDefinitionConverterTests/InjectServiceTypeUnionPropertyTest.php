@@ -23,34 +23,34 @@ class InjectServiceTypeUnionPropertyTest extends AnnotatedTargetDefinitionConver
     }
 
     public function testDefinitionGetService() {
-        $this->assertSame(Fixtures::injectServiceIntersectConstructorServices()->fooBarConfiguration(), $this->definition->getTargetIdentifier()->getClass());
+        $this->assertSame(Fixtures::injectServiceIntersectConstructorServices()->fooBarConfiguration(), $this->definition->targetIdentifier()->class());
     }
 
     public function testDefinitionGetPropertyName() {
-        $this->assertSame('fooOrBar', $this->definition->getTargetIdentifier()->getName());
+        $this->assertSame('fooOrBar', $this->definition->targetIdentifier()->name());
     }
 
     public function testDefinitionGetTypeIntersect() {
         $this->assertSame(
             typeUnion(Fixtures::injectServiceIntersectConstructorServices()->fooInterface(), Fixtures::injectServiceIntersectConstructorServices()->barInterface()),
-            $this->definition->getType()
+            $this->definition->type()
         );
     }
 
     public function testGetValue() {
-        $this->assertSame(Fixtures::injectServiceIntersectConstructorServices()->barImplementation()->getName(), $this->definition->getValue());
+        $this->assertSame(Fixtures::injectServiceIntersectConstructorServices()->barImplementation()->getName(), $this->definition->value());
     }
 
     public function testGetStore() {
-        $this->assertNull($this->definition->getStoreName());
+        $this->assertNull($this->definition->storeName());
     }
 
     public function testGetProfiles() {
-        $this->assertSame(['default'], $this->definition->getProfiles());
+        $this->assertSame(['default'], $this->definition->profiles());
     }
 
     public function testGetAttribute() {
-        self::assertInstanceOf(Inject::class, $this->definition->getAttribute());
-        self::assertSame(Fixtures::injectServiceIntersectConstructorServices()->barImplementation()->getName(), $this->definition->getAttribute()->getValue());
+        self::assertInstanceOf(Inject::class, $this->definition->attribute());
+        self::assertSame(Fixtures::injectServiceIntersectConstructorServices()->barImplementation()->getName(), $this->definition->attribute()->getValue());
     }
 }

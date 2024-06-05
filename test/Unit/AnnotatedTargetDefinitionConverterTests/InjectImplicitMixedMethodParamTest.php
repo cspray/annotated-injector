@@ -26,35 +26,35 @@ class InjectImplicitMixedMethodParamTest extends AnnotatedTargetDefinitionConver
     }
 
     public function testDefinitionGetService() {
-        $this->assertSame(Fixtures::injectConstructorServices()->injectImplicitMixedService(), $this->definition->getTargetIdentifier()->getClass());
+        $this->assertSame(Fixtures::injectConstructorServices()->injectImplicitMixedService(), $this->definition->targetIdentifier()->class());
     }
 
     public function testDefinitionGetMethod() {
-        $this->assertSame('__construct', $this->definition->getTargetIdentifier()->getMethodName());
+        $this->assertSame('__construct', $this->definition->targetIdentifier()->methodName());
     }
 
     public function testDefinitionGetParamName() {
-        $this->assertSame('val', $this->definition->getTargetIdentifier()->getName());
+        $this->assertSame('val', $this->definition->targetIdentifier()->name());
     }
 
     public function testDefinitionGetType() {
-        $this->assertSame(mixedType(), $this->definition->getType());
+        $this->assertSame(mixedType(), $this->definition->type());
     }
 
     public function testGetValue() {
-        $this->assertSame('something', $this->definition->getValue());
+        $this->assertSame('something', $this->definition->value());
     }
 
     public function testGetStore() {
-        $this->assertNull($this->definition->getStoreName());
+        $this->assertNull($this->definition->storeName());
     }
 
     public function testGetProfiles() {
-        $this->assertSame(['default'], $this->definition->getProfiles());
+        $this->assertSame(['default'], $this->definition->profiles());
     }
 
     public function testGetAttribute() {
-        self::assertInstanceOf(Inject::class, $this->definition->getAttribute());
-        self::assertSame('something', $this->definition->getAttribute()->getValue());
+        self::assertInstanceOf(Inject::class, $this->definition->attribute());
+        self::assertSame('something', $this->definition->attribute()->getValue());
     }
 }

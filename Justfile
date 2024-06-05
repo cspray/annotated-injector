@@ -36,7 +36,7 @@ static-analysis-set-baseline:
 
 # Update the baseline to _remove_ fixed issues. If new issues are to be added please use static-analysis-set-baseline
 static-analysis-update-baseline:
-    @./tools/psalm/vendor/bin/psalm --update-baseline
+    @./tools/psalm/vendor/bin/psalm --update-baseline --no-cache
 
 # Run code-linting tools on src and test
 code-lint:

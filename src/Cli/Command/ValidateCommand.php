@@ -62,11 +62,11 @@ final class ValidateCommand implements Command {
         $this->validator = new LogicalConstraintValidator(...$this->logicalConstraints);
     }
 
-    public function getName() : string {
+    public function name() : string {
         return 'validate';
     }
 
-    public function getHelp() : string {
+    public function help() : string {
         return <<<TEXT
 NAME
 
@@ -119,12 +119,12 @@ TEXT;
     }
 
     public function handle(Input $input, TerminalOutput $output) : int {
-        if ($input->getOption('list-constraints') === true) {
+        if ($input->option('list-constraints') === true) {
             $this->listConstraints($output);
             return 0;
         }
-        $configOption = $input->getOption('config-file')  ?? 'annotated-container.xml';
-        $configFile = $this->directoryResolver->getConfigurationPath($configOption);
+        $configOption = $input->option('config-file')  ?? 'annotated-container.xml';
+        $configFile = $this->directoryResolver->configurationPath($configOption);
         if (!is_file($configFile)) {
             throw ConfigurationNotFound::fromMissingFile($configFile);
         }
@@ -148,7 +148,7 @@ TEXT;
 
         $emitter->addListener($infoCapturingListener);
 
-        $inputProfiles = $input->getOption('profile') ?? ['default'];
+        $inputProfiles = $input->option('profile') ?? ['default'];
         if (is_string($inputProfiles)) {
             $inputProfiles = [$inputProfiles];
         }
@@ -204,7 +204,7 @@ TEXT;
             public function createContainer(ContainerDefinition $containerDefinition, ContainerFactoryOptions $containerFactoryOptions = null) : AnnotatedContainer {
                 return new class implements AnnotatedContainer {
 
-                    public function getBackingContainer() : object {
+                    public function backingContainer() : object {
                         throw new \RuntimeException(__METHOD__);
                     }
 

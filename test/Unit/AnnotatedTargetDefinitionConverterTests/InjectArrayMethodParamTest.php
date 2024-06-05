@@ -26,35 +26,35 @@ class InjectArrayMethodParamTest extends AnnotatedTargetDefinitionConverterTestC
     }
 
     public function testDefinitionGetService() : void {
-        self::assertSame(Fixtures::injectConstructorServices()->injectArrayService(), $this->definition->getTargetIdentifier()->getClass());
+        self::assertSame(Fixtures::injectConstructorServices()->injectArrayService(), $this->definition->targetIdentifier()->class());
     }
 
     public function testDefinitionGetMethod() : void {
-        self::assertSame('__construct', $this->definition->getTargetIdentifier()->getMethodName());
+        self::assertSame('__construct', $this->definition->targetIdentifier()->methodName());
     }
 
     public function testDefinitionGetParamName() : void {
-        self::assertSame('values', $this->definition->getTargetIdentifier()->getName());
+        self::assertSame('values', $this->definition->targetIdentifier()->name());
     }
 
     public function testDefinitionGetType() : void {
-        self::assertSame(arrayType(), $this->definition->getType());
+        self::assertSame(arrayType(), $this->definition->type());
     }
 
     public function testGetValue() : void {
-        self::assertSame(['dependency', 'injection', 'rocks'], $this->definition->getValue());
+        self::assertSame(['dependency', 'injection', 'rocks'], $this->definition->value());
     }
 
     public function testGetStore() : void {
-        self::assertNull($this->definition->getStoreName());
+        self::assertNull($this->definition->storeName());
     }
 
     public function testGetProfiles() : void {
-        self::assertSame(['default'], $this->definition->getProfiles());
+        self::assertSame(['default'], $this->definition->profiles());
     }
 
     public function testGetAttribute() : void {
-        self::assertInstanceOf(Inject::class, $this->definition->getAttribute());
-        self::assertSame(['dependency', 'injection', 'rocks'], $this->definition->getAttribute()->getValue());
+        self::assertInstanceOf(Inject::class, $this->definition->attribute());
+        self::assertSame(['dependency', 'injection', 'rocks'], $this->definition->attribute()->getValue());
     }
 }

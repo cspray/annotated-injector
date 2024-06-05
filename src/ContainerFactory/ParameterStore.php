@@ -16,7 +16,7 @@ interface ParameterStore {
      *
      * @return string
      */
-    public function getName() : string;
+    public function name() : string;
 
     /**
      * Retrieve the value appropriate for $key.

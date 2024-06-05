@@ -10,11 +10,11 @@ final class TerminalOutput {
     public readonly OutputWithHelpers $stderr;
 
     public function __construct(Output $stdout = null, Output $stderr = null) {
-        $this->stdout = $this->getDecoratedOutput($stdout ?? new Stdout());
-        $this->stderr = $this->getDecoratedOutput($stderr ?? new Stderr());
+        $this->stdout = $this->decoratedOutput($stdout ?? new Stdout());
+        $this->stderr = $this->decoratedOutput($stderr ?? new Stderr());
     }
 
-    private function getDecoratedOutput(Output $output) : OutputWithHelpers {
+    private function decoratedOutput(Output $output) : OutputWithHelpers {
         return new class($output) implements Output, OutputWithHelpers {
 
             /**

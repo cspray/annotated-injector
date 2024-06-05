@@ -7,5 +7,5 @@ interface ThirdPartyInitializerProvider {
     /**
      * @return list<class-string<ThirdPartyInitializer>>
      */
-    public function getThirdPartyInitializers() : array;
+    public function thirdPartyInitializerProviders() : array;
 }

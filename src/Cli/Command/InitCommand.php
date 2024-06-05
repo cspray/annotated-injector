@@ -28,11 +28,11 @@ final class InitCommand implements Command {
     ) {
     }
 
-    public function getName() : string {
+    public function name() : string {
         return 'init';
     }
 
-    public function getHelp() : string {
+    public function help() : string {
         return <<<SHELL
 NAME
 
@@ -197,7 +197,7 @@ SHELL;
     public function handle(Input $input, TerminalOutput $output) : int {
         $this->validateInput($input);
 
-        $composerFile = $this->directoryResolver->getConfigurationPath('composer.json');
+        $composerFile = $this->directoryResolver->configurationPath('composer.json');
         if (!file_exists($composerFile)) {
             throw ComposerConfigurationNotFound::fromMissingComposerJson();
         }
@@ -205,12 +205,12 @@ SHELL;
         $composer = json_decode(file_get_contents($composerFile), true);
 
         /** @var string|null $configName */
-        $configName = $input->getOption('config-file');
+        $configName = $input->option('config-file');
         if (!isset($configName)) {
             $configName = $composer['extra']['annotatedContainer']['configFile'] ?? 'annotated-container.xml';
         }
 
-        $configFile = $this->directoryResolver->getConfigurationPath($configName);
+        $configFile = $this->directoryResolver->configurationPath($configName);
         if (file_exists($configFile)) {
             throw new PotentialConfigurationOverwrite(
                 sprintf('The configuration file "%s" is already present and cannot be overwritten.', $configName)
@@ -220,8 +220,8 @@ SHELL;
         $this->generateAndSaveConfiguration($input, $composer, $configFile);
 
         /** @var ?string $cacheDirOpt */
-        $cacheDirOpt = $input->getOption('cache-dir');
-        $cacheDir = $this->directoryResolver->getCachePath(
+        $cacheDirOpt = $input->option('cache-dir');
+        $cacheDir = $this->directoryResolver->cachePath(
             $cacheDirOpt ?? '.annotated-container-cache'
         );
         if (!is_dir($cacheDir)) {
@@ -239,33 +239,33 @@ SHELL;
      * @throws InvalidOptionType
      */
     private function validateInput(Input $input) : void {
-        $configFile = $input->getOption('config-file');
+        $configFile = $input->option('config-file');
         if (is_bool($configFile)) {
             throw InvalidOptionType::fromBooleanOption('config-file');
         } elseif (is_array($configFile)) {
             throw InvalidOptionType::fromArrayOption('config-file');
         }
 
-        $cacheDir = $input->getOption('cache-dir');
+        $cacheDir = $input->option('cache-dir');
         if (is_bool($cacheDir)) {
             throw InvalidOptionType::fromBooleanOption('cache-dir');
         } elseif (is_array($cacheDir)) {
             throw InvalidOptionType::fromArrayOption('cache-dir');
         }
 
-        $definitionProvider = $input->getOption('definition-provider');
+        $definitionProvider = $input->option('definition-provider');
         if (is_bool($definitionProvider)) {
             throw InvalidOptionType::fromBooleanOption('definition-provider');
         } elseif (is_array($definitionProvider)) {
             throw InvalidOptionType::fromArrayOption('definition-provider');
         }
 
-        $parameterStore = $input->getOption('parameter-store');
+        $parameterStore = $input->option('parameter-store');
         if (is_bool($parameterStore)) {
             throw InvalidOptionType::fromBooleanOption('parameter-store');
         }
 
-        $observers = $input->getOption('observer');
+        $observers = $input->option('observer');
         if (is_bool($observers)) {
             throw InvalidOptionType::fromBooleanOption('observer');
         }
@@ -324,7 +324,7 @@ SHELL;
             $dom->createElementNS(self::XML_SCHEMA, 'definitionProviders')
         );
         /** @var string|null $definitionProvider */
-        $definitionProvider = $input->getOption('definition-provider');
+        $definitionProvider = $input->option('definition-provider');
         if (isset($definitionProvider)) {
             $definitionProvidersNode->appendChild(
                 $dom->createElementNS(self::XML_SCHEMA, 'definitionProvider', $definitionProvider)
@@ -332,7 +332,7 @@ SHELL;
         }
 
         /** @var string|array|null $parameterStores */
-        $parameterStores = $input->getOption('parameter-store');
+        $parameterStores = $input->option('parameter-store');
         if ($parameterStores !== null) {
             $parameterStores = is_string($parameterStores) ? [$parameterStores] : $parameterStores;
             $parameterStoresNode = $root->appendChild($dom->createElementNS(self::XML_SCHEMA, 'parameterStores'));
@@ -344,15 +344,15 @@ SHELL;
         $vendor = $scanDirectories->appendChild(
             $dom->createElementNS(self::XML_SCHEMA, 'vendor')
         );
-        foreach ($this->initializerProvider->getThirdPartyInitializers() as $thirdPartyInitializerClass) {
+        foreach ($this->initializerProvider->thirdPartyInitializerProviders() as $thirdPartyInitializerClass) {
             $thirdPartyInitializer = new $thirdPartyInitializerClass();
-            $packageRelativeScanDirectories = $thirdPartyInitializer->getRelativeScanDirectories();
+            $packageRelativeScanDirectories = $thirdPartyInitializer->relativeScanDirectories();
             if (count($packageRelativeScanDirectories) > 0) {
                 $package = $vendor->appendChild(
                     $dom->createElementNS(self::XML_SCHEMA, 'package')
                 );
                 $package->appendChild(
-                    $dom->createElementNS(self::XML_SCHEMA, 'name', $thirdPartyInitializer->getPackageName())
+                    $dom->createElementNS(self::XML_SCHEMA, 'name', $thirdPartyInitializer->packageName())
                 );
                 $packageSource = $package->appendChild(
                     $dom->createElementNS(self::XML_SCHEMA, 'source')
@@ -365,7 +365,7 @@ SHELL;
                 }
             }
 
-            $providerClass = $thirdPartyInitializer->getDefinitionProviderClass();
+            $providerClass = $thirdPartyInitializer->definitionProviderClass();
             if ($providerClass !== null) {
                 $definitionProvidersNode->appendChild(
                     $dom->createElementNS(self::XML_SCHEMA, 'definitionProvider', $providerClass)
@@ -374,7 +374,7 @@ SHELL;
         }
 
         /** @var string|null $cacheDirOpt */
-        $cacheDirOpt = $input->getOption('cache-dir');
+        $cacheDirOpt = $input->option('cache-dir');
         $cacheName = $cacheDirOpt ?? '.annotated-container-cache';
 
         $root->appendChild($dom->createElementNS(self::XML_SCHEMA, 'cacheDir', $cacheName));

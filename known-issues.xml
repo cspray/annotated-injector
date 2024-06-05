@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files psalm-version="5.24.0@462c80e31c34e58cc4f750c656be3927e80e550e">
-  <file src="src/Autowire/AutowireableParameterSet.php">
-    <InvalidDocblock>
-      <code><![CDATA[interface AutowireableParameterSet extends Countable, IteratorAggregate {]]></code>
-    </InvalidDocblock>
-    <MissingTemplateParam>
-      <code><![CDATA[IteratorAggregate]]></code>
-    </MissingTemplateParam>
-  </file>
   <file src="src/Bootstrap/ComposerJsonScanningThirdPartyInitializerProvider.php">
     <MixedArrayAccess>
       <code><![CDATA[$composerData['extra']]]></code>
@@ -29,16 +21,35 @@
     </UndefinedMethod>
   </file>
   <file src="src/Bootstrap/ServiceWiringListener.php">
+    <InvalidReturnStatement>
+      <code><![CDATA[$services]]></code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code><![CDATA[array]]></code>
+    </InvalidReturnType>
     <MissingTemplateParam>
       <code><![CDATA[ServiceFromServiceDefinition]]></code>
-      <code><![CDATA[ServiceGatherer]]></code>
     </MissingTemplateParam>
-    <MixedArgument>
-      <code><![CDATA[$service]]></code>
-    </MixedArgument>
-    <MixedAssignment>
-      <code><![CDATA[$service]]></code>
-    </MixedAssignment>
+    <MixedReturnTypeCoercion>
+      <code><![CDATA[$services]]></code>
+      <code><![CDATA[ServiceFromServiceDefinition<T>]]></code>
+      <code><![CDATA[array]]></code>
+      <code><![CDATA[new class($service, $serviceDefinition) implements ServiceFromServiceDefinition {
+                    public function __construct(
+                        private readonly object $service,
+                        private readonly ServiceDefinition $definition
+                    ) {
+                    }
+
+                    public function service() : object {
+                        return $this->service;
+                    }
+
+                    public function definition() : ServiceDefinition {
+                        return $this->definition;
+                    }
+                }]]></code>
+    </MixedReturnTypeCoercion>
   </file>
   <file src="src/Bootstrap/XmlBootstrappingConfiguration.php">
     <MixedAssignment>
@@ -210,21 +221,15 @@
       <code><![CDATA[$service]]></code>
       <code><![CDATA[$service]]></code>
     </MixedArgumentTypeCoercion>
-    <MixedArrayOffset>
-      <code><![CDATA[$params[$parameter->getName()]]]></code>
-      <code><![CDATA[$params[$parameter->getName()]]]></code>
-    </MixedArrayOffset>
     <MixedAssignment>
       <code><![CDATA[$abstractService]]></code>
       <code><![CDATA[$concrete]]></code>
       <code><![CDATA[$method]]></code>
       <code><![CDATA[$methods]]></code>
       <code><![CDATA[$name]]></code>
-      <code><![CDATA[$parameter]]></code>
-      <code><![CDATA[$parameter]]></code>
       <code><![CDATA[$params[$param]]]></code>
-      <code><![CDATA[$params[$parameter->getName()]]]></code>
-      <code><![CDATA[$params[$parameter->getName()]]]></code>
+      <code><![CDATA[$params[$parameter->name()]]]></code>
+      <code><![CDATA[$params[$parameter->name()]]]></code>
       <code><![CDATA[$service]]></code>
       <code><![CDATA[$target]]></code>
       <code><![CDATA[$value]]></code>
@@ -241,18 +246,12 @@
     <MixedMethodCall>
       <code><![CDATA[getName]]></code>
       <code><![CDATA[getName]]></code>
-      <code><![CDATA[getName]]></code>
-      <code><![CDATA[getName]]></code>
-      <code><![CDATA[getValue]]></code>
-      <code><![CDATA[getValue]]></code>
-      <code><![CDATA[isServiceIdentifier]]></code>
-      <code><![CDATA[isServiceIdentifier]]></code>
     </MixedMethodCall>
     <MixedReturnStatement>
       <code><![CDATA[$this->state->container->make($classType, $params)]]></code>
     </MixedReturnStatement>
     <PossiblyNullArgument>
-      <code><![CDATA[$definition->getTargetIdentifier()->getMethodName()]]></code>
+      <code><![CDATA[$definition->targetIdentifier()->methodName()]]></code>
     </PossiblyNullArgument>
   </file>
   <file src="src/ContainerFactory/IlluminateContainerFactoryState.php">
@@ -275,12 +274,12 @@
     </MissingClosureReturnType>
     <MixedArgument>
       <code><![CDATA[$method]]></code>
-      <code><![CDATA[$parameter->getValue()->getName()]]></code>
+      <code><![CDATA[$parameter->value()->getName()]]></code>
     </MixedArgument>
     <MixedAssignment>
       <code><![CDATA[$method]]></code>
       <code><![CDATA[$methods]]></code>
-      <code><![CDATA[$params[$parameter->getName()]]]></code>
+      <code><![CDATA[$params[$parameter->name()]]]></code>
       <code><![CDATA[$value]]></code>
     </MixedAssignment>
     <MixedInferredReturnType>
@@ -297,8 +296,8 @@
                 )]]></code>
     </MixedReturnStatement>
     <PossiblyNullArgument>
-      <code><![CDATA[$definition->getTargetIdentifier()->getMethodName()]]></code>
-      <code><![CDATA[$state->getServiceKey($aliasDefinition->getAbstractService()->getName())]]></code>
+      <code><![CDATA[$definition->targetIdentifier()->methodName()]]></code>
+      <code><![CDATA[$state->serviceKey($aliasDefinition->abstractService()->getName())]]></code>
     </PossiblyNullArgument>
   </file>
   <file src="src/ContainerFactory/PhpDiContainerFactoryState.php">
@@ -323,6 +322,11 @@
     </PropertyNotSetInConstructor>
   </file>
   <file src="src/Definition/InjectDefinitionBuilder.php">
+    <ArgumentTypeCoercion>
+      <code><![CDATA[$this->method]]></code>
+      <code><![CDATA[$this->paramName]]></code>
+      <code><![CDATA[$this->property]]></code>
+    </ArgumentTypeCoercion>
     <LessSpecificReturnStatement>
       <code><![CDATA[$this->store]]></code>
     </LessSpecificReturnStatement>
@@ -336,7 +340,7 @@
   </file>
   <file src="src/Definition/ProfilesAwareContainerDefinition.php">
     <InvalidArgument>
-      <code><![CDATA[$definition->getProfiles()]]></code>
+      <code><![CDATA[$definition->profiles()]]></code>
     </InvalidArgument>
   </file>
   <file src="src/Definition/ServiceDefinitionBuilder.php">
@@ -373,24 +377,6 @@
       <code><![CDATA[$profiles]]></code>
     </MixedArgument>
   </file>
-  <file src="src/Internal/MethodParameterInjectTargetIdentifier.php">
-    <LessSpecificReturnStatement>
-      <code><![CDATA[$this->methodName]]></code>
-      <code><![CDATA[$this->name]]></code>
-    </LessSpecificReturnStatement>
-    <MoreSpecificReturnType>
-      <code><![CDATA[string]]></code>
-      <code><![CDATA[string]]></code>
-    </MoreSpecificReturnType>
-  </file>
-  <file src="src/Internal/PropertyInjectTargetIdentifier.php">
-    <LessSpecificReturnStatement>
-      <code><![CDATA[$this->name]]></code>
-    </LessSpecificReturnStatement>
-    <MoreSpecificReturnType>
-      <code><![CDATA[string]]></code>
-    </MoreSpecificReturnType>
-  </file>
   <file src="src/Internal/SerializerInjectValueParser.php">
     <InvalidScalarArgument>
       <code><![CDATA[$types]]></code>
@@ -419,44 +405,16 @@
     <PossiblyNullArgument>
       <code><![CDATA[$injectProfiles]]></code>
     </PossiblyNullArgument>
-    <RedundantCondition>
-      <code><![CDATA[assert($dom instanceof DOMDocument)]]></code>
-    </RedundantCondition>
     <UndefinedPropertyFetch>
       <code><![CDATA[$xpath->query('@isPrimary', $serviceDefinition)[0]?->value]]></code>
       <code><![CDATA[$xpath->query('@isPrimary', $serviceDefinition)[0]?->value]]></code>
     </UndefinedPropertyFetch>
   </file>
   <file src="src/StaticAnalysis/AnnotatedTargetDefinitionConverter.php">
-    <InvalidArgument>
+    <ArgumentTypeCoercion>
       <code><![CDATA[$types]]></code>
-    </InvalidArgument>
-    <RedundantConditionGivenDocblockType>
-      <code><![CDATA[assert($type instanceof ReflectionNamedType)]]></code>
-    </RedundantConditionGivenDocblockType>
-  </file>
-  <file src="src/StaticAnalysis/CacheAwareContainerDefinitionAnalyzer.php">
-    <RiskyTruthyFalsyComparison>
-      <code><![CDATA[!$contentWritten]]></code>
-    </RiskyTruthyFalsyComparison>
-  </file>
-  <file src="src/StaticAnalysis/CompositeDefinitionProvider.php">
-    <PropertyTypeCoercion>
-      <code><![CDATA[[
-            $provider,
-            ...$providers
-        ]]]></code>
-    </PropertyTypeCoercion>
-  </file>
-  <file src="src/StaticAnalysis/ContainerDefinitionAnalysisOptionsBuilder.php">
-    <LessSpecificReturnStatement>
-      <code><![CDATA[$this->directories]]></code>
-    </LessSpecificReturnStatement>
-    <MoreSpecificReturnType>
-      <code><![CDATA[array]]></code>
-    </MoreSpecificReturnType>
-    <PropertyTypeCoercion>
-      <code><![CDATA[$directories]]></code>
-    </PropertyTypeCoercion>
+      <code><![CDATA[$types]]></code>
+      <code><![CDATA[$types]]></code>
+    </ArgumentTypeCoercion>
   </file>
 </files>

@@ -36,7 +36,7 @@ class ServiceDelegateDefinitionBuilderTest extends TestCase {
             ->withDelegateMethod(Fixtures::delegatedService()->serviceFactory(), 'createService')
             ->build();
 
-        $this->assertSame(Fixtures::delegatedService()->serviceInterface(), $delegateDefinition->getServiceType());
+        $this->assertSame(Fixtures::delegatedService()->serviceInterface(), $delegateDefinition->serviceType());
     }
 
     public function testBuildHasDelegateType() {
@@ -44,7 +44,7 @@ class ServiceDelegateDefinitionBuilderTest extends TestCase {
             ->withDelegateMethod(Fixtures::delegatedService()->serviceFactory(), 'createService')
             ->build();
 
-        $this->assertSame(Fixtures::delegatedService()->serviceFactory(), $delegateDefinition->getDelegateType());
+        $this->assertSame(Fixtures::delegatedService()->serviceFactory(), $delegateDefinition->delegateType());
     }
 
     public function testBuildHasDelegateMethod() {
@@ -52,7 +52,7 @@ class ServiceDelegateDefinitionBuilderTest extends TestCase {
             ->withDelegateMethod(Fixtures::delegatedService()->serviceFactory(), 'createService')
             ->build();
 
-        $this->assertSame('createService', $delegateDefinition->getDelegateMethod());
+        $this->assertSame('createService', $delegateDefinition->delegateMethod());
     }
 
     public function testBuildWithNoAttributeReturnsNull() : void {
@@ -60,7 +60,7 @@ class ServiceDelegateDefinitionBuilderTest extends TestCase {
             ->withDelegateMethod(Fixtures::delegatedService()->serviceFactory(), 'createService')
             ->build();
 
-        self::assertNull($delegateDefinition->getAttribute());
+        self::assertNull($delegateDefinition->attribute());
     }
 
     public function testBuildWithAttributeReturnsSameInstance() : void {
@@ -69,6 +69,6 @@ class ServiceDelegateDefinitionBuilderTest extends TestCase {
             ->withAttribute($attr = new ServiceDelegate())
             ->build();
 
-        self::assertSame($attr, $delegateDefinition->getAttribute());
+        self::assertSame($attr, $delegateDefinition->attribute());
     }
 }

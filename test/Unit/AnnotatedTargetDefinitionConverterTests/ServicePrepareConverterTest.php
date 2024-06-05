@@ -23,14 +23,14 @@ class ServicePrepareConverterTest extends AnnotatedTargetDefinitionConverterTest
     }
 
     public function testGetService() {
-        $this->assertSame(Fixtures::interfacePrepareServices()->fooInterface(), $this->definition->getService());
+        $this->assertSame(Fixtures::interfacePrepareServices()->fooInterface(), $this->definition->service());
     }
 
     public function testGetMethodIsCorrect() {
-        $this->assertSame('setBar', $this->definition->getMethod());
+        $this->assertSame('setBar', $this->definition->methodName());
     }
 
     public function testGetAttribute() : void {
-        self::assertInstanceOf(ServicePrepare::class, $this->definition->getAttribute());
+        self::assertInstanceOf(ServicePrepare::class, $this->definition->attribute());
     }
 }

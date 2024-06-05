@@ -37,7 +37,7 @@ class ContainerDefinitionSerializerTest extends TestCase {
     private const BASE_64_ENCODED_CARDINAL_DIRECTIONS = 'Q3NwcmF5XEFubm90YXRlZENvbnRhaW5lckZpeHR1cmVcSW5qZWN0RW51bUNvbnN0cnVjdG9yU2VydmljZXNcQ2FyZGluYWxEaXJlY3Rpb25z';
 
     public function testSerializingSingleConcreteService() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -74,7 +74,7 @@ XML;
 
     public function testSerializingSingleConcreteServiceWithAttribute() : void {
         $attributeVal = base64_encode(serialize($attr = new Service()));
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -112,7 +112,7 @@ XML;
     }
 
     public function testSerializingServiceWithExplicitProfiles() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -151,7 +151,7 @@ XML;
     }
 
     public function testSerializingServicesWithAliases() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -207,7 +207,7 @@ XML;
     }
 
     public function testSerializingServiceIsPrimary() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -243,7 +243,7 @@ XML;
     }
 
     public function testSerializingServiceWithName() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -281,7 +281,7 @@ XML;
     }
 
     public function testSerializingServicePrepareDefinition() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -330,7 +330,7 @@ XML;
 
     public function testSerializingServicePrepareDefinitionWithAttribute() : void {
         $attrVal = base64_encode(serialize(new ServicePrepare()));
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -378,7 +378,7 @@ XML;
     }
 
     public function testSerializingServiceDelegateDefinition() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -426,7 +426,7 @@ XML;
 
     public function testSerializingServiceDelegateDefinitionWithAttribute() : void {
         $attrVal = base64_encode(serialize(new ServiceDelegate()));
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -475,7 +475,7 @@ XML;
 
     public function testSerializingInjectMethodParameterStringValue() : void {
         $attrVal = base64_encode(serialize(new Inject('foobar')));
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $encodedVal = base64_encode(serialize('foobar'));
         $type = self::BASE_64_ENCODED_STRING;
         $expected = <<<XML
@@ -536,7 +536,7 @@ XML;
     }
 
     public function testSerializingInjectMethodParameterIntValue() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $encodedVal = base64_encode(serialize(42));
         $type = self::BASE_64_ENCODED_INT;
         $expected = <<<XML
@@ -596,7 +596,7 @@ XML;
     }
 
     public function testSerializingInjectMethodParameterUnitEnumValue() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $encodedVal = base64_encode(serialize(CardinalDirections::West));
         $type = self::BASE_64_ENCODED_CARDINAL_DIRECTIONS;
         $expected = <<<XML
@@ -655,7 +655,7 @@ XML;
     }
 
     public function testSerializingInjectMethodParameterWithStore() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $encodedVal = base64_encode(serialize('key'));
         $type = self::BASE_64_ENCODED_STRING;
         $expected = <<<XML
@@ -716,7 +716,7 @@ XML;
     }
 
     public function testSerializingInjectMethodParameterExplicitProfiles() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $encodedVal = base64_encode(serialize('foobar'));
         $type = self::BASE_64_ENCODED_STRING;
         $expected = <<<XML
@@ -797,7 +797,7 @@ XML;
     }
 
     public function testDeserializingConcreteServiceDefinition() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -824,21 +824,21 @@ XML;
 
         $actual = $subject->deserialize($xml);
 
-        $serviceDefinitions = $actual->getServiceDefinitions();
+        $serviceDefinitions = $actual->serviceDefinitions();
 
         self::assertCount(1, $serviceDefinitions);
         $serviceDefinition = $serviceDefinitions[0];
 
-        self::assertSame(Fixtures::singleConcreteService()->fooImplementation(), $serviceDefinition->getType());
-        self::assertSame(['default'], $serviceDefinition->getProfiles());
-        self::assertNull($serviceDefinition->getName());
+        self::assertSame(Fixtures::singleConcreteService()->fooImplementation(), $serviceDefinition->type());
+        self::assertSame(['default'], $serviceDefinition->profiles());
+        self::assertNull($serviceDefinition->name());
         self::assertFalse($serviceDefinition->isPrimary());
         self::assertTrue($serviceDefinition->isConcrete());
         self::assertFalse($serviceDefinition->isAbstract());
     }
 
     public function testDeserializingNamedConcreteServiceDefinition() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -865,21 +865,21 @@ XML;
 
         $actual = $subject->deserialize($xml);
 
-        $serviceDefinitions = $actual->getServiceDefinitions();
+        $serviceDefinitions = $actual->serviceDefinitions();
 
         self::assertCount(1, $serviceDefinitions);
         $serviceDefinition = $serviceDefinitions[0];
 
-        self::assertSame(Fixtures::singleConcreteService()->fooImplementation(), $serviceDefinition->getType());
-        self::assertSame(['default'], $serviceDefinition->getProfiles());
-        self::assertSame('my_service_name', $serviceDefinition->getName());
+        self::assertSame(Fixtures::singleConcreteService()->fooImplementation(), $serviceDefinition->type());
+        self::assertSame(['default'], $serviceDefinition->profiles());
+        self::assertSame('my_service_name', $serviceDefinition->name());
         self::assertFalse($serviceDefinition->isPrimary());
         self::assertTrue($serviceDefinition->isConcrete());
         self::assertFalse($serviceDefinition->isAbstract());
     }
 
     public function testDeserializingPrimaryConcreteServiceDefinition() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -906,21 +906,21 @@ XML;
 
         $actual = $subject->deserialize($xml);
 
-        $serviceDefinitions = $actual->getServiceDefinitions();
+        $serviceDefinitions = $actual->serviceDefinitions();
 
         self::assertCount(1, $serviceDefinitions);
         $serviceDefinition = $serviceDefinitions[0];
 
-        self::assertSame(Fixtures::singleConcreteService()->fooImplementation(), $serviceDefinition->getType());
-        self::assertSame(['default'], $serviceDefinition->getProfiles());
-        self::assertNull($serviceDefinition->getName());
+        self::assertSame(Fixtures::singleConcreteService()->fooImplementation(), $serviceDefinition->type());
+        self::assertSame(['default'], $serviceDefinition->profiles());
+        self::assertNull($serviceDefinition->name());
         self::assertTrue($serviceDefinition->isPrimary());
         self::assertTrue($serviceDefinition->isConcrete());
         self::assertFalse($serviceDefinition->isAbstract());
     }
 
     public function testDeserializingServiceDefinitionWithProfiles() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -949,21 +949,21 @@ XML;
 
         $actual = $subject->deserialize($xml);
 
-        $serviceDefinitions = $actual->getServiceDefinitions();
+        $serviceDefinitions = $actual->serviceDefinitions();
 
         self::assertCount(1, $serviceDefinitions);
         $serviceDefinition = $serviceDefinitions[0];
 
-        self::assertSame(Fixtures::singleConcreteService()->fooImplementation(), $serviceDefinition->getType());
-        self::assertSame(['foo', 'bar', 'baz'], $serviceDefinition->getProfiles());
-        self::assertNull($serviceDefinition->getName());
+        self::assertSame(Fixtures::singleConcreteService()->fooImplementation(), $serviceDefinition->type());
+        self::assertSame(['foo', 'bar', 'baz'], $serviceDefinition->profiles());
+        self::assertNull($serviceDefinition->name());
         self::assertFalse($serviceDefinition->isPrimary());
         self::assertTrue($serviceDefinition->isConcrete());
         self::assertFalse($serviceDefinition->isAbstract());
     }
 
     public function testDeserializeAbstractServiceDefinition() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -989,21 +989,21 @@ XML;
 
         $actual = $subject->deserialize($xml);
 
-        $serviceDefinitions = $actual->getServiceDefinitions();
+        $serviceDefinitions = $actual->serviceDefinitions();
 
         self::assertCount(1, $serviceDefinitions);
         $serviceDefinition = $serviceDefinitions[0];
 
-        self::assertSame(Fixtures::implicitAliasedServices()->fooInterface(), $serviceDefinition->getType());
-        self::assertSame(['default'], $serviceDefinition->getProfiles());
-        self::assertNull($serviceDefinition->getName());
+        self::assertSame(Fixtures::implicitAliasedServices()->fooInterface(), $serviceDefinition->type());
+        self::assertSame(['default'], $serviceDefinition->profiles());
+        self::assertNull($serviceDefinition->name());
         self::assertFalse($serviceDefinition->isPrimary());
         self::assertFalse($serviceDefinition->isConcrete());
         self::assertTrue($serviceDefinition->isAbstract());
     }
 
     public function testDeserializeAliasDefinitions() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -1043,14 +1043,14 @@ XML;
         $subject = new ContainerDefinitionSerializer();
         $actual = $subject->deserialize($xml);
 
-        self::assertCount(1, $actual->getAliasDefinitions());
-        $aliasDefinition = $actual->getAliasDefinitions()[0];
-        self::assertSame(Fixtures::implicitAliasedServices()->fooInterface(), $aliasDefinition->getAbstractService());
-        self::assertSame(Fixtures::implicitAliasedServices()->fooImplementation(), $aliasDefinition->getConcreteService());
+        self::assertCount(1, $actual->aliasDefinitions());
+        $aliasDefinition = $actual->aliasDefinitions()[0];
+        self::assertSame(Fixtures::implicitAliasedServices()->fooInterface(), $aliasDefinition->abstractService());
+        self::assertSame(Fixtures::implicitAliasedServices()->fooImplementation(), $aliasDefinition->concreteService());
     }
 
     public function testDeserializeServicePrepareDefinitions() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -1082,14 +1082,14 @@ XML;
         $subject = new ContainerDefinitionSerializer();
         $actual = $subject->deserialize($xml);
 
-        self::assertCount(1, $actual->getServicePrepareDefinitions());
-        $prepareDefinition = $actual->getServicePrepareDefinitions()[0];
-        self::assertSame(Fixtures::interfacePrepareServices()->fooInterface(), $prepareDefinition->getService());
-        self::assertSame('setBar', $prepareDefinition->getMethod());
+        self::assertCount(1, $actual->servicePrepareDefinitions());
+        $prepareDefinition = $actual->servicePrepareDefinitions()[0];
+        self::assertSame(Fixtures::interfacePrepareServices()->fooInterface(), $prepareDefinition->service());
+        self::assertSame('setBar', $prepareDefinition->methodName());
     }
 
     public function testDeserializeServiceDelegateDefinitions() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
@@ -1122,17 +1122,17 @@ XML;
         $subject = new ContainerDefinitionSerializer();
         $actual = $subject->deserialize($xml);
 
-        self::assertCount(1, $actual->getServiceDelegateDefinitions());
-        $delegateDefinition = $actual->getServiceDelegateDefinitions()[0];
+        self::assertCount(1, $actual->serviceDelegateDefinitions());
+        $delegateDefinition = $actual->serviceDelegateDefinitions()[0];
 
-        self::assertSame(Fixtures::delegatedService()->serviceInterface(), $delegateDefinition->getServiceType());
-        self::assertSame(Fixtures::delegatedService()->serviceFactory(), $delegateDefinition->getDelegateType());
-        self::assertSame('createService', $delegateDefinition->getDelegateMethod());
+        self::assertSame(Fixtures::delegatedService()->serviceInterface(), $delegateDefinition->serviceType());
+        self::assertSame(Fixtures::delegatedService()->serviceFactory(), $delegateDefinition->delegateType());
+        self::assertSame('createService', $delegateDefinition->delegateMethod());
     }
 
     public function testDeserializeInjectMethodParameter() : void {
         $type = self::BASE_64_ENCODED_STRING;
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $encodedVal = base64_encode(serialize('foobar'));
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
@@ -1177,26 +1177,26 @@ XML;
 
         $actual = $subject->deserialize($xml);
 
-        self::assertCount(1, $actual->getInjectDefinitions());
-        $injectDefinition = $actual->getInjectDefinitions()[0];
+        self::assertCount(1, $actual->injectDefinitions());
+        $injectDefinition = $actual->injectDefinitions()[0];
 
         self::assertTrue(
-            $injectDefinition->getTargetIdentifier()->isMethodParameter()
+            $injectDefinition->targetIdentifier()->isMethodParameter()
         );
         self::assertSame(
             Fixtures::injectConstructorServices()->injectStringService(),
-            $injectDefinition->getTargetIdentifier()->getClass()
+            $injectDefinition->targetIdentifier()->class()
         );
-        self::assertSame('__construct', $injectDefinition->getTargetIdentifier()->getMethodName());
-        self::assertSame('val', $injectDefinition->getTargetIdentifier()->getName());
-        self::assertSame(stringType(), $injectDefinition->getType());
-        self::assertSame('foobar', $injectDefinition->getValue());
-        self::assertSame(['default'], $injectDefinition->getProfiles());
-        self::assertNull($injectDefinition->getStoreName());
+        self::assertSame('__construct', $injectDefinition->targetIdentifier()->methodName());
+        self::assertSame('val', $injectDefinition->targetIdentifier()->name());
+        self::assertSame(stringType(), $injectDefinition->type());
+        self::assertSame('foobar', $injectDefinition->value());
+        self::assertSame(['default'], $injectDefinition->profiles());
+        self::assertNull($injectDefinition->storeName());
     }
 
     public function testDeserializeInjectDefinitionUnitEnumValueMethodParameter() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $encodedVal = base64_encode(serialize(CardinalDirections::West));
         $type = self::BASE_64_ENCODED_CARDINAL_DIRECTIONS;
         $xml = <<<XML
@@ -1242,26 +1242,26 @@ XML;
 
         $actual = $subject->deserialize($xml);
 
-        self::assertCount(1, $actual->getInjectDefinitions());
-        $injectDefinition = $actual->getInjectDefinitions()[0];
+        self::assertCount(1, $actual->injectDefinitions());
+        $injectDefinition = $actual->injectDefinitions()[0];
 
         self::assertTrue(
-            $injectDefinition->getTargetIdentifier()->isMethodParameter()
+            $injectDefinition->targetIdentifier()->isMethodParameter()
         );
         self::assertSame(
             Fixtures::injectEnumConstructorServices()->enumInjector(),
-            $injectDefinition->getTargetIdentifier()->getClass()
+            $injectDefinition->targetIdentifier()->class()
         );
-        self::assertSame('__construct', $injectDefinition->getTargetIdentifier()->getMethodName());
-        self::assertSame('directions', $injectDefinition->getTargetIdentifier()->getName());
-        self::assertSame(objectType(CardinalDirections::class), $injectDefinition->getType());
-        self::assertSame(CardinalDirections::West, $injectDefinition->getValue());
-        self::assertSame(['default'], $injectDefinition->getProfiles());
-        self::assertNull($injectDefinition->getStoreName());
+        self::assertSame('__construct', $injectDefinition->targetIdentifier()->methodName());
+        self::assertSame('directions', $injectDefinition->targetIdentifier()->name());
+        self::assertSame(objectType(CardinalDirections::class), $injectDefinition->type());
+        self::assertSame(CardinalDirections::West, $injectDefinition->value());
+        self::assertSame(['default'], $injectDefinition->profiles());
+        self::assertNull($injectDefinition->storeName());
     }
 
     public function testDeserializeInjectDefinitionMethodParameterWithStore() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $encodedVal = base64_encode(serialize('key'));
         $type = self::BASE_64_ENCODED_STRING;
         $xml = <<<XML
@@ -1307,26 +1307,26 @@ XML;
 
         $actual = $subject->deserialize($xml);
 
-        self::assertCount(1, $actual->getInjectDefinitions());
-        $injectDefinition = $actual->getInjectDefinitions()[0];
+        self::assertCount(1, $actual->injectDefinitions());
+        $injectDefinition = $actual->injectDefinitions()[0];
 
         self::assertTrue(
-            $injectDefinition->getTargetIdentifier()->isMethodParameter()
+            $injectDefinition->targetIdentifier()->isMethodParameter()
         );
         self::assertSame(
             Fixtures::injectCustomStoreServices()->scalarInjector(),
-            $injectDefinition->getTargetIdentifier()->getClass()
+            $injectDefinition->targetIdentifier()->class()
         );
-        self::assertSame('__construct', $injectDefinition->getTargetIdentifier()->getMethodName());
-        self::assertSame('key', $injectDefinition->getTargetIdentifier()->getName());
-        self::assertSame(stringType(), $injectDefinition->getType());
-        self::assertSame('key', $injectDefinition->getValue());
-        self::assertSame(['default'], $injectDefinition->getProfiles());
-        self::assertSame('test-store', $injectDefinition->getStoreName());
+        self::assertSame('__construct', $injectDefinition->targetIdentifier()->methodName());
+        self::assertSame('key', $injectDefinition->targetIdentifier()->name());
+        self::assertSame(stringType(), $injectDefinition->type());
+        self::assertSame('key', $injectDefinition->value());
+        self::assertSame(['default'], $injectDefinition->profiles());
+        self::assertSame('test-store', $injectDefinition->storeName());
     }
 
     public function testDeserializeInjectMethodWithProfiles() : void {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $encodedVal = base64_encode(serialize('annotated container'));
         $type = self::BASE_64_ENCODED_STRING;
         $xml = <<<XML
@@ -1373,22 +1373,22 @@ XML;
 
         $actual = $subject->deserialize($xml);
 
-        self::assertCount(1, $actual->getInjectDefinitions());
-        $injectDefinition = $actual->getInjectDefinitions()[0];
+        self::assertCount(1, $actual->injectDefinitions());
+        $injectDefinition = $actual->injectDefinitions()[0];
 
         self::assertTrue(
-            $injectDefinition->getTargetIdentifier()->isMethodParameter()
+            $injectDefinition->targetIdentifier()->isMethodParameter()
         );
         self::assertSame(
             Fixtures::injectConstructorServices()->injectStringService(),
-            $injectDefinition->getTargetIdentifier()->getClass()
+            $injectDefinition->targetIdentifier()->class()
         );
-        self::assertSame('__construct', $injectDefinition->getTargetIdentifier()->getMethodName());
-        self::assertSame('val', $injectDefinition->getTargetIdentifier()->getName());
-        self::assertSame(stringType(), $injectDefinition->getType());
-        self::assertSame('annotated container', $injectDefinition->getValue());
-        self::assertSame(['foo', 'baz'], $injectDefinition->getProfiles());
-        self::assertNull($injectDefinition->getStoreName());
+        self::assertSame('__construct', $injectDefinition->targetIdentifier()->methodName());
+        self::assertSame('val', $injectDefinition->targetIdentifier()->name());
+        self::assertSame(stringType(), $injectDefinition->type());
+        self::assertSame('annotated container', $injectDefinition->value());
+        self::assertSame(['foo', 'baz'], $injectDefinition->profiles());
+        self::assertNull($injectDefinition->storeName());
     }
 
     public function testDeserializeWithMismatchedVersionReturnsNull() : void {

@@ -15,7 +15,7 @@ final class StubCommand implements Command {
     ) {
     }
 
-    public function getName() : string {
+    public function name() : string {
         return $this->name;
     }
 
@@ -23,7 +23,7 @@ final class StubCommand implements Command {
         return (int) ($this->callable)($input, $output);
     }
 
-    public function getHelp() : string {
+    public function help() : string {
         return 'Stub command help text';
     }
 }

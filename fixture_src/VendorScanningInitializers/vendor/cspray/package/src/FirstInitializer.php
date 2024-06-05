@@ -8,18 +8,18 @@ use Cspray\AnnotatedContainer\Bootstrap\ThirdPartyInitializer;
 // source directory is scanned
 final class FirstInitializer extends ThirdPartyInitializer {
 
-    public function getRelativeScanDirectories() : array {
+    public function relativeScanDirectories() : array {
         return [
             'src',
             'other_src'
         ];
     }
 
-    public function getDefinitionProviderClass() : ?string {
+    public function definitionProviderClass() : ?string {
         return null;
     }
 
-    public function getPackageName() : string {
+    public function packageName() : string {
         return 'cspray/package';
     }
 }

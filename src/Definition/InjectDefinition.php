@@ -20,14 +20,14 @@ interface InjectDefinition {
      *
      * @return InjectTargetIdentifier
      */
-    public function getTargetIdentifier() : InjectTargetIdentifier;
+    public function targetIdentifier() : InjectTargetIdentifier;
 
     /**
      * Returns the type of the method parameter or property that is being injected into.
      *
      * @return Type|TypeUnion|TypeIntersect
      */
-    public function getType() : Type|TypeUnion|TypeIntersect;
+    public function type() : Type|TypeUnion|TypeIntersect;
 
     /**
      * The value that should be injected or passed to a ParameterStore defined by getStoreName() to derive the value
@@ -35,21 +35,21 @@ interface InjectDefinition {
      *
      * @return mixed
      */
-    public function getValue() : mixed;
+    public function value() : mixed;
 
     /**
      * A list of profiles that have to be active for this InjectDefinition to be valid.
      *
      * @return list<non-empty-string>
      */
-    public function getProfiles() : array;
+    public function profiles() : array;
 
     /**
      * The store name to retrieve the value from, or null if getValue() should be used directly.
      *
      * @return non-empty-string|null
      */
-    public function getStoreName() : ?string;
+    public function storeName() : ?string;
 
-    public function getAttribute() : ?InjectAttribute;
+    public function attribute() : ?InjectAttribute;
 }

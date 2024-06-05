@@ -11,7 +11,7 @@ use Cspray\AnnotatedContainer\Profiles;
 
 final class DuplicateServiceType implements LogicalConstraint {
 
-    public function getConstraintViolations(ContainerDefinition $containerDefinition, Profiles $profiles) : LogicalConstraintViolationCollection {
+    public function constraintViolations(ContainerDefinition $containerDefinition, Profiles $profiles) : LogicalConstraintViolationCollection {
         $violations = new LogicalConstraintViolationCollection();
 
         /**
@@ -19,10 +19,10 @@ final class DuplicateServiceType implements LogicalConstraint {
          */
         $serviceTypeMap = [];
 
-        foreach ($containerDefinition->getServiceDefinitions() as $definition) {
-            $type = $definition->getType()->getName();
+        foreach ($containerDefinition->serviceDefinitions() as $definition) {
+            $type = $definition->type()->getName();
             $serviceTypeMap[$type] ??= [];
-            $serviceTypeMap[$type][] = $definition->getAttribute();
+            $serviceTypeMap[$type][] = $definition->attribute();
         }
 
         foreach ($serviceTypeMap as $type => $attributes) {

@@ -129,23 +129,23 @@ final class XmlBootstrappingConfiguration implements BootstrappingConfiguration 
         }
     }
 
-    public function getScanDirectories() : array {
+    public function scanDirectories() : array {
         return $this->directories;
     }
 
     #[SingleEntrypointDefinitionProvider]
-    public function getContainerDefinitionProvider() : ?DefinitionProvider {
+    public function containerDefinitionProvider() : ?DefinitionProvider {
         return $this->definitionProvider;
     }
 
     /**
      * @return list<ParameterStore>
      */
-    public function getParameterStores() : array {
+    public function parameterStores() : array {
         return $this->parameterStores;
     }
 
-    public function getCacheDirectory() : ?string {
+    public function cacheDirectory() : ?string {
         return $this->cacheDir;
     }
 }

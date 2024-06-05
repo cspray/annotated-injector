@@ -17,7 +17,7 @@ final class ComposerJsonScanningThirdPartyInitializerProvider implements ThirdPa
     ) {
     }
 
-    public function getThirdPartyInitializers() : array {
+    public function thirdPartyInitializerProviders() : array {
         if ($this->initializers === null) {
             $this->initializers = $this->scanVendorDirectoryForInitializers();
             sort($this->initializers);
@@ -31,7 +31,7 @@ final class ComposerJsonScanningThirdPartyInitializerProvider implements ThirdPa
      */
     private function scanVendorDirectoryForInitializers() : array {
         $packages = [];
-        $vendorIterator = new DirectoryIterator($this->resolver->getVendorPath());
+        $vendorIterator = new DirectoryIterator($this->resolver->vendorPath());
         /** @var SplFileInfo $fileInfo */
         foreach ($vendorIterator as $fileInfo) {
             if (!$fileInfo->isDir() || $fileInfo->isDot()) {
@@ -49,7 +49,7 @@ final class ComposerJsonScanningThirdPartyInitializerProvider implements ThirdPa
 
         $initializers = [];
         foreach ($packages as $package) {
-            $packageComposerJson = sprintf('%s/%s/composer.json', $this->resolver->getVendorPath(), $package);
+            $packageComposerJson = sprintf('%s/%s/composer.json', $this->resolver->vendorPath(), $package);
             $composerData = json_decode(
                 file_get_contents($packageComposerJson),
                 true,

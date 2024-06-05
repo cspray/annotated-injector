@@ -12,7 +12,7 @@ final class StubParameterStoreWithDependencies implements ParameterStore {
     public function __construct(private readonly string $prefix) {
     }
 
-    public function getName() : string {
+    public function name() : string {
         return 'test-store';
     }
 

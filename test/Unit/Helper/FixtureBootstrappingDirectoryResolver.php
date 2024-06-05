@@ -10,15 +10,15 @@ final class FixtureBootstrappingDirectoryResolver implements BootstrappingDirect
     public function __construct(private readonly bool $doVendorScanning = false) {
     }
 
-    public function getConfigurationPath(string $subPath) : string {
+    public function configurationPath(string $subPath) : string {
         return sprintf('vfs://root/%s', $subPath);
     }
 
-    public function getPathFromRoot(string $subPath) : string {
+    public function pathFromRoot(string $subPath) : string {
         return sprintf('%s/%s', Fixtures::getRootPath(), $subPath);
     }
 
-    public function getCachePath(string $subPath) : string {
+    public function cachePath(string $subPath) : string {
         return sprintf('vfs://root/%s', $subPath);
     }
 
@@ -26,7 +26,7 @@ final class FixtureBootstrappingDirectoryResolver implements BootstrappingDirect
         return sprintf('vfs://root/%s', $subPath);
     }
 
-    public function getVendorPath() : string {
+    public function vendorPath() : string {
         if ($this->doVendorScanning) {
             return sprintf('%s/VendorScanningInitializers/vendor', Fixtures::getRootPath());
         }

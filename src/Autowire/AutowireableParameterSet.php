@@ -11,7 +11,7 @@ use IteratorAggregate;
  * A set of AutowireableParameters that can be used with the AutowireableFactory and AutowireableInvoker.
  *
  * @see autowiredParams()
- * @template-implements IteratorAggregate<int, AutowireableParameter>
+ * @template-extends IteratorAggregate<int, AutowireableParameter>
  */
 interface AutowireableParameterSet extends Countable, IteratorAggregate {
 

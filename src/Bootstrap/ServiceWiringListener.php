@@ -27,19 +27,15 @@ abstract class ServiceWiringListener implements AfterContainerCreation {
                 $this->containerDefinition = new ProfilesAwareContainerDefinition($containerDefinition, $activeProfiles);
             }
 
-            /**
-             * @param class-string $type
-             * @return list<ServiceFromServiceDefinition>
-             */
-            public function getServicesForType(string $type) : array {
+            public function servicesForType(string $type) : array {
                 /** @var list<ServiceFromServiceDefinition> $services */
                 $services = [];
-                foreach ($this->containerDefinition->getServiceDefinitions() as $serviceDefinition) {
+                foreach ($this->containerDefinition->serviceDefinitions() as $serviceDefinition) {
                     if ($serviceDefinition->isAbstract()) {
                         continue;
                     }
 
-                    $serviceType = $serviceDefinition->getType()->getName();
+                    $serviceType = $serviceDefinition->type()->getName();
                     if (is_a($serviceType, $type, true)) {
                         $service = $this->container->get($serviceType);
                         assert($service instanceof $type);
@@ -50,25 +46,31 @@ abstract class ServiceWiringListener implements AfterContainerCreation {
                 return $services;
             }
 
-            public function getServicesWithAttribute(string $attributeType) : array {
+            public function servicesWithAttribute(string $attributeType) : array {
                 $services = [];
-                foreach ($this->containerDefinition->getServiceDefinitions() as $serviceDefinition) {
+                foreach ($this->containerDefinition->serviceDefinitions() as $serviceDefinition) {
                     if ($serviceDefinition->isAbstract()) {
                         continue;
                     }
 
-                    $serviceAttribute = $serviceDefinition->getAttribute();
+                    $serviceAttribute = $serviceDefinition->attribute();
                     if (!($serviceAttribute instanceof $attributeType)) {
                         continue;
                     }
 
-                    $service = $this->container->get($serviceDefinition->getType()->getName());
+                    $service = $this->container->get($serviceDefinition->type()->getName());
                     assert(is_object($service));
                     $services[] = $this->createServiceFromServiceDefinition($service, $serviceDefinition);
                 }
                 return $services;
             }
 
+            /**
+             * @template T of object
+             * @param T $service
+             * @param ServiceDefinition $serviceDefinition
+             * @return ServiceFromServiceDefinition<T>
+             */
             private function createServiceFromServiceDefinition(object $service, ServiceDefinition $serviceDefinition) : ServiceFromServiceDefinition {
                 return new class($service, $serviceDefinition) implements ServiceFromServiceDefinition {
                     public function __construct(
@@ -77,11 +79,11 @@ abstract class ServiceWiringListener implements AfterContainerCreation {
                     ) {
                     }
 
-                    public function getService() : object {
+                    public function service() : object {
                         return $this->service;
                     }
 
-                    public function getDefinition() : ServiceDefinition {
+                    public function definition() : ServiceDefinition {
                         return $this->definition;
                     }
                 };

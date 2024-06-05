@@ -128,14 +128,14 @@ class AnnotatedTargetContainerDefinitionAnalyzerTest extends TestCase {
         $containerDef = $this->runAnalysisDirectory(Fixtures::beanLikeConfigConcrete()->getPath());
 
         $serviceDef = $this->getServiceDefinition(
-            $containerDef->getServiceDefinitions(),
+            $containerDef->serviceDefinitions(),
             Fixtures::beanLikeConfigConcrete()->fooService()->getName()
         );
 
         self::assertNotNull($serviceDef);
-        self::assertSame($serviceDef->getType(), Fixtures::beanLikeConfigConcrete()->fooService());
-        self::assertSame(['default'], $serviceDef->getProfiles());
-        self::assertNull($serviceDef->getName());
+        self::assertSame($serviceDef->type(), Fixtures::beanLikeConfigConcrete()->fooService());
+        self::assertSame(['default'], $serviceDef->profiles());
+        self::assertNull($serviceDef->name());
         self::assertFalse($serviceDef->isPrimary());
         self::assertTrue($serviceDef->isConcrete());
         self::assertFalse($serviceDef->isAbstract());
@@ -145,14 +145,14 @@ class AnnotatedTargetContainerDefinitionAnalyzerTest extends TestCase {
         $containerDef = $this->runAnalysisDirectory(Fixtures::beanLikeConfigInterface()->getPath());
 
         $serviceDef = $this->getServiceDefinition(
-            $containerDef->getServiceDefinitions(),
+            $containerDef->serviceDefinitions(),
             Fixtures::beanLikeConfigInterface()->fooInterface()->getName()
         );
 
         self::assertNotNull($serviceDef);
-        self::assertSame($serviceDef->getType(), Fixtures::beanLikeConfigInterface()->fooInterface());
-        self::assertSame(['default'], $serviceDef->getProfiles());
-        self::assertNull($serviceDef->getName());
+        self::assertSame($serviceDef->type(), Fixtures::beanLikeConfigInterface()->fooInterface());
+        self::assertSame(['default'], $serviceDef->profiles());
+        self::assertNull($serviceDef->name());
         self::assertFalse($serviceDef->isPrimary());
         self::assertFalse($serviceDef->isConcrete());
         self::assertTrue($serviceDef->isAbstract());
@@ -162,14 +162,14 @@ class AnnotatedTargetContainerDefinitionAnalyzerTest extends TestCase {
         $containerDef = $this->runAnalysisDirectory(Fixtures::beanLikeConfigAbstract()->getPath());
 
         $serviceDef = $this->getServiceDefinition(
-            $containerDef->getServiceDefinitions(),
+            $containerDef->serviceDefinitions(),
             Fixtures::beanLikeConfigAbstract()->abstractFooService()->getName()
         );
 
         self::assertNotNull($serviceDef);
-        self::assertSame($serviceDef->getType(), Fixtures::beanLikeConfigAbstract()->abstractFooService());
-        self::assertSame(['default'], $serviceDef->getProfiles());
-        self::assertNull($serviceDef->getName());
+        self::assertSame($serviceDef->type(), Fixtures::beanLikeConfigAbstract()->abstractFooService());
+        self::assertSame(['default'], $serviceDef->profiles());
+        self::assertNull($serviceDef->name());
         self::assertFalse($serviceDef->isPrimary());
         self::assertFalse($serviceDef->isConcrete());
         self::assertTrue($serviceDef->isAbstract());

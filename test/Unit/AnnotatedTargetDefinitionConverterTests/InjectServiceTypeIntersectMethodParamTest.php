@@ -23,38 +23,38 @@ class InjectServiceTypeIntersectMethodParamTest extends AnnotatedTargetDefinitio
     }
 
     public function testDefinitionGetService() {
-        $this->assertSame(Fixtures::injectServiceIntersectConstructorServices()->fooBarConsumer(), $this->definition->getTargetIdentifier()->getClass());
+        $this->assertSame(Fixtures::injectServiceIntersectConstructorServices()->fooBarConsumer(), $this->definition->targetIdentifier()->class());
     }
 
     public function testDefinitionGetMethod() {
-        $this->assertSame('__construct', $this->definition->getTargetIdentifier()->getMethodName());
+        $this->assertSame('__construct', $this->definition->targetIdentifier()->methodName());
     }
 
     public function testDefinitionGetParamName() {
-        $this->assertSame('fooBar', $this->definition->getTargetIdentifier()->getName());
+        $this->assertSame('fooBar', $this->definition->targetIdentifier()->name());
     }
 
     public function testDefinitionGetTypeIntersect() {
         $this->assertSame(
             typeIntersect(Fixtures::injectServiceIntersectConstructorServices()->fooInterface(), Fixtures::injectServiceIntersectConstructorServices()->barInterface()),
-            $this->definition->getType()
+            $this->definition->type()
         );
     }
 
     public function testGetValue() {
-        $this->assertSame(Fixtures::injectServiceIntersectConstructorServices()->fooBarImplementation()->getName(), $this->definition->getValue());
+        $this->assertSame(Fixtures::injectServiceIntersectConstructorServices()->fooBarImplementation()->getName(), $this->definition->value());
     }
 
     public function testGetStore() {
-        $this->assertNull($this->definition->getStoreName());
+        $this->assertNull($this->definition->storeName());
     }
 
     public function testGetProfiles() {
-        $this->assertSame(['default'], $this->definition->getProfiles());
+        $this->assertSame(['default'], $this->definition->profiles());
     }
 
     public function testGetAttribute() {
-        self::assertInstanceOf(Inject::class, $this->definition->getAttribute());
-        self::assertSame(Fixtures::injectServiceIntersectConstructorServices()->fooBarImplementation()->getName(), $this->definition->getAttribute()->getValue());
+        self::assertInstanceOf(Inject::class, $this->definition->attribute());
+        self::assertSame(Fixtures::injectServiceIntersectConstructorServices()->fooBarImplementation()->getName(), $this->definition->attribute()->getValue());
     }
 }

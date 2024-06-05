@@ -25,35 +25,35 @@ class InjectNullableStringMethodParamTest extends AnnotatedTargetDefinitionConve
     }
 
     public function testDefinitionGetService() {
-        $this->assertSame(Fixtures::injectConstructorServices()->injectNullableStringService(), $this->definition->getTargetIdentifier()->getClass());
+        $this->assertSame(Fixtures::injectConstructorServices()->injectNullableStringService(), $this->definition->targetIdentifier()->class());
     }
 
     public function testDefinitionGetMethod() {
-        $this->assertSame('__construct', $this->definition->getTargetIdentifier()->getMethodName());
+        $this->assertSame('__construct', $this->definition->targetIdentifier()->methodName());
     }
 
     public function testDefinitionGetParamName() {
-        $this->assertSame('maybe', $this->definition->getTargetIdentifier()->getName());
+        $this->assertSame('maybe', $this->definition->targetIdentifier()->name());
     }
 
     public function testDefinitionGetTypeUnion() {
-        $this->assertSame(typeUnion(stringType(), nullType()), $this->definition->getType());
+        $this->assertSame(typeUnion(stringType(), nullType()), $this->definition->type());
     }
 
     public function testGetValue() {
-        $this->assertNull($this->definition->getValue());
+        $this->assertNull($this->definition->value());
     }
 
     public function testGetStore() {
-        $this->assertNull($this->definition->getStoreName());
+        $this->assertNull($this->definition->storeName());
     }
 
     public function testGetProfiles() {
-        $this->assertSame(['default'], $this->definition->getProfiles());
+        $this->assertSame(['default'], $this->definition->profiles());
     }
 
     public function testGetAttribute() {
-        self::assertInstanceOf(Inject::class, $this->definition->getAttribute());
-        self::assertNull($this->definition->getAttribute()->getValue());
+        self::assertInstanceOf(Inject::class, $this->definition->attribute());
+        self::assertNull($this->definition->attribute()->getValue());
     }
 }

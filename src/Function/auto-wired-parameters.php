@@ -31,8 +31,8 @@ function autowiredParams(AutowireableParameter...$parameters) : AutowireablePara
 
         public function add(AutowireableParameter $autowireableParameter) : void {
             foreach ($this->parameters as $parameter) {
-                if ($parameter->getName() === $autowireableParameter->getName()) {
-                    throw InvalidAutowireParameter::fromParameterAlreadyAddedToSet($parameter->getName());
+                if ($parameter->name() === $autowireableParameter->name()) {
+                    throw InvalidAutowireParameter::fromParameterAlreadyAddedToSet($parameter->name());
                 }
             }
             $this->parameters[] = $autowireableParameter;
@@ -80,11 +80,11 @@ function serviceParam(string $name, ObjectType $service) : AutowireableParameter
         ) {
         }
 
-        public function getName() : string {
+        public function name() : string {
             return $this->name;
         }
 
-        public function getValue() : ObjectType {
+        public function value() : ObjectType {
             return $this->value;
         }
 
@@ -114,11 +114,11 @@ function rawParam(string $name, mixed $value) : AutowireableParameter {
         ) {
         }
 
-        public function getName() : string {
+        public function name() : string {
             return $this->name;
         }
 
-        public function getValue() : mixed {
+        public function value() : mixed {
             return $this->value;
         }
 

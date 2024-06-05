@@ -71,7 +71,7 @@ XML;
 
         self::assertSame(
             ['src', 'test/helper', 'lib'],
-            $configuration->getScanDirectories()
+            $configuration->scanDirectories()
         );
     }
 
@@ -98,7 +98,7 @@ XML;
             new DefaultParameterStoreFactory(),
             new DefaultDefinitionProviderFactory(),
         );
-        $provider = $configuration->getContainerDefinitionProvider();
+        $provider = $configuration->containerDefinitionProvider();
         self::assertInstanceOf(
             CompositeDefinitionProvider::class,
             $provider
@@ -131,7 +131,7 @@ XML;
             new DefaultDefinitionProviderFactory(),
         );
 
-        self::assertNull($config->getContainerDefinitionProvider());
+        self::assertNull($config->containerDefinitionProvider());
     }
 
     public function testCacheDirNotSpecifiedReturnsNull() : void {
@@ -155,7 +155,7 @@ XML;
             new DefaultParameterStoreFactory(),
             new DefaultDefinitionProviderFactory(),
         );
-        self::assertNull($config->getCacheDirectory());
+        self::assertNull($config->cacheDirectory());
     }
 
     public function testCacheDirSpecifiedIsReturned() : void {
@@ -180,7 +180,7 @@ XML;
             new DefaultParameterStoreFactory(),
             new DefaultDefinitionProviderFactory(),
         );
-        self::assertSame('cache', $config->getCacheDirectory());
+        self::assertSame('cache', $config->cacheDirectory());
     }
 
     public function testParameterStoresReturned() : void {
@@ -208,8 +208,8 @@ XML;
             new DefaultDefinitionProviderFactory(),
         );
 
-        self::assertCount(1, $config->getParameterStores());
-        self::assertContainsOnlyInstancesOf(StubParameterStore::class, $config->getParameterStores());
+        self::assertCount(1, $config->parameterStores());
+        self::assertContainsOnlyInstancesOf(StubParameterStore::class, $config->parameterStores());
     }
 
     public function testParameterStoreFactoryPresentRespected() : void {
@@ -248,8 +248,8 @@ XML;
             new DefaultDefinitionProviderFactory(),
         );
 
-        self::assertCount(1, $config->getParameterStores());
-        self::assertSame('passed to constructor my-key', $config->getParameterStores()[0]->fetch(stringType(), 'my-key'));
+        self::assertCount(1, $config->parameterStores());
+        self::assertSame('passed to constructor my-key', $config->parameterStores()[0]->fetch(stringType(), 'my-key'));
     }
 
     public function testDefinitionProviderFactoryPresentRespected() : void {
@@ -283,7 +283,7 @@ XML;
             $consumerFactory
         );
 
-        $provider = $config->getContainerDefinitionProvider();
+        $provider = $config->containerDefinitionProvider();
         self::assertInstanceOf(CompositeDefinitionProvider::class, $provider);
         self::assertContainsOnlyInstancesOf(StubDefinitionProviderWithDependencies::class, $provider->getDefinitionProviders());
     }
@@ -327,7 +327,7 @@ XML;
 
         self::assertSame(
             ['src', 'test/helper', 'lib', 'vendor/package/one/src', 'vendor/package/one/lib', 'vendor/package/two/other_src'],
-            $configuration->getScanDirectories()
+            $configuration->scanDirectories()
         );
     }
 

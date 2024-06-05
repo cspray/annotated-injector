@@ -16,12 +16,12 @@ interface AliasDefinition {
      *
      * @return ObjectType
      */
-    public function getAbstractService() : ObjectType;
+    public function abstractService() : ObjectType;
 
     /**
      * The concrete Service that should be used where your applications requires the corresponding abstract Service.
      *
      * @return ObjectType
      */
-    public function getConcreteService() : ObjectType;
+    public function concreteService() : ObjectType;
 }

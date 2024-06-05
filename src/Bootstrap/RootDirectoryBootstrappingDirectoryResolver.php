@@ -9,19 +9,19 @@ final class RootDirectoryBootstrappingDirectoryResolver implements Bootstrapping
     ) {
     }
 
-    public function getConfigurationPath(string $subPath) : string {
+    public function configurationPath(string $subPath) : string {
         return sprintf('%s/%s', $this->rootDir, $subPath);
     }
 
-    public function getPathFromRoot(string $subPath) : string {
+    public function pathFromRoot(string $subPath) : string {
         return sprintf('%s/%s', $this->rootDir, $subPath);
     }
 
-    public function getCachePath(string $subPath) : string {
+    public function cachePath(string $subPath) : string {
         return sprintf('%s/%s', $this->rootDir, $subPath);
     }
 
-    public function getVendorPath() : string {
+    public function vendorPath() : string {
         return sprintf('%s/vendor', $this->rootDir);
     }
 }

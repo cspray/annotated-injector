@@ -17,12 +17,12 @@ interface AutowireableParameter {
     /**
      * @return string The name of the parameter the value should be injected into
      */
-    public function getName() : string;
+    public function name() : string;
 
     /**
      * @return mixed Whatever value should be injected into a given parameter.
      */
-    public function getValue() : mixed;
+    public function value() : mixed;
 
     /**
      * @return bool Whether the value should be retrieved from the Container or injected directly

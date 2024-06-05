@@ -45,7 +45,7 @@ final class ValidateCommandTest extends TestCase {
     }
 
     public function testGetCommandName() : void {
-        $actual = $this->subject->getName();
+        $actual = $this->subject->name();
 
         self::assertSame('validate', $actual);
     }
@@ -101,7 +101,7 @@ OPTIONS
 
 TEXT;
 
-        self::assertSame($expected, $this->subject->getHelp());
+        self::assertSame($expected, $this->subject->help());
     }
 
     public function testHandleWithNoConfigurationFilePresentHasTerminalError() : void {

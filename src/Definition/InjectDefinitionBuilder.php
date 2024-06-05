@@ -124,27 +124,27 @@ final class InjectDefinitionBuilder {
             ) {
             }
 
-            public function getTargetIdentifier() : InjectTargetIdentifier {
+            public function targetIdentifier() : InjectTargetIdentifier {
                 return $this->targetIdentifier;
             }
 
-            public function getType() : Type|TypeUnion|TypeIntersect {
+            public function type() : Type|TypeUnion|TypeIntersect {
                 return $this->type;
             }
 
-            public function getValue() : mixed {
+            public function value() : mixed {
                 return $this->annotationValue;
             }
 
-            public function getProfiles() : array {
+            public function profiles() : array {
                 return $this->profiles;
             }
 
-            public function getStoreName() : ?string {
+            public function storeName() : ?string {
                 return $this->store;
             }
 
-            public function getAttribute() : ?InjectAttribute {
+            public function attribute() : ?InjectAttribute {
                 return $this->attribute;
             }
         };

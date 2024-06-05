@@ -15,14 +15,14 @@ trait HasServiceDelegateDefinitionTestsTrait {
     #[DataProvider('serviceDelegateProvider')]
     final public function testServiceDelegateDefinition(ExpectedServiceDelegate $expectedServiceDelegate) : void {
         $definition = null;
-        foreach ($this->getSubject()->getServiceDelegateDefinitions() as $delegateDefinition) {
-            if ($delegateDefinition->getServiceType() === $expectedServiceDelegate->service) {
+        foreach ($this->getSubject()->serviceDelegateDefinitions() as $delegateDefinition) {
+            if ($delegateDefinition->serviceType() === $expectedServiceDelegate->service) {
                 $definition = $delegateDefinition;
                 break;
             }
         }
 
-        $this->assertSame($expectedServiceDelegate->factory, $definition?->getDelegateType());
-        $this->assertSame($expectedServiceDelegate->method, $definition?->getDelegateMethod());
+        $this->assertSame($expectedServiceDelegate->factory, $definition?->delegateType());
+        $this->assertSame($expectedServiceDelegate->method, $definition?->delegateMethod());
     }
 }

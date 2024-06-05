@@ -9,6 +9,6 @@ trait HasNoServicePrepareDefinitionsTrait {
     abstract protected function getSubject() : ContainerDefinition;
 
     final public function testHasNoServicePrepareDefinitions() : void {
-        $this->assertEmpty($this->getSubject()->getServicePrepareDefinitions());
+        $this->assertEmpty($this->getSubject()->servicePrepareDefinitions());
     }
 }

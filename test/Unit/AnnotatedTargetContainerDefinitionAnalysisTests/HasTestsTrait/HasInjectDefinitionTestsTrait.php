@@ -15,7 +15,7 @@ trait HasInjectDefinitionTestsTrait {
     final public function testInjectDefinitionCount() : void {
         $expectedCount = count($this->injectProvider());
 
-        $this->assertSame($expectedCount, count($this->getSubject()->getInjectDefinitions()));
+        $this->assertSame($expectedCount, count($this->getSubject()->injectDefinitions()));
     }
 
     #[DataProvider('injectProvider')]

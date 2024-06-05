@@ -132,7 +132,7 @@ final class Bootstrap {
     }
 
     private function bootstrappingConfiguration(string $configurationFile) : BootstrappingConfiguration {
-        $configFile = $this->directoryResolver->getConfigurationPath($configurationFile);
+        $configFile = $this->directoryResolver->configurationPath($configurationFile);
         return new XmlBootstrappingConfiguration(
             $configFile,
             parameterStoreFactory: $this->parameterStoreFactory,
@@ -143,11 +143,11 @@ final class Bootstrap {
 
     private function analysisOptions(BootstrappingConfiguration $configuration) : ContainerDefinitionAnalysisOptions {
         $scanPaths = [];
-        foreach ($configuration->getScanDirectories() as $scanDirectory) {
-            $scanPaths[] = $this->directoryResolver->getPathFromRoot($scanDirectory);
+        foreach ($configuration->scanDirectories() as $scanDirectory) {
+            $scanPaths[] = $this->directoryResolver->pathFromRoot($scanDirectory);
         }
         $analysisOptions = ContainerDefinitionAnalysisOptionsBuilder::scanDirectories(...$scanPaths);
-        $containerDefinitionConsumer = $configuration->getContainerDefinitionProvider();
+        $containerDefinitionConsumer = $configuration->containerDefinitionProvider();
         if ($containerDefinitionConsumer !== null) {
             $analysisOptions = $analysisOptions->withDefinitionProvider($containerDefinitionConsumer);
         }
@@ -160,9 +160,9 @@ final class Bootstrap {
         ContainerDefinitionAnalysisOptions $analysisOptions
     ) : ContainerDefinition {
         $cacheDir = null;
-        $configuredCacheDir = $configuration->getCacheDirectory();
+        $configuredCacheDir = $configuration->cacheDirectory();
         if ($configuredCacheDir !== null) {
-            $cacheDir = $this->directoryResolver->getCachePath($configuredCacheDir);
+            $cacheDir = $this->directoryResolver->cachePath($configuredCacheDir);
         }
         return $this->containerDefinitionAnalyzer($cacheDir)->analyze($analysisOptions);
     }
@@ -185,7 +185,7 @@ final class Bootstrap {
         Profiles $activeProfiles,
         ContainerDefinition $containerDefinition,
     ) : AnnotatedContainer {
-        foreach ($configuration->getParameterStores() as $parameterStore) {
+        foreach ($configuration->parameterStores() as $parameterStore) {
             $this->containerFactory->addParameterStore($parameterStore);
         }
 

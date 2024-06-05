@@ -21,7 +21,7 @@ class AbstractSharedServicesTest extends AnnotatedTargetDefinitionConverterTestC
     }
 
     public function testGetServiceDefinitionType() {
-        $this->assertSame(Fixtures::abstractClassAliasedService()->fooAbstract(), $this->definition->getType());
+        $this->assertSame(Fixtures::abstractClassAliasedService()->fooAbstract(), $this->definition->type());
     }
 
     public function testServiceIsAbstract() {
@@ -29,7 +29,7 @@ class AbstractSharedServicesTest extends AnnotatedTargetDefinitionConverterTestC
     }
 
     public function testServiceNameIsNull() {
-        $this->assertNull($this->definition->getName());
+        $this->assertNull($this->definition->name());
     }
 
     public function testServiceIsPrimary() {
@@ -37,6 +37,6 @@ class AbstractSharedServicesTest extends AnnotatedTargetDefinitionConverterTestC
     }
 
     public function testServiceProfiles() {
-        $this->assertSame(['default'], $this->definition->getProfiles());
+        $this->assertSame(['default'], $this->definition->profiles());
     }
 }

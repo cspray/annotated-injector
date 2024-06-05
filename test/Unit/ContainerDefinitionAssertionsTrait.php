@@ -17,7 +17,7 @@ trait ContainerDefinitionAssertionsTrait /** extends \PHPUnit\TestCase */ {
         $actualTypes = [];
         foreach ($serviceDefinitions as $serviceDefinition) {
             $this->assertInstanceOf(ServiceDefinition::class, $serviceDefinition);
-            $actualTypes[] = $serviceDefinition->getType();
+            $actualTypes[] = $serviceDefinition->type();
         }
 
         $this->assertEqualsCanonicalizing($expectedTypes, $actualTypes);
@@ -50,8 +50,8 @@ trait ContainerDefinitionAssertionsTrait /** extends \PHPUnit\TestCase */ {
         foreach ($aliasDefinitions as $aliasDefinition) {
             $this->assertInstanceOf(AliasDefinition::class, $aliasDefinition);
             $actualMap[] = [
-                $aliasDefinition->getAbstractService()->getName(),
-                $aliasDefinition->getConcreteService()->getName()
+                $aliasDefinition->abstractService()->getName(),
+                $aliasDefinition->concreteService()->getName()
             ];
         }
 
@@ -68,8 +68,8 @@ trait ContainerDefinitionAssertionsTrait /** extends \PHPUnit\TestCase */ {
         $actualMap = [];
         foreach ($servicePrepareDefinitions as $servicePrepareDefinition) {
             $this->assertInstanceOf(ServicePrepareDefinition::class, $servicePrepareDefinition);
-            $key = $servicePrepareDefinition->getService()->getName();
-            $actualMap[] = [$key, $servicePrepareDefinition->getMethod()];
+            $key = $servicePrepareDefinition->service()->getName();
+            $actualMap[] = [$key, $servicePrepareDefinition->methodName()];
         }
 
         array_multisort($actualMap);
@@ -84,7 +84,7 @@ trait ContainerDefinitionAssertionsTrait /** extends \PHPUnit\TestCase */ {
      */
     protected function getServiceDefinition(array $serviceDefinitions, string $serviceDefinitionType) : ?ServiceDefinition {
         foreach ($serviceDefinitions as $serviceDefinition) {
-            if ($serviceDefinitionType === $serviceDefinition->getType()->getName()) {
+            if ($serviceDefinitionType === $serviceDefinition->type()->getName()) {
                 return $serviceDefinition;
             }
         }

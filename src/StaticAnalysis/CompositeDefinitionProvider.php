@@ -13,10 +13,10 @@ final class CompositeDefinitionProvider implements DefinitionProvider, \Stringab
         DefinitionProvider $provider,
         DefinitionProvider...$providers
     ) {
-        $this->providers = [
+        $this->providers = array_values([
             $provider,
             ...$providers
-        ];
+        ]);
     }
 
     public function consume(DefinitionProviderContext $context) : void {

@@ -28,11 +28,11 @@ final class BuildCommand implements Command {
     ) {
     }
 
-    public function getName() : string {
+    public function name() : string {
         return 'build';
     }
 
-    public function getHelp() : string {
+    public function help() : string {
         return <<<SHELL
 NAME
 
@@ -59,11 +59,11 @@ SHELL;
     }
 
     public function handle(Input $input, TerminalOutput $output) : int {
-        $configName = $input->getOption('config-file');
+        $configName = $input->option('config-file');
         if (!isset($configName)) {
             // This not being present would be highly irregular and not party of the happy path
             // But it is possible that somebody created the configuration manually and is not using composer
-            $composerFile = $this->directoryResolver->getConfigurationPath('composer.json');
+            $composerFile = $this->directoryResolver->configurationPath('composer.json');
             if (file_exists($composerFile)) {
                 /** @var mixed $composer */
                 $composer = json_decode(file_get_contents($composerFile), true);
@@ -81,7 +81,7 @@ SHELL;
         }
 
         assert(is_string($configName));
-        $configFile = $this->directoryResolver->getConfigurationPath($configName);
+        $configFile = $this->directoryResolver->configurationPath($configName);
         if (!file_exists($configFile)) {
             throw ConfigurationNotFound::fromMissingFile($configName);
         }
@@ -92,19 +92,19 @@ SHELL;
             new DefaultDefinitionProviderFactory(),
         );
 
-        $cacheDir = $config->getCacheDirectory();
+        $cacheDir = $config->cacheDirectory();
         if (!isset($cacheDir)) {
             throw CacheDirConfigurationNotFound::fromBuildCommand();
         }
 
-        $cacheDir = $this->directoryResolver->getCachePath($cacheDir);
+        $cacheDir = $this->directoryResolver->cachePath($cacheDir);
         $scanDirs = [];
-        foreach ($config->getScanDirectories() as $scanDirectory) {
-            $scanDirs[] = $this->directoryResolver->getPathFromRoot($scanDirectory);
+        foreach ($config->scanDirectories() as $scanDirectory) {
+            $scanDirs[] = $this->directoryResolver->pathFromRoot($scanDirectory);
         }
 
         $compileOptions = ContainerDefinitionAnalysisOptionsBuilder::scanDirectories(...$scanDirs);
-        $containerDefinitionConsumer = $config->getContainerDefinitionProvider();
+        $containerDefinitionConsumer = $config->containerDefinitionProvider();
         if ($containerDefinitionConsumer !== null) {
             $compileOptions = $compileOptions->withDefinitionProvider($containerDefinitionConsumer);
         }

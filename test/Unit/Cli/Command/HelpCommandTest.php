@@ -22,7 +22,7 @@ class HelpCommandTest extends TestCase {
     }
 
     private function getExpectedHelp() : string {
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         return <<<SHELL
 <bold>Annotated Container $version</bold>
 
@@ -50,11 +50,11 @@ SHELL;
     }
 
     public function testHelpCommandName() : void {
-        self::assertSame('help', $this->subject->getName());
+        self::assertSame('help', $this->subject->name());
     }
 
     public function testHelpCommandGetHelp() : void {
-        self::assertSame($this->getExpectedHelp(), $this->subject->getHelp());
+        self::assertSame($this->getExpectedHelp(), $this->subject->help());
     }
 
     public function testHelpCommandHandleNoArguments() : void {
@@ -64,7 +64,7 @@ SHELL;
             $stderr = new InMemoryOutput()
         );
         $exitCode = $this->subject->handle($input, $terminalOutput);
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $expected = <<<SHELL
 \033[1mAnnotated Container $version\033[22m
 
@@ -121,7 +121,7 @@ SHELL;
             $stderr = new InMemoryOutput()
         );
         $exitCode = $this->subject->handle($input, $terminalOutput);
-        $version = AnnotatedContainerVersion::getVersion();
+        $version = AnnotatedContainerVersion::version();
         $expected = <<<SHELL
 \033[41m\033[37m!! Warning !!\033[0m\033[0m - Expecting 1 arg, showing default help
 

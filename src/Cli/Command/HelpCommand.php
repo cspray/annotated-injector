@@ -15,12 +15,12 @@ final class HelpCommand implements Command {
     ) {
     }
 
-    public function getName() : string {
+    public function name() : string {
         return 'help';
     }
 
-    public function getHelp() : string {
-        $version = AnnotatedContainerVersion::getVersion();
+    public function help() : string {
+        $version = AnnotatedContainerVersion::version();
         return <<<SHELL
 <bold>Annotated Container $version</bold>
 
@@ -48,26 +48,26 @@ SHELL;
     }
 
     public function handle(Input $input, TerminalOutput $output) : int {
-        $arguments = $input->getArguments();
+        $arguments = $input->arguments();
         $argc = count($arguments);
         if ($argc !== 2) {
             if ($argc > 1) {
                 $output->stdout->write('<bg:red><fg:white>!! Warning !!</fg:white></bg:red> - Expecting 1 arg, showing default help');
                 $output->stdout->br();
             }
-            $output->stdout->write($this->getHelp());
+            $output->stdout->write($this->help());
             return 0;
         }
 
         $commandName = $arguments[1];
-        $command = $this->commandExecutor->getCommand($commandName);
+        $command = $this->commandExecutor->command($commandName);
 
         if (!isset($command)) {
             $output->stderr->write(sprintf('<fg:red>Could not find command "%s"!</fg:red>', $commandName));
             return 1;
         }
 
-        $output->stdout->write($command->getHelp());
+        $output->stdout->write($command->help());
         return 0;
     }
 }

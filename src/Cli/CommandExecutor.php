@@ -13,26 +13,26 @@ final class CommandExecutor {
 
     private ?string $defaultCommand = null;
 
-    public function setDefaultCommand(Command $command) : void {
-        $this->defaultCommand = $command->getName();
+    public function defaultCommand(Command $command) : void {
+        $this->defaultCommand = $command->name();
         $this->addCommand($command);
     }
 
-    public function getCommand(string $name) : ?Command {
-        return array_reduce($this->commands, fn(?Command $carry, Command $item) => $item->getName() === $name ? $item : $carry);
+    public function command(string $name) : ?Command {
+        return array_reduce($this->commands, fn(?Command $carry, Command $item) => $item->name() === $name ? $item : $carry);
     }
 
     public function addCommand(Command $command) : void {
-        $this->commands[$command->getName()] = $command;
+        $this->commands[$command->name()] = $command;
     }
 
     public function execute(Input $input, TerminalOutput $output) : int {
-        $noArgs = empty($input->getArguments());
+        $noArgs = empty($input->arguments());
         $exitCode = null;
         if ($noArgs && !isset($this->defaultCommand)) {
             $this->notFoundCommand($output);
         } else {
-            $command = $noArgs ? $this->defaultCommand : $input->getArguments()[0];
+            $command = $noArgs ? $this->defaultCommand : $input->arguments()[0];
             if (!isset($this->commands[$command])) {
                 $this->notFoundCommand($output, $command);
             } else {

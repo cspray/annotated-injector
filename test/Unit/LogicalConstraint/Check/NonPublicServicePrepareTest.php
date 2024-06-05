@@ -30,7 +30,7 @@ final class NonPublicServicePrepareTest extends LogicalConstraintTestCase {
             )->build()
         );
 
-        $collection = $this->subject->getConstraintViolations($definition, Profiles::fromList(['default']));
+        $collection = $this->subject->constraintViolations($definition, Profiles::fromList(['default']));
 
         self::assertCount(0, $collection);
     }
@@ -42,7 +42,7 @@ final class NonPublicServicePrepareTest extends LogicalConstraintTestCase {
             )->build()
         );
 
-        $collection = $this->subject->getConstraintViolations($definition, Profiles::fromList(['default']));
+        $collection = $this->subject->constraintViolations($definition, Profiles::fromList(['default']));
 
         self::assertCount(1, $collection);
 
@@ -62,7 +62,7 @@ final class NonPublicServicePrepareTest extends LogicalConstraintTestCase {
             )->build()
         );
 
-        $collection = $this->subject->getConstraintViolations($definition, Profiles::fromList(['default']));
+        $collection = $this->subject->constraintViolations($definition, Profiles::fromList(['default']));
 
         self::assertCount(1, $collection);
 

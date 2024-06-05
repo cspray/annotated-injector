@@ -41,15 +41,15 @@ final class ServicePrepareDefinitionBuilder {
             ) {
             }
 
-            public function getService() : ObjectType {
+            public function service() : ObjectType {
                 return $this->service;
             }
 
-            public function getMethod() : string {
+            public function methodName() : string {
                 return $this->method;
             }
 
-            public function getAttribute() : ?ServicePrepareAttribute {
+            public function attribute() : ?ServicePrepareAttribute {
                 return $this->attribute;
             }
         };

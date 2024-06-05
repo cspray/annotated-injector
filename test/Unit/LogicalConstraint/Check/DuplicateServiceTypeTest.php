@@ -35,7 +35,7 @@ final class DuplicateServiceTypeTest extends LogicalConstraintTestCase {
             )->build()
         );
 
-        $results = $this->subject->getConstraintViolations($definition, Profiles::fromList(['default']));
+        $results = $this->subject->constraintViolations($definition, Profiles::fromList(['default']));
 
         self::assertCount(0, $results);
     }
@@ -47,7 +47,7 @@ final class DuplicateServiceTypeTest extends LogicalConstraintTestCase {
             )->build()
         );
 
-        $results = $this->subject->getConstraintViolations($definition, Profiles::fromList(['default']));
+        $results = $this->subject->constraintViolations($definition, Profiles::fromList(['default']));
 
         self::assertCount(1, $results);
 
@@ -87,7 +87,7 @@ TEXT;
             )->build()
         );
 
-        $results = $this->subject->getConstraintViolations($definition, Profiles::fromList(['default']));
+        $results = $this->subject->constraintViolations($definition, Profiles::fromList(['default']));
 
         self::assertCount(1, $results);
 

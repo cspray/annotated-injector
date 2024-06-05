@@ -21,11 +21,11 @@ final class CacheClearCommand implements Command {
     ) {
     }
 
-    public function getName() : string {
+    public function name() : string {
         return 'cache-clear';
     }
 
-    public function getHelp() : string {
+    public function help() : string {
         return <<<SHELL
 NAME
 
@@ -55,11 +55,11 @@ SHELL;
     }
 
     public function handle(Input $input, TerminalOutput $output) : int {
-        $configName = $input->getOption('config-file');
+        $configName = $input->option('config-file');
         if (!isset($configName)) {
             // This not being present would be highly irregular and not party of the happy path
             // But it is possible that somebody created the configuration manually and is not using composer
-            $composerFile = $this->directoryResolver->getConfigurationPath('composer.json');
+            $composerFile = $this->directoryResolver->configurationPath('composer.json');
             if (file_exists($composerFile)) {
                 $composer = json_decode(file_get_contents($composerFile), true);
                 $configName = $composer['extra']['annotatedContainer']['configFile'] ?? 'annotated-container.xml';
@@ -74,30 +74,30 @@ SHELL;
             }
         }
 
-        $configPath = $this->directoryResolver->getConfigurationPath($configName);
+        $configPath = $this->directoryResolver->configurationPath($configName);
         if (!file_exists($configPath)) {
             throw ConfigurationNotFound::fromMissingFile($configName);
         }
 
         $config = new XmlBootstrappingConfiguration($configPath, new DefaultParameterStoreFactory(), new DefaultDefinitionProviderFactory());
-        $cacheDir = $config->getCacheDirectory();
+        $cacheDir = $config->cacheDirectory();
         if (!isset($cacheDir)) {
             throw CacheDirConfigurationNotFound::fromCacheCommand();
         }
 
-        $cachePath = $this->directoryResolver->getCachePath($cacheDir);
+        $cachePath = $this->directoryResolver->cachePath($cacheDir);
         if (!is_dir($cachePath)) {
             throw CacheDirNotFound::fromMissingDirectory($cacheDir);
         }
 
         $sourceDirs = [];
-        foreach ($config->getScanDirectories() as $scanDirectory) {
-            $sourceDirs[] = $this->directoryResolver->getPathFromRoot($scanDirectory);
+        foreach ($config->scanDirectories() as $scanDirectory) {
+            $sourceDirs[] = $this->directoryResolver->pathFromRoot($scanDirectory);
         }
 
         sort($sourceDirs);
         $cacheKey = md5(join($sourceDirs));
-        $cachePath = $this->directoryResolver->getCachePath(sprintf('%s/%s', $cacheDir, $cacheKey));
+        $cachePath = $this->directoryResolver->cachePath(sprintf('%s/%s', $cacheDir, $cacheKey));
 
         if (file_exists($cachePath)) {
             unlink($cachePath);

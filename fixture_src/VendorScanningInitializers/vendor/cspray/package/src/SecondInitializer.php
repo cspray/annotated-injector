@@ -8,15 +8,15 @@ use Cspray\AnnotatedContainer\Bootstrap\ThirdPartyInitializer;
 
 final class SecondInitializer extends ThirdPartyInitializer {
 
-    public function getRelativeScanDirectories() : array {
+    public function relativeScanDirectories() : array {
         return [];
     }
 
-    public function getDefinitionProviderClass() : string {
+    public function definitionProviderClass() : string {
         return DependencyDefinitionProvider::class;
     }
 
-    public function getPackageName() : string {
+    public function packageName() : string {
         return 'cspray/package';
     }
 }

@@ -9,7 +9,7 @@ use Cspray\Typiphy\TypeUnion;
 
 final class StubParameterStore implements ParameterStore {
 
-    public function getName() : string {
+    public function name() : string {
         return 'test-store';
     }
 
