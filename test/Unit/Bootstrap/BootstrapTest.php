@@ -5,6 +5,7 @@ namespace Cspray\AnnotatedContainer\Unit\Bootstrap;
 use Cspray\AnnotatedContainer\AnnotatedContainer;
 use Cspray\AnnotatedContainer\Bootstrap\Bootstrap;
 use Cspray\AnnotatedContainer\Bootstrap\BootstrappingConfiguration;
+use Cspray\AnnotatedContainer\Bootstrap\CacheAwareBootstrappingConfiguration;
 use Cspray\AnnotatedContainer\Bootstrap\CacheAwareBootstrappingConfigurationProvider;
 use Cspray\AnnotatedContainer\Bootstrap\ContainerAnalytics;
 use Cspray\AnnotatedContainer\Bootstrap\DefaultDefinitionProviderFactory;
@@ -14,6 +15,7 @@ use Cspray\AnnotatedContainer\Bootstrap\ParameterStoreFactory;
 use Cspray\AnnotatedContainer\Bootstrap\ServiceFromServiceDefinition;
 use Cspray\AnnotatedContainer\Bootstrap\ServiceGatherer;
 use Cspray\AnnotatedContainer\Bootstrap\ServiceWiringListener;
+use Cspray\AnnotatedContainer\Bootstrap\XmlBootstrappingConfiguration;
 use Cspray\AnnotatedContainer\Bootstrap\XmlBootstrappingConfigurationProvider;
 use Cspray\AnnotatedContainer\ContainerFactory\AurynContainerFactory;
 use Cspray\AnnotatedContainer\ContainerFactory\ContainerFactory;
@@ -66,11 +68,14 @@ XML;
 
         $emitter = new Emitter();
         $bootstrap = Bootstrap::fromCompleteSetup(
+            new XmlBootstrappingConfiguration(
+                $directoryResolver->configurationPath('annotated-container.xml'),
+                new DefaultParameterStoreFactory(),
+                new DefaultDefinitionProviderFactory(),
+            ),
             new AurynContainerFactory($emitter),
             $emitter,
             $directoryResolver,
-            new DefaultParameterStoreFactory(),
-            new DefaultDefinitionProviderFactory(),
             new Stopwatch()
         );
         $container = $bootstrap->bootstrapContainer();
@@ -106,11 +111,14 @@ XML;
 
         $emitter = new Emitter();
         $bootstrap = Bootstrap::fromCompleteSetup(
+            new XmlBootstrappingConfiguration(
+                $directoryResolver->configurationPath('annotated-container.xml'),
+                new DefaultParameterStoreFactory(),
+                new DefaultDefinitionProviderFactory()
+            ),
             new AurynContainerFactory($emitter),
             $emitter,
             $directoryResolver,
-            new DefaultParameterStoreFactory(),
-            new DefaultDefinitionProviderFactory(),
             new Stopwatch()
         );
         $container = $bootstrap->bootstrapContainer();
@@ -142,11 +150,14 @@ XML;
 
         $emitter = new Emitter();
         $bootstrap = Bootstrap::fromCompleteSetup(
+            new XmlBootstrappingConfiguration(
+                $directoryResolver->configurationPath('annotated-container.xml'),
+                new DefaultParameterStoreFactory(),
+                new DefaultDefinitionProviderFactory(),
+            ),
             new AurynContainerFactory($emitter),
             $emitter,
             $directoryResolver,
-            new DefaultParameterStoreFactory(),
-            new DefaultDefinitionProviderFactory(),
             new Stopwatch()
         );
         $container = $bootstrap->bootstrapContainer();
@@ -176,149 +187,19 @@ XML;
 
         $emitter = new Emitter();
         $bootstrap = Bootstrap::fromCompleteSetup(
+            new XmlBootstrappingConfiguration(
+                $directoryResolver->configurationPath('annotated-container.xml'),
+                new DefaultParameterStoreFactory(),
+                new DefaultDefinitionProviderFactory(),
+            ),
             new AurynContainerFactory($emitter),
             $emitter,
             $directoryResolver,
-            new DefaultParameterStoreFactory(),
-            new DefaultDefinitionProviderFactory(),
             new Stopwatch()
         );
         $container = $bootstrap->bootstrapContainer(profiles: Profiles::fromList(['default', 'dev']));
         $service = $container->get(Fixtures::profileResolvedServices()->fooInterface()->getName());
         self::assertInstanceOf(Fixtures::profileResolvedServices()->devImplementation()->getName(), $service);
-    }
-
-    public function testBootstrapSingleConcreteServiceUsesCustomFileName() : void {
-        $directoryResolver = new FixtureBootstrappingDirectoryResolver();
-
-        $goodXml = <<<XML
-<?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
-    <scanDirectories>
-        <source>
-            <dir>SingleConcreteService</dir>
-        </source>
-    </scanDirectories>
-</annotatedContainer>
-XML;
-
-        VirtualFilesystem::newFile('my-container.xml.dist')
-            ->withContent($goodXml)
-            ->at($this->vfs);
-
-        $emitter = new Emitter();
-        $bootstrap = Bootstrap::fromCompleteSetup(
-            new AurynContainerFactory($emitter),
-            $emitter,
-            $directoryResolver,
-            new DefaultParameterStoreFactory(),
-            new DefaultDefinitionProviderFactory(),
-            new Stopwatch()
-        );
-        $container = $bootstrap->bootstrapContainer(
-            bootstrappingConfigurationProvider: new XmlBootstrappingConfigurationProvider('my-container.xml.dist')
-        );
-
-        $service = $container->get(Fixtures::singleConcreteService()->fooImplementation()->getName());
-
-        self::assertInstanceOf(
-            Fixtures::singleConcreteService()->fooImplementation()->getName(),
-            $service
-        );
-    }
-
-    public function testBoostrapDefinitionProviderFactoryPassedToConfiguration() : void {
-        $directoryResolver = new FixtureBootstrappingDirectoryResolver();
-
-        $xml = <<<XML
-<?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
-    <scanDirectories>
-        <source>
-            <dir>ThirdPartyServices</dir>
-        </source>
-    </scanDirectories>
-    <definitionProviders>
-        <definitionProvider>Cspray\AnnotatedContainer\Unit\Helper\StubDefinitionProviderWithDependencies</definitionProvider>
-    </definitionProviders>
-</annotatedContainer>
-XML;
-
-        VirtualFilesystem::newFile('annotated-container.xml')
-            ->withContent($xml)
-            ->at($this->vfs);
-
-        $factory = new class implements DefinitionProviderFactory {
-
-            public function createProvider(string $identifier) : DefinitionProvider {
-                if ($identifier === StubDefinitionProviderWithDependencies::class) {
-                    return new StubDefinitionProviderWithDependencies(Fixtures::thirdPartyServices()->fooImplementation());
-                } else {
-                    throw new \RuntimeException();
-                }
-            }
-        };
-
-        $emitter = new Emitter();
-        $container = Bootstrap::fromCompleteSetup(
-            new AurynContainerFactory($emitter),
-            $emitter,
-            $directoryResolver,
-            new DefaultParameterStoreFactory(),
-            $factory,
-            new Stopwatch()
-        )->bootstrapContainer();
-
-        $service = $container->get(Fixtures::thirdPartyServices()->fooInterface()->getName());
-
-        self::assertInstanceOf(Fixtures::thirdPartyServices()->fooImplementation()->getName(), $service);
-    }
-
-    public function testBootstrapParameterStoreFactoryPassedToConfiguration() : void {
-        $directoryResolver = new FixtureBootstrappingDirectoryResolver();
-
-        $xml = <<<XML
-<?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
-    <scanDirectories>
-        <source>
-            <dir>InjectCustomStoreServices</dir>
-        </source>
-    </scanDirectories>
-    <parameterStores>
-      <parameterStore>Cspray\AnnotatedContainer\Unit\Helper\StubParameterStoreWithDependencies</parameterStore>
-    </parameterStores>
-</annotatedContainer>
-XML;
-
-        VirtualFilesystem::newFile('annotated-container.xml')
-            ->withContent($xml)
-            ->at($this->vfs);
-
-        $factory = new class implements ParameterStoreFactory {
-
-            public function createParameterStore(string $identifier) : ParameterStore {
-                if ($identifier === StubParameterStoreWithDependencies::class) {
-                    return new StubParameterStoreWithDependencies('ac-ac');
-                } else {
-                    throw new \RuntimeException();
-                }
-            }
-        };
-
-        $emitter = new Emitter();
-        $container = Bootstrap::fromCompleteSetup(
-            new AurynContainerFactory($emitter),
-            $emitter,
-            $directoryResolver,
-            $factory,
-            new DefaultDefinitionProviderFactory(),
-            new Stopwatch()
-        )->bootstrapContainer();
-
-        $service = $container->get(Fixtures::injectCustomStoreServices()->scalarInjector()->getName());
-
-        self::assertSame('ac-ackey', $service->key);
     }
 
     public function testServiceWiringObserver() : void {
@@ -341,11 +222,14 @@ XML;
 
         $emitter = new Emitter();
         $bootstrap = Bootstrap::fromCompleteSetup(
+            new XmlBootstrappingConfiguration(
+                $directoryResolver->configurationPath('annotated-container.xml'),
+                new DefaultParameterStoreFactory(),
+                new DefaultDefinitionProviderFactory(),
+            ),
             new AurynContainerFactory($emitter),
             $emitter,
             $directoryResolver,
-            new DefaultParameterStoreFactory(),
-            new DefaultDefinitionProviderFactory(),
             new Stopwatch()
         );
 
@@ -406,11 +290,14 @@ XML;
 
         $emitter = new Emitter();
         $bootstrap = Bootstrap::fromCompleteSetup(
+            new XmlBootstrappingConfiguration(
+                $directoryResolver->configurationPath('annotated-container.xml'),
+                new DefaultParameterStoreFactory(),
+                new DefaultDefinitionProviderFactory(),
+            ),
             new AurynContainerFactory($emitter),
             $emitter,
             $directoryResolver,
-            new DefaultParameterStoreFactory(),
-            new DefaultDefinitionProviderFactory(),
             new Stopwatch()
         );
 
@@ -467,11 +354,14 @@ XML;
         $emitter = new Emitter();
 
         $bootstrap = Bootstrap::fromCompleteSetup(
+            new XmlBootstrappingConfiguration(
+                $directoryResolver->configurationPath('annotated-container.xml'),
+                new DefaultParameterStoreFactory(),
+                new DefaultDefinitionProviderFactory(),
+            ),
             new AurynContainerFactory($emitter),
             $emitter,
             $directoryResolver,
-            new DefaultParameterStoreFactory(),
-            new DefaultDefinitionProviderFactory(),
             new Stopwatch()
         );
 
@@ -530,11 +420,14 @@ XML;
 
         $emitter = new Emitter();
         $bootstrap = Bootstrap::fromCompleteSetup(
+            new XmlBootstrappingConfiguration(
+                $directoryResolver->configurationPath('annotated-container.xml'),
+                new DefaultParameterStoreFactory(),
+                new DefaultDefinitionProviderFactory(),
+            ),
             new AurynContainerFactory($emitter),
             $emitter,
             $directoryResolver,
-            new DefaultParameterStoreFactory(),
-            new DefaultDefinitionProviderFactory(),
             new Stopwatch()
         );
 
@@ -598,11 +491,14 @@ XML;
 
         $emitter = new Emitter();
         $subject = Bootstrap::fromCompleteSetup(
+            new XmlBootstrappingConfiguration(
+                $directoryResolver->configurationPath('annotated-container.xml'),
+                new DefaultParameterStoreFactory(),
+                new DefaultDefinitionProviderFactory(),
+            ),
             new AurynContainerFactory($emitter),
             $emitter,
             $directoryResolver,
-            new DefaultParameterStoreFactory(),
-            new DefaultDefinitionProviderFactory(),
             new Stopwatch(new KnownIncrementingPreciseTime())
         );
 
@@ -644,11 +540,14 @@ XML;
 
         $emitter = new Emitter();
         $subject = Bootstrap::fromCompleteSetup(
+            new XmlBootstrappingConfiguration(
+                $directoryResolver->configurationPath('annotated-container.xml'),
+                new DefaultParameterStoreFactory(),
+                new DefaultDefinitionProviderFactory(),
+            ),
             $containerFactory,
             $emitter,
             $directoryResolver,
-            new DefaultParameterStoreFactory(),
-            new DefaultDefinitionProviderFactory(),
             new Stopwatch()
         );
 
@@ -680,11 +579,14 @@ XML;
         $emitter->addListener($listener);
 
         $bootstrap = Bootstrap::fromCompleteSetup(
+            new XmlBootstrappingConfiguration(
+                $directoryResolver->configurationPath('annotated-container.xml'),
+                new DefaultParameterStoreFactory(),
+                new DefaultDefinitionProviderFactory(),
+            ),
             new AurynContainerFactory($emitter),
             $emitter,
             $directoryResolver,
-            new DefaultParameterStoreFactory(),
-            new DefaultDefinitionProviderFactory(),
             new Stopwatch()
         );
         $bootstrap->bootstrapContainer();
@@ -726,18 +628,19 @@ XML;
             ->willReturn(null);
 
         $bootstrap = Bootstrap::fromCompleteSetup(
+            new CacheAwareBootstrappingConfiguration(
+                new XmlBootstrappingConfiguration(
+                    $directoryResolver->configurationPath('annotated-container.xml'),
+                    new DefaultParameterStoreFactory(),
+                    new DefaultDefinitionProviderFactory(),
+                ),
+                $cache
+            ),
             new AurynContainerFactory($emitter),
             $emitter,
             $directoryResolver,
-            new DefaultParameterStoreFactory(),
-            new DefaultDefinitionProviderFactory(),
             new Stopwatch()
         );
-        $bootstrap->bootstrapContainer(
-            bootstrappingConfigurationProvider: new CacheAwareBootstrappingConfigurationProvider(
-                new XmlBootstrappingConfigurationProvider(),
-                $cache
-            )
-        );
+        $bootstrap->bootstrapContainer();
     }
 }

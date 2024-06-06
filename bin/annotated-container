@@ -3,6 +3,8 @@
 
 use Cspray\AnnotatedContainer\Bootstrap\RootDirectoryBootstrappingDirectoryResolver;
 use Cspray\AnnotatedContainer\Bootstrap\ComposerJsonScanningThirdPartyInitializerProvider;
+use Cspray\AnnotatedContainer\Bootstrap\XmlBootstrappingConfigurationProvider;
+use Cspray\AnnotatedContainer\Cli\AnnotatedContainerCliRunner;
 use Cspray\AnnotatedContainer\Cli\Command\ValidateCommand;
 use Cspray\AnnotatedContainer\Cli\Command\BuildCommand;
 use Cspray\AnnotatedContainer\Cli\Command\CacheClearCommand;
@@ -12,26 +14,13 @@ use Cspray\AnnotatedContainer\Cli\CommandExecutor;
 use Cspray\AnnotatedContainer\Cli\InputParser;
 use Cspray\AnnotatedContainer\Cli\TerminalOutput;
 
-$dir = dirname(__DIR__);
-if (!file_exists($dir . '/vendor/autoload.php')) {
-    $dir = dirname(__DIR__, 4);
-}
-
-require_once $dir . '/vendor/autoload.php';
-
-$directoryResolver = new RootDirectoryBootstrappingDirectoryResolver($dir);
-
-$commandExecutor = new CommandExecutor();
-
-$commandExecutor->defaultCommand(new HelpCommand($commandExecutor));
-$commandExecutor->addCommand(new InitCommand($directoryResolver, new ComposerJsonScanningThirdPartyInitializerProvider($directoryResolver)));
-$commandExecutor->addCommand(new BuildCommand($directoryResolver));
-$commandExecutor->addCommand(new CacheClearCommand($directoryResolver));
-$commandExecutor->addCommand(new ValidateCommand($directoryResolver));
+include $_composer_autoload_path ?? __DIR__ . '/../vendor/autoload.php';
 
 $input = (new InputParser())->parse($argv);
-$terminalOutput = new TerminalOutput();
 
-$exitCode = $commandExecutor->execute($input, $terminalOutput);
-exit($exitCode);
+AnnotatedContainerCliRunner::fromMinimalSetup(
+    new XmlBootstrappingConfigurationProvider(
+
+    )
+)
 

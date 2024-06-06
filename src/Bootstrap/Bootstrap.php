@@ -10,7 +10,6 @@ use Cspray\AnnotatedContainer\ContainerFactory\ContainerFactoryOptionsBuilder;
 use Cspray\AnnotatedContainer\ContainerFactory\IlluminateContainerFactory;
 use Cspray\AnnotatedContainer\ContainerFactory\PhpDiContainerFactory;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
-use Cspray\AnnotatedContainer\Definition\Serializer\XmlContainerDefinitionSerializer;
 use Cspray\AnnotatedContainer\Event\ContainerFactoryEmitter;
 use Cspray\AnnotatedContainer\Event\Emitter;
 use Cspray\AnnotatedContainer\Profiles;
@@ -19,7 +18,6 @@ use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetDefinitionConverter;
 use Cspray\AnnotatedContainer\StaticAnalysis\CacheAwareContainerDefinitionAnalyzer;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptions;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
-use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalyzer;
 use Cspray\AnnotatedTarget\PhpParserAnnotatedTargetParser;
 use Cspray\PrecisionStopwatch\Marker;
 use Cspray\PrecisionStopwatch\Metrics;
@@ -31,11 +29,10 @@ use RuntimeException;
 final class Bootstrap {
 
     private function __construct(
+        private readonly BootstrappingConfiguration $bootstrappingConfiguration,
         private readonly ContainerFactory $containerFactory,
         private readonly Emitter $emitter,
         private readonly BootstrappingDirectoryResolver $directoryResolver,
-        private readonly ParameterStoreFactory $parameterStoreFactory,
-        private readonly DefinitionProviderFactory $definitionProviderFactory,
         private readonly Stopwatch $stopwatch,
     ) {
     }
@@ -47,11 +44,14 @@ final class Bootstrap {
     ) : self {
         $containerFactory = self::inferredContainerFactory($emitter);
         return new Bootstrap(
+            new XmlBootstrappingConfiguration(
+                'annotated-container.xml',
+                $parameterStoreFactory,
+                $definitionProviderFactory
+            ),
             $containerFactory,
             $emitter,
             new VendorPresenceBasedBootstrappingDirectoryResolver(),
-            $parameterStoreFactory,
-            $definitionProviderFactory,
             new Stopwatch()
         );
     }
@@ -77,48 +77,40 @@ final class Bootstrap {
     }
 
     public static function fromCompleteSetup(
+        BootstrappingConfiguration $bootstrappingConfiguration,
         ContainerFactory $containerFactory,
         Emitter $emitter,
         BootstrappingDirectoryResolver $resolver,
-        ParameterStoreFactory $parameterStoreFactory,
-        DefinitionProviderFactory $definitionProviderFactory,
         Stopwatch $stopwatch = new Stopwatch()
     ) : self {
         return new Bootstrap(
+            $bootstrappingConfiguration,
             $containerFactory,
             $emitter,
             $resolver,
-            $parameterStoreFactory,
-            $definitionProviderFactory,
             $stopwatch
         );
     }
 
     public function bootstrapContainer(
         Profiles $profiles = null,
-        BootstrappingConfigurationProvider $bootstrappingConfigurationProvider = new XmlBootstrappingConfigurationProvider()
     ) : AnnotatedContainer {
         $profiles ??= Profiles::defaultOnly();
 
         $this->stopwatch->start();
 
-        $configuration = $bootstrappingConfigurationProvider->bootstrappingConfiguration(
-            $this->directoryResolver,
-            $this->parameterStoreFactory,
-            $this->definitionProviderFactory
-        );
-        $analysisOptions = $this->analysisOptions($configuration);
+        $analysisOptions = $this->analysisOptions($this->bootstrappingConfiguration);
 
-        $this->emitter->emitBeforeBootstrap($configuration);
+        $this->emitter->emitBeforeBootstrap($this->bootstrappingConfiguration);
 
         $analysisPrepped = $this->stopwatch->mark();
 
-        $containerDefinition = $this->runStaticAnalysis($configuration, $analysisOptions);
+        $containerDefinition = $this->runStaticAnalysis($this->bootstrappingConfiguration, $analysisOptions);
 
         $analysisCompleted = $this->stopwatch->mark();
 
         $container = $this->createContainer(
-            $configuration,
+            $this->bootstrappingConfiguration,
             $profiles,
             $containerDefinition,
         );
@@ -127,7 +119,7 @@ final class Bootstrap {
         $analytics = $this->createAnalytics($metrics, $analysisPrepped, $analysisCompleted);
 
         $this->emitter->emitAfterBootstrap(
-            $configuration,
+            $this->bootstrappingConfiguration,
             $containerDefinition,
             $container,
             $analytics

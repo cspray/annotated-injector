@@ -9,12 +9,7 @@ use Cspray\AnnotatedContainer\Bootstrap\Bootstrap;
 use Cspray\AnnotatedContainer\Bootstrap\BootstrappingConfiguration;
 use Cspray\AnnotatedContainer\Bootstrap\BootstrappingDirectoryResolver;
 use Cspray\AnnotatedContainer\Bootstrap\ContainerAnalytics;
-use Cspray\AnnotatedContainer\Bootstrap\DefaultDefinitionProviderFactory;
-use Cspray\AnnotatedContainer\Bootstrap\DefaultParameterStoreFactory;
-use Cspray\AnnotatedContainer\Bootstrap\PostAnalysisObserver;
-use Cspray\AnnotatedContainer\Bootstrap\XmlBootstrappingConfigurationProvider;
 use Cspray\AnnotatedContainer\Cli\Command;
-use Cspray\AnnotatedContainer\Cli\Exception\ConfigurationNotFound;
 use Cspray\AnnotatedContainer\Cli\Input;
 use Cspray\AnnotatedContainer\Cli\TerminalOutput;
 use Cspray\AnnotatedContainer\ContainerFactory\ContainerFactory;
@@ -23,7 +18,6 @@ use Cspray\AnnotatedContainer\ContainerFactory\ParameterStore;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 use Cspray\AnnotatedContainer\Event\Emitter;
 use Cspray\AnnotatedContainer\Event\Listener\Bootstrap\AfterBootstrap;
-use Cspray\AnnotatedContainer\Exception\UnsupportedOperation;
 use Cspray\AnnotatedContainer\LogicalConstraint\Check\DuplicateServiceDelegate;
 use Cspray\AnnotatedContainer\LogicalConstraint\Check\DuplicateServiceName;
 use Cspray\AnnotatedContainer\LogicalConstraint\Check\DuplicateServicePrepare;
@@ -48,7 +42,8 @@ final class ValidateCommand implements Command {
     private readonly LogicalConstraintValidator $validator;
 
     public function __construct(
-        private readonly BootstrappingDirectoryResolver $directoryResolver
+        private readonly BootstrappingConfiguration $bootstrappingConfiguration,
+        private readonly BootstrappingDirectoryResolver $directoryResolver,
     ) {
         $this->logicalConstraints = [
             new DuplicateServiceDelegate(),
@@ -124,21 +119,14 @@ TEXT;
             $this->listConstraints($output);
             return 0;
         }
-        $configOption = $input->option('config-file')  ?? 'annotated-container.xml';
-        $configFile = $this->directoryResolver->configurationPath($configOption);
-        if (!is_file($configFile)) {
-            throw ConfigurationNotFound::fromMissingFile($configFile);
-        }
 
         $emitter = new Emitter();
 
         $bootstrap = Bootstrap::fromCompleteSetup(
+            $this->bootstrappingConfiguration,
             $this->noOpContainerFactory(),
             $emitter,
             $this->directoryResolver,
-            new DefaultParameterStoreFactory(),
-            new DefaultDefinitionProviderFactory(),
-            new Stopwatch()
         );
 
         $containerDefinition = null;
@@ -149,7 +137,7 @@ TEXT;
 
         $emitter->addListener($infoCapturingListener);
 
-        $inputProfiles = $input->option('profile') ?? ['default'];
+        $inputProfiles = $input->option('profiles') ?? ['default'];
         if (is_string($inputProfiles)) {
             $inputProfiles = [$inputProfiles];
         }
@@ -158,7 +146,6 @@ TEXT;
 
         $bootstrap->bootstrapContainer(
             $profiles,
-            new XmlBootstrappingConfigurationProvider($configOption)
         );
         assert($containerDefinition instanceof ContainerDefinition);
 
@@ -166,7 +153,7 @@ TEXT;
 
         $output->stdout->write('Annotated Container Validation');
         $output->stdout->br();
-        $output->stdout->write('Configuration file: ' . $configFile);
+        $output->stdout->write('Configuration: ' . $this->bootstrappingConfiguration::class);
         $output->stdout->write('Active Profiles: ' . implode(', ', $profiles->toArray()));
         $output->stdout->br();
         $output->stdout->write('To view validations ran, execute "annotated-container validate --list-constraints"');

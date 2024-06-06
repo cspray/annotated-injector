@@ -3,6 +3,11 @@
 namespace Cspray\AnnotatedContainer\Unit\Cli\Command;
 
 use Cspray\AnnotatedContainer\Attribute\Service;
+use Cspray\AnnotatedContainer\Bootstrap\BootstrappingConfiguration;
+use Cspray\AnnotatedContainer\Bootstrap\BootstrappingDirectoryResolver;
+use Cspray\AnnotatedContainer\Bootstrap\DefaultDefinitionProviderFactory;
+use Cspray\AnnotatedContainer\Bootstrap\DefaultParameterStoreFactory;
+use Cspray\AnnotatedContainer\Bootstrap\XmlBootstrappingConfiguration;
 use Cspray\AnnotatedContainer\Cli\Command\ValidateCommand;
 use Cspray\AnnotatedContainer\Cli\Exception\ConfigurationNotFound;
 use Cspray\AnnotatedContainer\Cli\TerminalOutput;
@@ -18,13 +23,15 @@ use Cspray\AnnotatedContainer\Unit\Helper\InMemoryOutput;
 use Cspray\AnnotatedContainer\Unit\Helper\StubInput;
 use Cspray\AnnotatedContainerFixture\LogicalConstraints\DuplicateServiceType\DummyService;
 use Cspray\AnnotatedContainerFixture\LogicalConstraints\LogicalConstraintFixtures;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use org\bovigo\vfs\vfsStream as VirtualFilesystem;
 use org\bovigo\vfs\vfsStreamDirectory as VirtualDirectory;
 
 final class ValidateCommandTest extends TestCase {
 
-    private VirtualDirectory $vfs;
+
+    private MockObject&BootstrappingConfiguration $bootstrappingConfiguration;
 
     private ValidateCommand $subject;
 
@@ -34,14 +41,15 @@ final class ValidateCommandTest extends TestCase {
     private TerminalOutput $output;
 
     protected function setUp() : void {
-        $this->vfs = VirtualFilesystem::setup();
-        $this->subject = new ValidateCommand(
-            new FixtureBootstrappingDirectoryResolver()
-        );
-
         $this->stdout = new InMemoryOutput();
         $this->stderr = new InMemoryOutput();
         $this->output = new TerminalOutput($this->stdout, $this->stderr);
+
+        $this->bootstrappingConfiguration = $this->createMock(BootstrappingConfiguration::class);
+        $this->subject = new ValidateCommand(
+            new FixtureBootstrappingDirectoryResolver(),
+            $this->bootstrappingConfiguration
+        );
     }
 
     public function testGetCommandName() : void {
@@ -104,35 +112,12 @@ TEXT;
         self::assertSame($expected, $this->subject->help());
     }
 
-    public function testHandleWithNoConfigurationFilePresentHasTerminalError() : void {
-        $input = new StubInput([], []);
-
-        $this->expectException(ConfigurationNotFound::class);
-        $this->expectExceptionMessage('No configuration file found at "vfs://root/annotated-container.xml".');
-
-        $this->subject->handle($input, $this->output);
-    }
-
     public function testHandleWithConfigurationFilePresentShowsNoLogicalConstraints() : void {
-        $config = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
-  <scanDirectories>
-    <source>
-      <dir>SingleConcreteService</dir>
-    </source>
-  </scanDirectories>
-</annotatedContainer>
-XML;
-
-        VirtualFilesystem::newFile('annotated-container.xml')
-            ->withContent($config)
-            ->at($this->vfs);
-
+        $configClass = $this->bootstrappingConfiguration::class;
         $expected = <<<TEXT
 Annotated Container Validation
 
-Configuration file: vfs://root/annotated-container.xml
+Configuration: $configClass
 Active Profiles: default
 
 To view validations ran, execute "annotated-container validate --list-constraints"
@@ -141,34 +126,24 @@ To view validations ran, execute "annotated-container validate --list-constraint
 
 TEXT;
 
+        $this->bootstrappingConfiguration->expects($this->once())
+            ->method('scanDirectories')
+            ->willReturn(['SingleConcreteService']);
+
         $this->subject->handle(new StubInput([], []), $this->output);
 
         self::assertSame($expected, $this->stdout->getContentsAsString());
     }
 
     public function testHandleWithConfigurationFilePresentShowsLogicalConstraints() : void {
-        $config = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
-  <scanDirectories>
-    <source>
-      <dir>LogicalConstraints/DuplicateServiceName</dir>
-    </source>
-  </scanDirectories>
-</annotatedContainer>
-XML;
-
-        VirtualFilesystem::newFile('annotated-container.xml')
-            ->withContent($config)
-            ->at($this->vfs);
-
         $banner = str_repeat('*', 80);
         $barService = LogicalConstraintFixtures::duplicateServiceName()->getBarService()->getName();
         $fooService = LogicalConstraintFixtures::duplicateServiceName()->getFooService()->getName();
+        $configClass = $this->bootstrappingConfiguration::class;
         $expected = <<<TEXT
 Annotated Container Validation
 
-Configuration file: vfs://root/annotated-container.xml
+Configuration: $configClass
 Active Profiles: default
 
 To view validations ran, execute "annotated-container validate --list-constraints"
@@ -185,35 +160,24 @@ There are multiple services with the name "foo". The service types are:
 
 TEXT;
 
+        $this->bootstrappingConfiguration->expects($this->once())
+            ->method('scanDirectories')
+            ->willReturn(['LogicalConstraints/DuplicateServiceName']);
         $this->subject->handle(new StubInput([], []), $this->output);
 
         self::assertSame($expected, $this->stdout->getContentsAsString());
     }
 
     public function testViolationWithWarningHasCorrectColorEncoded() : void {
-        $config = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
-  <scanDirectories>
-    <source>
-      <dir>LogicalConstraints/DuplicateServiceType</dir>
-    </source>
-  </scanDirectories>
-</annotatedContainer>
-XML;
-
-        VirtualFilesystem::newFile('annotated-container.xml')
-            ->withContent($config)
-            ->at($this->vfs);
-
         $banner = str_repeat('*', 80);
         $service = LogicalConstraintFixtures::duplicateServiceType()->fooService()->getName();
         $serviceAttr = Service::class;
         $dummyAttr = DummyService::class;
+        $configClass = $this->bootstrappingConfiguration::class;
         $expected = <<<TEXT
 Annotated Container Validation
 
-Configuration file: vfs://root/annotated-container.xml
+Configuration: $configClass
 Active Profiles: default
 
 To view validations ran, execute "annotated-container validate --list-constraints"
@@ -233,6 +197,9 @@ should be avoided.
 
 TEXT;
 
+        $this->bootstrappingConfiguration->expects($this->once())
+            ->method('scanDirectories')
+            ->willReturn(['LogicalConstraints/DuplicateServiceType']);
         $this->subject->handle(new StubInput([], []), $this->output);
 
         self::assertSame($expected, $this->stdout->getContentsAsString());
@@ -262,64 +229,19 @@ The following constraints will be checked when validate is ran:
 
 TEXT;
 
+        $this->bootstrappingConfiguration->expects($this->never())
+            ->method('scanDirectories');
         $this->subject->handle(new StubInput(['list-constraints' => true], []), $this->output);
 
         self::assertSame($expected, $this->stdout->getContentsAsString());
     }
 
-    public function testConfigFileOptionPassedRespected() : void {
-        $config = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
-  <scanDirectories>
-    <source>
-      <dir>SingleConcreteService</dir>
-    </source>
-  </scanDirectories>
-</annotatedContainer>
-XML;
-
-        VirtualFilesystem::newFile('custom-config.xml')
-            ->withContent($config)
-            ->at($this->vfs);
-
-        $expected = <<<TEXT
-Annotated Container Validation
-
-Configuration file: vfs://root/custom-config.xml
-Active Profiles: default
-
-To view validations ran, execute "annotated-container validate --list-constraints"
-
-\033[32mNo logical constraint violations were found!\033[0m
-
-TEXT;
-
-        $this->subject->handle(new StubInput(['config-file' => 'custom-config.xml'], []), $this->output);
-
-        self::assertSame($expected, $this->stdout->getContentsAsString());
-    }
-
     public function testProfilesRespectedInOutputAndContainerAnalysis() : void {
-        $config = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
-  <scanDirectories>
-    <source>
-      <dir>SingleConcreteService</dir>
-    </source>
-  </scanDirectories>
-</annotatedContainer>
-XML;
-
-        VirtualFilesystem::newFile('annotated-container.xml')
-            ->withContent($config)
-            ->at($this->vfs);
-
+        $configClass = $this->bootstrappingConfiguration::class;
         $expected = <<<TEXT
 Annotated Container Validation
 
-Configuration file: vfs://root/annotated-container.xml
+Configuration: $configClass
 Active Profiles: default, dev
 
 To view validations ran, execute "annotated-container validate --list-constraints"
@@ -328,31 +250,20 @@ To view validations ran, execute "annotated-container validate --list-constraint
 
 TEXT;
 
-        $this->subject->handle(new StubInput(['profile' => ['default', 'dev']], []), $this->output);
+        $this->bootstrappingConfiguration->expects($this->once())
+            ->method('scanDirectories')
+            ->willReturn(['SingleConcreteService']);
+        $this->subject->handle(new StubInput(['profiles' => ['default', 'dev']], []), $this->output);
 
         self::assertSame($expected, $this->stdout->getContentsAsString());
     }
 
     public function testSingleProfileRespected() : void {
-        $config = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
-  <scanDirectories>
-    <source>
-      <dir>SingleConcreteService</dir>
-    </source>
-  </scanDirectories>
-</annotatedContainer>
-XML;
-
-        VirtualFilesystem::newFile('annotated-container.xml')
-            ->withContent($config)
-            ->at($this->vfs);
-
+        $configClass = $this->bootstrappingConfiguration::class;
         $expected = <<<TEXT
 Annotated Container Validation
 
-Configuration file: vfs://root/annotated-container.xml
+Configuration: $configClass
 Active Profiles: dev
 
 To view validations ran, execute "annotated-container validate --list-constraints"
@@ -361,7 +272,10 @@ To view validations ran, execute "annotated-container validate --list-constraint
 
 TEXT;
 
-        $this->subject->handle(new StubInput(['profile' => 'dev'], []), $this->output);
+        $this->bootstrappingConfiguration->expects($this->once())
+            ->method('scanDirectories')
+            ->willReturn(['SingleConcreteService']);
+        $this->subject->handle(new StubInput(['profiles' => 'dev'], []), $this->output);
 
         self::assertSame($expected, $this->stdout->getContentsAsString());
     }

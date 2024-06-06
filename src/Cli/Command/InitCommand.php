@@ -4,9 +4,9 @@ namespace Cspray\AnnotatedContainer\Cli\Command;
 
 use Cspray\AnnotatedContainer\AnnotatedContainerVersion;
 use Cspray\AnnotatedContainer\Bootstrap\BootstrappingDirectoryResolver;
-use Cspray\AnnotatedContainer\Bootstrap\ThirdPartyInitializer;
 use Cspray\AnnotatedContainer\Bootstrap\ThirdPartyInitializerProvider;
 use Cspray\AnnotatedContainer\Cli\Command;
+use Cspray\AnnotatedContainer\Cli\Command\Service\ConfigFileNameDecider;
 use Cspray\AnnotatedContainer\Cli\Exception\InvalidOptionType;
 use Cspray\AnnotatedContainer\Cli\Exception\ComposerConfigurationNotFound;
 use Cspray\AnnotatedContainer\Cli\Exception\PotentialConfigurationOverwrite;
@@ -17,7 +17,6 @@ use DOMDocument;
 use DOMException;
 use RecursiveArrayIterator;
 use RecursiveIteratorIterator;
-use function DI\get;
 
 final class InitCommand implements Command {
 
@@ -25,7 +24,8 @@ final class InitCommand implements Command {
 
     public function __construct(
         private readonly BootstrappingDirectoryResolver $directoryResolver,
-        private readonly ThirdPartyInitializerProvider $initializerProvider
+        private readonly ThirdPartyInitializerProvider $initializerProvider,
+        private readonly ConfigFileNameDecider $configFileNameDecider
     ) {
     }
 

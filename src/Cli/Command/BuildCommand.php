@@ -2,6 +2,7 @@
 
 namespace Cspray\AnnotatedContainer\Cli\Command;
 
+use Cspray\AnnotatedContainer\Bootstrap\BootstrappingConfiguration;
 use Cspray\AnnotatedContainer\Bootstrap\BootstrappingDirectoryResolver;
 use Cspray\AnnotatedContainer\Bootstrap\DefaultDefinitionProviderFactory;
 use Cspray\AnnotatedContainer\Bootstrap\DefaultParameterStoreFactory;
@@ -12,6 +13,7 @@ use Cspray\AnnotatedContainer\Cli\Exception\ConfigurationNotFound;
 use Cspray\AnnotatedContainer\Cli\Exception\InvalidOptionType;
 use Cspray\AnnotatedContainer\Cli\Input;
 use Cspray\AnnotatedContainer\Cli\TerminalOutput;
+use Cspray\AnnotatedContainer\Definition\Cache\ContainerDefinitionCache;
 use Cspray\AnnotatedContainer\Definition\Serializer\XmlContainerDefinitionSerializer;
 use Cspray\AnnotatedContainer\Event\Emitter;
 use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalyzer;
@@ -24,7 +26,9 @@ use Cspray\AnnotatedTarget\PhpParserAnnotatedTargetParser;
 final class BuildCommand implements Command {
 
     public function __construct(
-        private readonly BootstrappingDirectoryResolver $directoryResolver
+        private readonly BootstrappingConfiguration $bootstrappingConfiguration,
+        private readonly BootstrappingDirectoryResolver $directoryResolver,
+        private readonly Emitter $emitter,
     ) {
     }
 
@@ -127,5 +131,9 @@ SHELL;
         }
 
         return $compiler;
+    }
+
+    public function summary() : string {
+        // TODO: Implement summary() method.
     }
 }

@@ -22,13 +22,13 @@ _install_psalm:
     composer install
 
 # Run unit tests
-test:
-    @XDEBUG_MODE=coverage ./tools/phpunit/vendor/bin/phpunit
+test *FLAGS:
+    @XDEBUG_MODE=coverage ./tools/phpunit/vendor/bin/phpunit {{FLAGS}}
 
 # Run static analysis checks on src and test
-static-analysis:
+static-analysis *FLAGS:
     @./tools/psalm/vendor/bin/psalm --version
-    @./tools/psalm/vendor/bin/psalm
+    @./tools/psalm/vendor/bin/psalm {{FLAGS}}
 
 # Set the baseline of known issues to be used during static analysis
 static-analysis-set-baseline:
@@ -50,7 +50,7 @@ code-lint:
 code-lint-fix:
     @./tools/labrador-cs/vendor/bin/phpcbf -p --standard=./tools/labrador-cs/vendor/cspray/labrador-coding-standard/ruleset.xml --exclude=Generic.Files.LineLength src test
 
-# Run all CI checks
+# Run all CI checks. ALL checks will run, regardless of failures
 ci-check:
     -@just test
     -@just static-analysis
