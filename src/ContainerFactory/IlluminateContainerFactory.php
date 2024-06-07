@@ -166,10 +166,10 @@ final class IlluminateContainerFactory extends AbstractContainerFactory {
 
                             $container->when($service)
                                 ->needs($paramIdentifier)
-                                ->give(function() use($state, $container, $value) {
+                                ->give(function() use($state, $container, $value, $service): mixed {
                                     $values = [];
                                     foreach ($state->containerDefinition->serviceDefinitions() as $serviceDefinition) {
-                                        if ($serviceDefinition->isAbstract()) {
+                                        if ($serviceDefinition->isAbstract() || $serviceDefinition->type()->getName() === $service) {
                                             continue;
                                         }
 

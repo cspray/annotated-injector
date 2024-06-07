@@ -47,7 +47,7 @@ final class AurynContainerFactoryState implements ContainerFactoryState {
             $key = '+' . $param;
             $values = [];
             foreach ($this->containerDefinition->serviceDefinitions() as $serviceDefinition) {
-                if ($serviceDefinition->isAbstract()) {
+                if ($serviceDefinition->isAbstract() || $serviceDefinition->type()->getName() === $class) {
                     continue;
                 }
 

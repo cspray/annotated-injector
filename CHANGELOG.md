@@ -5,6 +5,52 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v2.4.0](https://github.com/cspray/annotated-container/tree/v2.4.0) - 2024-06-08
+
+### Added
+
+- Added the ability to inject a collection of services as an array or a custom collection by passing an implementation of `Cspray\AnnotatedContainer\ContainerFactory\ListOf` to an `#[Inject]` attribute.
+- Added `Cspray\AnnotatedContainer\ContainerFactory\ListOfAsArray` implementation of to allow implementing a collection of services as an array out-of-the-box 
+
+### Deprecated
+
+Several portions of the library will now trigger deprecation notices. These notices are to indicate you're using a feature that will be removed in 3.0. Each message will explain what feature is being used and what it is being replaced with. Some deprecations can be replaced now while others do not have suitable replacements until 3.0 is launched.
+
+#### Observer Removal Deprecations
+
+In v3 the bootstrapping Observer system is being replaced with a more complete Event system that encompasses the entire Annotated Container lifecycle. The deprecations in this section are related to the removal of this system. There is no suitable replacement until v3 hits for these deprecations. However, transitioning to the new Event system mostly involves implementing a new interface and adjusting a method signature. Your implementations should not require adjustments.
+
+- Providing a `Cspray\AnnotatedContainer\Bootstrap\ObserverFactory` during your bootstrapping process will trigger a deprecation.
+- Calling `Cspray\AnnotatedContainer\Bootstrap::addObserver` during your bootstrapping process will trigger a deprecation.
+- Extending and using the `Cspray\AnnotatedContainer\Bootstrap\ServiceWiringObserver` will trigger a deprecation.
+- Providing any observers in your `annotated-container.xml` file will trigger a deprecation.
+
+#### Transition `ActiveProfiles` to `Profiles`
+
+In v3 the `Cspray\AnnotatedContainer\Profiles` module has been removed and drastically simplified. In v2.x this module was overly complicated and not designed properly for usability in mind. This led to funky code dealing with these complications and a subpar user experience. The entire module was replaced by a single value object and a set of static constructors. There is no suitable replacement until v3 hits for these deprecations.
+
+- Calling `Cspray\AnnotatedContainer\Profiles\ActiveProfiles::getProfiles` or `ActiveProfiles::isActive` will trigger a deprecation.
+- Using the `Cspray\AnnotatedContainer\Profiles\ActiveProfilesBuilder` will trigger a deprecation.
+- Calling `Cspray\AnnotatedContainer\Profiles\CsvActiveProfilesParser` will trigger a deprecation.
+
+#### Removing Logging
+
+In v3 Logging has been moved to a separate library that has to be explicitly opted in via the new Event system. Making this a separate, explicit opt-in that you must configure greatly simplifies the bootstrapping process and reduces the amount of code in Annotated Container.
+
+- Defining a `<logging></logging>` configuration in `annoatated-container.xml` will trigger a deprecation.
+
+#### Removing Configuration Attribute
+
+The #[Configuration] Attribute has long been deprecated. It was not well-thought-out and the sole reason the ability to inject into properties existed. It has long been recommended to move to using the #[Service] Attribute directly or implementing your own custom attribute.
+
+- Defining an instance of `Cspray\AnnotatedContainer\Attribute\ConfigurationAttribute` will trigger a deprecation.
+
+#### Removing `cacheDir` configuration
+
+In v3 caching functionality is drastically improved and much more control is provided over how your ContainerDefinition is cached. This new caching system must be setup as part of your bootstrapping and can't be configured.
+
+- Defining a `<cacheDir></cacheDir>` configuration in `annotated-container.xml` will trigger a deprecation.
+
 ## [v2.3.0](https://github.com/cspray/annotated-container/tree/v2.3.0) - 2024-05-22
 
 ### Changed

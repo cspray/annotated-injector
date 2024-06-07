@@ -471,4 +471,33 @@ abstract class ContainerFactoryTestCase extends TestCase {
 
         self::assertSame(['BeforeContainerCreation', 'AfterContainerCreation'], $listener->getTriggeredEvents());
     }
+
+    public function testCreatingServiceWithInjectServiceCollectionDecorator() : void {
+        $container = $this->getContainer(Fixtures::injectServiceCollectionDecorator()->getPath());
+
+        $fooService = $container->get(Fixtures::injectServiceCollectionDecorator()->fooService()->getName());
+
+        self::assertInstanceOf(
+            Fixtures::injectServiceCollectionDecorator()->fooService()->getName(),
+            $fooService
+        );
+        self::assertInstanceOf(
+            Fixtures::injectServiceCollectionDecorator()->compositeFoo()->getName(),
+            $fooService->foo
+        );
+        self::assertCount(3, $fooService->foo->foos);
+        $fooClasses = array_map(static fn(object $foo) => $foo::class, $fooService->foo->foos);
+        self::assertContains(
+            Fixtures::injectServiceCollectionDecorator()->fooImplementation()->getName(),
+            $fooClasses
+        );
+        self::assertContains(
+            Fixtures::injectServiceCollectionDecorator()->barImplementation()->getName(),
+            $fooClasses
+        );
+        self::assertContains(
+            Fixtures::injectServiceCollectionDecorator()->bazImplementation()->getName(),
+            $fooClasses
+        );
+    }
 }
