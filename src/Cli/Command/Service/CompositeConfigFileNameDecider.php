@@ -2,6 +2,6 @@
 
 namespace Cspray\AnnotatedContainer\Cli\Command\Service;
 
-class InputConfigFileNameDecider {
+class CompositeConfigFileNameDecider {
 
 }
