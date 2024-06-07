@@ -166,4 +166,8 @@ final class Fixtures {
         return new ThirdPartyKitchenSinkFixture();
     }
 
+    public static function injectServiceCollectionDecorator() : InjectServiceCollectionDecoratorFixture {
+        return new InjectServiceCollectionDecoratorFixture();
+    }
+
 }
