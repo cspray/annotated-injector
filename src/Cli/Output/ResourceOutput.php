@@ -1,6 +1,6 @@
 <?php
 
-namespace Cspray\AnnotatedContainer\Cli;
+namespace Cspray\AnnotatedContainer\Cli\Output;
 
 use Stringable;
 

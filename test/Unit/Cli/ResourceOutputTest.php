@@ -2,7 +2,7 @@
 
 namespace Cspray\AnnotatedContainer\Unit\Cli;
 
-use Cspray\AnnotatedContainer\Cli\ResourceOutput;
+use Cspray\AnnotatedContainer\Cli\Output\ResourceOutput;
 use org\bovigo\vfs\vfsStream as VirtualFilesystem;
 use org\bovigo\vfs\vfsStreamDirectory as VirtualDirectory;
 use PHPUnit\Framework\TestCase;

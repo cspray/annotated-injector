@@ -3,7 +3,7 @@
 namespace Cspray\AnnotatedContainer\Unit\Helper;
 
 use Cspray\AnnotatedContainer\Cli\Exception\OptionNotFound;
-use Cspray\AnnotatedContainer\Cli\Input;
+use Cspray\AnnotatedContainer\Cli\Input\Input;
 
 final class StubInput implements Input {
 

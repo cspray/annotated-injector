@@ -6,7 +6,7 @@ use Cspray\AnnotatedContainer\Cli\Command\BuildCommand;
 use Cspray\AnnotatedContainer\Cli\Exception\CacheDirConfigurationNotFound;
 use Cspray\AnnotatedContainer\Cli\Exception\ConfigurationNotFound;
 use Cspray\AnnotatedContainer\Cli\Exception\InvalidOptionType;
-use Cspray\AnnotatedContainer\Cli\TerminalOutput;
+use Cspray\AnnotatedContainer\Cli\Output\TerminalOutput;
 use Cspray\AnnotatedContainer\Definition\Serializer\XmlContainerDefinitionSerializer;
 use Cspray\AnnotatedContainer\Event\Emitter;
 use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalyzer;

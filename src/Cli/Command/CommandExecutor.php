@@ -1,7 +1,9 @@
 <?php
 
-namespace Cspray\AnnotatedContainer\Cli;
+namespace Cspray\AnnotatedContainer\Cli\Command;
 
+use Cspray\AnnotatedContainer\Cli\Input\Input;
+use Cspray\AnnotatedContainer\Cli\Output\TerminalOutput;
 use Throwable;
 
 final class CommandExecutor {
@@ -24,6 +26,10 @@ final class CommandExecutor {
 
     public function addCommand(Command $command) : void {
         $this->commands[$command->name()] = $command;
+    }
+
+    public function commands() : array {
+        return $this->commands;
     }
 
     public function execute(Input $input, TerminalOutput $output) : int {

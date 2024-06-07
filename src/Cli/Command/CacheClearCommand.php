@@ -6,13 +6,12 @@ use Cspray\AnnotatedContainer\Bootstrap\BootstrappingDirectoryResolver;
 use Cspray\AnnotatedContainer\Bootstrap\DefaultDefinitionProviderFactory;
 use Cspray\AnnotatedContainer\Bootstrap\DefaultParameterStoreFactory;
 use Cspray\AnnotatedContainer\Bootstrap\XmlBootstrappingConfiguration;
-use Cspray\AnnotatedContainer\Cli\Command;
 use Cspray\AnnotatedContainer\Cli\Exception\CacheDirConfigurationNotFound;
 use Cspray\AnnotatedContainer\Cli\Exception\CacheDirNotFound;
 use Cspray\AnnotatedContainer\Cli\Exception\ConfigurationNotFound;
 use Cspray\AnnotatedContainer\Cli\Exception\InvalidOptionType;
-use Cspray\AnnotatedContainer\Cli\Input;
-use Cspray\AnnotatedContainer\Cli\TerminalOutput;
+use Cspray\AnnotatedContainer\Cli\Input\Input;
+use Cspray\AnnotatedContainer\Cli\Output\TerminalOutput;
 
 final class CacheClearCommand implements Command {
 

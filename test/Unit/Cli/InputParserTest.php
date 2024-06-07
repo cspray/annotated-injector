@@ -3,7 +3,7 @@
 namespace Cspray\AnnotatedContainer\Unit\Cli;
 
 use Cspray\AnnotatedContainer\Cli\Exception\OptionNotFound;
-use Cspray\AnnotatedContainer\Cli\InputParser;
+use Cspray\AnnotatedContainer\Cli\Input\InputParser;
 use PHPUnit\Framework\TestCase;
 
 class InputParserTest extends TestCase {

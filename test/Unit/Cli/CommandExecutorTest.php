@@ -2,10 +2,10 @@
 
 namespace Cspray\AnnotatedContainer\Unit\Cli;
 
-use Cspray\AnnotatedContainer\Cli\CommandExecutor;
-use Cspray\AnnotatedContainer\Cli\Input;
-use Cspray\AnnotatedContainer\Cli\InputParser;
-use Cspray\AnnotatedContainer\Cli\TerminalOutput;
+use Cspray\AnnotatedContainer\Cli\Command\CommandExecutor;
+use Cspray\AnnotatedContainer\Cli\Input\Input;
+use Cspray\AnnotatedContainer\Cli\Input\InputParser;
+use Cspray\AnnotatedContainer\Cli\Output\TerminalOutput;
 use Cspray\AnnotatedContainer\Unit\Helper\InMemoryOutput;
 use Cspray\AnnotatedContainer\Unit\Helper\StubCommand;
 use PHPUnit\Framework\TestCase;

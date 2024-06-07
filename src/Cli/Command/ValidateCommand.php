@@ -9,9 +9,8 @@ use Cspray\AnnotatedContainer\Bootstrap\Bootstrap;
 use Cspray\AnnotatedContainer\Bootstrap\BootstrappingConfiguration;
 use Cspray\AnnotatedContainer\Bootstrap\BootstrappingDirectoryResolver;
 use Cspray\AnnotatedContainer\Bootstrap\ContainerAnalytics;
-use Cspray\AnnotatedContainer\Cli\Command;
-use Cspray\AnnotatedContainer\Cli\Input;
-use Cspray\AnnotatedContainer\Cli\TerminalOutput;
+use Cspray\AnnotatedContainer\Cli\Input\Input;
+use Cspray\AnnotatedContainer\Cli\Output\TerminalOutput;
 use Cspray\AnnotatedContainer\ContainerFactory\ContainerFactory;
 use Cspray\AnnotatedContainer\ContainerFactory\ContainerFactoryOptions;
 use Cspray\AnnotatedContainer\ContainerFactory\ParameterStore;
@@ -29,8 +28,6 @@ use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraint;
 use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraintValidator;
 use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraintViolationType;
 use Cspray\AnnotatedContainer\Profiles;
-use Cspray\PrecisionStopwatch\Stopwatch;
-use DI\Container;
 
 final class ValidateCommand implements Command {
 

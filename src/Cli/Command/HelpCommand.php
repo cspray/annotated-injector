@@ -3,10 +3,8 @@
 namespace Cspray\AnnotatedContainer\Cli\Command;
 
 use Cspray\AnnotatedContainer\AnnotatedContainerVersion;
-use Cspray\AnnotatedContainer\Cli\Command;
-use Cspray\AnnotatedContainer\Cli\CommandExecutor;
-use Cspray\AnnotatedContainer\Cli\Input;
-use Cspray\AnnotatedContainer\Cli\TerminalOutput;
+use Cspray\AnnotatedContainer\Cli\Input\Input;
+use Cspray\AnnotatedContainer\Cli\Output\TerminalOutput;
 
 final class HelpCommand implements Command {
 

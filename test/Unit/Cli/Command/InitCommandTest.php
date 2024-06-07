@@ -8,7 +8,7 @@ use Cspray\AnnotatedContainer\Cli\Command\InitCommand;
 use Cspray\AnnotatedContainer\Cli\Exception\ComposerConfigurationNotFound;
 use Cspray\AnnotatedContainer\Cli\Exception\InvalidOptionType;
 use Cspray\AnnotatedContainer\Cli\Exception\PotentialConfigurationOverwrite;
-use Cspray\AnnotatedContainer\Cli\TerminalOutput;
+use Cspray\AnnotatedContainer\Cli\Output\TerminalOutput;
 use Cspray\AnnotatedContainer\Exception\ComposerAutoloadNotFound;
 use Cspray\AnnotatedContainer\Unit\Helper\FixtureBootstrappingDirectoryResolver;
 use Cspray\AnnotatedContainer\Unit\Helper\InMemoryOutput;

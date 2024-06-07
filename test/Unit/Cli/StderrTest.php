@@ -2,7 +2,7 @@
 
 namespace Cspray\AnnotatedContainer\Unit\Cli;
 
-use Cspray\AnnotatedContainer\Cli\Stderr;
+use Cspray\AnnotatedContainer\Cli\Output\Stderr;
 use Cspray\AnnotatedContainer\Unit\Helper\StreamBuffer;
 use PHPUnit\Framework\TestCase;
 

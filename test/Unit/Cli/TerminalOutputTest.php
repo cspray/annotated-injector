@@ -2,7 +2,7 @@
 
 namespace Cspray\AnnotatedContainer\Unit\Cli;
 
-use Cspray\AnnotatedContainer\Cli\TerminalOutput;
+use Cspray\AnnotatedContainer\Cli\Output\TerminalOutput;
 use Cspray\AnnotatedContainer\Unit\Helper\InMemoryOutput;
 use PHPUnit\Framework\TestCase;
 

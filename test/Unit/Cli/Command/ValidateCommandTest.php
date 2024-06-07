@@ -4,13 +4,8 @@ namespace Cspray\AnnotatedContainer\Unit\Cli\Command;
 
 use Cspray\AnnotatedContainer\Attribute\Service;
 use Cspray\AnnotatedContainer\Bootstrap\BootstrappingConfiguration;
-use Cspray\AnnotatedContainer\Bootstrap\BootstrappingDirectoryResolver;
-use Cspray\AnnotatedContainer\Bootstrap\DefaultDefinitionProviderFactory;
-use Cspray\AnnotatedContainer\Bootstrap\DefaultParameterStoreFactory;
-use Cspray\AnnotatedContainer\Bootstrap\XmlBootstrappingConfiguration;
 use Cspray\AnnotatedContainer\Cli\Command\ValidateCommand;
-use Cspray\AnnotatedContainer\Cli\Exception\ConfigurationNotFound;
-use Cspray\AnnotatedContainer\Cli\TerminalOutput;
+use Cspray\AnnotatedContainer\Cli\Output\TerminalOutput;
 use Cspray\AnnotatedContainer\LogicalConstraint\Check\DuplicateServiceDelegate;
 use Cspray\AnnotatedContainer\LogicalConstraint\Check\DuplicateServiceName;
 use Cspray\AnnotatedContainer\LogicalConstraint\Check\DuplicateServicePrepare;
@@ -25,8 +20,6 @@ use Cspray\AnnotatedContainerFixture\LogicalConstraints\DuplicateServiceType\Dum
 use Cspray\AnnotatedContainerFixture\LogicalConstraints\LogicalConstraintFixtures;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use org\bovigo\vfs\vfsStream as VirtualFilesystem;
-use org\bovigo\vfs\vfsStreamDirectory as VirtualDirectory;
 
 final class ValidateCommandTest extends TestCase {
 

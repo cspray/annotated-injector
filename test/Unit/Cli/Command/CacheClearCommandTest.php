@@ -7,7 +7,7 @@ use Cspray\AnnotatedContainer\Cli\Exception\CacheDirConfigurationNotFound;
 use Cspray\AnnotatedContainer\Cli\Exception\CacheDirNotFound;
 use Cspray\AnnotatedContainer\Cli\Exception\ConfigurationNotFound;
 use Cspray\AnnotatedContainer\Cli\Exception\InvalidOptionType;
-use Cspray\AnnotatedContainer\Cli\TerminalOutput;
+use Cspray\AnnotatedContainer\Cli\Output\TerminalOutput;
 use Cspray\AnnotatedContainer\Unit\Helper\FixtureBootstrappingDirectoryResolver;
 use Cspray\AnnotatedContainer\Unit\Helper\InMemoryOutput;
 use Cspray\AnnotatedContainer\Unit\Helper\StubInput;

@@ -1,18 +1,9 @@
 #!/usr/bin/env php
 <?php declare(strict_types=1);
 
-use Cspray\AnnotatedContainer\Bootstrap\RootDirectoryBootstrappingDirectoryResolver;
-use Cspray\AnnotatedContainer\Bootstrap\ComposerJsonScanningThirdPartyInitializerProvider;
 use Cspray\AnnotatedContainer\Bootstrap\XmlBootstrappingConfigurationProvider;
 use Cspray\AnnotatedContainer\Cli\AnnotatedContainerCliRunner;
-use Cspray\AnnotatedContainer\Cli\Command\ValidateCommand;
-use Cspray\AnnotatedContainer\Cli\Command\BuildCommand;
-use Cspray\AnnotatedContainer\Cli\Command\CacheClearCommand;
-use Cspray\AnnotatedContainer\Cli\Command\HelpCommand;
-use Cspray\AnnotatedContainer\Cli\Command\InitCommand;
-use Cspray\AnnotatedContainer\Cli\CommandExecutor;
-use Cspray\AnnotatedContainer\Cli\InputParser;
-use Cspray\AnnotatedContainer\Cli\TerminalOutput;
+use Cspray\AnnotatedContainer\Cli\Input\InputParser;
 
 include $_composer_autoload_path ?? __DIR__ . '/../vendor/autoload.php';
 

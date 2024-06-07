@@ -1,6 +1,6 @@
 <?php
 
-namespace Cspray\AnnotatedContainer\Cli;
+namespace Cspray\AnnotatedContainer\Cli\Input;
 
 use Cspray\AnnotatedContainer\Cli\Exception\OptionNotFound;
 

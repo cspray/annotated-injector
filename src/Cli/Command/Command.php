@@ -1,6 +1,9 @@
 <?php
 
-namespace Cspray\AnnotatedContainer\Cli;
+namespace Cspray\AnnotatedContainer\Cli\Command;
+
+use Cspray\AnnotatedContainer\Cli\Input\Input;
+use Cspray\AnnotatedContainer\Cli\Output\TerminalOutput;
 
 interface Command {
 
