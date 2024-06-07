@@ -173,6 +173,13 @@ final class XmlBootstrappingConfiguration implements BootstrappingConfiguration 
                 $cache = $cacheDirNodes[0]->textContent;
             }
 
+            if ($cache !== null) {
+                trigger_error(
+                    'A cache directory is defined in your configuration. The ability to define a cache through configuration is removed in v3 and must setup as part of your bootstrapping code.',
+                    E_USER_DEPRECATED
+                );
+            }
+
             $loggingFileNodes = $xpath->query('/ac:annotatedContainer/ac:logging/ac:file/text()');
             $loggingStdoutNodes = $xpath->query('/ac:annotatedContainer/ac:logging/ac:stdout');
             $logger = null;
