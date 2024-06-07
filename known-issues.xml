@@ -476,7 +476,6 @@
       <code><![CDATA[$created]]></code>
     </MissingClosureParamType>
     <MissingClosureReturnType>
-      <code><![CDATA[function() use($state, $container, $value) {]]></code>
       <code><![CDATA[static fn(Container $container) => $container->call([$target, $delegateInfo['delegateMethod']])]]></code>
     </MissingClosureReturnType>
     <MixedArgument>

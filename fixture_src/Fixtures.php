@@ -202,4 +202,8 @@ final class Fixtures {
         return new InjectServiceDomainCollectionFixture();
     }
 
+    public static function injectServiceCollectionDecorator() : InjectServiceCollectionDecoratorFixture {
+        return new InjectServiceCollectionDecoratorFixture();
+    }
+
 }
