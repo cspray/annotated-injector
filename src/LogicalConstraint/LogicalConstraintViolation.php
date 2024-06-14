@@ -20,8 +20,4 @@ final class LogicalConstraintViolation {
     public static function warning(string $message) : self {
         return new LogicalConstraintViolation($message, LogicalConstraintViolationType::Warning);
     }
-
-    public static function notice(string $message) : self {
-        return new LogicalConstraintViolation($message, LogicalConstraintViolationType::Notice);
-    }
 }

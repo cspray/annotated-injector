@@ -131,7 +131,7 @@ $emitter = new Emitter();
 
 // Add Listeners to respond to events emitted by Annotated Container
 
-$container = Bootstrap::fromMinimalSetup($emitter)->bootstrapContainer();
+$container = Bootstrap::from($emitter)->bootstrapContainer();
 ```
 
 It is important in this code that you add whatever Listeners might be appropriate to the `$emitter` using `Emitter::addListener`. This includes any Listeners that you might be using from third-party libraries. There is currently no plans to allow Listeners to be defined through configuration and MUST be added as part of your bootstrapping. The Emitter is one of the few pieces of Bootstrapping that is ALWAYS required. It cannot be stressed enough how important setting up your Listeners are in this section of your code.
@@ -151,7 +151,7 @@ use Cspray\AnnotatedContainer\Bootstrap\Bootstrap;
 use Cspray\AnnotatedContainer\Event\Emitter;
 use Cspray\AnnotatedContainer\Profiles;
 
-$container = Bootstrap::fromMinimalSetup(new Emitter())
+$container = Bootstrap::from(new Emitter())
     ->bootstrapContainer(Profiles::fromList(['default', 'prod']));
 ```
 
@@ -167,7 +167,7 @@ namespace Acme\Demo;
 use Cspray\AnnotatedContainer\Bootstrap\Bootstrap;
 use Cspray\AnnotatedContainer\Bootstrap\XmlBootstrappingConfigurationProvider;use Cspray\AnnotatedContainer\Event\Emitter;use Cspray\AnnotatedContainer\Profiles;
 
-$container = Bootstrap::fromMinimalSetup(new Emitter)
+$container = Bootstrap::from(new Emitter)
     ->bootstrapContainer(bootstrappingConfigurationProvider: new XmlBootstrappingConfigurationProvider('my-container.xml'));
 ```
 
@@ -188,7 +188,7 @@ use Cspray\AnnotatedContainer\Event\Emitter;
 // This method is an implementation provided by the reader
 $definitionProviderFactory = MyDefinitionProviderFactory::create();
 
-$container = Bootstrap::fromMinimalSetup(
+$container = Bootstrap::from(
     new Emitter(),
     definitionProviderFactory: $definitionProviderFactory 
 ))->bootstrapContainer();
@@ -209,7 +209,7 @@ use Cspray\AnnotatedContainer\Event\Emitter;
 // This method is an implementation provided by the reader
 $parameterStoreFactory = MyParameterStoreFactory::create();
 
-$container = Bootstrap::fromMinimalSetup(
+$container = Bootstrap::from(
     new Emitter(),
     parameterStoreFactory: $parameterStoreFactory
 ))->bootstrapContainer();
@@ -259,7 +259,7 @@ use Cspray\AnnotatedContainer\Bootstrap\DefaultParameterStoreFactory;
 use Cspray\AnnotatedContainer\Bootstrap\XmlBootstrappingConfigurationProvider;use Cspray\AnnotatedContainer\ContainerFactory\PhpDiContainerFactory;
 use Cspray\AnnotatedContainer\Definition\Cache\FileBackedContainerDefinitionCache;use Cspray\AnnotatedContainer\Definition\Serializer\XmlContainerDefinitionSerializer;use Cspray\AnnotatedContainer\Event\Emitter;
 
-$container = Bootstrap::fromMinimalSetup(new Emitter())
+$container = Bootstrap::from(new Emitter())
     ->bootstrapContainer(
         bootstrappingConfigurationProvider: new CacheAwareBootstrappingConfigurationProvider(
             new XmlBootstrappingConfigurationProvider(),

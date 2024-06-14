@@ -26,4 +26,8 @@ final class StubCommand implements Command {
     public function help() : string {
         return 'Stub command help text';
     }
+
+    public function summary() : string {
+        // TODO: Implement summary() method.
+    }
 }

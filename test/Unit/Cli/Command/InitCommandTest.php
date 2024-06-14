@@ -3,37 +3,41 @@
 namespace Cspray\AnnotatedContainer\Unit\Cli\Command;
 
 use Cspray\AnnotatedContainer\AnnotatedContainerVersion;
-use Cspray\AnnotatedContainer\Bootstrap\ComposerJsonScanningThirdPartyInitializerProvider;
+use Cspray\AnnotatedContainer\Bootstrap\BootstrappingDirectoryResolver;
+use Cspray\AnnotatedContainer\Bootstrap\ThirdPartyInitializer;
+use Cspray\AnnotatedContainer\Bootstrap\ThirdPartyInitializerProvider;
 use Cspray\AnnotatedContainer\Cli\Command\InitCommand;
 use Cspray\AnnotatedContainer\Cli\Exception\ComposerConfigurationNotFound;
 use Cspray\AnnotatedContainer\Cli\Exception\InvalidOptionType;
 use Cspray\AnnotatedContainer\Cli\Exception\PotentialConfigurationOverwrite;
 use Cspray\AnnotatedContainer\Cli\Output\TerminalOutput;
 use Cspray\AnnotatedContainer\Exception\ComposerAutoloadNotFound;
-use Cspray\AnnotatedContainer\Unit\Helper\FixtureBootstrappingDirectoryResolver;
+use Cspray\AnnotatedContainer\Filesystem\Filesystem;
 use Cspray\AnnotatedContainer\Unit\Helper\InMemoryOutput;
+use Cspray\AnnotatedContainer\Unit\Helper\StubDefinitionProvider;
 use Cspray\AnnotatedContainer\Unit\Helper\StubInput;
-use org\bovigo\vfs\vfsStream as VirtualFilesystem;
-use org\bovigo\vfs\vfsStreamDirectory as VirtualDirectory;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class InitCommandTest extends TestCase {
 
-    private VirtualDirectory $vfs;
-
-    private InitCommand $subject;
-
+    private MockObject&BootstrappingDirectoryResolver $directoryResolver;
+    private MockObject&ThirdPartyInitializerProvider $thirdPartyInitializerProvider;
+    private MockObject&Filesystem $filesystem;
     private InMemoryOutput $stdout;
     private InMemoryOutput $stderr;
 
     private TerminalOutput $output;
+    private InitCommand $subject;
 
     protected function setUp() : void {
-        $this->vfs = VirtualFilesystem::setup();
-        VirtualFilesystem::newDirectory('vendor')->at($this->vfs);
+        $this->directoryResolver = $this->createMock(BootstrappingDirectoryResolver::class);
+        $this->thirdPartyInitializerProvider = $this->createMock(ThirdPartyInitializerProvider::class);
+        $this->filesystem = $this->createMock(Filesystem::class);
         $this->subject = new InitCommand(
-            $resolver = new FixtureBootstrappingDirectoryResolver(),
-            new ComposerJsonScanningThirdPartyInitializerProvider($resolver)
+            $this->directoryResolver,
+            $this->thirdPartyInitializerProvider,
+            $this->filesystem
         );
         $this->stdout = new InMemoryOutput();
         $this->stderr = new InMemoryOutput();
@@ -44,11 +48,18 @@ class InitCommandTest extends TestCase {
         self::assertSame('init', $this->subject->name());
     }
 
+    public function testSummary() : void {
+        self::assertSame(
+            'Setup Annotated Container configuration using a set of common conventions.',
+            $this->subject->summary()
+        );
+    }
+
     public function testGetHelp() : void {
         $expected = <<<SHELL
 NAME
 
-    init - Setup bootstrapping of Annotated Container with a configuration file.
+    init - Setup Annotated Container configuration using a set of common conventions.
            
 SYNOPSIS
 
@@ -66,31 +77,15 @@ DESCRIPTION
     ============================================================================
     
     1. Create a configuration file that stores information about how to create 
-       your project's Container. By default, this file is created in the root of 
-       your project. For more details about the format of this file you can review 
-       the schema at https://annotated-container.cspray.io/schemas/annotated-container.xsd.
-       
-       There are 2 primary ways to control the naming of this file. The first 
-       is to pass a --config-file option when running this command. The second 
-       is to define a key "extra.annotatedContainer.configFile" in your 
-       composer.json that defines the name of the configuration file. If neither 
-       of these values are provided the name of the file will default to 
-       annotated-container.xml. The order of precedence for naming:
-       
-       A. The --config-file option if passed
-       B. The composer.json "extra.annotatedContainer.configFile" if present
-       C. The default value "annotated-container.xml"
+       your project's Container. This file is named "annotated-container.xml" and 
+       created in the root of your project. For more details about the format of 
+       this file you can review the schema at 
+       https://annotated-container.cspray.io/schemas/annotated-container.xsd.
        
        This command will NEVER overwrite a file that already exists. If the 
        file does exist an error will be thrown. If you're trying to recreate the 
        configuration you'll need to rename or move the existing file first.
        
-       !! Notice !!
-
-       The location of the configuration file is the only value recognized from 
-       the composer.json extra configuration. Any other keys present in 
-       "extra.annotatedContainer" will be ignored.
-
     2. Setup configuration to scan directories defined by your Composer autoload 
        and autoload-dev configurations. For example, if you have a "composer.json" 
        that resembles the following:
@@ -109,9 +104,8 @@ DESCRIPTION
        }
        
        The directories that would be included in the configuration are "src", 
-       "lib", and "test". By default we'll look for these directories in the root 
-       of your project. If you need to scan directories outside your project 
-       root please review the Caveats & Other Concerns detailed below.
+       "lib", and "test". We'll look for these directories in the root 
+       of your project.
 
     3. Setup configuration to include a DefinitionProvider when you need to 
        configure third-party services. You can provide a single --definition-provider 
@@ -150,12 +144,6 @@ DESCRIPTION
    
 OPTIONS
 
-    --config-file="file-path.xml"
-    
-        Set the name of the configuration file that is created. If this option 
-        is not provided the config file will default to "annotated-container.xml".
-        This option can only be defined 1 time.
-        
     --definition-provider="Fully\Qualified\Class\Name"
     
         Add a DefinitionProvider when generating your Annotated Container. This 
@@ -175,22 +163,44 @@ SHELL;
     }
 
     public function testInitIfConfigurationExistsThrowsException() : void {
-        VirtualFilesystem::newFile('composer.json')
-            ->withContent('{}')
-            ->at($this->vfs);
-        VirtualFilesystem::newFile('annotated-container.xml')
-            ->withContent('does not matter for this test')
-            ->at($this->vfs);
+        $stubInput = new StubInput([], ['init']);
+
+        $this->directoryResolver->expects($this->once())
+            ->method('configurationPath')
+            ->with('annotated-container.xml')
+            ->willReturn('/config/dir/annotated-container.xml');
+
+        $this->filesystem->expects($this->once())
+            ->method('exists')
+            ->with('/config/dir/annotated-container.xml')
+            ->willReturn(true);
+
         $this->expectException(PotentialConfigurationOverwrite::class);
         $this->expectExceptionMessage(
             'The configuration file "annotated-container.xml" is already present and cannot be overwritten.'
         );
 
-        $stubInput = new StubInput([], ['init']);
         $this->subject->handle($stubInput, $this->output);
     }
 
     public function testInitDefaultFileNoComposerJsonFound() : void {
+        $this->directoryResolver->expects($this->once())
+            ->method('configurationPath')
+            ->with('annotated-container.xml')
+            ->willReturn('/config/dir/annotated-container.xml');
+
+        $this->directoryResolver->expects($this->once())
+            ->method('rootPath')
+            ->with('composer.json')
+            ->willReturn('/root/composer.json');
+
+        $this->filesystem->expects($this->exactly(2))
+            ->method('exists')
+            ->willReturnMap([
+                ['/config/dir/annotated-container.xml', false],
+                ['/root/composer.json', false]
+            ]);
+
         $this->expectException(ComposerConfigurationNotFound::class);
         $this->expectExceptionMessage(
             'The file "composer.json" does not exist and is expected to be found.'
@@ -201,13 +211,32 @@ SHELL;
     }
 
     public function testInitDefaultComposerJsonHasNoAutoload() : void {
-        VirtualFilesystem::newFile('composer.json')
-            ->withContent(json_encode([
+        $this->directoryResolver->expects($this->once())
+            ->method('configurationPath')
+            ->with('annotated-container.xml')
+            ->willReturn('/config/dir/annotated-container.xml');
+
+        $this->directoryResolver->expects($this->once())
+            ->method('rootPath')
+            ->with('composer.json')
+            ->willReturn('/root/composer.json');
+
+        $this->filesystem->expects($this->exactly(2))
+            ->method('exists')
+            ->willReturnMap([
+                ['/config/dir/annotated-container.xml', false],
+                ['/root/composer.json', true]
+            ]);
+
+        $this->filesystem->expects($this->once())
+            ->method('read')
+            ->with('/root/composer.json')
+            ->willReturn(json_encode([
                 'autoload' => [
                 ],
                 'autoload-dev' => [
                 ]
-            ], JSON_THROW_ON_ERROR))->at($this->vfs);
+            ], JSON_THROW_ON_ERROR));
 
         $input = new StubInput([], ['init']);
 
@@ -217,8 +246,27 @@ SHELL;
     }
 
     public function testInitDefaultFileComposerJsonPresentCreatesConfigurationFile() : void {
-        VirtualFilesystem::newFile('composer.json')
-            ->withContent(json_encode([
+        $this->directoryResolver->expects($this->once())
+            ->method('configurationPath')
+            ->with('annotated-container.xml')
+            ->willReturn('/config/dir/annotated-container.xml');
+
+        $this->directoryResolver->expects($this->once())
+            ->method('rootPath')
+            ->with('composer.json')
+            ->willReturn('/root/composer.json');
+
+        $this->filesystem->expects($this->exactly(2))
+            ->method('exists')
+            ->willReturnMap([
+                ['/config/dir/annotated-container.xml', false],
+                ['/root/composer.json', true]
+            ]);
+
+        $this->filesystem->expects($this->once())
+            ->method('read')
+            ->with('/root/composer.json')
+            ->willReturn(json_encode([
                 'autoload' => [
                     'psr-0' => [
                         'Namespace\\' => 'src'
@@ -232,18 +280,9 @@ SHELL;
                         'Namespace\\Test\\' => ['test']
                     ]
                 ]
-            ], JSON_THROW_ON_ERROR))->at($this->vfs);
+            ], JSON_THROW_ON_ERROR));
 
-        $input = new StubInput([], ['init']);
-        $subject = new InitCommand(
-            $resolver = new FixtureBootstrappingDirectoryResolver(true),
-            new ComposerJsonScanningThirdPartyInitializerProvider($resolver)
-        );
-        $exitCode = $subject->handle($input, $this->output);
-
-        self::assertSame(0, $exitCode);
         $version = AnnotatedContainerVersion::version();
-
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="$version">
@@ -254,146 +293,138 @@ SHELL;
       <dir>trunk</dir>
       <dir>test</dir>
     </source>
-    <vendor>
-      <package>
-        <name>cspray/package</name>
-        <source>
-          <dir>src</dir>
-          <dir>other_src</dir>
-        </source>
-      </package>
-    </vendor>
-  </scanDirectories>
-  <definitionProviders>
-    <definitionProvider>Cspray\AnnotatedContainerFixture\VendorScanningInitializers\DependencyDefinitionProvider</definitionProvider>
-  </definitionProviders>
-</annotatedContainer>
-
-XML;
-        self::assertStringEqualsFile('vfs://root/annotated-container.xml', $expected);
-    }
-
-    public function testDefaultInitTakesConfigurationNameFromOption() : void {
-        VirtualFilesystem::newFile('composer.json')
-            ->withContent(json_encode([
-                'autoload' => [
-                    'psr-0' => [
-                        'Namespace\\' => ['src']
-                    ],
-                ],
-                'autoload-dev' => [
-                    'psr-4' => [
-                        'Namespace\\Test\\' => ['lib']
-                    ]
-                ]
-            ], JSON_THROW_ON_ERROR))->at($this->vfs);
-
-        $input = new StubInput(['config-file' => 'my-config.xml'], ['init']);
-        $exitCode = $this->subject->handle($input, $this->output);
-
-        self::assertSame(0, $exitCode);
-        $version = AnnotatedContainerVersion::version();
-
-        $expected = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="$version">
-  <scanDirectories>
-    <source>
-      <dir>src</dir>
-      <dir>lib</dir>
-    </source>
     <vendor/>
   </scanDirectories>
   <definitionProviders/>
 </annotatedContainer>
 
 XML;
-        self::assertStringEqualsFile('vfs://root/my-config.xml', $expected);
-    }
-
-    public function testConfigFileFromComposerRespected() : void {
-        VirtualFilesystem::newFile('composer.json')
-            ->withContent(json_encode([
-                'autoload' => [
-                    'psr-4' => [
-                        'Namespace\\' => ['src']
-                    ],
-                ],
-                'autoload-dev' => [
-                    'psr-0' => [
-                        'Namespace\\Test\\' => 'tests'
-                    ]
-                ],
-                'extra' => [
-                    'annotatedContainer' => [
-                        'configFile' => 'composer-defined.xml'
-                    ]
-                ]
-            ], JSON_THROW_ON_ERROR))->at($this->vfs);
+        $this->filesystem->expects($this->once())
+            ->method('write')
+            ->with('/config/dir/annotated-container.xml', $expected);
 
         $input = new StubInput([], ['init']);
         $exitCode = $this->subject->handle($input, $this->output);
 
         self::assertSame(0, $exitCode);
+    }
+
+    public function testThirdPartyInitializerProvidersAreAddedToConfiguration() : void {
+        $this->directoryResolver->expects($this->once())
+            ->method('configurationPath')
+            ->with('annotated-container.xml')
+            ->willReturn('/config/dir/annotated-container.xml');
+
+        $this->directoryResolver->expects($this->once())
+            ->method('rootPath')
+            ->with('composer.json')
+            ->willReturn('/root/composer.json');
+
+        $this->filesystem->expects($this->exactly(2))
+            ->method('exists')
+            ->willReturnMap([
+                ['/config/dir/annotated-container.xml', false],
+                ['/root/composer.json', true]
+            ]);
+
+        $this->filesystem->expects($this->once())
+            ->method('read')
+            ->with('/root/composer.json')
+            ->willReturn(json_encode([
+                'autoload' => [
+                    'psr-4' => [
+                        'Another\\Namespace\\' => ['src']
+                    ]
+                ],
+                'autoload-dev' => [
+                    'psr-4' => [
+                        'Namespace\\Test\\' => ['test']
+                    ]
+                ]
+            ], JSON_THROW_ON_ERROR));
+
+        $thirdPartyInitializer = $this->createMock(ThirdPartyInitializer::class);
+        $thirdPartyInitializer->expects($this->once())
+            ->method('packageName')
+            ->willReturn('cspray/package-name');
+        $thirdPartyInitializer->expects($this->once())
+            ->method('relativeScanDirectories')
+            ->willReturn(['src', 'lib']);
+        $thirdPartyInitializer->expects($this->once())
+            ->method('definitionProviderClass')
+            ->willReturn(StubDefinitionProvider::class);
+
+        $this->thirdPartyInitializerProvider->expects($this->once())
+            ->method('thirdPartyInitializers')
+            ->willReturn([$thirdPartyInitializer]);
 
         $version = AnnotatedContainerVersion::version();
-
+        $definitionProvider = StubDefinitionProvider::class;
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="$version">
   <scanDirectories>
     <source>
       <dir>src</dir>
-      <dir>tests</dir>
+      <dir>test</dir>
     </source>
-    <vendor/>
+    <vendor>
+      <package>
+        <name>cspray/package-name</name>
+        <source>
+          <dir>src</dir>
+          <dir>lib</dir>
+        </source>
+      </package>
+    </vendor>
   </scanDirectories>
-  <definitionProviders/>
+  <definitionProviders>
+    <definitionProvider>$definitionProvider</definitionProvider>
+  </definitionProviders>
 </annotatedContainer>
 
 XML;
-        self::assertStringEqualsFile('vfs://root/composer-defined.xml', $expected);
-    }
 
-    public function testComposerDefinedConfigFileNotOverwritten() : void {
-        VirtualFilesystem::newFile('composer.json')
-            ->withContent(json_encode([
-                'extra' => [
-                    'annotatedContainer' => [
-                        'configFile' => 'composer-defined.xml'
-                    ]
-                ]
-            ], JSON_THROW_ON_ERROR))->at($this->vfs);
-        VirtualFilesystem::newFile('composer-defined.xml')
-            ->withContent('does not matter for this test')
-            ->at($this->vfs);
+        $this->filesystem->expects($this->once())
+            ->method('write')
+            ->with('/config/dir/annotated-container.xml', $expected);
 
-        $this->expectException(PotentialConfigurationOverwrite::class);
-        $this->expectExceptionMessage(
-            'The configuration file "composer-defined.xml" is already present and cannot be overwritten.'
-        );
-
-        $stubInput = new StubInput([], ['init']);
-        $this->subject->handle($stubInput, $this->output);
-    }
-
-    public function testSingleDefinitionProviderRespected() : void {
-        VirtualFilesystem::newFile('composer.json')
-            ->withContent(json_encode([
-                'autoload' => [
-                    'psr-0' => [
-                        'Namespace\\' => 'src'
-                    ]
-                ],
-            ], JSON_THROW_ON_ERROR))->at($this->vfs);
-
-        $input = new StubInput(['definition-provider' => 'ConsumerClass'], ['init']);
+        $input = new StubInput([], ['init']);
         $exitCode = $this->subject->handle($input, $this->output);
 
         self::assertSame(0, $exitCode);
+    }
+
+    public function testSingleDefinitionProviderRespected() : void {
+        $this->directoryResolver->expects($this->once())
+            ->method('configurationPath')
+            ->with('annotated-container.xml')
+            ->willReturn('/config/dir/annotated-container.xml');
+
+        $this->directoryResolver->expects($this->once())
+            ->method('rootPath')
+            ->with('composer.json')
+            ->willReturn('/root/composer.json');
+
+        $this->filesystem->expects($this->exactly(2))
+            ->method('exists')
+            ->willReturnMap([
+                ['/config/dir/annotated-container.xml', false],
+                ['/root/composer.json', true]
+            ]);
+
+        $this->filesystem->expects($this->once())
+            ->method('read')
+            ->with('/root/composer.json')
+            ->willReturn(json_encode([
+                'autoload' => [
+                    'psr-4' => [
+                        'Another\\Namespace\\' => ['src']
+                    ]
+                ],
+            ], JSON_THROW_ON_ERROR));
 
         $version = AnnotatedContainerVersion::version();
-
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="$version">
@@ -409,26 +440,47 @@ XML;
 </annotatedContainer>
 
 XML;
-        self::assertStringEqualsFile('vfs://root/annotated-container.xml', $expected);
-    }
 
-    public function testSingleParameterStoreRespected() : void {
-        VirtualFilesystem::newFile('composer.json')
-            ->withContent(json_encode([
-                'autoload' => [
-                    'psr-0' => [
-                        'Namespace\\' => 'src'
-                    ]
-                ],
-            ], JSON_THROW_ON_ERROR))->at($this->vfs);
+        $this->filesystem->expects($this->once())
+            ->method('write')
+            ->with('/config/dir/annotated-container.xml', $expected);
 
-        $input = new StubInput(['parameter-store' => 'MyParameterStoreClass'], ['init']);
+        $input = new StubInput(['definition-provider' => 'ConsumerClass'], ['init']);
         $exitCode = $this->subject->handle($input, $this->output);
 
         self::assertSame(0, $exitCode);
+    }
+
+    public function testSingleParameterStoreRespected() : void {
+        $this->directoryResolver->expects($this->once())
+            ->method('configurationPath')
+            ->with('annotated-container.xml')
+            ->willReturn('/config/dir/annotated-container.xml');
+
+        $this->directoryResolver->expects($this->once())
+            ->method('rootPath')
+            ->with('composer.json')
+            ->willReturn('/root/composer.json');
+
+        $this->filesystem->expects($this->exactly(2))
+            ->method('exists')
+            ->willReturnMap([
+                ['/config/dir/annotated-container.xml', false],
+                ['/root/composer.json', true]
+            ]);
+
+        $this->filesystem->expects($this->once())
+            ->method('read')
+            ->with('/root/composer.json')
+            ->willReturn(json_encode([
+                'autoload' => [
+                    'psr-4' => [
+                        'Another\\Namespace\\' => ['src']
+                    ]
+                ],
+            ], JSON_THROW_ON_ERROR));
 
         $version = AnnotatedContainerVersion::version();
-
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="$version">
@@ -445,26 +497,47 @@ XML;
 </annotatedContainer>
 
 XML;
-        self::assertStringEqualsFile('vfs://root/annotated-container.xml', $expected);
-    }
 
-    public function testMultipleParameterStoresRespected() : void {
-        VirtualFilesystem::newFile('composer.json')
-            ->withContent(json_encode([
-                'autoload' => [
-                    'psr-0' => [
-                        'Namespace\\' => 'src'
-                    ]
-                ],
-            ], JSON_THROW_ON_ERROR))->at($this->vfs);
+        $this->filesystem->expects($this->once())
+            ->method('write')
+            ->with('/config/dir/annotated-container.xml', $expected);
 
-        $input = new StubInput(['parameter-store' => ['MyParameterStoreClassOne', 'MyParameterStoreClassTwo']], ['init']);
+        $input = new StubInput(['parameter-store' => 'MyParameterStoreClass'], ['init']);
         $exitCode = $this->subject->handle($input, $this->output);
 
         self::assertSame(0, $exitCode);
+    }
+
+    public function testMultipleParameterStoresRespected() : void {
+        $this->directoryResolver->expects($this->once())
+            ->method('configurationPath')
+            ->with('annotated-container.xml')
+            ->willReturn('/config/dir/annotated-container.xml');
+
+        $this->directoryResolver->expects($this->once())
+            ->method('rootPath')
+            ->with('composer.json')
+            ->willReturn('/root/composer.json');
+
+        $this->filesystem->expects($this->exactly(2))
+            ->method('exists')
+            ->willReturnMap([
+                ['/config/dir/annotated-container.xml', false],
+                ['/root/composer.json', true]
+            ]);
+
+        $this->filesystem->expects($this->once())
+            ->method('read')
+            ->with('/root/composer.json')
+            ->willReturn(json_encode([
+                'autoload' => [
+                    'psr-4' => [
+                        'Another\\Namespace\\' => ['src']
+                    ]
+                ],
+            ], JSON_THROW_ON_ERROR));
 
         $version = AnnotatedContainerVersion::version();
-
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="$version">
@@ -482,23 +555,15 @@ XML;
 </annotatedContainer>
 
 XML;
-        self::assertStringEqualsFile('vfs://root/annotated-container.xml', $expected);
-    }
 
-    public function testConfigFileBooleanThrowsException() : void {
-        $this->expectException(InvalidOptionType::class);
-        $this->expectExceptionMessage('The option "config-file" MUST NOT be a flag-only option.');
+        $this->filesystem->expects($this->once())
+            ->method('write')
+            ->with('/config/dir/annotated-container.xml', $expected);
 
-        $input = new StubInput(['config-file' => true], ['init']);
-        $this->subject->handle($input, $this->output);
-    }
+        $input = new StubInput(['parameter-store' => ['MyParameterStoreClassOne', 'MyParameterStoreClassTwo']], ['init']);
+        $exitCode = $this->subject->handle($input, $this->output);
 
-    public function testConfigFileArrayThrowsException() : void {
-        $this->expectException(InvalidOptionType::class);
-        $this->expectExceptionMessage('The option "config-file" MUST NOT be provided multiple times.');
-
-        $input = new StubInput(['config-file' => ['a', 'b']], ['init']);
-        $this->subject->handle($input, $this->output);
+        self::assertSame(0, $exitCode);
     }
 
     public function testDefinitionProviderBooleanThrowsException() : void {
@@ -525,23 +590,34 @@ XML;
         $this->subject->handle($input, $this->output);
     }
 
-    public function testObserverBooleanThrowsException() : void {
-        $this->expectException(InvalidOptionType::class);
-        $this->expectExceptionMessage('The option "observer" MUST NOT be a flag-only option.');
-
-        $input = new StubInput(['observer' => true], ['init']);
-        $this->subject->handle($input, $this->output);
-    }
-
     public function testSuccessfulRunHasCorrectOutput() : void {
-        VirtualFilesystem::newFile('composer.json')
-            ->withContent(json_encode([
+        $this->directoryResolver->expects($this->once())
+            ->method('configurationPath')
+            ->with('annotated-container.xml')
+            ->willReturn('/config/dir/annotated-container.xml');
+
+        $this->directoryResolver->expects($this->once())
+            ->method('rootPath')
+            ->with('composer.json')
+            ->willReturn('/root/composer.json');
+
+        $this->filesystem->expects($this->exactly(2))
+            ->method('exists')
+            ->willReturnMap([
+                ['/config/dir/annotated-container.xml', false],
+                ['/root/composer.json', true]
+            ]);
+
+        $this->filesystem->expects($this->once())
+            ->method('read')
+            ->with('/root/composer.json')
+            ->willReturn(json_encode([
                 'autoload' => [
-                    'psr-0' => [
-                        'Namespace\\' => 'src'
-                    ],
+                    'psr-4' => [
+                        'Another\\Namespace\\' => ['src']
+                    ]
                 ],
-            ], JSON_THROW_ON_ERROR))->at($this->vfs);
+            ], JSON_THROW_ON_ERROR));
 
         $input = new StubInput([], ['init']);
         $exitCode = $this->subject->handle($input, $this->output);

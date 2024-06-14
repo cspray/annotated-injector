@@ -3,6 +3,7 @@
 namespace Cspray\AnnotatedContainer\Bootstrap;
 
 use Cspray\AnnotatedContainer\Definition\Cache\ContainerDefinitionCache;
+use Cspray\AnnotatedContainer\Filesystem\Filesystem;
 use Cspray\AnnotatedContainer\StaticAnalysis\CompositeDefinitionProvider;
 use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProvider;
 use Cspray\AnnotatedContainer\ContainerFactory\ParameterStore;
@@ -22,7 +23,6 @@ final class XmlBootstrappingConfiguration implements BootstrappingConfiguration 
      */
     private readonly array $directories;
     private readonly ?DefinitionProvider $definitionProvider;
-    private readonly ?string $cacheDir;
 
     /**
      * @var list<ParameterStore>
@@ -30,18 +30,19 @@ final class XmlBootstrappingConfiguration implements BootstrappingConfiguration 
     private readonly array $parameterStores;
 
     public function __construct(
+        private readonly Filesystem $filesystem,
         private readonly string $xmlFile,
         private readonly ParameterStoreFactory $parameterStoreFactory,
         private readonly DefinitionProviderFactory $definitionProviderFactory
     ) {
-        if (!file_exists($this->xmlFile)) {
+        if (!$this->filesystem->isFile($this->xmlFile)) {
             throw InvalidBootstrapConfiguration::fromFileMissing($this->xmlFile);
         }
 
         try {
             $schemaFile = dirname(__DIR__, 2) . '/annotated-container.xsd';
             $dom = new DOMDocument();
-            $dom->load($this->xmlFile);
+            $dom->loadXML($this->filesystem->read($this->xmlFile));
             libxml_use_internal_errors(true);
             if (!$dom->schemaValidate($schemaFile)) {
                 throw InvalidBootstrapConfiguration::fromFileDoesNotValidateSchema($this->xmlFile);
@@ -49,6 +50,7 @@ final class XmlBootstrappingConfiguration implements BootstrappingConfiguration 
 
             $xpath = new DOMXPath($dom);
             $xpath->registerNamespace('ac', 'https://annotated-container.cspray.io/schema/annotated-container.xsd');
+
             $scanDirectoriesNodes = $xpath->query('/ac:annotatedContainer/ac:scanDirectories/ac:source/ac:dir');
             $scanDirectories = [];
             foreach ($scanDirectoriesNodes as $scanDirectory) {
@@ -113,16 +115,8 @@ final class XmlBootstrappingConfiguration implements BootstrappingConfiguration 
                 }
             }
 
-            /** @var DOMNodeList $cacheDirNodes */
-            $cacheDirNodes = $xpath->query('/ac:annotatedContainer/ac:cacheDir');
-            $cache = null;
-            if (count($cacheDirNodes) === 1) {
-                $cache = $cacheDirNodes[0]->textContent;
-            }
-
             $this->directories = $scanDirectories;
             $this->definitionProvider = $definitionProvider;
-            $this->cacheDir = $cache;
             $this->parameterStores = $parameterStores;
         } finally {
             libxml_clear_errors();
@@ -147,6 +141,6 @@ final class XmlBootstrappingConfiguration implements BootstrappingConfiguration 
     }
 
     public function cache() : ?ContainerDefinitionCache {
-        return $this->cacheDir;
+        return null;
     }
 }

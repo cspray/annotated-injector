@@ -3,7 +3,6 @@
 namespace Cspray\AnnotatedContainer\Unit;
 
 use Cspray\AnnotatedContainer\Definition\AliasDefinition;
-use Cspray\AnnotatedContainer\Definition\ConfigurationDefinition;
 use Cspray\AnnotatedContainer\Definition\ServiceDefinition;
 use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinition;
 

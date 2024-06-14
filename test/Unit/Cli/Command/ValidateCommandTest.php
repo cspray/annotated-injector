@@ -40,8 +40,8 @@ final class ValidateCommandTest extends TestCase {
 
         $this->bootstrappingConfiguration = $this->createMock(BootstrappingConfiguration::class);
         $this->subject = new ValidateCommand(
+            $this->bootstrappingConfiguration,
             new FixtureBootstrappingDirectoryResolver(),
-            $this->bootstrappingConfiguration
         );
     }
 

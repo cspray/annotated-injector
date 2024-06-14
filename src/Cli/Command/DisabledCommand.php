@@ -8,23 +8,41 @@ use Cspray\AnnotatedContainer\Cli\Output\TerminalOutput;
 final class DisabledCommand implements Command {
 
     public function __construct(
-
+        private readonly string $name,
+        private readonly string $howToEnable,
     ) {}
 
 
     public function name() : string {
-        // TODO: Implement name() method.
+        return $this->name;
     }
 
     public function summary() : string {
-        // TODO: Implement summary() method.
+        return sprintf('Command is disabled. Run "help %s" to learn how to enable it.', $this->name());
     }
 
     public function help() : string {
-        // TODO: Implement help() method.
+        $command = $this->name();
+        $howToEnable = $this->howToEnable;
+        return <<<TEXT
+To enable "$command":
+
+$howToEnable
+
+TEXT;
     }
 
     public function handle(Input $input, TerminalOutput $output) : int {
-        // TODO: Implement handle() method.
+        $help = trim($this->help());
+        $text = <<<TEXT
+<bg:red><fg:white>Warning! This command is disabled!</fg:white></bg:red>
+
+$help
+
+TEXT;
+
+        $output->stderr->write($text);
+
+        return 1;
     }
 }

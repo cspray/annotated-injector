@@ -8,7 +8,7 @@
          failOnRisky="true"
          failOnWarning="true"
          displayDetailsOnTestsThatTriggerWarnings="true"
-         displayDetailsOnTestsThatTriggerDeprecations="false"
+         displayDetailsOnTestsThatTriggerDeprecations="true"
          cacheDirectory=".phpunit.cache"
          requireCoverageMetadata="false"
          beStrictAboutCoverageMetadata="true"
@@ -21,7 +21,7 @@
   <coverage>
     <report>
       <text outputFile="php://stdout" showOnlySummary="true"/>
-      <!-- <html outputDirectory="build/code-coverage/html" /> -->
+      <html outputDirectory="build/code-coverage/html" />
     </report>
   </coverage>
   <source>

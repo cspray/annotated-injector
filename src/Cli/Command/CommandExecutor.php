@@ -9,7 +9,7 @@ use Throwable;
 final class CommandExecutor {
 
     /**
-     * @var Command[] $commands
+     * @var list<Command> $commands
      */
     private array $commands = [];
 
@@ -21,13 +21,19 @@ final class CommandExecutor {
     }
 
     public function command(string $name) : ?Command {
-        return array_reduce($this->commands, fn(?Command $carry, Command $item) => $item->name() === $name ? $item : $carry);
+        return array_reduce(
+            $this->commands,
+            static fn(?Command $carry, Command $item) => $item->name() === $name ? $item : $carry
+        );
     }
 
     public function addCommand(Command $command) : void {
         $this->commands[$command->name()] = $command;
     }
 
+    /**
+     * @return list<Command>
+     */
     public function commands() : array {
         return $this->commands;
     }

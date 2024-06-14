@@ -4,7 +4,7 @@ _default:
     just --list --unsorted
 
 # Install all dependencies necesesary to run Annotated Container tools
-install: _install_ac
+install: _install_ac _install_labrador_cs _install_phpunit _install_psalm
 
 _install_ac:
     composer install

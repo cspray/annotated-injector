@@ -2,21 +2,13 @@
 
 namespace Cspray\AnnotatedContainer\Cli\Command;
 
-use Closure;
-use Cspray\AnnotatedContainer\AnnotatedContainer;
-use Cspray\AnnotatedContainer\Autowire\AutowireableParameterSet;
-use Cspray\AnnotatedContainer\Bootstrap\Bootstrap;
 use Cspray\AnnotatedContainer\Bootstrap\BootstrappingConfiguration;
 use Cspray\AnnotatedContainer\Bootstrap\BootstrappingDirectoryResolver;
-use Cspray\AnnotatedContainer\Bootstrap\ContainerAnalytics;
+use Cspray\AnnotatedContainer\Bootstrap\ContainerDefinitionAnalysisOptionsFromBootstrappingConfiguration;
 use Cspray\AnnotatedContainer\Cli\Input\Input;
 use Cspray\AnnotatedContainer\Cli\Output\TerminalOutput;
-use Cspray\AnnotatedContainer\ContainerFactory\ContainerFactory;
-use Cspray\AnnotatedContainer\ContainerFactory\ContainerFactoryOptions;
-use Cspray\AnnotatedContainer\ContainerFactory\ParameterStore;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 use Cspray\AnnotatedContainer\Event\Emitter;
-use Cspray\AnnotatedContainer\Event\Listener\Bootstrap\AfterBootstrap;
 use Cspray\AnnotatedContainer\LogicalConstraint\Check\DuplicateServiceDelegate;
 use Cspray\AnnotatedContainer\LogicalConstraint\Check\DuplicateServiceName;
 use Cspray\AnnotatedContainer\LogicalConstraint\Check\DuplicateServicePrepare;
@@ -28,6 +20,9 @@ use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraint;
 use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraintValidator;
 use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraintViolationType;
 use Cspray\AnnotatedContainer\Profiles;
+use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalyzer;
+use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetDefinitionConverter;
+use Cspray\AnnotatedTarget\PhpParserAnnotatedTargetParser;
 
 final class ValidateCommand implements Command {
 
@@ -117,22 +112,11 @@ TEXT;
             return 0;
         }
 
-        $emitter = new Emitter();
-
-        $bootstrap = Bootstrap::fromCompleteSetup(
-            $this->bootstrappingConfiguration,
-            $this->noOpContainerFactory(),
-            $emitter,
-            $this->directoryResolver,
+        $analyzer = new AnnotatedTargetContainerDefinitionAnalyzer(
+            new PhpParserAnnotatedTargetParser(),
+            new AnnotatedTargetDefinitionConverter(),
+            new Emitter()
         );
-
-        $containerDefinition = null;
-
-        $infoCapturingListener = $this->infoCapturingListener(static function(ContainerDefinition $definition) use(&$containerDefinition) {
-            $containerDefinition = $definition;
-        });
-
-        $emitter->addListener($infoCapturingListener);
 
         $inputProfiles = $input->option('profiles') ?? ['default'];
         if (is_string($inputProfiles)) {
@@ -141,9 +125,13 @@ TEXT;
 
         $profiles = Profiles::fromList($inputProfiles);
 
-        $bootstrap->bootstrapContainer(
-            $profiles,
+        $containerDefinition = $analyzer->analyze(
+            (new ContainerDefinitionAnalysisOptionsFromBootstrappingConfiguration(
+                $this->bootstrappingConfiguration,
+                $this->directoryResolver
+            ))->create()
         );
+
         assert($containerDefinition instanceof ContainerDefinition);
 
         $results = $this->validator->validate($containerDefinition, $profiles);
@@ -184,58 +172,6 @@ TEXT;
         return 0;
     }
 
-    private function noOpContainerFactory() : ContainerFactory {
-        return new class implements ContainerFactory {
-            public function createContainer(ContainerDefinition $containerDefinition, ContainerFactoryOptions $containerFactoryOptions = null) : AnnotatedContainer {
-                return new class implements AnnotatedContainer {
-
-                    public function backingContainer() : object {
-                        throw new \RuntimeException(__METHOD__);
-                    }
-
-                    public function make(string $classType, AutowireableParameterSet $parameters = null) : object {
-                        throw new \RuntimeException(__METHOD__);
-                    }
-
-                    public function invoke(callable $callable, AutowireableParameterSet $parameters = null) : mixed {
-                        throw new \RuntimeException(__METHOD__);
-                    }
-
-                    public function get(string $id) {
-                        throw new \RuntimeException(__METHOD__);
-                    }
-
-                    public function has(string $id) : bool {
-                        throw new \RuntimeException(__METHOD__);
-                    }
-                };
-            }
-
-            public function addParameterStore(ParameterStore $parameterStore) : void {
-            }
-        };
-    }
-
-    /**
-     * @param Closure(ContainerDefinition):void $closure
-     * @return AfterBootstrap
-     */
-    private function infoCapturingListener(Closure $closure) : AfterBootstrap {
-        return new class($closure) implements AfterBootstrap {
-            /**
-             * @param Closure(ContainerDefinition):void $closure
-             */
-            public function __construct(
-                private readonly Closure $closure
-            ) {
-            }
-
-            public function handleAfterBootstrap(BootstrappingConfiguration $bootstrappingConfiguration, ContainerDefinition $containerDefinition, AnnotatedContainer $container, ContainerAnalytics $containerAnalytics) : void {
-                ($this->closure)($containerDefinition);
-            }
-        };
-    }
-
     private function listConstraints(TerminalOutput $output) : void {
         $output->stdout->write('Annotated Container Validation');
         $output->stdout->br();
@@ -245,5 +181,9 @@ TEXT;
         foreach ($this->logicalConstraints as $logicalConstraint) {
             $output->stdout->write('- ' . $logicalConstraint::class);
         }
+    }
+
+    public function summary() : string {
+        return 'My validate summary';
     }
 }

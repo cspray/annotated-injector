@@ -2,26 +2,26 @@
 
 namespace Cspray\AnnotatedContainer\Cli\Command;
 
-use Cspray\AnnotatedContainer\Bootstrap\BootstrappingDirectoryResolver;
-use Cspray\AnnotatedContainer\Bootstrap\DefaultDefinitionProviderFactory;
-use Cspray\AnnotatedContainer\Bootstrap\DefaultParameterStoreFactory;
-use Cspray\AnnotatedContainer\Bootstrap\XmlBootstrappingConfiguration;
-use Cspray\AnnotatedContainer\Cli\Exception\CacheDirConfigurationNotFound;
-use Cspray\AnnotatedContainer\Cli\Exception\CacheDirNotFound;
-use Cspray\AnnotatedContainer\Cli\Exception\ConfigurationNotFound;
-use Cspray\AnnotatedContainer\Cli\Exception\InvalidOptionType;
 use Cspray\AnnotatedContainer\Cli\Input\Input;
 use Cspray\AnnotatedContainer\Cli\Output\TerminalOutput;
+use Cspray\AnnotatedContainer\Definition\Cache\CacheKey;
+use Cspray\AnnotatedContainer\Definition\Cache\ContainerDefinitionCache;
+use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptions;
 
 final class CacheClearCommand implements Command {
 
     public function __construct(
-        private readonly BootstrappingDirectoryResolver $directoryResolver
+        private readonly ContainerDefinitionCache $cache,
+        private readonly ContainerDefinitionAnalysisOptions $analysisOptions
     ) {
     }
 
     public function name() : string {
         return 'cache-clear';
+    }
+
+    public function summary() : string {
+        // TODO: Implement summary() method.
     }
 
     public function help() : string {
@@ -54,53 +54,8 @@ SHELL;
     }
 
     public function handle(Input $input, TerminalOutput $output) : int {
-        $configName = $input->option('config-file');
-        if (!isset($configName)) {
-            // This not being present would be highly irregular and not party of the happy path
-            // But it is possible that somebody created the configuration manually and is not using composer
-            $composerFile = $this->directoryResolver->configurationPath('composer.json');
-            if (file_exists($composerFile)) {
-                $composer = json_decode(file_get_contents($composerFile), true);
-                $configName = $composer['extra']['annotatedContainer']['configFile'] ?? 'annotated-container.xml';
-            } else {
-                $configName = 'annotated-container.xml';
-            }
-        } else {
-            if (is_bool($configName)) {
-                throw InvalidOptionType::fromBooleanOption('config-file');
-            } elseif (is_array($configName)) {
-                throw InvalidOptionType::fromArrayOption('config-file');
-            }
-        }
-
-        $configPath = $this->directoryResolver->configurationPath($configName);
-        if (!file_exists($configPath)) {
-            throw ConfigurationNotFound::fromMissingFile($configName);
-        }
-
-        $config = new XmlBootstrappingConfiguration($configPath, new DefaultParameterStoreFactory(), new DefaultDefinitionProviderFactory());
-        $cacheDir = $config->cache();
-        if (!isset($cacheDir)) {
-            throw CacheDirConfigurationNotFound::fromCacheCommand();
-        }
-
-        $cachePath = $this->directoryResolver->cachePath($cacheDir);
-        if (!is_dir($cachePath)) {
-            throw CacheDirNotFound::fromMissingDirectory($cacheDir);
-        }
-
-        $sourceDirs = [];
-        foreach ($config->scanDirectories() as $scanDirectory) {
-            $sourceDirs[] = $this->directoryResolver->pathFromRoot($scanDirectory);
-        }
-
-        sort($sourceDirs);
-        $cacheKey = md5(join($sourceDirs));
-        $cachePath = $this->directoryResolver->cachePath(sprintf('%s/%s', $cacheDir, $cacheKey));
-
-        if (file_exists($cachePath)) {
-            unlink($cachePath);
-        }
+        $cacheKey = CacheKey::fromContainerDefinitionAnalysisOptions($this->analysisOptions);
+        $this->cache->remove($cacheKey);
 
         $output->stdout->write('<fg:green>Annotated Container cache has been cleared.</fg:green>');
         return 0;

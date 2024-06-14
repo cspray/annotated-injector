@@ -1,17 +1,7 @@
 #!/usr/bin/env php
 <?php declare(strict_types=1);
 
-use Cspray\AnnotatedContainer\Bootstrap\XmlBootstrappingConfigurationProvider;
-use Cspray\AnnotatedContainer\Cli\AnnotatedContainerCliRunner;
-use Cspray\AnnotatedContainer\Cli\Input\InputParser;
 
 include $_composer_autoload_path ?? __DIR__ . '/../vendor/autoload.php';
 
-$input = (new InputParser())->parse($argv);
-
-AnnotatedContainerCliRunner::fromMinimalSetup(
-    new XmlBootstrappingConfigurationProvider(
-
-    )
-)
-
+new \Cspray\AnnotatedContainer\Bootstrap\VendorPresenceBasedBootstrappingDirectoryResolver();

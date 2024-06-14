@@ -12,12 +12,13 @@ use Cspray\AnnotatedContainer\ContainerFactory\PhpDiContainerFactory;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 use Cspray\AnnotatedContainer\Event\ContainerFactoryEmitter;
 use Cspray\AnnotatedContainer\Event\Emitter;
+use Cspray\AnnotatedContainer\Filesystem\Filesystem;
+use Cspray\AnnotatedContainer\Filesystem\PhpFunctionsFilesystem;
 use Cspray\AnnotatedContainer\Profiles;
 use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalyzer;
 use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetDefinitionConverter;
 use Cspray\AnnotatedContainer\StaticAnalysis\CacheAwareContainerDefinitionAnalyzer;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptions;
-use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
 use Cspray\AnnotatedTarget\PhpParserAnnotatedTargetParser;
 use Cspray\PrecisionStopwatch\Marker;
 use Cspray\PrecisionStopwatch\Metrics;
@@ -37,43 +38,14 @@ final class Bootstrap {
     ) {
     }
 
-    public static function fromMinimalSetup(
+    public static function fromAnnotatedContainerConventions(
+        ContainerFactory $containerFactory,
         Emitter $emitter,
         ParameterStoreFactory $parameterStoreFactory = new DefaultParameterStoreFactory(),
         DefinitionProviderFactory $definitionProviderFactory = new DefaultDefinitionProviderFactory(),
+        BootstrappingDirectoryResolver $directoryResolver = new VendorPresenceBasedBootstrappingDirectoryResolver(),
+        Filesystem $filesystem = new PhpFunctionsFilesystem()
     ) : self {
-        $containerFactory = self::inferredContainerFactory($emitter);
-        return new Bootstrap(
-            new XmlBootstrappingConfiguration(
-                'annotated-container.xml',
-                $parameterStoreFactory,
-                $definitionProviderFactory
-            ),
-            $containerFactory,
-            $emitter,
-            new VendorPresenceBasedBootstrappingDirectoryResolver(),
-            new Stopwatch()
-        );
-    }
-
-    private static function inferredContainerFactory(
-        ContainerFactoryEmitter $emitter,
-    ) : ContainerFactory {
-        if (class_exists(PhpDiContainer::class)) {
-            return new PhpDiContainerFactory($emitter);
-        }
-
-        if (class_exists(IlluminateContainer::class)) {
-            return new IlluminateContainerFactory($emitter);
-        }
-
-        if (class_exists(AurynContainer::class)) {
-            return new AurynContainerFactory($emitter);
-        }
-
-        throw new RuntimeException(
-            'To utilize Bootstrap::fromMinimalSetup you MUST install a backing container listed when running "composer suggest".'
-        );
     }
 
     public static function fromCompleteSetup(
@@ -129,17 +101,10 @@ final class Bootstrap {
     }
 
     private function analysisOptions(BootstrappingConfiguration $configuration) : ContainerDefinitionAnalysisOptions {
-        $scanPaths = [];
-        foreach ($configuration->scanDirectories() as $scanDirectory) {
-            $scanPaths[] = $this->directoryResolver->pathFromRoot($scanDirectory);
-        }
-        $analysisOptions = ContainerDefinitionAnalysisOptionsBuilder::scanDirectories(...$scanPaths);
-        $containerDefinitionConsumer = $configuration->containerDefinitionProvider();
-        if ($containerDefinitionConsumer !== null) {
-            $analysisOptions = $analysisOptions->withDefinitionProvider($containerDefinitionConsumer);
-        }
-
-        return $analysisOptions->build();
+        return (new ContainerDefinitionAnalysisOptionsFromBootstrappingConfiguration(
+            $configuration,
+            $this->directoryResolver
+        ))->create();
     }
 
     private function runStaticAnalysis(

@@ -3,289 +3,104 @@
 namespace Cspray\AnnotatedContainer\Unit\Cli\Command;
 
 use Cspray\AnnotatedContainer\Cli\Command\BuildCommand;
-use Cspray\AnnotatedContainer\Cli\Exception\CacheDirConfigurationNotFound;
-use Cspray\AnnotatedContainer\Cli\Exception\ConfigurationNotFound;
-use Cspray\AnnotatedContainer\Cli\Exception\InvalidOptionType;
 use Cspray\AnnotatedContainer\Cli\Output\TerminalOutput;
-use Cspray\AnnotatedContainer\Definition\Serializer\XmlContainerDefinitionSerializer;
-use Cspray\AnnotatedContainer\Event\Emitter;
-use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalyzer;
-use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetDefinitionConverter;
-use Cspray\AnnotatedContainer\StaticAnalysis\CacheAwareContainerDefinitionAnalyzer;
-use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
+use Cspray\AnnotatedContainer\Definition\Cache\CacheKey;
+use Cspray\AnnotatedContainer\Definition\Cache\ContainerDefinitionCache;
+use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
+use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptions;
 use Cspray\AnnotatedContainer\Unit\Helper\FixtureBootstrappingDirectoryResolver;
 use Cspray\AnnotatedContainer\Unit\Helper\InMemoryOutput;
 use Cspray\AnnotatedContainer\Unit\Helper\StubInput;
-use Cspray\AnnotatedContainerFixture\Fixtures;
-use Cspray\AnnotatedTarget\PhpParserAnnotatedTargetParser;
-use org\bovigo\vfs\vfsStream as VirtualFilesystem;
-use org\bovigo\vfs\vfsStreamDirectory as VirtualDirectory;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class BuildCommandTest extends TestCase {
 
-    private BuildCommand $subject;
-
     private InMemoryOutput $stdout;
     private InMemoryOutput $stderr;
     private TerminalOutput $output;
-
-    private VirtualDirectory $vfs;
+    private FixtureBootstrappingDirectoryResolver $directoryResolver;
+    private BuildCommand $subject;
+    private MockObject&ContainerDefinitionAnalysisOptions $analysisOptions;
+    private MockObject&ContainerDefinitionCache $cache;
 
     protected function setUp() : void {
-        $this->markTestIncomplete('Need to redesign how the Build command gets the cache. Reliant on resolving #385.');
-        $this->subject = new BuildCommand(
-            new FixtureBootstrappingDirectoryResolver()
-        );
-
         $this->stdout = new InMemoryOutput();
         $this->stderr = new InMemoryOutput();
         $this->output = new TerminalOutput($this->stdout, $this->stderr);
 
-        $this->vfs = VirtualFilesystem::setup();
+        $this->cache = $this->createMock(ContainerDefinitionCache::class);
+        $this->analysisOptions = $this->createMock(ContainerDefinitionAnalysisOptions::class);
+        $this->directoryResolver = new FixtureBootstrappingDirectoryResolver();
+
+        $this->subject = new BuildCommand(
+            $this->cache,
+            $this->analysisOptions
+        );
     }
 
-    public function testGetName() : void {
+    public function testName() : void {
         self::assertSame('build', $this->subject->name());
+    }
+
+    public function testSummary() : void {
+        $expected = 'Analyze and cache a ContainerDefinition according to your annotated-container CLI script.';
+
+        self::assertSame($expected, $this->subject->summary());
     }
 
     public function testGetHelp() : void {
         $expected = <<<SHELL
 NAME
 
-    build - Compile a ContainerDefinition and cache it according to the defined configuration file.
+    build - Analyze and cache a ContainerDefinition according to your annotated-container CLI script.
     
 SYNOPSIS
 
-    <bold>build</bold> [OPTION]...
+    <bold>build</bold>
 
 DESCRIPTION
 
-    <bold>build</bold> will compile and cache a ContainerDefinition based on the 
-    configuration file present. If your configuration has disabled caching running
-    this command will result in an error.
-
-OPTIONS
-
-    --config-file="file-path.xml"
-
-        Set the name of the configuration file to be used. If not provided the
-        default value will be "annotated-container.xml".
+    <bold>build</bold> will analyze and cache a ContainerDefinition based on the 
+    configuration file provided in your annotated-container CLI script. Using the 
+    ContainerDefinitionCache provided in this script the following actions will  
+    be performed:
+    
+    - A CacheKey will be generated based on the configuration's scan directories 
+    and DefinitionProvider, if present.
+    - Whatever entry for the generated CacheKey will be removed from the provided 
+    ContainerDefinitionCache.
+    - A CacheAwareContainerDefinitionAnalyzer, using an AnnotatedTargetContainerDefinitionAnalyzer 
+    as its delegate, will analyze and cache your ContainerDefinition according to the 
+    configuration provided.
 
 SHELL;
 
         self::assertSame($expected, $this->subject->help());
     }
 
-    public function testConfigurationFileNotPresent() : void {
-        self::expectException(ConfigurationNotFound::class);
-        self::expectExceptionMessage(
-            'No configuration file found at "annotated-container.xml".'
-        );
+    public function testBuildRemovesAndSetsCorrectCacheEntryAndSendsCorrectOutput() : void {
+        $this->analysisOptions->method('scanDirectories')
+            ->willReturn([$this->directoryResolver->rootPath('SingleConcreteService')]);
 
-        $input = new StubInput([], ['build']);
-        $this->subject->handle($input, $this->output);
-    }
+        $this->analysisOptions->method('definitionProvider')
+            ->willReturn(null);
 
-    public function testConfigurationFilePresentCacheContainerDefinition() : void {
-        $config = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
-  <scanDirectories>
-    <source>
-      <dir>SingleConcreteService</dir>
-    </source>
-  </scanDirectories>
-  <cacheDir>.annotated-container-cache</cacheDir>
-</annotatedContainer>
-XML;
+        $cacheKeyMatchesExpected = function (CacheKey $cacheKey) {
+            return md5($this->directoryResolver->rootPath('SingleConcreteService'))
+                === $cacheKey->asString();
+        };
 
-        VirtualFilesystem::newFile('annotated-container.xml')
-            ->withContent($config)
-            ->at($this->vfs);
+        $this->cache->expects($this->once())
+            ->method('remove')
+            ->with($this->callback($cacheKeyMatchesExpected));
 
-        VirtualFilesystem::newDirectory('.annotated-container-cache')->at($this->vfs);
-
-        $input = new StubInput([], ['build']);
-        $exitCode = $this->subject->handle($input, $this->output);
-
-        self::assertSame(0, $exitCode);
-        $expectedKey = md5(Fixtures::singleConcreteService()->getPath());
-        self::assertFileExists('vfs://root/.annotated-container-cache/' . $expectedKey);
-    }
-
-    public function testConfigurationFileDoesNotHaveCacheDirectory() : void {
-        $config = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
-  <scanDirectories>
-    <source>
-      <dir>SingleConcreteService</dir>
-    </source>
-  </scanDirectories>
-</annotatedContainer>
-XML;
-
-        VirtualFilesystem::newFile('annotated-container.xml')
-            ->withContent($config)
-            ->at($this->vfs);
-
-        self::expectException(CacheDirConfigurationNotFound::class);
-        self::expectExceptionMessage('Building a Container without a configured cache directory is not supported.');
-
-        $input = new StubInput([], ['build']);
-        $this->subject->handle($input, $this->output);
-    }
-
-    public function testBuildCommandRespectsConfigFileOptionPassed() : void {
-        $config = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
-  <scanDirectories>
-    <source>
-      <dir>AmbiguousAliasedServices</dir>
-    </source>
-  </scanDirectories>
-  <cacheDir>.annotated-container-cache</cacheDir>
-</annotatedContainer>
-XML;
-
-        VirtualFilesystem::newFile('my-config.xml')
-            ->withContent($config)
-            ->at($this->vfs);
-
-        VirtualFilesystem::newDirectory('.annotated-container-cache')->at($this->vfs);
-
-        $input = new StubInput(['config-file' => 'my-config.xml'], ['build']);
-        $exitCode = $this->subject->handle($input, $this->output);
-
-        self::assertSame(0, $exitCode);
-        $expectedKey = md5(Fixtures::ambiguousAliasedServices()->getPath());
-        self::assertFileExists('vfs://root/.annotated-container-cache/' . $expectedKey);
-    }
-
-    public function testBuildCommandRespectsConfigFileFromComposerJson() : void {
-        $config = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
-  <scanDirectories>
-    <source>
-      <dir>AmbiguousAliasedServices</dir>
-    </source>
-  </scanDirectories>
-  <cacheDir>.annotated-container-cache</cacheDir>
-</annotatedContainer>
-XML;
-
-        VirtualFilesystem::newFile('composer.json')
-            ->withContent(json_encode([
-                'extra' => [
-                    'annotatedContainer' => [
-                        'configFile' => 'composer-config.xml'
-                    ]
-                ]
-            ]))->at($this->vfs);
-
-        VirtualFilesystem::newFile('composer-config.xml')
-            ->withContent($config)
-            ->at($this->vfs);
-
-        VirtualFilesystem::newDirectory('.annotated-container-cache')->at($this->vfs);
-
-        $input = new StubInput([], ['build']);
-        $exitCode = $this->subject->handle($input, $this->output);
-
-        self::assertSame(0, $exitCode);
-        $expectedKey = md5(Fixtures::ambiguousAliasedServices()->getPath());
-        self::assertFileExists('vfs://root/.annotated-container-cache/' . $expectedKey);
-    }
-
-    public function testBuildCommandConfigFileBooleansThrowsException() : void {
-        self::expectException(InvalidOptionType::class);
-        self::expectExceptionMessage('The option "config-file" MUST NOT be a flag-only option.');
-
-        $input = new StubInput(['config-file' => true], ['build']);
-        $this->subject->handle($input, $this->output);
-    }
-
-    public function testBuildCommandConfigFileArrayThrowsException() : void {
-        self::expectException(InvalidOptionType::class);
-        self::expectExceptionMessage('The option "config-file" MUST NOT be provided multiple times.');
-
-        $input = new StubInput(['config-file' => ['a', 'b']], ['build']);
-        $this->subject->handle($input, $this->output);
-    }
-
-    public function testBuildCommandCachesContainerDefinitionWithDefinitionProvider() : void {
-        $config = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
-  <scanDirectories>
-    <source>
-      <dir>ThirdPartyServices</dir>
-    </source>
-  </scanDirectories>
-  <cacheDir>.annotated-container-cache</cacheDir>
-  <definitionProviders>
-    <definitionProvider>Cspray\AnnotatedContainer\Unit\Helper\StubDefinitionProvider</definitionProvider>
-  </definitionProviders>
-</annotatedContainer>
-XML;
-
-        VirtualFilesystem::newFile('annotated-container.xml')
-            ->withContent($config)
-            ->at($this->vfs);
-
-        VirtualFilesystem::newDirectory('.annotated-container-cache')->at($this->vfs);
-
-        $input = new StubInput([], ['build']);
-        $exitCode = $this->subject->handle($input, $this->output);
-
-        self::assertSame(0, $exitCode);
-        $expectedKey = md5(Fixtures::thirdPartyServices()->getPath());
-        self::assertFileExists('vfs://root/.annotated-container-cache/' . $expectedKey);
-
-        $containerDefinition = (new CacheAwareContainerDefinitionAnalyzer(
-            new AnnotatedTargetContainerDefinitionAnalyzer(
-                new PhpParserAnnotatedTargetParser(),
-                new AnnotatedTargetDefinitionConverter(),
-                new Emitter(),
-            ),
-            new XmlContainerDefinitionSerializer(),
-            'vfs://root/.annotated-container-cache'
-        ))->analyze(
-            ContainerDefinitionAnalysisOptionsBuilder::scanDirectories(Fixtures::thirdPartyServices()->getPath())->build()
-        );
-
-        self::assertCount(2, $containerDefinition->serviceDefinitions());
-        self::assertSame(
-            Fixtures::thirdPartyServices()->fooImplementation(),
-            $containerDefinition->serviceDefinitions()[0]->type()
-        );
-        self::assertSame(
-            Fixtures::thirdPartyServices()->fooInterface(),
-            $containerDefinition->serviceDefinitions()[1]->type()
-        );
-    }
-
-    public function testSuccessfulBuildHasCorrectOutput() : void {
-        $config = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
-  <scanDirectories>
-    <source>
-      <dir>SingleConcreteService</dir>
-    </source>
-  </scanDirectories>
-  <cacheDir>.annotated-container-cache</cacheDir>
-</annotatedContainer>
-XML;
-
-        VirtualFilesystem::newFile('annotated-container.xml')
-            ->withContent($config)
-            ->at($this->vfs);
-
-        VirtualFilesystem::newDirectory('.annotated-container-cache')->at($this->vfs);
+        $this->cache->expects($this->once())
+            ->method('set')
+            ->with(
+                $this->callback($cacheKeyMatchesExpected),
+                $this->isInstanceOf(ContainerDefinition::class)
+            );
 
         $input = new StubInput([], ['build']);
         $exitCode = $this->subject->handle($input, $this->output);

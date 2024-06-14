@@ -121,9 +121,6 @@ abstract class AbstractContainerFactory implements ContainerFactory {
         return $value;
     }
 
-
-    abstract protected function backingContainerType() : ObjectType;
-
     abstract protected function containerFactoryState(ContainerDefinition $containerDefinition) : ContainerFactoryState;
 
     abstract protected function handleServiceDefinition(ContainerFactoryState $state, ServiceDefinition $definition) : void;

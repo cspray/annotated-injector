@@ -36,10 +36,6 @@ if (!class_exists(Container::class)) {
  */
 final class PhpDiContainerFactory extends AbstractContainerFactory implements ContainerFactory {
 
-    protected function backingContainerType() : ObjectType {
-        return objectType(Container::class);
-    }
-
     protected function containerFactoryState(ContainerDefinition $containerDefinition) : ContainerFactoryState {
         return new PhpDiContainerFactoryState($containerDefinition);
     }

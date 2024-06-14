@@ -15,6 +15,7 @@ use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinition;
 use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinitionBuilder;
 use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinition;
 use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinitionBuilder;
+use Cspray\AnnotatedContainer\Exception\InvalidAnnotatedTarget;
 use Cspray\AnnotatedContainer\Exception\InvalidServiceDelegate;
 use Cspray\AnnotatedTarget\AnnotatedTarget;
 use Cspray\Typiphy\ObjectType;
@@ -73,7 +74,7 @@ final class AnnotatedTargetDefinitionConverter {
             return $this->buildServicePrepareDefinition($target);
         }
 
-        throw new \RuntimeException();
+        throw InvalidAnnotatedTarget::fromAttributeInstanceNotKnownType();
     }
 
     private function buildServiceDefinition(AnnotatedTarget $target) : ServiceDefinition {

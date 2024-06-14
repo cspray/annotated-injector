@@ -51,10 +51,6 @@ function service(ObjectType $type, ?string $name = null, array $profiles = [], b
     return $serviceDefinitionBuilder->build();
 }
 
-function alias(ObjectType $abstract, ObjectType $concrete) : AliasDefinition {
-    return AliasDefinitionBuilder::forAbstract($abstract)->withConcrete($concrete)->build();
-}
-
 function serviceDelegate(ObjectType $service, ObjectType $factoryClass, string $factoryMethod) : ServiceDelegateDefinition {
     return ServiceDelegateDefinitionBuilder::forService($service)
         ->withDelegateMethod($factoryClass, $factoryMethod)->build();

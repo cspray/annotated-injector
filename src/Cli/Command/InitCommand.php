@@ -12,6 +12,7 @@ use Cspray\AnnotatedContainer\Cli\Exception\PotentialConfigurationOverwrite;
 use Cspray\AnnotatedContainer\Cli\Input\Input;
 use Cspray\AnnotatedContainer\Cli\Output\TerminalOutput;
 use Cspray\AnnotatedContainer\Exception\ComposerAutoloadNotFound;
+use Cspray\AnnotatedContainer\Filesystem\Filesystem;
 use DOMDocument;
 use DOMException;
 use RecursiveArrayIterator;
@@ -24,7 +25,7 @@ final class InitCommand implements Command {
     public function __construct(
         private readonly BootstrappingDirectoryResolver $directoryResolver,
         private readonly ThirdPartyInitializerProvider $initializerProvider,
-        private readonly ConfigFileNameDecider $configFileNameDecider
+        private readonly Filesystem $filesystem
     ) {
     }
 
@@ -32,11 +33,16 @@ final class InitCommand implements Command {
         return 'init';
     }
 
+    public function summary() : string {
+        return 'Setup Annotated Container configuration using a set of common conventions.';
+    }
+
     public function help() : string {
+        $summary = $this->summary();
         return <<<SHELL
 NAME
 
-    init - Setup bootstrapping of Annotated Container with a configuration file.
+    init - $summary
            
 SYNOPSIS
 
@@ -54,31 +60,15 @@ DESCRIPTION
     ============================================================================
     
     1. Create a configuration file that stores information about how to create 
-       your project's Container. By default, this file is created in the root of 
-       your project. For more details about the format of this file you can review 
-       the schema at https://annotated-container.cspray.io/schemas/annotated-container.xsd.
-       
-       There are 2 primary ways to control the naming of this file. The first 
-       is to pass a --config-file option when running this command. The second 
-       is to define a key "extra.annotatedContainer.configFile" in your 
-       composer.json that defines the name of the configuration file. If neither 
-       of these values are provided the name of the file will default to 
-       annotated-container.xml. The order of precedence for naming:
-       
-       A. The --config-file option if passed
-       B. The composer.json "extra.annotatedContainer.configFile" if present
-       C. The default value "annotated-container.xml"
+       your project's Container. This file is named "annotated-container.xml" and 
+       created in the root of your project. For more details about the format of 
+       this file you can review the schema at 
+       https://annotated-container.cspray.io/schemas/annotated-container.xsd.
        
        This command will NEVER overwrite a file that already exists. If the 
        file does exist an error will be thrown. If you're trying to recreate the 
        configuration you'll need to rename or move the existing file first.
        
-       !! Notice !!
-
-       The location of the configuration file is the only value recognized from 
-       the composer.json extra configuration. Any other keys present in 
-       "extra.annotatedContainer" will be ignored.
-
     2. Setup configuration to scan directories defined by your Composer autoload 
        and autoload-dev configurations. For example, if you have a "composer.json" 
        that resembles the following:
@@ -97,9 +87,8 @@ DESCRIPTION
        }
        
        The directories that would be included in the configuration are "src", 
-       "lib", and "test". By default we'll look for these directories in the root 
-       of your project. If you need to scan directories outside your project 
-       root please review the Caveats & Other Concerns detailed below.
+       "lib", and "test". We'll look for these directories in the root 
+       of your project.
 
     3. Setup configuration to include a DefinitionProvider when you need to 
        configure third-party services. You can provide a single --definition-provider 
@@ -138,12 +127,6 @@ DESCRIPTION
    
 OPTIONS
 
-    --config-file="file-path.xml"
-    
-        Set the name of the configuration file that is created. If this option 
-        is not provided the config file will default to "annotated-container.xml".
-        This option can only be defined 1 time.
-        
     --definition-provider="Fully\Qualified\Class\Name"
     
         Add a DefinitionProvider when generating your Annotated Container. This 
@@ -169,31 +152,25 @@ SHELL;
     public function handle(Input $input, TerminalOutput $output) : int {
         $this->validateInput($input);
 
-        $composerFile = $this->directoryResolver->configurationPath('composer.json');
-        if (!file_exists($composerFile)) {
+        $configFile = $this->directoryResolver->configurationPath('annotated-container.xml');
+        if ($this->filesystem->exists($configFile)) {
+            throw new PotentialConfigurationOverwrite(
+                'The configuration file "annotated-container.xml" is already present and cannot be overwritten.'
+            );
+        }
+
+        $composerFile = $this->directoryResolver->rootPath('composer.json');
+        if (!$this->filesystem->exists($composerFile)) {
             throw ComposerConfigurationNotFound::fromMissingComposerJson();
         }
 
-        $composer = json_decode(file_get_contents($composerFile), true);
-
-        /** @var string|null $configName */
-        $configName = $input->option('config-file');
-        if (!isset($configName)) {
-            $configName = $composer['extra']['annotatedContainer']['configFile'] ?? 'annotated-container.xml';
-        }
-
-        $configFile = $this->directoryResolver->configurationPath($configName);
-        if (file_exists($configFile)) {
-            throw new PotentialConfigurationOverwrite(
-                sprintf('The configuration file "%s" is already present and cannot be overwritten.', $configName)
-            );
-        }
+        $composer = json_decode($this->filesystem->read($composerFile), true);
 
         $this->generateAndSaveConfiguration($input, $composer, $configFile);
 
         $output->stdout->write('<fg:green>Annotated Container initialized successfully!</fg:green>');
         $output->stdout->br();
-        $output->stdout->write(sprintf('Be sure to review the configuration file created in "%s"!', $configName));
+        $output->stdout->write('Be sure to review the configuration file created in "annotated-container.xml"!');
 
         return 0;
     }
@@ -202,20 +179,6 @@ SHELL;
      * @throws InvalidOptionType
      */
     private function validateInput(Input $input) : void {
-        $configFile = $input->option('config-file');
-        if (is_bool($configFile)) {
-            throw InvalidOptionType::fromBooleanOption('config-file');
-        } elseif (is_array($configFile)) {
-            throw InvalidOptionType::fromArrayOption('config-file');
-        }
-
-        $cacheDir = $input->option('cache-dir');
-        if (is_bool($cacheDir)) {
-            throw InvalidOptionType::fromBooleanOption('cache-dir');
-        } elseif (is_array($cacheDir)) {
-            throw InvalidOptionType::fromArrayOption('cache-dir');
-        }
-
         $definitionProvider = $input->option('definition-provider');
         if (is_bool($definitionProvider)) {
             throw InvalidOptionType::fromBooleanOption('definition-provider');
@@ -226,11 +189,6 @@ SHELL;
         $parameterStore = $input->option('parameter-store');
         if (is_bool($parameterStore)) {
             throw InvalidOptionType::fromBooleanOption('parameter-store');
-        }
-
-        $observers = $input->option('observer');
-        if (is_bool($observers)) {
-            throw InvalidOptionType::fromBooleanOption('observer');
         }
     }
 
@@ -308,8 +266,7 @@ SHELL;
         $vendor = $scanDirectories->appendChild(
             $dom->createElementNS(self::XML_SCHEMA, 'vendor')
         );
-        foreach ($this->initializerProvider->thirdPartyInitializerProviders() as $thirdPartyInitializerClass) {
-            $thirdPartyInitializer = new $thirdPartyInitializerClass();
+        foreach ($this->initializerProvider->thirdPartyInitializers() as $thirdPartyInitializer) {
             $packageRelativeScanDirectories = $thirdPartyInitializer->relativeScanDirectories();
             if (count($packageRelativeScanDirectories) > 0) {
                 $package = $vendor->appendChild(
@@ -339,6 +296,6 @@ SHELL;
 
         $schemaPath = dirname(__DIR__, 3) . '/annotated-container.xsd';
         $dom->schemaValidate($schemaPath);
-        $dom->save($configFile);
+        $this->filesystem->write($configFile, $dom->saveXML());
     }
 }

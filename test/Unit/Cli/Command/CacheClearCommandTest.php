@@ -8,12 +8,16 @@ use Cspray\AnnotatedContainer\Cli\Exception\CacheDirNotFound;
 use Cspray\AnnotatedContainer\Cli\Exception\ConfigurationNotFound;
 use Cspray\AnnotatedContainer\Cli\Exception\InvalidOptionType;
 use Cspray\AnnotatedContainer\Cli\Output\TerminalOutput;
+use Cspray\AnnotatedContainer\Definition\Cache\CacheKey;
+use Cspray\AnnotatedContainer\Definition\Cache\ContainerDefinitionCache;
+use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptions;
 use Cspray\AnnotatedContainer\Unit\Helper\FixtureBootstrappingDirectoryResolver;
 use Cspray\AnnotatedContainer\Unit\Helper\InMemoryOutput;
 use Cspray\AnnotatedContainer\Unit\Helper\StubInput;
 use Cspray\AnnotatedContainerFixture\Fixtures;
 use org\bovigo\vfs\vfsStream as VirtualFilesystem;
 use org\bovigo\vfs\vfsStreamDirectory as VirtualDirectory;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 final class CacheClearCommandTest extends TestCase {
@@ -22,21 +26,26 @@ final class CacheClearCommandTest extends TestCase {
     private InMemoryOutput $stderr;
     private TerminalOutput $output;
 
+    private MockObject&ContainerDefinitionCache $cache;
+    private MockObject&ContainerDefinitionAnalysisOptions $analysisOptions;
+    private FixtureBootstrappingDirectoryResolver $directoryResolver;
+
     private CacheClearCommand $subject;
 
-    private VirtualDirectory $vfs;
 
     protected function setUp() : void {
-        $this->markTestIncomplete('Need to redesign how the CacheClear command gets the cache. Reliant on resolving #385.');
         $this->stdout = new InMemoryOutput();
         $this->stderr = new InMemoryOutput();
         $this->output = new TerminalOutput($this->stdout, $this->stderr);
+        $this->directoryResolver = new FixtureBootstrappingDirectoryResolver();
+
+        $this->cache = $this->createMock(ContainerDefinitionCache::class);
+        $this->analysisOptions = $this->createMock(ContainerDefinitionAnalysisOptions::class);
 
         $this->subject = new CacheClearCommand(
-            new FixtureBootstrappingDirectoryResolver()
+            $this->cache,
+            $this->analysisOptions
         );
-
-        $this->vfs = VirtualFilesystem::setup();
     }
 
     public function testGetName() : void {
@@ -74,236 +83,24 @@ SHELL;
         self::assertSame($expected, $this->subject->help());
     }
 
-    public function testConfigurationFileNotFoundThrowsException() : void {
-        self::expectException(ConfigurationNotFound::class);
-        self::expectExceptionMessage('No configuration file found at "annotated-container.xml".');
+    public function testCallingCommandCallsCacheRemoveWithCorrectCacheKey() : void {
+        $this->analysisOptions->method('scanDirectories')
+            ->willReturn([$this->directoryResolver->rootPath('SingleConcreteService')]);
+
+        $this->analysisOptions->method('definitionProvider')
+            ->willReturn(null);
+
+        $this->cache->expects($this->once())
+            ->method('remove')
+            ->with($this->callback(
+                fn (CacheKey $cacheKey) =>
+                    $cacheKey->asString() === md5($this->directoryResolver->rootPath('SingleConcreteService')))
+            );
 
         $input = new StubInput([], ['cache-clear']);
         $this->subject->handle($input, $this->output);
     }
 
-    public function testConfigurationFileDoesNotHaveCacheDirThrowsException() : void {
-        $config = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
-  <scanDirectories>
-    <source>
-      <dir>SingleConcreteService</dir>
-    </source>
-  </scanDirectories>
-</annotatedContainer>
-XML;
+    
 
-        VirtualFilesystem::newFile('annotated-container.xml')
-            ->withContent($config)
-            ->at($this->vfs);
-
-        self::expectException(CacheDirConfigurationNotFound::class);
-        self::expectExceptionMessage('Clearing a cache without a cache directory configured is not supported.');
-
-        $input = new StubInput([], ['cache-clear']);
-        $this->subject->handle($input, $this->output);
-    }
-
-    public function testCacheDirConfigureNotFoundThrowsException() : void {
-        $config = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
-  <scanDirectories>
-    <source>
-      <dir>SingleConcreteService</dir>
-    </source>
-  </scanDirectories>
-  <cacheDir>.annotated-container-cache</cacheDir>
-</annotatedContainer>
-XML;
-
-        VirtualFilesystem::newFile('annotated-container.xml')
-            ->withContent($config)
-            ->at($this->vfs);
-
-        self::assertDirectoryDoesNotExist('vfs://root/.annotated-container-cache');
-        self::expectException(CacheDirNotFound::class);
-        self::expectExceptionMessage('The cache directory configured ".annotated-container-cache" could not be found.');
-
-        $input = new StubInput([], ['cache-clear']);
-        $this->subject->handle($input, $this->output);
-    }
-
-    public function testCacheClearDirectoryExistsNoFile() : void {
-        $config = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
-  <scanDirectories>
-    <source>
-      <dir>SingleConcreteService</dir>
-    </source>
-  </scanDirectories>
-  <cacheDir>.annotated-container-cache</cacheDir>
-</annotatedContainer>
-XML;
-
-        VirtualFilesystem::newFile('annotated-container.xml')
-            ->withContent($config)
-            ->at($this->vfs);
-
-        VirtualFilesystem::newDirectory('.annotated-container-cache')
-            ->at($this->vfs);
-
-        $input = new StubInput([], ['cache-clear']);
-        $exitCode = $this->subject->handle($input, $this->output);
-
-        self::assertSame(0, $exitCode);
-
-        $expected = <<<SHELL
-\033[32mAnnotated Container cache has been cleared.\033[0m
-
-SHELL;
-
-        self::assertSame($expected, $this->stdout->getContentsAsString());
-    }
-
-    public function testCachedContainerPresentIsRemoved() : void {
-        $config = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
-  <scanDirectories>
-    <source>
-      <dir>SingleConcreteService</dir>
-    </source>
-  </scanDirectories>
-  <cacheDir>.annotated-container-cache</cacheDir>
-</annotatedContainer>
-XML;
-
-        VirtualFilesystem::newFile('annotated-container.xml')
-            ->withContent($config)
-            ->at($this->vfs);
-
-        $cacheDir = VirtualFilesystem::newDirectory('.annotated-container-cache')
-            ->at($this->vfs);
-
-        $expectedKey = md5(Fixtures::singleConcreteService()->getPath());
-
-        VirtualFilesystem::newFile($expectedKey)
-            ->withContent('does not matter here')
-            ->at($cacheDir);
-
-        self::assertFileExists('vfs://root/.annotated-container-cache/' . $expectedKey);
-
-        $input = new StubInput([], ['cache-clear']);
-        $exitCode = $this->subject->handle($input, $this->output);
-
-        self::assertSame(0, $exitCode);
-        self::assertFileDoesNotExist('vfs://root/.annotated-container-cache/' . $expectedKey);
-
-        $expected = <<<SHELL
-\033[32mAnnotated Container cache has been cleared.\033[0m
-
-SHELL;
-
-        self::assertSame($expected, $this->stdout->getContentsAsString());
-    }
-
-    public function testConfigFileOptionRespected() : void {
-        $config = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
-  <scanDirectories>
-    <source>
-      <dir>SingleConcreteService</dir>
-    </source>
-  </scanDirectories>
-  <cacheDir>.annotated-container-cache</cacheDir>
-</annotatedContainer>
-XML;
-
-        VirtualFilesystem::newFile('my-config.xml')
-            ->withContent($config)
-            ->at($this->vfs);
-
-        $cacheDir = VirtualFilesystem::newDirectory('.annotated-container-cache')
-            ->at($this->vfs);
-
-        $expectedKey = md5(Fixtures::singleConcreteService()->getPath());
-
-        VirtualFilesystem::newFile($expectedKey)
-            ->withContent('does not matter here')
-            ->at($cacheDir);
-
-        self::assertFileExists('vfs://root/.annotated-container-cache/' . $expectedKey);
-
-        $input = new StubInput(['config-file' => 'my-config.xml'], ['cache-clear']);
-        $exitCode = $this->subject->handle($input, $this->output);
-
-        self::assertSame(0, $exitCode);
-        self::assertFileDoesNotExist('vfs://root/.annotated-container-cache/' . $expectedKey);
-
-        $expected = <<<SHELL
-\033[32mAnnotated Container cache has been cleared.\033[0m
-
-SHELL;
-
-        self::assertSame($expected, $this->stdout->getContentsAsString());
-    }
-
-    public function testCacheClearRespectsConfigFileFromComposerJson() : void {
-        $config = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
-  <scanDirectories>
-    <source>
-      <dir>AmbiguousAliasedServices</dir>
-    </source>
-  </scanDirectories>
-  <cacheDir>.annotated-container-cache</cacheDir>
-</annotatedContainer>
-XML;
-
-        VirtualFilesystem::newFile('composer.json')
-            ->withContent(json_encode([
-                'extra' => [
-                    'annotatedContainer' => [
-                        'configFile' => 'composer-config.xml'
-                    ]
-                ]
-            ]))->at($this->vfs);
-
-        VirtualFilesystem::newFile('composer-config.xml')
-            ->withContent($config)
-            ->at($this->vfs);
-
-        $cacheDir = VirtualFilesystem::newDirectory('.annotated-container-cache')->at($this->vfs);
-
-        $expectedKey = md5(Fixtures::singleConcreteService()->getPath());
-
-        VirtualFilesystem::newFile($expectedKey)
-            ->withContent('does not matter here')
-            ->at($cacheDir);
-
-        self::assertFileExists('vfs://root/.annotated-container-cache/' . $expectedKey);
-
-        $input = new StubInput([], ['cache-clear']);
-        $exitCode = $this->subject->handle($input, $this->output);
-
-        self::assertSame(0, $exitCode);
-        $expectedKey = md5(Fixtures::ambiguousAliasedServices()->getPath());
-        self::assertFileDoesNotExist('vfs://root/.annotated-container-cache/' . $expectedKey);
-    }
-
-    public function testCommandConfigFileBooleansThrowsException() : void {
-        self::expectException(InvalidOptionType::class);
-        self::expectExceptionMessage('The option "config-file" MUST NOT be a flag-only option.');
-
-        $input = new StubInput(['config-file' => true], ['cache-clear']);
-        $this->subject->handle($input, $this->output);
-    }
-
-    public function testCommandConfigFileArrayThrowsException() : void {
-        self::expectException(InvalidOptionType::class);
-        self::expectExceptionMessage('The option "config-file" MUST NOT be provided multiple times.');
-
-        $input = new StubInput(['config-file' => ['a', 'b']], ['cache-clear']);
-        $this->subject->handle($input, $this->output);
-    }
 }

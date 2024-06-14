@@ -99,7 +99,7 @@ $emitter = new Emitter();
 
 // Include other active profiles in this list
 // If the only active profile is default you can call this method without any arguments
-$container = Bootstrap::fromMinimalSetup($emitter)->bootstrapContainer(
+$container = Bootstrap::from($emitter)->bootstrapContainer(
     Profiles::fromList(['default'])
 );
 

@@ -16,17 +16,9 @@
     </MixedArrayAccess>
     <MixedAssignment>
       <code><![CDATA[$composerData]]></code>
-      <code><![CDATA[$initializers[]]]></code>
       <code><![CDATA[$packageInitializer]]></code>
       <code><![CDATA[$packageInitializers]]></code>
     </MixedAssignment>
-    <MixedReturnTypeCoercion>
-      <code><![CDATA[$initializers]]></code>
-      <code><![CDATA[list<class-string<ThirdPartyInitializer>>]]></code>
-    </MixedReturnTypeCoercion>
-    <UndefinedMethod>
-      <code><![CDATA[isDot]]></code>
-    </UndefinedMethod>
   </file>
   <file src="src/Bootstrap/ServiceWiringListener.php">
     <InvalidReturnStatement>
@@ -60,12 +52,6 @@
     </MixedReturnTypeCoercion>
   </file>
   <file src="src/Bootstrap/XmlBootstrappingConfiguration.php">
-    <InvalidReturnStatement>
-      <code><![CDATA[$this->cacheDir]]></code>
-    </InvalidReturnStatement>
-    <InvalidReturnType>
-      <code><![CDATA[?ContainerDefinitionCache]]></code>
-    </InvalidReturnType>
     <MixedAssignment>
       <code><![CDATA[$scanDirectories[]]]></code>
     </MixedAssignment>
@@ -76,40 +62,6 @@
       <code><![CDATA[$scanDirectory->textContent]]></code>
     </UndefinedPropertyFetch>
   </file>
-  <file src="src/Cli/Command/BuildCommand.php">
-    <InvalidArgument>
-      <code><![CDATA[$cacheDir]]></code>
-      <code><![CDATA[new XmlContainerDefinitionSerializer()]]></code>
-    </InvalidArgument>
-    <MixedArrayAccess>
-      <code><![CDATA[$composer['extra']['annotatedContainer']['configFile']]]></code>
-    </MixedArrayAccess>
-    <MixedAssignment>
-      <code><![CDATA[$configName]]></code>
-    </MixedAssignment>
-    <TooManyArguments>
-      <code><![CDATA[new CacheAwareContainerDefinitionAnalyzer($compiler, new XmlContainerDefinitionSerializer(), $cacheDir)]]></code>
-    </TooManyArguments>
-  </file>
-  <file src="src/Cli/Command/CacheClearCommand.php">
-    <InvalidArgument>
-      <code><![CDATA[$cacheDir]]></code>
-      <code><![CDATA[$cacheDir]]></code>
-      <code><![CDATA[$cacheDir]]></code>
-    </InvalidArgument>
-    <MixedArgument>
-      <code><![CDATA[$configName]]></code>
-    </MixedArgument>
-    <MixedArrayAccess>
-      <code><![CDATA[$composer['extra']]]></code>
-      <code><![CDATA[$composer['extra']['annotatedContainer']]]></code>
-      <code><![CDATA[$composer['extra']['annotatedContainer']['configFile']]]></code>
-    </MixedArrayAccess>
-    <MixedAssignment>
-      <code><![CDATA[$composer]]></code>
-      <code><![CDATA[$configName]]></code>
-    </MixedAssignment>
-  </file>
   <file src="src/Cli/Command/InitCommand.php">
     <InvalidOperand>
       <code><![CDATA[$autoloadDevPsr0]]></code>
@@ -119,14 +71,8 @@
     </InvalidOperand>
     <MixedArgument>
       <code><![CDATA[$composer]]></code>
-      <code><![CDATA[$configName]]></code>
       <code><![CDATA[$parameterStore]]></code>
     </MixedArgument>
-    <MixedArrayAccess>
-      <code><![CDATA[$composer['extra']]]></code>
-      <code><![CDATA[$composer['extra']['annotatedContainer']]]></code>
-      <code><![CDATA[$composer['extra']['annotatedContainer']['configFile']]]></code>
-    </MixedArrayAccess>
     <MixedAssignment>
       <code><![CDATA[$autoloadDevPsr0]]></code>
       <code><![CDATA[$autoloadDevPsr4]]></code>
@@ -135,32 +81,13 @@
       <code><![CDATA[$composer]]></code>
       <code><![CDATA[$composerDevDir]]></code>
       <code><![CDATA[$composerDir]]></code>
-      <code><![CDATA[$configName]]></code>
       <code><![CDATA[$parameterStore]]></code>
     </MixedAssignment>
   </file>
   <file src="src/Cli/Command/ValidateCommand.php">
     <PossiblyInvalidArgument>
-      <code><![CDATA[$configOption]]></code>
-      <code><![CDATA[$configOption]]></code>
       <code><![CDATA[$inputProfiles]]></code>
     </PossiblyInvalidArgument>
-  </file>
-  <file src="src/Cli/InputParser.php">
-    <ArgumentTypeCoercion>
-      <code><![CDATA[$arguments]]></code>
-      <code><![CDATA[$options]]></code>
-    </ArgumentTypeCoercion>
-    <RedundantConditionGivenDocblockType>
-      <code><![CDATA[assert(is_array($options))]]></code>
-      <code><![CDATA[is_array($options)]]></code>
-    </RedundantConditionGivenDocblockType>
-  </file>
-  <file src="src/Cli/TerminalOutput.php">
-    <MixedArgument>
-      <code><![CDATA[$this->tagCodes['codes']]]></code>
-      <code><![CDATA[$this->tagCodes['tags']]]></code>
-    </MixedArgument>
   </file>
   <file src="src/ContainerFactory/AbstractContainerFactory.php">
     <MixedArgument>
@@ -340,9 +267,7 @@
     </PropertyNotSetInConstructor>
   </file>
   <file src="src/Definition/Cache/FileBackedContainerDefinitionCache.php">
-    <ArgumentTypeCoercion>
-      <code><![CDATA[file_get_contents($filePath)]]></code>
-    </ArgumentTypeCoercion>
+    <ArgumentTypeCoercion/>
   </file>
   <file src="src/Definition/InjectDefinitionBuilder.php">
     <LessSpecificReturnStatement>
