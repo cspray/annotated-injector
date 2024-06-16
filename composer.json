@@ -47,12 +47,12 @@
       "Cspray\\AnnotatedContainer\\": "test"
     },
     "files": [
-      "test/Fixture/VendorScanningInitializers/vendor/cspray/package/src/SomeService.php",
-      "test/Fixture/VendorScanningInitializers/src/ActualService.php",
-      "test/Fixture/VendorScanningInitializers/vendor/cspray/package/src/FirstInitializer.php",
-      "test/Fixture/VendorScanningInitializers/vendor/cspray/package/src/SecondInitializer.php",
-      "test/Fixture/VendorScanningInitializers/vendor/cspray/package/src/ThirdPartyDependency.php",
-      "test/Fixture/VendorScanningInitializers/vendor/cspray/package/other_src/ThirdInitializer.php"
+      "./test/Fixture/VendorScanningInitializers/vendor/cspray/package/src/SomeService.php",
+      "./test/Fixture/VendorScanningInitializers/src/ActualService.php",
+      "./test/Fixture/VendorScanningInitializers/vendor/cspray/package/src/FirstInitializer.php",
+      "./test/Fixture/VendorScanningInitializers/vendor/cspray/package/src/SecondInitializer.php",
+      "./test/Fixture/VendorScanningInitializers/vendor/cspray/package/src/ThirdPartyDependency.php",
+      "./test/Fixture/VendorScanningInitializers/vendor/cspray/package/other_src/ThirdInitializer.php"
     ]
   },
   "suggest": {
