@@ -17,7 +17,6 @@ use Cspray\AnnotatedContainer\Event\Listener\Bootstrap\BeforeBootstrap;
 use Cspray\AnnotatedContainer\Event\Listener\ContainerFactory\AfterContainerCreation;
 use Cspray\AnnotatedContainer\Event\Listener\ContainerFactory\BeforeContainerCreation;
 use Cspray\AnnotatedContainer\Event\Listener\ContainerFactory\InjectingMethodParameter;
-use Cspray\AnnotatedContainer\Event\Listener\ContainerFactory\InjectingProperty;
 use Cspray\AnnotatedContainer\Event\Listener\ContainerFactory\ServiceAliasResolution;
 use Cspray\AnnotatedContainer\Event\Listener\ContainerFactory\ServiceDelegated;
 use Cspray\AnnotatedContainer\Event\Listener\ContainerFactory\ServiceFilteredDueToProfiles;

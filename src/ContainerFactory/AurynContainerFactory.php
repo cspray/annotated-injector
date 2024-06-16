@@ -34,10 +34,6 @@ if (!class_exists(Injector::class)) {
  */
 final class AurynContainerFactory extends AbstractContainerFactory implements ContainerFactory {
 
-    protected function backingContainerType() : ObjectType {
-        return objectType(Injector::class);
-    }
-
     protected function containerFactoryState(ContainerDefinition $containerDefinition) : AurynContainerFactoryState {
         return new AurynContainerFactoryState($containerDefinition);
     }

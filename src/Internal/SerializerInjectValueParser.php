@@ -31,7 +31,7 @@ final class SerializerInjectValueParser {
             foreach (explode('|', $rawType) as $unionType) {
                 $types[] = $this->convertStringToType($unionType);
             }
-            /** @psalm-var list<Type> $types */
+            /** @psalm-var non-empty-list<Type> $types */
             $type = typeUnion(...$types);
         } elseif (str_contains($rawType, '&')) {
             $types = [];

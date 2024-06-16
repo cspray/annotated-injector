@@ -88,7 +88,7 @@ use Psr\Log\LoggerInterface;
 use Cspray\AnnotatedContainer\Bootstrap\Bootstrap;
 use Cspray\AnnotatedContainer\Event\Emitter;
 
-$container = Bootstrap::fromMinimalSetup(new Emitter())->bootstrapContainer();
+$container = Bootstrap::from(new Emitter())->bootstrapContainer();
 ```
 
 Now, your PSR Logger will be created through a factory. Any services can inject a `LoggerInterface` directly in the constructor, preferred, or implement the `LoggerAwareInterface` to have it injected automatically after construction.

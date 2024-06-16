@@ -9,5 +9,4 @@ namespace Cspray\AnnotatedContainer\LogicalConstraint;
 enum LogicalConstraintViolationType {
     case Critical;
     case Warning;
-    case Notice;
 }

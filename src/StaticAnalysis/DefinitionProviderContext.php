@@ -32,6 +32,4 @@ interface DefinitionProviderContext {
     public function addServiceDelegateDefinition(ServiceDelegateDefinition $serviceDelegateDefinition) : void;
 
     public function addInjectDefinition(InjectDefinition $injectDefinition) : void;
-
-    public function addAliasDefinition(AliasDefinition $aliasDefinition) : void;
 }

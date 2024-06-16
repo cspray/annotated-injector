@@ -30,9 +30,9 @@ final class StandardAliasDefinitionResolver implements AliasDefinitionResolver {
             } elseif (count($aliases) > 1) {
                 $definition = null;
                 $primaryAliases = [];
+                $primaryServices = $this->primaryServiceNames($containerDefinition);
                 foreach ($aliases as $alias) {
-                    $concreteDefinition = $this->serviceDefinition($containerDefinition, $alias->concreteService());
-                    if ($concreteDefinition?->isPrimary()) {
+                    if (in_array($alias->concreteService(), $primaryServices, true)) {
                         $primaryAliases[] = $alias;
                     }
                 }
@@ -69,16 +69,6 @@ final class StandardAliasDefinitionResolver implements AliasDefinitionResolver {
         };
     }
 
-    private function serviceDefinition(ContainerDefinition $containerDefinition, ObjectType $objectType) : ?ServiceDefinition {
-        foreach ($containerDefinition->serviceDefinitions() as $serviceDefinition) {
-            if ($serviceDefinition->type()->getName() === $objectType->getName()) {
-                return $serviceDefinition;
-            }
-        }
-
-        return null;
-    }
-
     private function isServiceDelegate(ContainerDefinition $containerDefinition, ObjectType $service) : bool {
         foreach ($containerDefinition->serviceDelegateDefinitions() as $serviceDelegateDefinition) {
             if ($serviceDelegateDefinition->serviceType()->getName() === $service->getName()) {
@@ -87,5 +77,18 @@ final class StandardAliasDefinitionResolver implements AliasDefinitionResolver {
         }
 
         return false;
+    }
+
+    /**
+     * @return list<ObjectType>
+     */
+    private function primaryServiceNames(ContainerDefinition $containerDefinition) : array {
+        $names = [];
+        foreach ($containerDefinition->serviceDefinitions() as $serviceDefinition) {
+            if ($serviceDefinition->isPrimary()) {
+                $names[] = $serviceDefinition->type();
+            }
+        }
+        return $names;
     }
 }

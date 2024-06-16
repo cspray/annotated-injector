@@ -9,6 +9,7 @@ use Cspray\AnnotatedContainer\Definition\Serializer\XmlContainerDefinitionSerial
 use Cspray\AnnotatedContainer\Exception\CacheDirectoryNotFound;
 use Cspray\AnnotatedContainer\Exception\CacheDirectoryNotWritable;
 use Cspray\AnnotatedContainer\Exception\MismatchedContainerDefinitionSerializerVersions;
+use Cspray\AnnotatedContainer\Filesystem\Filesystem;
 
 final class FileBackedContainerDefinitionCache implements ContainerDefinitionCache {
 
@@ -18,33 +19,40 @@ final class FileBackedContainerDefinitionCache implements ContainerDefinitionCac
      */
     public function __construct(
         private readonly ContainerDefinitionSerializer $containerDefinitionSerializer,
+        private readonly Filesystem $filesystem,
         private readonly string $cacheDir
     ) {
-        if (!is_dir($this->cacheDir)) {
+        if (!$this->filesystem->isDirectory($this->cacheDir)) {
             throw CacheDirectoryNotFound::fromDirectoryNotFound($this->cacheDir);
         }
-        if (!is_writable($this->cacheDir)) {
+        if (!$this->filesystem->isWritable($this->cacheDir)) {
             throw CacheDirectoryNotWritable::fromDirectoryNotWritable($this->cacheDir);
         }
     }
 
     public function set(CacheKey $cacheKey, ContainerDefinition $containerDefinition) : void {
-        file_put_contents(
-            $this->cacheDir . '/' . $cacheKey->asString(),
+        $this->filesystem->write(
+            $this->cachePath($cacheKey),
             $this->containerDefinitionSerializer->serialize($containerDefinition)->asString()
         );
     }
 
     public function get(CacheKey $cacheKey) : ?ContainerDefinition {
-        $filePath = $this->cacheDir . '/' . $cacheKey->asString();
-        if (!file_exists($filePath)) {
+        $filePath = $this->cachePath($cacheKey);
+        if (!$this->filesystem->isFile($filePath)) {
             return null;
         }
 
-        $serializedContainerDefinition = SerializedContainerDefinition::fromString(file_get_contents($filePath));
+        $contents = $this->filesystem->read($filePath);
+        if ($contents === '') {
+            $this->remove($cacheKey);
+            return null;
+        }
 
         try {
-            return $this->containerDefinitionSerializer->deserialize($serializedContainerDefinition);
+            return $this->containerDefinitionSerializer->deserialize(
+                SerializedContainerDefinition::fromString($contents)
+            );
         } catch (MismatchedContainerDefinitionSerializerVersions) {
             $this->remove($cacheKey);
             return null;
@@ -52,8 +60,18 @@ final class FileBackedContainerDefinitionCache implements ContainerDefinitionCac
     }
 
     public function remove(CacheKey $cacheKey) : void {
-        if (file_exists($this->cacheDir . '/' . $cacheKey->asString())) {
-            unlink($this->cacheDir . '/' . $cacheKey->asString());
-        }
+        $this->filesystem->remove($this->cachePath($cacheKey));
+    }
+
+    /**
+     * @param CacheKey $cacheKey
+     * @return non-empty-string
+     */
+    private function cachePath(CacheKey $cacheKey) : string {
+        return sprintf(
+            '%s/%s',
+            $this->cacheDir,
+            $cacheKey->asString()
+        );
     }
 }

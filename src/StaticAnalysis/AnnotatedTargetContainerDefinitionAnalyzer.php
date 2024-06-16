@@ -250,12 +250,6 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
                     $this->builder = $this->builder->withInjectDefinition($injectDefinition);
                     $this->analysisEmitter->emitAddedInjectDefinitionFromApi($injectDefinition);
                 }
-
-                public function addAliasDefinition(AliasDefinition $aliasDefinition) : void {
-                    $this->builder = $this->builder->withAliasDefinition($aliasDefinition);
-                    // We do not emit adding an alias definition here, it is handled by the analyzer after all services
-                    // are added or parsed
-                }
             };
             $definitionProvider->consume($context);
             return $context->getBuilder();

@@ -3,9 +3,9 @@
 namespace Cspray\AnnotatedContainer\Unit\Helper;
 
 use Closure;
-use Cspray\AnnotatedContainer\Cli\Command;
-use Cspray\AnnotatedContainer\Cli\Input;
-use Cspray\AnnotatedContainer\Cli\TerminalOutput;
+use Cspray\AnnotatedContainer\Cli\Command\Command;
+use Cspray\AnnotatedContainer\Cli\Input\Input;
+use Cspray\AnnotatedContainer\Cli\Output\TerminalOutput;
 
 final class StubCommand implements Command {
 
@@ -25,5 +25,9 @@ final class StubCommand implements Command {
 
     public function help() : string {
         return 'Stub command help text';
+    }
+
+    public function summary() : string {
+        // TODO: Implement summary() method.
     }
 }

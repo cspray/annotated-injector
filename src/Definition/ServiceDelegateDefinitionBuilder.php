@@ -10,6 +10,9 @@ final class ServiceDelegateDefinitionBuilder {
 
     private ObjectType $service;
     private ObjectType $delegateType;
+    /**
+     * @var non-empty-string
+     */
     private string $delegateMethod;
     private ?ServiceDelegateAttribute $attribute = null;
 
@@ -22,6 +25,12 @@ final class ServiceDelegateDefinitionBuilder {
         return $instance;
     }
 
+    /**
+     * @param ObjectType $delegateType
+     * @param non-empty-string $delegateMethod
+     * @return $this
+     * @throws InvalidServiceDelegateDefinition
+     */
     public function withDelegateMethod(ObjectType $delegateType, string $delegateMethod) : self {
         if (trim($delegateMethod) === '') {
             throw InvalidServiceDelegateDefinition::fromEmptyDelegateMethod();
@@ -41,7 +50,12 @@ final class ServiceDelegateDefinitionBuilder {
     public function build() : ServiceDelegateDefinition {
         return new class($this->service, $this->delegateType, $this->delegateMethod, $this->attribute) implements ServiceDelegateDefinition {
 
-
+            /**
+             * @param ObjectType $serviceDefinition
+             * @param ObjectType $delegateType
+             * @param non-empty-string $delegateMethod
+             * @param ServiceDelegateAttribute|null $attribute
+             */
             public function __construct(
                 private readonly ObjectType $serviceDefinition,
                 private readonly ObjectType $delegateType,
@@ -54,6 +68,9 @@ final class ServiceDelegateDefinitionBuilder {
                 return $this->delegateType;
             }
 
+            /**
+             * @return non-empty-string
+             */
             public function delegateMethod() : string {
                 return $this->delegateMethod;
             }

@@ -5,7 +5,7 @@ namespace Cspray\AnnotatedContainer\Bootstrap;
 interface ThirdPartyInitializerProvider {
 
     /**
-     * @return list<class-string<ThirdPartyInitializer>>
+     * @return list<ThirdPartyInitializer>
      */
-    public function thirdPartyInitializerProviders() : array;
+    public function thirdPartyInitializers() : array;
 }

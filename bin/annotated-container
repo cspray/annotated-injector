@@ -1,37 +1,8 @@
 #!/usr/bin/env php
 <?php declare(strict_types=1);
 
-use Cspray\AnnotatedContainer\Bootstrap\RootDirectoryBootstrappingDirectoryResolver;
-use Cspray\AnnotatedContainer\Bootstrap\ComposerJsonScanningThirdPartyInitializerProvider;
-use Cspray\AnnotatedContainer\Cli\Command\ValidateCommand;
-use Cspray\AnnotatedContainer\Cli\Command\BuildCommand;
-use Cspray\AnnotatedContainer\Cli\Command\CacheClearCommand;
-use Cspray\AnnotatedContainer\Cli\Command\HelpCommand;
-use Cspray\AnnotatedContainer\Cli\Command\InitCommand;
-use Cspray\AnnotatedContainer\Cli\CommandExecutor;
-use Cspray\AnnotatedContainer\Cli\InputParser;
-use Cspray\AnnotatedContainer\Cli\TerminalOutput;
+use Cspray\AnnotatedContainer\Cli\AnnotatedContainerCliRunner;
 
-$dir = dirname(__DIR__);
-if (!file_exists($dir . '/vendor/autoload.php')) {
-    $dir = dirname(__DIR__, 4);
-}
+include $_composer_autoload_path ?? __DIR__ . '/../vendor/autoload.php';
 
-require_once $dir . '/vendor/autoload.php';
-
-$directoryResolver = new RootDirectoryBootstrappingDirectoryResolver($dir);
-
-$commandExecutor = new CommandExecutor();
-
-$commandExecutor->defaultCommand(new HelpCommand($commandExecutor));
-$commandExecutor->addCommand(new InitCommand($directoryResolver, new ComposerJsonScanningThirdPartyInitializerProvider($directoryResolver)));
-$commandExecutor->addCommand(new BuildCommand($directoryResolver));
-$commandExecutor->addCommand(new CacheClearCommand($directoryResolver));
-$commandExecutor->addCommand(new ValidateCommand($directoryResolver));
-
-$input = (new InputParser())->parse($argv);
-$terminalOutput = new TerminalOutput();
-
-$exitCode = $commandExecutor->execute($input, $terminalOutput);
-exit($exitCode);
-
+AnnotatedContainerCliRunner::setup(null)->run($argv);

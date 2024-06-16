@@ -10,11 +10,11 @@ use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsB
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalyzer;
 use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProvider;
 use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProviderContext;
-use Cspray\AnnotatedContainerFixture\Fixtures;
-use Cspray\AnnotatedContainerFixture\LogicalConstraints\DuplicateServiceType\DummyService;
-use Cspray\AnnotatedContainerFixture\LogicalConstraints\DuplicateServiceType\FooService as DuplicateAttributeFooService;
-use Cspray\AnnotatedContainerFixture\LogicalConstraints\LogicalConstraintFixtures;
-use Cspray\AnnotatedContainerFixture\NonAnnotatedServices\NotAnnotatedObject;
+use Cspray\AnnotatedContainer\Fixture\Fixtures;
+use Cspray\AnnotatedContainer\Fixture\LogicalConstraints\DuplicateServiceType\DummyService;
+use Cspray\AnnotatedContainer\Fixture\LogicalConstraints\DuplicateServiceType\FooService as DuplicateAttributeFooService;
+use Cspray\AnnotatedContainer\Fixture\LogicalConstraints\LogicalConstraintFixtures;
+use Cspray\AnnotatedContainer\Fixture\NonAnnotatedServices\NotAnnotatedObject;
 use function Cspray\AnnotatedContainer\service;
 use function Cspray\Typiphy\objectType;
 

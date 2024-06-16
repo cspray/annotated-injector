@@ -42,10 +42,6 @@ final class IlluminateContainerFactory extends AbstractContainerFactory {
         parent::__construct($emitter, $aliasDefinitionResolver);
     }
 
-    protected function backingContainerType() : ObjectType {
-        return objectType(\Illuminate\Container\Container::class);
-    }
-
     protected function containerFactoryState(ContainerDefinition $containerDefinition) : ContainerFactoryState {
         return new IlluminateContainerFactoryState($this->container, $containerDefinition);
     }

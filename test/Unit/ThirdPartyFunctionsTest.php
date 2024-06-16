@@ -9,7 +9,7 @@ use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinition;
 use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinition;
 use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProviderContext;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinitionBuilder;
-use Cspray\AnnotatedContainerFixture\Fixtures;
+use Cspray\AnnotatedContainer\Fixture\Fixtures;
 use PHPUnit\Framework\TestCase;
 use function Cspray\AnnotatedContainer\alias;
 use function Cspray\AnnotatedContainer\inject;
@@ -21,39 +21,6 @@ use function Cspray\AnnotatedContainer\service;
 class ThirdPartyFunctionsTest extends TestCase {
 
     use ContainerDefinitionAssertionsTrait;
-
-    private function getContext() : DefinitionProviderContext {
-        $builder = ContainerDefinitionBuilder::newDefinition();
-        return new class($builder) implements DefinitionProviderContext {
-
-            public function __construct(private ContainerDefinitionBuilder $builder) {
-            }
-
-            public function getBuilder(): ContainerDefinitionBuilder {
-                return $this->builder;
-            }
-
-            public function addServiceDefinition(ServiceDefinition $serviceDefinition) : void {
-                $this->builder = $this->builder->withServiceDefinition($serviceDefinition);
-            }
-
-            public function addServicePrepareDefinition(ServicePrepareDefinition $servicePrepareDefinition) : void {
-                $this->builder = $this->builder->withServicePrepareDefinition($servicePrepareDefinition);
-            }
-
-            public function addServiceDelegateDefinition(ServiceDelegateDefinition $serviceDelegateDefinition) : void {
-                $this->builder = $this->builder->withServiceDelegateDefinition($serviceDelegateDefinition);
-            }
-
-            public function addInjectDefinition(InjectDefinition $injectDefinition) : void {
-                $this->builder = $this->builder->withInjectDefinition($injectDefinition);
-            }
-
-            public function addAliasDefinition(AliasDefinition $aliasDefinition) : void {
-                $this->builder = $this->builder->withAliasDefinition($aliasDefinition);
-            }
-        };
-    }
 
     public function testHasServiceDefinitionForType() : void {
         $type = Fixtures::singleConcreteService()->fooImplementation();
@@ -93,16 +60,6 @@ class ThirdPartyFunctionsTest extends TestCase {
         $serviceDefinition = service(Fixtures::singleConcreteService()->fooImplementation(), isPrimary: true);
 
         $this->assertTrue($serviceDefinition->isPrimary());
-    }
-
-    public function testAddAliasDefinition() {
-        $abstract = Fixtures::implicitAliasedServices()->fooInterface();
-        $concrete = Fixtures::implicitAliasedServices()->fooImplementation();
-        $aliasDefinition = alias($abstract, $concrete);
-
-        $this->assertAliasDefinitionsMap([
-            [Fixtures::implicitAliasedServices()->fooInterface()->getName(), Fixtures::implicitAliasedServices()->fooImplementation()->getName()]
-        ], [$aliasDefinition]);
     }
 
     public function testServiceDelegateDefinition() {

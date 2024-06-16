@@ -3,12 +3,15 @@
 namespace Cspray\AnnotatedContainer\Unit\Cli\Command;
 
 use Cspray\AnnotatedContainer\AnnotatedContainerVersion;
+use Cspray\AnnotatedContainer\Cli\Command\Command;
+use Cspray\AnnotatedContainer\Cli\Command\CommandExecutor;
+use Cspray\AnnotatedContainer\Cli\Command\DisabledCommand;
 use Cspray\AnnotatedContainer\Cli\Command\HelpCommand;
-use Cspray\AnnotatedContainer\Cli\CommandExecutor;
-use Cspray\AnnotatedContainer\Cli\InputParser;
-use Cspray\AnnotatedContainer\Cli\TerminalOutput;
+use Cspray\AnnotatedContainer\Cli\Input\InputParser;
+use Cspray\AnnotatedContainer\Cli\Output\TerminalOutput;
 use Cspray\AnnotatedContainer\Unit\Helper\InMemoryOutput;
 use Cspray\AnnotatedContainer\Unit\Helper\StubCommand;
+use Cspray\AnnotatedContainer\Unit\Helper\StubInput;
 use PHPUnit\Framework\TestCase;
 
 class HelpCommandTest extends TestCase {
@@ -21,73 +24,92 @@ class HelpCommandTest extends TestCase {
         $this->subject = new HelpCommand($this->commandExecutor);
     }
 
-    private function getExpectedHelp() : string {
-        $version = AnnotatedContainerVersion::version();
-        return <<<SHELL
-<bold>Annotated Container $version</bold>
-
-Available Commands:
-
-init
-
-\tSetup your app to scan Composer directories, cache your ContainerDefinition, 
-\tand generate an appropriate configuration file.
-
-build
-
-\tBuild your ContainerDefinition from the configuration file and cache it. 
-\tBuilding a ContainerDefinition without configuring cache support will result 
-\tin an error.
-
-cache-clear
-
-\tDestroy the cache to allow rebuilding the Container.
-    
-For more help:
-
-help <command-name>
-SHELL;
-    }
-
     public function testHelpCommandName() : void {
         self::assertSame('help', $this->subject->name());
     }
 
-    public function testHelpCommandGetHelp() : void {
-        self::assertSame($this->getExpectedHelp(), $this->subject->help());
+    public function testHelpSummaryReturnsExpectedText() : void {
+        $expected = 'List available commands and show detailed info about individual commands.';
+
+        self::assertSame($expected, $this->subject->summary());
     }
 
-    public function testHelpCommandHandleNoArguments() : void {
-        $input = (new InputParser())->parse(['script.php', 'help']);
+    public function testHelpTextShowsAddedCommandsWithProperFormatting() : void {
+        $a = $this->createMock(Command::class);
+        $b = $this->createMock(Command::class);
+        $c = $this->createMock(Command::class);
+
+        $a->method('name')->willReturn('a-cmd');
+        $a->expects($this->once())->method('summary')->willReturn('A Summary');
+
+        $b->method('name')->willReturn('b-cmd');
+        $b->expects($this->once())->method('summary')->willReturn('B Summary');
+
+        $c->method('name')->willReturn('c-cmd');
+        $c->expects($this->once())->method('summary')->willReturn('C Summary');
+
+        $this->commandExecutor->addCommand($a);
+        $this->commandExecutor->addCommand($b);
+        $this->commandExecutor->addCommand($c);
+
+        $version = AnnotatedContainerVersion::version();
+        $expected = <<<TEXT
+<bold>Annotated Container $version</bold>
+
+This is a list of all available commands. For more information on a specific command please run "help <command-name>".
+Commands listed in <fg:red>red</fg:red> are disabled and some action must be taken on your part to enable them.
+
+\033[32ma-cmd\033[0m      A Summary
+\033[32mb-cmd\033[0m      B Summary
+\033[32mc-cmd\033[0m      C Summary
+
+TEXT;
+
+        self::assertSame($expected, $this->subject->help());
+    }
+
+    public function testDisabledCommandNamesAreShownInRed() : void {
+        $version = AnnotatedContainerVersion::version();
+        $expected = <<<TEXT
+<bold>Annotated Container $version</bold>
+
+This is a list of all available commands. For more information on a specific command please run "help <command-name>".
+Commands listed in <fg:red>red</fg:red> are disabled and some action must be taken on your part to enable them.
+
+\033[31mbad-cmd\033[0m      Command is disabled. Run "help bad-cmd" to learn how to enable it.
+
+TEXT;
+
+        $disabledCommand = new DisabledCommand('bad-cmd', 'Do some stuff');
+        $this->commandExecutor->addCommand($disabledCommand);
+
+        self::assertSame($expected, $this->subject->help());
+    }
+
+    public function testHelpCommandWithNoArgumentsPresentsDefaultHelpText() : void {
+        $input = new StubInput([], ['help']);
         $terminalOutput = new TerminalOutput(
             $stdout = new InMemoryOutput(),
             $stderr = new InMemoryOutput()
         );
+
+        $a = $this->createMock(Command::class);
+        $a->method('name')->willReturn('cmd-name');
+        $a->expects($this->once())->method('summary')->willReturn('My command summary');
+
+        $this->commandExecutor->addCommand($a);
+
         $exitCode = $this->subject->handle($input, $terminalOutput);
+
         $version = AnnotatedContainerVersion::version();
         $expected = <<<SHELL
 \033[1mAnnotated Container $version\033[22m
 
-Available Commands:
+This is a list of all available commands. For more information on a specific command please run "help <command-name>".
+Commands listed in \033[31mred\033[0m are disabled and some action must be taken on your part to enable them.
 
-init
+\033[32mcmd-name\033[0m      My command summary
 
-\tSetup your app to scan Composer directories, cache your ContainerDefinition, 
-\tand generate an appropriate configuration file.
-
-build
-
-\tBuild your ContainerDefinition from the configuration file and cache it. 
-\tBuilding a ContainerDefinition without configuring cache support will result 
-\tin an error.
-
-cache-clear
-
-\tDestroy the cache to allow rebuilding the Container.
-    
-For more help:
-
-help <command-name>
 
 SHELL;
 
@@ -97,15 +119,83 @@ SHELL;
         self::assertEmpty($stderr->getContents());
     }
 
+    public function testCommandsAreListedInAlphabeticalOrder() : void {
+        $a = $this->createMock(Command::class);
+        $b = $this->createMock(Command::class);
+        $c = $this->createMock(Command::class);
+
+        $a->method('name')->willReturn('mack');
+        $a->expects($this->once())->method('summary')->willReturn('Mack Summary');
+
+        $b->method('name')->willReturn('ada');
+        $b->expects($this->once())->method('summary')->willReturn('Ada Summary');
+
+        $c->method('name')->willReturn('nick');
+        $c->expects($this->once())->method('summary')->willReturn('Nick Summary');
+
+        $this->commandExecutor->addCommand($a);
+        $this->commandExecutor->addCommand($b);
+        $this->commandExecutor->addCommand($c);
+
+        $version = AnnotatedContainerVersion::version();
+        $expected = <<<TEXT
+<bold>Annotated Container $version</bold>
+
+This is a list of all available commands. For more information on a specific command please run "help <command-name>".
+Commands listed in <fg:red>red</fg:red> are disabled and some action must be taken on your part to enable them.
+
+\033[32mada\033[0m       Ada Summary
+\033[32mmack\033[0m      Mack Summary
+\033[32mnick\033[0m      Nick Summary
+
+TEXT;
+
+        self::assertSame($expected, $this->subject->help());
+    }
+
+    public function testHelpSummaryPaddingHandlesVariableLengthNames() : void {
+        $a = $this->createMock(Command::class);
+        $b = $this->createMock(Command::class);
+        $c = $this->createMock(Command::class);
+
+        $a->method('name')->willReturn(str_repeat('x', 3));
+        $a->expects($this->once())->method('summary')->willReturn('3 Summary');
+
+        $b->method('name')->willReturn(str_repeat('x', 15));
+        $b->expects($this->once())->method('summary')->willReturn('15 Summary');
+
+        $c->method('name')->willReturn(str_repeat('x', 27));
+        $c->expects($this->once())->method('summary')->willReturn('25 Summary');
+
+        $this->commandExecutor->addCommand($a);
+        $this->commandExecutor->addCommand($b);
+        $this->commandExecutor->addCommand($c);
+
+        $version = AnnotatedContainerVersion::version();
+        $expected = <<<TEXT
+<bold>Annotated Container $version</bold>
+
+This is a list of all available commands. For more information on a specific command please run "help <command-name>".
+Commands listed in <fg:red>red</fg:red> are disabled and some action must be taken on your part to enable them.
+
+\033[32mxxx\033[0m                              3 Summary
+\033[32mxxxxxxxxxxxxxxx\033[0m                  15 Summary
+\033[32mxxxxxxxxxxxxxxxxxxxxxxxxxxx\033[0m      25 Summary
+
+TEXT;
+
+        self::assertSame($expected, $this->subject->help());
+    }
+
     public function testHelpCommandWithArgumentCommandNotFound() : void {
-        $input = (new InputParser())->parse(['script.php', 'help', 'not-found']);
+        $input = new StubInput([], ['help', 'not-found']);
         $terminalOutput = new TerminalOutput(
             $stdout = new InMemoryOutput(),
             $stderr = new InMemoryOutput()
         );
         $exitCode = $this->subject->handle($input, $terminalOutput);
         $expected = <<<SHELL
-\033[31mCould not find command "not-found"!\033[0m
+\033[41m\033[37mCould not find command "not-found"!\033[0m\033[0m
 
 SHELL;
 
@@ -114,52 +204,14 @@ SHELL;
         self::assertSame($expected, $stderr->getContentsAsString());
     }
 
-    public function testHelpCommandWithTooManyArguments() : void {
-        $input = (new InputParser())->parse(['script.php', 'help', 'foo', 'bar']);
-        $terminalOutput = new TerminalOutput(
-            $stdout = new InMemoryOutput(),
-            $stderr = new InMemoryOutput()
-        );
-        $exitCode = $this->subject->handle($input, $terminalOutput);
-        $version = AnnotatedContainerVersion::version();
-        $expected = <<<SHELL
-\033[41m\033[37m!! Warning !!\033[0m\033[0m - Expecting 1 arg, showing default help
-
-\033[1mAnnotated Container $version\033[22m
-
-Available Commands:
-
-init
-
-\tSetup your app to scan Composer directories, cache your ContainerDefinition, 
-\tand generate an appropriate configuration file.
-
-build
-
-\tBuild your ContainerDefinition from the configuration file and cache it. 
-\tBuilding a ContainerDefinition without configuring cache support will result 
-\tin an error.
-
-cache-clear
-
-\tDestroy the cache to allow rebuilding the Container.
-    
-For more help:
-
-help <command-name>
-
-SHELL;
-
-        self::assertSame(0, $exitCode);
-        self::assertSame($expected, $stdout->getContentsAsString());
-        self::assertEmpty($stderr->getContents());
-    }
-
     public function testHelpCommandWithArgumentAndCommandFound() : void {
         $input = (new InputParser())->parse(['script.php', 'help', 'foo']);
-        $stubCommand = new StubCommand('foo', function(): never { throw new \Exception('Should not run');
-        });
-        $this->commandExecutor->addCommand($stubCommand);
+
+        $foo = $this->createMock(Command::class);
+        $foo->expects($this->exactly(2))->method('name')->willReturn('foo');
+        $foo->expects($this->once())->method('help')->willReturn('My help text');
+
+        $this->commandExecutor->addCommand($foo);
 
         $terminalOutput = new TerminalOutput(
             $stdout = new InMemoryOutput(),
@@ -167,7 +219,7 @@ SHELL;
         );
         $exitCode = $this->subject->handle($input, $terminalOutput);
         $expected = <<<SHELL
-Stub command help text
+My help text
 
 SHELL;
 

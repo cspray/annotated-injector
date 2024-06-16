@@ -7,10 +7,10 @@ use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraintViolationType;
 use Cspray\AnnotatedContainer\Profiles;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalyzer;
-use Cspray\AnnotatedContainerFixture\Fixtures;
-use Cspray\AnnotatedContainerFixture\LogicalConstraints\DuplicateServiceName\BarService;
-use Cspray\AnnotatedContainerFixture\LogicalConstraints\DuplicateServiceName\FooService;
-use Cspray\AnnotatedContainerFixture\LogicalConstraints\LogicalConstraintFixtures;
+use Cspray\AnnotatedContainer\Fixture\Fixtures;
+use Cspray\AnnotatedContainer\Fixture\LogicalConstraints\DuplicateServiceName\BarService;
+use Cspray\AnnotatedContainer\Fixture\LogicalConstraints\DuplicateServiceName\FooService;
+use Cspray\AnnotatedContainer\Fixture\LogicalConstraints\LogicalConstraintFixtures;
 
 final class DuplicateServiceNameTest extends LogicalConstraintTestCase {
 

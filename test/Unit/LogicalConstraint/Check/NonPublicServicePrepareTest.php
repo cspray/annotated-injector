@@ -7,10 +7,10 @@ use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraintViolationType;
 use Cspray\AnnotatedContainer\Profiles;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalyzer;
-use Cspray\AnnotatedContainerFixture\Fixtures;
-use Cspray\AnnotatedContainerFixture\LogicalConstraints\LogicalConstraintFixtures;
-use Cspray\AnnotatedContainerFixture\LogicalConstraints\PrivateServicePrepareMethod\FooService as PrivateFooService;
-use Cspray\AnnotatedContainerFixture\LogicalConstraints\ProtectedServicePrepareMethod\FooService as ProtectedFooService;
+use Cspray\AnnotatedContainer\Fixture\Fixtures;
+use Cspray\AnnotatedContainer\Fixture\LogicalConstraints\LogicalConstraintFixtures;
+use Cspray\AnnotatedContainer\Fixture\LogicalConstraints\PrivateServicePrepareMethod\FooService as PrivateFooService;
+use Cspray\AnnotatedContainer\Fixture\LogicalConstraints\ProtectedServicePrepareMethod\FooService as ProtectedFooService;
 
 final class NonPublicServicePrepareTest extends LogicalConstraintTestCase {
 

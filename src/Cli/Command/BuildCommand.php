@@ -2,29 +2,24 @@
 
 namespace Cspray\AnnotatedContainer\Cli\Command;
 
-use Cspray\AnnotatedContainer\Bootstrap\BootstrappingDirectoryResolver;
-use Cspray\AnnotatedContainer\Bootstrap\DefaultDefinitionProviderFactory;
-use Cspray\AnnotatedContainer\Bootstrap\DefaultParameterStoreFactory;
-use Cspray\AnnotatedContainer\Bootstrap\XmlBootstrappingConfiguration;
-use Cspray\AnnotatedContainer\Cli\Command;
-use Cspray\AnnotatedContainer\Cli\Exception\CacheDirConfigurationNotFound;
-use Cspray\AnnotatedContainer\Cli\Exception\ConfigurationNotFound;
-use Cspray\AnnotatedContainer\Cli\Exception\InvalidOptionType;
-use Cspray\AnnotatedContainer\Cli\Input;
-use Cspray\AnnotatedContainer\Cli\TerminalOutput;
-use Cspray\AnnotatedContainer\Definition\Serializer\XmlContainerDefinitionSerializer;
+use Cspray\AnnotatedContainer\Cli\Input\Input;
+use Cspray\AnnotatedContainer\Cli\Output\TerminalOutput;
+use Cspray\AnnotatedContainer\Definition\Cache\CacheKey;
+use Cspray\AnnotatedContainer\Definition\Cache\ContainerDefinitionCache;
 use Cspray\AnnotatedContainer\Event\Emitter;
 use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalyzer;
 use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetDefinitionConverter;
 use Cspray\AnnotatedContainer\StaticAnalysis\CacheAwareContainerDefinitionAnalyzer;
-use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
+use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptions;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalyzer;
 use Cspray\AnnotatedTarget\PhpParserAnnotatedTargetParser;
 
 final class BuildCommand implements Command {
 
+
     public function __construct(
-        private readonly BootstrappingDirectoryResolver $directoryResolver
+        private readonly ContainerDefinitionCache $cache,
+        private readonly ContainerDefinitionAnalysisOptions $analysisOptions
     ) {
     }
 
@@ -32,100 +27,58 @@ final class BuildCommand implements Command {
         return 'build';
     }
 
+    public function summary() : string {
+        return 'Analyze and cache a ContainerDefinition according to your annotated-container CLI script.';
+    }
+
     public function help() : string {
+        $summary = $this->summary();
         return <<<SHELL
 NAME
 
-    build - Compile a ContainerDefinition and cache it according to the defined configuration file.
+    build - $summary
     
 SYNOPSIS
 
-    <bold>build</bold> [OPTION]...
+    <bold>build</bold>
 
 DESCRIPTION
 
-    <bold>build</bold> will compile and cache a ContainerDefinition based on the 
-    configuration file present. If your configuration has disabled caching running
-    this command will result in an error.
-
-OPTIONS
-
-    --config-file="file-path.xml"
-
-        Set the name of the configuration file to be used. If not provided the
-        default value will be "annotated-container.xml".
+    <bold>build</bold> will analyze and cache a ContainerDefinition based on the 
+    configuration file provided in your annotated-container CLI script. Using the 
+    ContainerDefinitionCache provided in this script the following actions will  
+    be performed:
+    
+    - A CacheKey will be generated based on the configuration's scan directories 
+    and DefinitionProvider, if present.
+    - Whatever entry for the generated CacheKey will be removed from the provided 
+    ContainerDefinitionCache.
+    - A CacheAwareContainerDefinitionAnalyzer, using an AnnotatedTargetContainerDefinitionAnalyzer 
+    as its delegate, will analyze and cache your ContainerDefinition according to the 
+    configuration provided.
 
 SHELL;
     }
 
     public function handle(Input $input, TerminalOutput $output) : int {
-        $configName = $input->option('config-file');
-        if (!isset($configName)) {
-            // This not being present would be highly irregular and not party of the happy path
-            // But it is possible that somebody created the configuration manually and is not using composer
-            $composerFile = $this->directoryResolver->configurationPath('composer.json');
-            if (file_exists($composerFile)) {
-                /** @var mixed $composer */
-                $composer = json_decode(file_get_contents($composerFile), true);
-                assert(is_array($composer));
-                $configName = $composer['extra']['annotatedContainer']['configFile'] ?? 'annotated-container.xml';
-            } else {
-                $configName = 'annotated-container.xml';
-            }
-        } else {
-            if (is_bool($configName)) {
-                throw InvalidOptionType::fromBooleanOption('config-file');
-            } elseif (is_array($configName)) {
-                throw InvalidOptionType::fromArrayOption('config-file');
-            }
-        }
+        $cacheKey = CacheKey::fromContainerDefinitionAnalysisOptions($this->analysisOptions);
 
-        assert(is_string($configName));
-        $configFile = $this->directoryResolver->configurationPath($configName);
-        if (!file_exists($configFile)) {
-            throw ConfigurationNotFound::fromMissingFile($configName);
-        }
-
-        $config = new XmlBootstrappingConfiguration(
-            $configFile,
-            new DefaultParameterStoreFactory(),
-            new DefaultDefinitionProviderFactory(),
-        );
-
-        $cacheDir = $config->cache();
-        if (!isset($cacheDir)) {
-            throw CacheDirConfigurationNotFound::fromBuildCommand();
-        }
-
-        $cacheDir = $this->directoryResolver->cachePath($cacheDir);
-        $scanDirs = [];
-        foreach ($config->scanDirectories() as $scanDirectory) {
-            $scanDirs[] = $this->directoryResolver->pathFromRoot($scanDirectory);
-        }
-
-        $compileOptions = ContainerDefinitionAnalysisOptionsBuilder::scanDirectories(...$scanDirs);
-        $containerDefinitionConsumer = $config->containerDefinitionProvider();
-        if ($containerDefinitionConsumer !== null) {
-            $compileOptions = $compileOptions->withDefinitionProvider($containerDefinitionConsumer);
-        }
-
-        $this->getCompiler($cacheDir)->analyze($compileOptions->build());
+        $this->cache->remove($cacheKey);
+        $this->analyzer()->analyze($this->analysisOptions);
 
         $output->stdout->write('<fg:green>Successfully built and cached your Container!</fg:green>');
 
         return 0;
     }
 
-    private function getCompiler(?string $cacheDir) : ContainerDefinitionAnalyzer {
-        $compiler = new AnnotatedTargetContainerDefinitionAnalyzer(
-            new PhpParserAnnotatedTargetParser(),
-            new AnnotatedTargetDefinitionConverter(),
-            new Emitter()
+    private function analyzer() : ContainerDefinitionAnalyzer {
+        return new CacheAwareContainerDefinitionAnalyzer(
+            new AnnotatedTargetContainerDefinitionAnalyzer(
+                new PhpParserAnnotatedTargetParser(),
+                new AnnotatedTargetDefinitionConverter(),
+                new Emitter()
+            ),
+            $this->cache,
         );
-        if ($cacheDir !== null) {
-            $compiler = new CacheAwareContainerDefinitionAnalyzer($compiler, new XmlContainerDefinitionSerializer(), $cacheDir);
-        }
-
-        return $compiler;
     }
 }

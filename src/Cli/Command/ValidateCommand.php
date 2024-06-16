@@ -2,28 +2,14 @@
 
 namespace Cspray\AnnotatedContainer\Cli\Command;
 
-use Closure;
-use Cspray\AnnotatedContainer\AnnotatedContainer;
-use Cspray\AnnotatedContainer\Autowire\AutowireableParameterSet;
-use Cspray\AnnotatedContainer\Bootstrap\Bootstrap;
 use Cspray\AnnotatedContainer\Bootstrap\BootstrappingConfiguration;
 use Cspray\AnnotatedContainer\Bootstrap\BootstrappingDirectoryResolver;
-use Cspray\AnnotatedContainer\Bootstrap\ContainerAnalytics;
-use Cspray\AnnotatedContainer\Bootstrap\DefaultDefinitionProviderFactory;
-use Cspray\AnnotatedContainer\Bootstrap\DefaultParameterStoreFactory;
-use Cspray\AnnotatedContainer\Bootstrap\PostAnalysisObserver;
-use Cspray\AnnotatedContainer\Bootstrap\XmlBootstrappingConfigurationProvider;
-use Cspray\AnnotatedContainer\Cli\Command;
-use Cspray\AnnotatedContainer\Cli\Exception\ConfigurationNotFound;
-use Cspray\AnnotatedContainer\Cli\Input;
-use Cspray\AnnotatedContainer\Cli\TerminalOutput;
-use Cspray\AnnotatedContainer\ContainerFactory\ContainerFactory;
-use Cspray\AnnotatedContainer\ContainerFactory\ContainerFactoryOptions;
-use Cspray\AnnotatedContainer\ContainerFactory\ParameterStore;
+use Cspray\AnnotatedContainer\Bootstrap\ContainerDefinitionAnalysisOptionsFromBootstrappingConfiguration;
+use Cspray\AnnotatedContainer\Cli\Exception\ProfileNotString;
+use Cspray\AnnotatedContainer\Cli\Input\Input;
+use Cspray\AnnotatedContainer\Cli\Output\TerminalOutput;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 use Cspray\AnnotatedContainer\Event\Emitter;
-use Cspray\AnnotatedContainer\Event\Listener\Bootstrap\AfterBootstrap;
-use Cspray\AnnotatedContainer\Exception\UnsupportedOperation;
 use Cspray\AnnotatedContainer\LogicalConstraint\Check\DuplicateServiceDelegate;
 use Cspray\AnnotatedContainer\LogicalConstraint\Check\DuplicateServiceName;
 use Cspray\AnnotatedContainer\LogicalConstraint\Check\DuplicateServicePrepare;
@@ -35,8 +21,9 @@ use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraint;
 use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraintValidator;
 use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraintViolationType;
 use Cspray\AnnotatedContainer\Profiles;
-use Cspray\PrecisionStopwatch\Stopwatch;
-use DI\Container;
+use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalyzer;
+use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetDefinitionConverter;
+use Cspray\AnnotatedTarget\PhpParserAnnotatedTargetParser;
 
 final class ValidateCommand implements Command {
 
@@ -48,7 +35,8 @@ final class ValidateCommand implements Command {
     private readonly LogicalConstraintValidator $validator;
 
     public function __construct(
-        private readonly BootstrappingDirectoryResolver $directoryResolver
+        private readonly BootstrappingConfiguration $bootstrappingConfiguration,
+        private readonly BootstrappingDirectoryResolver $directoryResolver,
     ) {
         $this->logicalConstraints = [
             new DuplicateServiceDelegate(),
@@ -67,11 +55,16 @@ final class ValidateCommand implements Command {
         return 'validate';
     }
 
+    public function summary() : string {
+        return 'Ensure your ContainerDefinition validates against all logical constraints';
+    }
+
     public function help() : string {
+        $summary = $this->summary();
         return <<<TEXT
 NAME
 
-    validate - Ensure container definition validates against all logical constraints.
+    validate - $summary
     
 SYNOPSIS
 
@@ -124,49 +117,28 @@ TEXT;
             $this->listConstraints($output);
             return 0;
         }
-        $configOption = $input->option('config-file')  ?? 'annotated-container.xml';
-        $configFile = $this->directoryResolver->configurationPath($configOption);
-        if (!is_file($configFile)) {
-            throw ConfigurationNotFound::fromMissingFile($configFile);
-        }
 
-        $emitter = new Emitter();
+        $profiles = $this->profiles($input);
 
-        $bootstrap = Bootstrap::fromCompleteSetup(
-            $this->noOpContainerFactory(),
-            $emitter,
-            $this->directoryResolver,
-            new DefaultParameterStoreFactory(),
-            new DefaultDefinitionProviderFactory(),
-            new Stopwatch()
+        $analyzer = new AnnotatedTargetContainerDefinitionAnalyzer(
+            new PhpParserAnnotatedTargetParser(),
+            new AnnotatedTargetDefinitionConverter(),
+            new Emitter()
+        );
+        $containerDefinition = $analyzer->analyze(
+            (new ContainerDefinitionAnalysisOptionsFromBootstrappingConfiguration(
+                $this->bootstrappingConfiguration,
+                $this->directoryResolver
+            ))->create()
         );
 
-        $containerDefinition = null;
-
-        $infoCapturingListener = $this->infoCapturingListener(static function(ContainerDefinition $definition) use(&$containerDefinition) {
-            $containerDefinition = $definition;
-        });
-
-        $emitter->addListener($infoCapturingListener);
-
-        $inputProfiles = $input->option('profile') ?? ['default'];
-        if (is_string($inputProfiles)) {
-            $inputProfiles = [$inputProfiles];
-        }
-
-        $profiles = Profiles::fromList($inputProfiles);
-
-        $bootstrap->bootstrapContainer(
-            $profiles,
-            new XmlBootstrappingConfigurationProvider($configOption)
-        );
         assert($containerDefinition instanceof ContainerDefinition);
 
         $results = $this->validator->validate($containerDefinition, $profiles);
 
         $output->stdout->write('Annotated Container Validation');
         $output->stdout->br();
-        $output->stdout->write('Configuration file: ' . $configFile);
+        $output->stdout->write('Configuration: ' . $this->bootstrappingConfiguration::class);
         $output->stdout->write('Active Profiles: ' . implode(', ', $profiles->toArray()));
         $output->stdout->br();
         $output->stdout->write('To view validations ran, execute "annotated-container validate --list-constraints"');
@@ -183,7 +155,6 @@ TEXT;
                 $violationColor = match ($result->violationType) {
                     LogicalConstraintViolationType::Critical => 'red',
                     LogicalConstraintViolationType::Warning => 'yellow',
-                    default => 'red'
                 };
 
                 $index++;
@@ -200,56 +171,25 @@ TEXT;
         return 0;
     }
 
-    private function noOpContainerFactory() : ContainerFactory {
-        return new class implements ContainerFactory {
-            public function createContainer(ContainerDefinition $containerDefinition, ContainerFactoryOptions $containerFactoryOptions = null) : AnnotatedContainer {
-                return new class implements AnnotatedContainer {
+    private function profiles(Input $input) : Profiles {
+        $inputProfiles = $input->option('profiles') ?? ['default'];
+        if (is_bool($inputProfiles)) {
+            throw ProfileNotString::fromNotString();
+        }
 
-                    public function backingContainer() : object {
-                        throw new \RuntimeException(__METHOD__);
-                    }
+        if (is_string($inputProfiles)) {
+            $inputProfiles = [$inputProfiles];
+        }
 
-                    public function make(string $classType, AutowireableParameterSet $parameters = null) : object {
-                        throw new \RuntimeException(__METHOD__);
-                    }
-
-                    public function invoke(callable $callable, AutowireableParameterSet $parameters = null) : mixed {
-                        throw new \RuntimeException(__METHOD__);
-                    }
-
-                    public function get(string $id) {
-                        throw new \RuntimeException(__METHOD__);
-                    }
-
-                    public function has(string $id) : bool {
-                        throw new \RuntimeException(__METHOD__);
-                    }
-                };
+        $valid = [];
+        foreach ($inputProfiles as $profile) {
+            if (!is_string($profile)) {
+                throw ProfileNotString::fromNotString();
             }
+            $valid[] = $profile;
+        }
 
-            public function addParameterStore(ParameterStore $parameterStore) : void {
-            }
-        };
-    }
-
-    /**
-     * @param Closure(ContainerDefinition):void $closure
-     * @return AfterBootstrap
-     */
-    private function infoCapturingListener(Closure $closure) : AfterBootstrap {
-        return new class($closure) implements AfterBootstrap {
-            /**
-             * @param Closure(ContainerDefinition):void $closure
-             */
-            public function __construct(
-                private readonly Closure $closure
-            ) {
-            }
-
-            public function handleAfterBootstrap(BootstrappingConfiguration $bootstrappingConfiguration, ContainerDefinition $containerDefinition, AnnotatedContainer $container, ContainerAnalytics $containerAnalytics) : void {
-                ($this->closure)($containerDefinition);
-            }
-        };
+        return Profiles::fromList($valid);
     }
 
     private function listConstraints(TerminalOutput $output) : void {

@@ -7,9 +7,9 @@ use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraintViolationType;
 use Cspray\AnnotatedContainer\Profiles;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalyzer;
-use Cspray\AnnotatedContainerFixture\Fixture;
-use Cspray\AnnotatedContainerFixture\Fixtures;
-use Cspray\AnnotatedContainerFixture\LogicalConstraints\LogicalConstraintFixtures;
+use Cspray\AnnotatedContainer\Fixture\Fixture;
+use Cspray\AnnotatedContainer\Fixture\Fixtures;
+use Cspray\AnnotatedContainer\Fixture\LogicalConstraints\LogicalConstraintFixtures;
 use PHPUnit\Framework\TestCase;
 
 final class MultiplePrimaryForAbstractServiceTest extends LogicalConstraintTestCase {

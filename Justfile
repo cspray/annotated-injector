@@ -4,31 +4,28 @@ _default:
     just --list --unsorted
 
 # Install all dependencies necesesary to run Annotated Container tools
-install: _install_ac
+install: _install_labrador_cs _install_phpunit _install_psalm _install_ac
 
 _install_ac:
     composer install
 
 _install_labrador_cs:
-    cd tools/labrador-cs
-    composer install
+    cd tools/labrador-cs && composer install
 
 _install_phpunit:
-    cd tools/phpunit
-    composer install
+    cd tools/phpunit && composer install
 
 _install_psalm:
-    cd tools/psalm
-    composer install
+    cd tools/psalm && composer install
 
 # Run unit tests
-test:
-    @XDEBUG_MODE=coverage ./tools/phpunit/vendor/bin/phpunit
+test *FLAGS:
+    @XDEBUG_MODE=coverage ./tools/phpunit/vendor/bin/phpunit {{FLAGS}}
 
 # Run static analysis checks on src and test
-static-analysis:
+static-analysis *FLAGS:
     @./tools/psalm/vendor/bin/psalm --version
-    @./tools/psalm/vendor/bin/psalm
+    @./tools/psalm/vendor/bin/psalm {{FLAGS}}
 
 # Set the baseline of known issues to be used during static analysis
 static-analysis-set-baseline:
@@ -50,7 +47,7 @@ code-lint:
 code-lint-fix:
     @./tools/labrador-cs/vendor/bin/phpcbf -p --standard=./tools/labrador-cs/vendor/cspray/labrador-coding-standard/ruleset.xml --exclude=Generic.Files.LineLength src test
 
-# Run all CI checks
+# Run all CI checks. ALL checks will run, regardless of failures
 ci-check:
     -@just test
     -@just static-analysis

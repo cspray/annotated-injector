@@ -10,6 +10,7 @@ use Cspray\AnnotatedContainer\Definition\Serializer\SerializedContainerDefinitio
 use Cspray\AnnotatedContainer\Exception\CacheDirectoryNotFound;
 use Cspray\AnnotatedContainer\Exception\CacheDirectoryNotWritable;
 use Cspray\AnnotatedContainer\Exception\MismatchedContainerDefinitionSerializerVersions;
+use Cspray\AnnotatedContainer\Filesystem\Filesystem;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
@@ -18,54 +19,116 @@ use PHPUnit\Framework\TestCase;
 
 final class FileBackedContainerDefinitionCacheTest extends TestCase {
 
-    private FileBackedContainerDefinitionCache $subject;
     private MockObject&ContainerDefinitionSerializer $serializer;
-    private vfsStreamDirectory $root;
+    private MockObject&Filesystem $filesystem;
     private CacheKey $cacheKey;
 
     protected function setUp() : void {
-        $this->serializer = $this->getMockBuilder(ContainerDefinitionSerializer::class)->getMock();
-        $this->root = vfsStream::setup('root', 0777);
+        $this->serializer = $this->createMock(ContainerDefinitionSerializer::class);
+        $this->filesystem = $this->createMock(Filesystem::class);
         $this->cacheKey = CacheKey::fromContainerDefinitionAnalysisOptions(
             ContainerDefinitionAnalysisOptionsBuilder::scanDirectories('foo', 'bar', 'baz')->build()
         );
     }
 
+    public function testDirectoryNotPresentThrowsException() : void {
+        $this->filesystem->expects($this->once())
+            ->method('isDirectory')
+            ->with('/cache/dir')
+            ->willReturn(false);
+
+        $this->expectException(CacheDirectoryNotFound::class);
+        $this->expectExceptionMessage(
+            'The cache directory configured, "/cache/dir", is not present.'
+        );
+
+        new FileBackedContainerDefinitionCache(
+            $this->serializer,
+            $this->filesystem,
+            '/cache/dir'
+        );
+    }
+
     public function testDirectoryNotWritableThrowsException() : void {
-        $this->root->chmod(0444);
+        $this->filesystem->expects($this->once())
+            ->method('isDirectory')
+            ->with('/cache/dir')
+            ->willReturn(true);
+
+        $this->filesystem->expects($this->once())
+            ->method('isWritable')
+            ->with('/cache/dir')
+            ->willReturn(false);
 
         $this->expectException(CacheDirectoryNotWritable::class);
         $this->expectExceptionMessage(
-            'The cache directory configured, "vfs://root", is not writable.'
+            'The cache directory configured, "/cache/dir", is not writable.'
         );
 
-        new FileBackedContainerDefinitionCache($this->serializer, $this->root->url());
-    }
-
-    public function testDirectoryNotPresentThrowsException() : void {
-        $this->expectException(CacheDirectoryNotFound::class);
-        $this->expectExceptionMessage(
-            'The cache directory configured, "vfs://not-found", is not present.'
+        new FileBackedContainerDefinitionCache(
+            $this->serializer,
+            $this->filesystem,
+            '/cache/dir'
         );
-
-        new FileBackedContainerDefinitionCache($this->serializer, 'vfs://not-found');
     }
 
     public function testGetForKeyWithNoCacheFilePresentReturnsNull() : void {
-        $subject = new FileBackedContainerDefinitionCache($this->serializer, $this->root->url());
+        $this->filesystem->expects($this->once())
+            ->method('isDirectory')
+            ->with('/cache/dir')
+            ->willReturn(true);
+
+        $this->filesystem->expects($this->once())
+            ->method('isWritable')
+            ->with('/cache/dir')
+            ->willReturn(true);
+
+        $subject = new FileBackedContainerDefinitionCache(
+            $this->serializer,
+            $this->filesystem,
+            '/cache/dir'
+        );
+
+        $this->filesystem->expects($this->once())
+            ->method('isFile')
+            ->with('/cache/dir/' . $this->cacheKey->asString())
+            ->willReturn(false);
 
         self::assertNull($subject->get($this->cacheKey));
     }
 
     public function testGetForKeyWithCacheFilePresentPassesToSerializerAndReturnsContainerDefinition() : void {
-        $subject = new FileBackedContainerDefinitionCache($this->serializer, $this->root->url());
+        $this->filesystem->expects($this->once())
+            ->method('isDirectory')
+            ->with('/cache/dir')
+            ->willReturn(true);
 
-        vfsStream::newFile($this->cacheKey->asString())->at($this->root)->setContent('my-serialized-container');
+        $this->filesystem->expects($this->once())
+            ->method('isWritable')
+            ->with('/cache/dir')
+            ->willReturn(true);
+
+        $subject = new FileBackedContainerDefinitionCache(
+            $this->serializer,
+            $this->filesystem,
+            '/cache/dir'
+        );
+
+        $this->filesystem->expects($this->once())
+            ->method('isFile')
+            ->with('/cache/dir/' . $this->cacheKey->asString())
+            ->willReturn(true);
+
+        $this->filesystem->expects($this->once())
+            ->method('read')
+            ->with('/cache/dir/' . $this->cacheKey->asString())
+            ->willReturn('my-serialized-container');
+
         $containerDefinition = $this->getMockBuilder(ContainerDefinition::class)->getMock();
         $this->serializer->expects($this->once())
             ->method('deserialize')
             ->with($this->callback(
-                fn(SerializedContainerDefinition $serializedContainerDefinition) =>
+                static fn(SerializedContainerDefinition $serializedContainerDefinition) =>
                     $serializedContainerDefinition->asString() === 'my-serialized-container'
             ))->willReturn($containerDefinition);
 
@@ -75,7 +138,21 @@ final class FileBackedContainerDefinitionCacheTest extends TestCase {
     }
 
     public function testSetWithCacheKeyCreatesNewFile() : void {
-        $subject = new FileBackedContainerDefinitionCache($this->serializer, $this->root->url());
+        $this->filesystem->expects($this->once())
+            ->method('isDirectory')
+            ->with('/cache/dir')
+            ->willReturn(true);
+
+        $this->filesystem->expects($this->once())
+            ->method('isWritable')
+            ->with('/cache/dir')
+            ->willReturn(true);
+
+        $subject = new FileBackedContainerDefinitionCache(
+            $this->serializer,
+            $this->filesystem,
+            '/cache/dir'
+        );
 
         $containerDefinition = $this->getMockBuilder(ContainerDefinition::class)->getMock();
         $this->serializer->expects($this->once())
@@ -83,35 +160,68 @@ final class FileBackedContainerDefinitionCacheTest extends TestCase {
             ->with($containerDefinition)
             ->willReturn(SerializedContainerDefinition::fromString('serialized-content'));
 
-        self::assertNull($this->root->getChild($this->cacheKey->asString()));
+        $this->filesystem->expects($this->once())
+            ->method('write')
+            ->with('/cache/dir/' . $this->cacheKey->asString(), 'serialized-content');
 
         $subject->set($this->cacheKey, $containerDefinition);
-
-        $file = $this->root->getChild($this->cacheKey->asString());
-        self::assertNotNull($file);
-        self::assertSame('serialized-content', $file->getContent());
     }
 
-    public function testRemoveWithCacheKeyFilePresentDeletesFile() : void {
-        vfsStream::newFile($this->cacheKey->asString())->at($this->root)->setContent('my-serialized-container-def');
+    public function testRemoveCallsFilesystemRemoveWithCorrectPath() : void {
+        $this->filesystem->expects($this->once())
+            ->method('isDirectory')
+            ->with('/path/to/cache')
+            ->willReturn(true);
 
-        $subject = new FileBackedContainerDefinitionCache($this->serializer, $this->root->url());
+        $this->filesystem->expects($this->once())
+            ->method('isWritable')
+            ->with('/path/to/cache')
+            ->willReturn(true);
+
+        $subject = new FileBackedContainerDefinitionCache(
+            $this->serializer,
+            $this->filesystem,
+            '/path/to/cache'
+        );
+
+        $this->filesystem->expects($this->once())
+            ->method('remove')
+            ->with('/path/to/cache/' . $this->cacheKey->asString());
+
         $subject->remove($this->cacheKey);
-
-        self::assertNull($this->root->getChild($this->cacheKey->asString()));
-    }
-
-    public function testRemoveHandlesCacheKeyFileNotPresent() : void {
-        $subject = new FileBackedContainerDefinitionCache($this->serializer, $this->root->url());
-        $subject->remove($this->cacheKey);
-
-        self::assertNull($this->root->getChild($this->cacheKey->asString()));
     }
 
     public function testGetWithMismatchedVersionRemovesOffendingCacheAndReturnsNull() : void {
-        $subject = new FileBackedContainerDefinitionCache($this->serializer, $this->root->url());
+        $this->filesystem->expects($this->once())
+            ->method('isDirectory')
+            ->with('/path/to/cache')
+            ->willReturn(true);
 
-        vfsStream::newFile($this->cacheKey->asString())->at($this->root)->setContent('my-serialized-container');
+        $this->filesystem->expects($this->once())
+            ->method('isWritable')
+            ->with('/path/to/cache')
+            ->willReturn(true);
+
+        $subject = new FileBackedContainerDefinitionCache(
+            $this->serializer,
+            $this->filesystem,
+            '/path/to/cache'
+        );
+
+        $this->filesystem->expects($this->once())
+            ->method('isFile')
+            ->with('/path/to/cache/' . $this->cacheKey->asString())
+            ->willReturn(true);
+
+        $this->filesystem->expects($this->once())
+            ->method('read')
+            ->with('/path/to/cache/' . $this->cacheKey->asString())
+            ->willReturn('my-serialized-container');
+
+        $this->filesystem->expects($this->once())
+            ->method('remove')
+            ->with('/path/to/cache/' . $this->cacheKey->asString());
+
         $this->serializer->expects($this->once())
             ->method('deserialize')
             ->with($this->callback(
@@ -122,6 +232,44 @@ final class FileBackedContainerDefinitionCacheTest extends TestCase {
         $actual = $subject->get($this->cacheKey);
 
         self::assertNull($actual);
-        self::assertNull($this->root->getChild($this->cacheKey->asString()));
+    }
+
+    public function testGetWithEmptyFileRemovesOffendingCacheAndReturnsNull() : void {
+        $this->filesystem->expects($this->once())
+            ->method('isDirectory')
+            ->with('/path/to/cache')
+            ->willReturn(true);
+
+        $this->filesystem->expects($this->once())
+            ->method('isWritable')
+            ->with('/path/to/cache')
+            ->willReturn(true);
+
+        $subject = new FileBackedContainerDefinitionCache(
+            $this->serializer,
+            $this->filesystem,
+            '/path/to/cache'
+        );
+
+        $this->filesystem->expects($this->once())
+            ->method('isFile')
+            ->with('/path/to/cache/' . $this->cacheKey->asString())
+            ->willReturn(true);
+
+        $this->filesystem->expects($this->once())
+            ->method('read')
+            ->with('/path/to/cache/' . $this->cacheKey->asString())
+            ->willReturn('');
+
+        $this->filesystem->expects($this->once())
+            ->method('remove')
+            ->with('/path/to/cache/' . $this->cacheKey->asString());
+
+        $this->serializer->expects($this->never())
+            ->method('deserialize');
+
+        $actual = $subject->get($this->cacheKey);
+
+        self::assertNull($actual);
     }
 }

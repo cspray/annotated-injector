@@ -13,7 +13,7 @@ abstract class ServiceWiringListener implements AfterContainerCreation {
 
     abstract protected function wireServices(AnnotatedContainer $container, ServiceGatherer $gatherer) : void;
 
-    public function handleAfterContainerCreation(Profiles $profiles, ContainerDefinition $containerDefinition, AnnotatedContainer $container) : void {
+    final public function handleAfterContainerCreation(Profiles $profiles, ContainerDefinition $containerDefinition, AnnotatedContainer $container) : void {
         $serviceGatherer = new class($containerDefinition, $container) implements ServiceGatherer {
 
             private readonly ContainerDefinition $containerDefinition;

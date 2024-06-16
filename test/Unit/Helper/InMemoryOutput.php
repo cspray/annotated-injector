@@ -2,7 +2,7 @@
 
 namespace Cspray\AnnotatedContainer\Unit\Helper;
 
-use Cspray\AnnotatedContainer\Cli\Output;
+use Cspray\AnnotatedContainer\Cli\Output\Output;
 use Stringable;
 
 final class InMemoryOutput implements Output {

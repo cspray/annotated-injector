@@ -4,16 +4,6 @@ namespace Cspray\AnnotatedContainer\Exception;
 
 final class InvalidServiceDelegate extends Exception {
 
-    public static function factoryMethodDoesNotCreateService(string $service, string $delegateClass, string $delegateMethod) : self {
-        $message = sprintf(
-            'Service delegation defined on %s::%s declares a type, %s, that is not a service.',
-            $delegateClass,
-            $delegateMethod,
-            $service
-        );
-        return new self($message);
-    }
-
     public static function factoryMethodReturnsScalarType(string $delegateClass, string $delegateMethod) : self {
         $message = sprintf(
             'The #[ServiceDelegate] Attribute on %s::%s declares a scalar value as a service type.',

@@ -2,6 +2,7 @@
 ..
 .phpunit.cache
 architectural-decisions.xml.bak
-composer.lock
+/**/composer.lock
 build/
-vendor/
+/vendor
+/tools/**/vendor

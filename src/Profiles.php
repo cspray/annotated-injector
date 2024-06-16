@@ -49,7 +49,7 @@ final class Profiles {
     }
 
     /**
-     * @param non-empty-list<non-empty-string> $profiles
+     * @param list<non-empty-string> $profiles
      * @return bool
      */
     public function isAnyActive(array $profiles) : bool {
