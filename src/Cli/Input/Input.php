@@ -7,7 +7,7 @@ use Cspray\AnnotatedContainer\Cli\Exception\OptionNotFound;
 interface Input {
 
     /**
-     * @return array<non-empty-string, list<string>|string|bool>
+     * @return array<non-empty-string, list<string|bool>|string|bool>
      */
     public function options() : array;
 
@@ -17,12 +17,12 @@ interface Input {
     public function arguments() : array;
 
     /**
-     * @return list<string>|string|bool|null
+     * @return list<string|bool>|string|bool|null
      */
     public function option(string $opt) : array|string|bool|null;
 
     /**
-     * @return list<string>|string|bool
+     * @return list<string|bool>|string|bool
      * @throws OptionNotFound
      */
     public function requireOption(string $opt) : array|string|bool;

@@ -7,12 +7,19 @@ use Cspray\AnnotatedContainer\Cli\Output\TerminalOutput;
 
 final class DisabledCommand implements Command {
 
+    /**
+     * @param non-empty-string $name
+     * @param non-empty-string $howToEnable
+     */
     public function __construct(
         private readonly string $name,
         private readonly string $howToEnable,
-    ) {}
+    ) {
+    }
 
-
+    /**
+     * @return non-empty-string
+     */
     public function name() : string {
         return $this->name;
     }

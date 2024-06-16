@@ -17,11 +17,6 @@ We explicitly do no allow setting a profile on a Configuration. The Configuratio
 to define values. Any value that should only be injected when certain profiles are active should have that reflected
 in the #[Inject] Attribute. This way just 1 Configuration instance is required and any profile-specific values are
 defined on the value itself.]]></contents>
-    <codeAnnotations>
-      <codeAnnotation>
-        <class>Cspray\AnnotatedContainer\Attribute\Configuration</class>
-      </codeAnnotation>
-    </codeAnnotations>
     <meta>
       <author>
         <name>Charles Sprayberry</name>
@@ -58,13 +53,19 @@ you know precisely what code is determining the services for your application.]]
       <codeAnnotation>
         <classMethod>
           <class>Cspray\AnnotatedContainer\Bootstrap\XmlBootstrappingConfiguration</class>
-          <method>getContainerDefinitionProvider</method>
+          <method>containerDefinitionProvider</method>
+        </classMethod>
+      </codeAnnotation>
+      <codeAnnotation>
+        <classMethod>
+          <class>Cspray\AnnotatedContainer\Bootstrap\CacheAwareBootstrappingConfiguration</class>
+          <method>containerDefinitionProvider</method>
         </classMethod>
       </codeAnnotation>
       <codeAnnotation>
         <classMethod>
           <class>Cspray\AnnotatedContainer\Bootstrap\BootstrappingConfiguration</class>
-          <method>getContainerDefinitionProvider</method>
+          <method>containerDefinitionProvider</method>
         </classMethod>
       </codeAnnotation>
       <codeAnnotation>
@@ -76,7 +77,7 @@ you know precisely what code is determining the services for your application.]]
       <codeAnnotation>
         <classMethod>
           <class>Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptions</class>
-          <method>getDefinitionProvider</method>
+          <method>definitionProvider</method>
         </classMethod>
       </codeAnnotation>
     </codeAnnotations>
@@ -215,14 +216,6 @@ was made obsolete with constructor property promotion.
 We could simply add these pieces of the ConfigurationAttribute but at that point we're effectively duplicating the
 ServiceAttribute. Instead of that, we should discourage the use of the ConfigurationAttribute. If you require similar
 functionality, you should implement your own custom ServiceAttribute.]]></contents>
-    <codeAnnotations>
-      <codeAnnotation>
-        <class>Cspray\AnnotatedContainer\Attribute\ConfigurationAttribute</class>
-      </codeAnnotation>
-      <codeAnnotation>
-        <class>Cspray\AnnotatedContainer\Attribute\Configuration</class>
-      </codeAnnotation>
-    </codeAnnotations>
     <meta>
       <author>
         <name>Charles Sprayberry</name>

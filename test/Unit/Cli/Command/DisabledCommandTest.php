@@ -71,5 +71,4 @@ TEXT;
 
         self::assertSame($expected, $stderr->getContentsAsString());
     }
-
 }

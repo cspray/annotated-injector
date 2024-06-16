@@ -7,7 +7,7 @@ use Cspray\AnnotatedContainer\Attribute\ServiceAttribute;
 #[\Attribute(\Attribute::TARGET_CLASS)]
 class Repository implements ServiceAttribute {
 
-    public function getProfiles() : array {
+    public function profiles() : array {
         return ['test'];
     }
 
@@ -15,7 +15,7 @@ class Repository implements ServiceAttribute {
         return false;
     }
 
-    public function getName() : ?string {
+    public function name() : ?string {
         return null;
     }
 }

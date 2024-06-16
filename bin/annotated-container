@@ -1,7 +1,8 @@
 #!/usr/bin/env php
 <?php declare(strict_types=1);
 
+use Cspray\AnnotatedContainer\Cli\AnnotatedContainerCliRunner;
 
 include $_composer_autoload_path ?? __DIR__ . '/../vendor/autoload.php';
 
-new \Cspray\AnnotatedContainer\Bootstrap\VendorPresenceBasedBootstrappingDirectoryResolver();
+AnnotatedContainerCliRunner::setup(null)->run($argv);

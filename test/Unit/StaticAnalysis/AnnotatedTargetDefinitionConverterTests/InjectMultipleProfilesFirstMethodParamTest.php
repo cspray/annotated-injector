@@ -52,6 +52,6 @@ class InjectMultipleProfilesFirstMethodParamTest extends AnnotatedTargetDefiniti
 
     public function testGetAttribute() {
         self::assertInstanceOf(Inject::class, $this->definition->attribute());
-        self::assertSame('from-dev', $this->definition->attribute()->getValue());
+        self::assertSame('from-dev', $this->definition->attribute()->value());
     }
 }

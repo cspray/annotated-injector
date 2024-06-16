@@ -42,8 +42,6 @@ use function Cspray\Typiphy\objectType;
 
 abstract class ContainerFactoryTestCase extends TestCase {
 
-    private Profiles $activeProfiles;
-
     abstract protected function getContainerFactory(Emitter $emitter = new Emitter()) : ContainerFactory;
 
     abstract protected function getBackingContainerInstanceOf() : ObjectType;
@@ -118,11 +116,18 @@ abstract class ContainerFactoryTestCase extends TestCase {
         $container->get(Fixtures::ambiguousAliasedServices()->fooInterface()->getName());
     }
 
-    public function testServiceDelegate() {
+    public function testServiceDelegateOnInstanceMethod() : void {
         $container = $this->getContainer(Fixtures::delegatedService()->getPath());
         $service = $container->get(Fixtures::delegatedService()->serviceInterface()->getName());
 
         self::assertSame('From ServiceFactory From FooService', $service->getValue());
+    }
+
+    public function testServiceDelegateOnStaticMethod() : void {
+        $container = $this->getContainer(Fixtures::delegatedServiceStaticFactory()->getPath());
+        $service = $container->get(Fixtures::delegatedServiceStaticFactory()->serviceInterface()->getName());
+
+        self::assertSame('From static ServiceFactory From FooService', $service->getValue());
     }
 
     public function testHasServiceIfCompiled() {
@@ -524,5 +529,4 @@ abstract class ContainerFactoryTestCase extends TestCase {
             $collectionInjector->collection->services
         );
     }
-
 }

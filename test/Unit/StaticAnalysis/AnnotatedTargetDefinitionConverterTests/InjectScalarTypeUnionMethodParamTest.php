@@ -55,6 +55,6 @@ class InjectScalarTypeUnionMethodParamTest extends AnnotatedTargetDefinitionConv
 
     public function testGetAttribute() {
         self::assertInstanceOf(Inject::class, $this->definition->attribute());
-        self::assertSame(4.20, $this->definition->attribute()->getValue());
+        self::assertSame(4.20, $this->definition->attribute()->value());
     }
 }

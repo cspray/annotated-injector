@@ -51,6 +51,6 @@ class InjectServiceMethodParamTest extends AnnotatedTargetDefinitionConverterTes
 
     public function testGetAttribute() {
         self::assertInstanceOf(Inject::class, $this->definition->attribute());
-        self::assertSame(Fixtures::injectServiceConstructorServices()->fooImplementation()->getName(), $this->definition->attribute()->getValue());
+        self::assertSame(Fixtures::injectServiceConstructorServices()->fooImplementation()->getName(), $this->definition->attribute()->value());
     }
 }

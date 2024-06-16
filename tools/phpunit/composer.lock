@@ -4,8 +4,90 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "030f4806e9a36870b38a8545fc4aea61",
+    "content-hash": "0f52f015591d1cfc9bda788a90543d4d",
     "packages": [
+        {
+            "name": "cspray/assert-throws",
+            "version": "0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cspray/assert-throws.git",
+                "reference": "0eaeabf69272ff2c7bd24e45526380331f29996f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cspray/assert-throws/zipball/0eaeabf69272ff2c7bd24e45526380331f29996f",
+                "reference": "0eaeabf69272ff2c7bd24e45526380331f29996f",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.2",
+                "phpunit/phpunit": "^10.0 | ^11.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/functions.php"
+                ],
+                "psr-4": {
+                    "Cspray\\AssertThrows\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Charles Sprayberry",
+                    "homepage": "https://cspray.io",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "Assertions for PHPUnit when testing code that throws complex exceptions.",
+            "support": {
+                "issues": "https://github.com/cspray/assert-throws/issues",
+                "source": "https://github.com/cspray/assert-throws/tree/0.1.0"
+            },
+            "time": "2024-05-27T22:55:22+00:00"
+        },
+        {
+            "name": "cspray/stream-buffer-intercept",
+            "version": "0.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cspray/stream-buffer-intercept.git",
+                "reference": "c37517fa732cbd4ade832f3f8de0db1b4ba59481"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cspray/stream-buffer-intercept/zipball/c37517fa732cbd4ade832f3f8de0db1b4ba59481",
+                "reference": "c37517fa732cbd4ade832f3f8de0db1b4ba59481",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^10.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Cspray\\StreamBufferIntercept\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A test utility to help capture output sent to stream resources.",
+            "support": {
+                "issues": "https://github.com/cspray/stream-buffer-intercept/issues",
+                "source": "https://github.com/cspray/stream-buffer-intercept/tree/0.2.1"
+            },
+            "time": "2024-06-15T11:58:27+00:00"
+        },
         {
             "name": "mikey179/vfsstream",
             "version": "v1.6.11",
@@ -59,16 +141,16 @@
         },
         {
             "name": "myclabs/deep-copy",
-            "version": "1.11.1",
+            "version": "1.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/myclabs/DeepCopy.git",
-                "reference": "7284c22080590fb39f2ffa3e9057f10a4ddd0e0c"
+                "reference": "3a6b9a42cd8f8771bd4295d13e1423fa7f3d942c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/7284c22080590fb39f2ffa3e9057f10a4ddd0e0c",
-                "reference": "7284c22080590fb39f2ffa3e9057f10a4ddd0e0c",
+                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/3a6b9a42cd8f8771bd4295d13e1423fa7f3d942c",
+                "reference": "3a6b9a42cd8f8771bd4295d13e1423fa7f3d942c",
                 "shasum": ""
             },
             "require": {
@@ -76,11 +158,12 @@
             },
             "conflict": {
                 "doctrine/collections": "<1.6.8",
-                "doctrine/common": "<2.13.3 || >=3,<3.2.2"
+                "doctrine/common": "<2.13.3 || >=3 <3.2.2"
             },
             "require-dev": {
                 "doctrine/collections": "^1.6.8",
                 "doctrine/common": "^2.13.3 || ^3.2.2",
+                "phpspec/prophecy": "^1.10",
                 "phpunit/phpunit": "^7.5.20 || ^8.5.23 || ^9.5.13"
             },
             "type": "library",
@@ -106,7 +189,7 @@
             ],
             "support": {
                 "issues": "https://github.com/myclabs/DeepCopy/issues",
-                "source": "https://github.com/myclabs/DeepCopy/tree/1.11.1"
+                "source": "https://github.com/myclabs/DeepCopy/tree/1.12.0"
             },
             "funding": [
                 {
@@ -114,7 +197,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-03-08T13:26:56+00:00"
+            "time": "2024-06-12T14:39:25+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -617,16 +700,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "11.1.3",
+            "version": "11.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "d475be032238173ca3b0a516f5cc291d174708ae"
+                "reference": "3e1843a58adc9c433ee6170bdee7d615f7ccc20b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/d475be032238173ca3b0a516f5cc291d174708ae",
-                "reference": "d475be032238173ca3b0a516f5cc291d174708ae",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/3e1843a58adc9c433ee6170bdee7d615f7ccc20b",
+                "reference": "3e1843a58adc9c433ee6170bdee7d615f7ccc20b",
                 "shasum": ""
             },
             "require": {
@@ -665,7 +748,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "11.1-dev"
+                    "dev-main": "11.2-dev"
                 }
             },
             "autoload": {
@@ -697,7 +780,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.1.3"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.2.2"
             },
             "funding": [
                 {
@@ -713,7 +796,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-04-24T06:34:25+00:00"
+            "time": "2024-06-15T09:14:53+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -1697,5 +1780,5 @@
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.6.0"
 }

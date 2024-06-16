@@ -16,12 +16,12 @@
     "ext-dom": "*",
     "ext-libxml": "*",
     "composer-runtime-api": "^2.2",
-    "cspray/annotated-container-adr": "^3",
-    "cspray/annotated-container-attribute": "^1.3",
+    "cspray/annotated-container-adr": "^3.2",
+    "cspray/annotated-container-attribute": "^2.0.0.alpha.5",
     "cspray/annotated-target": "^v1.1",
     "cspray/precision-stopwatch": "^0.2.0",
     "cspray/typiphy": "^0.3",
-    "nikic/php-parser": "^5",
+    "nikic/php-parser": "^4.19",
     "psr/container": "^2.0"
   },
   "require-dev": {
@@ -64,8 +64,9 @@
   },
   "extra": {
     "$architecturalDecision": {
-      "initializers": [
-        "Cspray\\AnnotatedContainer\\ArchitecturalDecisions\\Initializer"
+      "additionalScanPaths": [
+        "vendor/cspray/annotated-container-adr/src",
+        "vendor/cspray/annotated-container-attribute/src"
       ]
     }
   }

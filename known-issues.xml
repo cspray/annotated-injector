@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files psalm-version="5.24.0@462c80e31c34e58cc4f750c656be3927e80e550e">
-  <file src="src/AnnotatedContainerVersion.php">
-    <InvalidNullableReturnType>
-      <code><![CDATA[string]]></code>
-    </InvalidNullableReturnType>
-    <NullableReturnStatement>
-      <code><![CDATA[InstalledVersions::getVersion('cspray/annotated-container')]]></code>
-    </NullableReturnStatement>
-  </file>
   <file src="src/Bootstrap/ComposerJsonScanningThirdPartyInitializerProvider.php">
     <MixedArrayAccess>
       <code><![CDATA[$composerData['extra']]]></code>
@@ -16,7 +8,6 @@
     </MixedArrayAccess>
     <MixedAssignment>
       <code><![CDATA[$composerData]]></code>
-      <code><![CDATA[$packageInitializer]]></code>
       <code><![CDATA[$packageInitializers]]></code>
     </MixedAssignment>
   </file>
@@ -83,11 +74,6 @@
       <code><![CDATA[$composerDir]]></code>
       <code><![CDATA[$parameterStore]]></code>
     </MixedAssignment>
-  </file>
-  <file src="src/Cli/Command/ValidateCommand.php">
-    <PossiblyInvalidArgument>
-      <code><![CDATA[$inputProfiles]]></code>
-    </PossiblyInvalidArgument>
   </file>
   <file src="src/ContainerFactory/AbstractContainerFactory.php">
     <MixedArgument>
@@ -260,15 +246,6 @@
       <code><![CDATA[$this->serviceKeys[$serviceType] ?? null]]></code>
     </MixedReturnStatement>
   </file>
-  <file src="src/Definition/AliasDefinitionBuilder.php">
-    <PropertyNotSetInConstructor>
-      <code><![CDATA[$abstractType]]></code>
-      <code><![CDATA[$concreteType]]></code>
-    </PropertyNotSetInConstructor>
-  </file>
-  <file src="src/Definition/Cache/FileBackedContainerDefinitionCache.php">
-    <ArgumentTypeCoercion/>
-  </file>
   <file src="src/Definition/InjectDefinitionBuilder.php">
     <LessSpecificReturnStatement>
       <code><![CDATA[$this->methodName]]></code>
@@ -283,15 +260,6 @@
     <PossiblyNullArgument>
       <code><![CDATA[$this->paramName]]></code>
     </PossiblyNullArgument>
-    <PropertyNotSetInConstructor>
-      <code><![CDATA[$service]]></code>
-      <code><![CDATA[$type]]></code>
-    </PropertyNotSetInConstructor>
-  </file>
-  <file src="src/Definition/ProfilesAwareContainerDefinition.php">
-    <InvalidArgument>
-      <code><![CDATA[$definition->profiles()]]></code>
-    </InvalidArgument>
   </file>
   <file src="src/Definition/Serializer/XmlContainerDefinitionSerializer.php">
     <ArgumentTypeCoercion>
@@ -325,51 +293,5 @@
       <code><![CDATA[$xpath->query('@isPrimary', $serviceDefinition)[0]?->value]]></code>
       <code><![CDATA[$xpath->query('@isPrimary', $serviceDefinition)[0]?->value]]></code>
     </UndefinedPropertyFetch>
-  </file>
-  <file src="src/Definition/ServiceDefinitionBuilder.php">
-    <PropertyNotSetInConstructor>
-      <code><![CDATA[$isAbstract]]></code>
-      <code><![CDATA[$type]]></code>
-    </PropertyNotSetInConstructor>
-  </file>
-  <file src="src/Definition/ServiceDelegateDefinitionBuilder.php">
-    <LessSpecificReturnStatement>
-      <code><![CDATA[$this->delegateMethod]]></code>
-    </LessSpecificReturnStatement>
-    <MoreSpecificReturnType>
-      <code><![CDATA[string]]></code>
-    </MoreSpecificReturnType>
-    <PropertyNotSetInConstructor>
-      <code><![CDATA[$delegateMethod]]></code>
-      <code><![CDATA[$delegateType]]></code>
-      <code><![CDATA[$service]]></code>
-    </PropertyNotSetInConstructor>
-  </file>
-  <file src="src/Definition/ServicePrepareDefinitionBuilder.php">
-    <PropertyNotSetInConstructor>
-      <code><![CDATA[$method]]></code>
-      <code><![CDATA[$service]]></code>
-    </PropertyNotSetInConstructor>
-  </file>
-  <file src="src/Function/definitions.php">
-    <ArgumentTypeCoercion>
-      <code><![CDATA[$name]]></code>
-    </ArgumentTypeCoercion>
-    <MixedArgument>
-      <code><![CDATA[$profiles]]></code>
-      <code><![CDATA[$profiles]]></code>
-    </MixedArgument>
-  </file>
-  <file src="src/Internal/SerializerInjectValueParser.php">
-    <InvalidScalarArgument>
-      <code><![CDATA[$types]]></code>
-    </InvalidScalarArgument>
-  </file>
-  <file src="src/StaticAnalysis/AnnotatedTargetDefinitionConverter.php">
-    <ArgumentTypeCoercion>
-      <code><![CDATA[$types]]></code>
-      <code><![CDATA[$types]]></code>
-      <code><![CDATA[$types]]></code>
-    </ArgumentTypeCoercion>
   </file>
 </files>

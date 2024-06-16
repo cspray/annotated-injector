@@ -1,6 +1,8 @@
 {
     "require": {
-        "phpunit/phpunit": "^11",
-        "mikey179/vfsstream": "^1.6"
+        "cspray/assert-throws": "^0.1",
+        "cspray/stream-buffer-intercept": "^0.2",
+        "mikey179/vfsstream": "^1.6",
+        "phpunit/phpunit": "^11"
     }
 }

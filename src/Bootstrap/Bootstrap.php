@@ -1,16 +1,11 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Cspray\AnnotatedContainer\Bootstrap;
 
-use Auryn\Injector as AurynContainer;
 use Cspray\AnnotatedContainer\AnnotatedContainer;
-use Cspray\AnnotatedContainer\ContainerFactory\AurynContainerFactory;
 use Cspray\AnnotatedContainer\ContainerFactory\ContainerFactory;
 use Cspray\AnnotatedContainer\ContainerFactory\ContainerFactoryOptionsBuilder;
-use Cspray\AnnotatedContainer\ContainerFactory\IlluminateContainerFactory;
-use Cspray\AnnotatedContainer\ContainerFactory\PhpDiContainerFactory;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
-use Cspray\AnnotatedContainer\Event\ContainerFactoryEmitter;
 use Cspray\AnnotatedContainer\Event\Emitter;
 use Cspray\AnnotatedContainer\Filesystem\Filesystem;
 use Cspray\AnnotatedContainer\Filesystem\PhpFunctionsFilesystem;
@@ -23,9 +18,6 @@ use Cspray\AnnotatedTarget\PhpParserAnnotatedTargetParser;
 use Cspray\PrecisionStopwatch\Marker;
 use Cspray\PrecisionStopwatch\Metrics;
 use Cspray\PrecisionStopwatch\Stopwatch;
-use DI\Container as PhpDiContainer;
-use Illuminate\Container\Container as IlluminateContainer;
-use RuntimeException;
 
 final class Bootstrap {
 
@@ -46,6 +38,19 @@ final class Bootstrap {
         BootstrappingDirectoryResolver $directoryResolver = new VendorPresenceBasedBootstrappingDirectoryResolver(),
         Filesystem $filesystem = new PhpFunctionsFilesystem()
     ) : self {
+        $configuration = new XmlBootstrappingConfiguration(
+            $filesystem,
+            $directoryResolver->configurationPath('annotated-container.xml'),
+            $parameterStoreFactory,
+            $definitionProviderFactory
+        );
+
+        return self::fromCompleteSetup(
+            $configuration,
+            $containerFactory,
+            $emitter,
+            $directoryResolver,
+        );
     }
 
     public static function fromCompleteSetup(

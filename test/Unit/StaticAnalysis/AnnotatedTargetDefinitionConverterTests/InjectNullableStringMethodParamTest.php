@@ -54,6 +54,6 @@ class InjectNullableStringMethodParamTest extends AnnotatedTargetDefinitionConve
 
     public function testGetAttribute() {
         self::assertInstanceOf(Inject::class, $this->definition->attribute());
-        self::assertNull($this->definition->attribute()->getValue());
+        self::assertNull($this->definition->attribute()->value());
     }
 }

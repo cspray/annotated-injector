@@ -91,10 +91,14 @@ final class AnnotatedTargetDefinitionConverter {
 
         $builder = $builder->withAttribute($attribute);
 
-        $profiles = empty($attribute->getProfiles()) ? ['default'] : $attribute->getProfiles();
+        $profiles = $attribute->profiles();
+        if ($profiles === []) {
+            $profiles = ['default'];
+        }
         $builder = $builder->withProfiles($profiles);
-        if ($attribute->getName() !== null) {
-            $builder = $builder->withName($attribute->getName());
+        $name = $attribute->name();
+        if ($name !== null) {
+            $builder = $builder->withName($name);
         }
 
         return $builder->build();
@@ -108,7 +112,7 @@ final class AnnotatedTargetDefinitionConverter {
         $attribute = $target->getAttributeInstance();
         assert($attribute instanceof ServiceDelegateAttribute);
 
-        $service = $attribute->getService();
+        $service = $attribute->service();
         if ($service !== null) {
             return ServiceDelegateDefinitionBuilder::forService(objectType($service))
                 ->withDelegateMethod(objectType($delegateType), $delegateMethod)
@@ -174,13 +178,13 @@ final class AnnotatedTargetDefinitionConverter {
     }
 
     private function buildInjectFromAttributeData(InjectDefinitionBuilder $builder, InjectAttribute $inject) : InjectDefinition {
-        $builder = $builder->withAttribute($inject)->withValue($inject->getValue());
-        $from = $inject->getFrom();
+        $builder = $builder->withAttribute($inject)->withValue($inject->value());
+        $from = $inject->from();
         if ($from !== null) {
             $builder = $builder->withStore($from);
         }
 
-        $profiles = $inject->getProfiles();
+        $profiles = $inject->profiles();
         if (count($profiles) === 0) {
             $profiles[] = 'default';
         }
@@ -202,8 +206,17 @@ final class AnnotatedTargetDefinitionConverter {
                 $types[] = $this->convertReflectionNamedType($type);
             }
             if ($reflectionType instanceof ReflectionUnionType) {
+                // At this point we know this is a non-empty list of types because we
+                // encountered a union type. This might include scalar values so we can't
+                // guarantee these are all object types.
+                /** @var non-empty-list<Type> $types */
                 $paramType = typeUnion(...$types);
             } else {
+                // At this point we know this is a non-empty list of object types because
+                // we encountered an intersection type so there must be something in the array
+                // of converted types AND the only types allowed in a type intersect at the
+                // language level are objects.
+                /** @var non-empty-list<ObjectType> $types */
                 $paramType = typeIntersect(...$types);
             }
         } else {

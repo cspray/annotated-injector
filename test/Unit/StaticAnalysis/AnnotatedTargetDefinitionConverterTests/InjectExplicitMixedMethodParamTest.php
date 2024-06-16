@@ -55,6 +55,6 @@ class InjectExplicitMixedMethodParamTest extends AnnotatedTargetDefinitionConver
 
     public function testGetAttribute() {
         self::assertInstanceOf(Inject::class, $this->definition->attribute());
-        self::assertSame('whatever', $this->definition->attribute()->getValue());
+        self::assertSame('whatever', $this->definition->attribute()->value());
     }
 }

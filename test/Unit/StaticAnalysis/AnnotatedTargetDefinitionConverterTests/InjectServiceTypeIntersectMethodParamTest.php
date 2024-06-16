@@ -55,6 +55,6 @@ class InjectServiceTypeIntersectMethodParamTest extends AnnotatedTargetDefinitio
 
     public function testGetAttribute() {
         self::assertInstanceOf(Inject::class, $this->definition->attribute());
-        self::assertSame(Fixtures::injectServiceIntersectConstructorServices()->fooBarImplementation()->getName(), $this->definition->attribute()->getValue());
+        self::assertSame(Fixtures::injectServiceIntersectConstructorServices()->fooBarImplementation()->getName(), $this->definition->attribute()->value());
     }
 }

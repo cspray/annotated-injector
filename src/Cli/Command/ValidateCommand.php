@@ -5,6 +5,7 @@ namespace Cspray\AnnotatedContainer\Cli\Command;
 use Cspray\AnnotatedContainer\Bootstrap\BootstrappingConfiguration;
 use Cspray\AnnotatedContainer\Bootstrap\BootstrappingDirectoryResolver;
 use Cspray\AnnotatedContainer\Bootstrap\ContainerDefinitionAnalysisOptionsFromBootstrappingConfiguration;
+use Cspray\AnnotatedContainer\Cli\Exception\ProfileNotString;
 use Cspray\AnnotatedContainer\Cli\Input\Input;
 use Cspray\AnnotatedContainer\Cli\Output\TerminalOutput;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
@@ -54,11 +55,16 @@ final class ValidateCommand implements Command {
         return 'validate';
     }
 
+    public function summary() : string {
+        return 'Ensure your ContainerDefinition validates against all logical constraints';
+    }
+
     public function help() : string {
+        $summary = $this->summary();
         return <<<TEXT
 NAME
 
-    validate - Ensure container definition validates against all logical constraints.
+    validate - $summary
     
 SYNOPSIS
 
@@ -112,19 +118,13 @@ TEXT;
             return 0;
         }
 
+        $profiles = $this->profiles($input);
+
         $analyzer = new AnnotatedTargetContainerDefinitionAnalyzer(
             new PhpParserAnnotatedTargetParser(),
             new AnnotatedTargetDefinitionConverter(),
             new Emitter()
         );
-
-        $inputProfiles = $input->option('profiles') ?? ['default'];
-        if (is_string($inputProfiles)) {
-            $inputProfiles = [$inputProfiles];
-        }
-
-        $profiles = Profiles::fromList($inputProfiles);
-
         $containerDefinition = $analyzer->analyze(
             (new ContainerDefinitionAnalysisOptionsFromBootstrappingConfiguration(
                 $this->bootstrappingConfiguration,
@@ -155,7 +155,6 @@ TEXT;
                 $violationColor = match ($result->violationType) {
                     LogicalConstraintViolationType::Critical => 'red',
                     LogicalConstraintViolationType::Warning => 'yellow',
-                    default => 'red'
                 };
 
                 $index++;
@@ -172,6 +171,27 @@ TEXT;
         return 0;
     }
 
+    private function profiles(Input $input) : Profiles {
+        $inputProfiles = $input->option('profiles') ?? ['default'];
+        if (is_bool($inputProfiles)) {
+            throw ProfileNotString::fromNotString();
+        }
+
+        if (is_string($inputProfiles)) {
+            $inputProfiles = [$inputProfiles];
+        }
+
+        $valid = [];
+        foreach ($inputProfiles as $profile) {
+            if (!is_string($profile)) {
+                throw ProfileNotString::fromNotString();
+            }
+            $valid[] = $profile;
+        }
+
+        return Profiles::fromList($valid);
+    }
+
     private function listConstraints(TerminalOutput $output) : void {
         $output->stdout->write('Annotated Container Validation');
         $output->stdout->br();
@@ -181,9 +201,5 @@ TEXT;
         foreach ($this->logicalConstraints as $logicalConstraint) {
             $output->stdout->write('- ' . $logicalConstraint::class);
         }
-    }
-
-    public function summary() : string {
-        return 'My validate summary';
     }
 }

@@ -55,6 +55,6 @@ class InjectArrayMethodParamTest extends AnnotatedTargetDefinitionConverterTestC
 
     public function testGetAttribute() : void {
         self::assertInstanceOf(Inject::class, $this->definition->attribute());
-        self::assertSame(['dependency', 'injection', 'rocks'], $this->definition->attribute()->getValue());
+        self::assertSame(['dependency', 'injection', 'rocks'], $this->definition->attribute()->value());
     }
 }

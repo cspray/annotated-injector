@@ -44,5 +44,4 @@ class VendorPresenceBasedBootstrappingDirectoryResolverTest extends TestCase {
         self::assertSame('/root/root-sub-path', $subject->rootPath('root-sub-path'));
         self::assertSame('/root/config-sub-path', $subject->configurationPath('config-sub-path'));
     }
-
 }

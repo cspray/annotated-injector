@@ -55,6 +55,6 @@ class InjectFloatMethodParamTest extends AnnotatedTargetDefinitionConverterTestC
 
     public function testGetAttribute() {
         self::assertInstanceOf(Inject::class, $this->definition->attribute());
-        self::assertSame(3.14, $this->definition->attribute()->getValue());
+        self::assertSame(3.14, $this->definition->attribute()->value());
     }
 }

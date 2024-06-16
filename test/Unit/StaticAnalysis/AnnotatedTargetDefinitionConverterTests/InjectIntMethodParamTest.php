@@ -55,6 +55,6 @@ class InjectIntMethodParamTest extends AnnotatedTargetDefinitionConverterTestCas
 
     public function testGetAttribute() {
         self::assertInstanceOf(Inject::class, $this->definition->attribute());
-        self::assertSame(42, $this->definition->attribute()->getValue());
+        self::assertSame(42, $this->definition->attribute()->value());
     }
 }

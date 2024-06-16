@@ -42,7 +42,7 @@
 
   <xs:complexType name="serviceDefinitionType">
     <xs:all>
-      <xs:element name="type" type="xs:token" />
+      <xs:element name="type" type="fullyQualifiedClassNameType" />
       <xs:element name="name" type="xs:token" />
       <xs:element name="profiles" type="profilesType" />
       <xs:element name="concreteOrAbstract" type="concreteOrAbstractType" />
@@ -59,8 +59,8 @@
 
   <xs:complexType name="aliasDefinitionType">
     <xs:all>
-      <xs:element name="abstractService" type="xs:token" />
-      <xs:element name="concreteService" type="xs:token" />
+      <xs:element name="abstractService" type="fullyQualifiedClassNameType" />
+      <xs:element name="concreteService" type="fullyQualifiedClassNameType" />
     </xs:all>
   </xs:complexType>
 
@@ -72,8 +72,8 @@
 
   <xs:complexType name="servicePrepareDefinitionType">
     <xs:all>
-      <xs:element name="type" type="xs:token" />
-      <xs:element name="method" type="xs:token" />
+      <xs:element name="type" type="fullyQualifiedClassNameType" />
+      <xs:element name="method" type="classMethodType" />
       <xs:element name="attribute" type="xs:string" />
     </xs:all>
   </xs:complexType>
@@ -86,9 +86,9 @@
 
   <xs:complexType name="serviceDelegateDefinitionType">
     <xs:all>
-      <xs:element name="service" type="xs:token" />
-      <xs:element name="delegateType" type="xs:token" />
-      <xs:element name="delegateMethod" type="xs:token" />
+      <xs:element name="service" type="fullyQualifiedClassNameType" />
+      <xs:element name="delegateType" type="fullyQualifiedClassNameType" />
+      <xs:element name="delegateMethod" type="classMethodType" />
       <xs:element name="attribute" type="xs:string" />
     </xs:all>
   </xs:complexType>
@@ -101,8 +101,8 @@
 
   <xs:complexType name="injectDefinitionType">
     <xs:all>
-      <xs:element name="class" type="xs:token" />
-      <xs:element name="method" type="xs:token" />
+      <xs:element name="class" type="fullyQualifiedClassNameType" />
+      <xs:element name="method" type="classMethodType" />
       <xs:element name="parameter" type="xs:token" />
       <xs:element name="valueType" type="xs:token" />
       <xs:element name="value" type="xs:string" />
@@ -122,6 +122,20 @@
     <xs:restriction base="xs:string">
       <xs:enumeration value="Concrete" />
       <xs:enumeration value="Abstract" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="fullyQualifiedClassNameType">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1" />
+      <xs:pattern value="[a-zA-Z_&#x80;-&#xff;][a-zA-Z0-9_&#x80;-&#xff;]*(\\[a-zA-Z_&#x80;-&#xff;][a-zA-Z0-9_&#x80;-&#xff;]*)*" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="classMethodType">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1" />
+      <xs:pattern value="[a-zA-Z_&#x80;-&#xff;][a-zA-Z0-9_&#x80;-&#xff;]*" />
     </xs:restriction>
   </xs:simpleType>
 </xs:schema>

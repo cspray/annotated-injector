@@ -9,7 +9,7 @@ use Throwable;
 final class CommandExecutor {
 
     /**
-     * @var list<Command> $commands
+     * @var array<non-empty-string, Command> $commands
      */
     private array $commands = [];
 
@@ -35,7 +35,7 @@ final class CommandExecutor {
      * @return list<Command>
      */
     public function commands() : array {
-        return $this->commands;
+        return array_values($this->commands);
     }
 
     public function execute(Input $input, TerminalOutput $output) : int {

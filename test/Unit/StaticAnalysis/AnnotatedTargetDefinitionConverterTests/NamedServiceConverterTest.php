@@ -40,6 +40,6 @@ class NamedServiceConverterTest extends AnnotatedTargetDefinitionConverterTestCa
 
     public function testGetAttribute() : void {
         self::assertInstanceOf(Service::class, $this->definition->attribute());
-        self::assertSame('foo', $this->definition->attribute()->getName());
+        self::assertSame('foo', $this->definition->attribute()->name());
     }
 }

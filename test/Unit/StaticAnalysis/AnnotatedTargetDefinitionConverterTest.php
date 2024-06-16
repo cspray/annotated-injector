@@ -23,5 +23,4 @@ final class AnnotatedTargetDefinitionConverterTest extends TestCase {
 
         $subject->convert($target);
     }
-
 }

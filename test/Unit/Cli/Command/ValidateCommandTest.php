@@ -5,6 +5,7 @@ namespace Cspray\AnnotatedContainer\Unit\Cli\Command;
 use Cspray\AnnotatedContainer\Attribute\Service;
 use Cspray\AnnotatedContainer\Bootstrap\BootstrappingConfiguration;
 use Cspray\AnnotatedContainer\Cli\Command\ValidateCommand;
+use Cspray\AnnotatedContainer\Cli\Exception\ProfileNotString;
 use Cspray\AnnotatedContainer\Cli\Output\TerminalOutput;
 use Cspray\AnnotatedContainer\LogicalConstraint\Check\DuplicateServiceDelegate;
 use Cspray\AnnotatedContainer\LogicalConstraint\Check\DuplicateServiceName;
@@ -55,7 +56,7 @@ final class ValidateCommandTest extends TestCase {
         $expected = <<<TEXT
 NAME
 
-    validate - Ensure container definition validates against all logical constraints.
+    validate - Ensure your ContainerDefinition validates against all logical constraints
     
 SYNOPSIS
 
@@ -271,5 +272,26 @@ TEXT;
         $this->subject->handle(new StubInput(['profiles' => 'dev'], []), $this->output);
 
         self::assertSame($expected, $this->stdout->getContentsAsString());
+    }
+
+    public function testProfilesMixedBoolAndStringThrowsException() : void {
+        $this->expectException(ProfileNotString::class);
+        $this->expectExceptionMessage('All provided profiles MUST be a string.');
+
+        $this->subject->handle(new StubInput(['profiles' => ['dev', true]], []), $this->output);
+    }
+
+    public function testProfilesOnlyBoolAndStringThrowsException() : void {
+        $this->expectException(ProfileNotString::class);
+        $this->expectExceptionMessage('All provided profiles MUST be a string.');
+
+        $this->subject->handle(new StubInput(['profiles' => true], []), $this->output);
+    }
+
+    public function testGetSummaryHasExpectedType() : void {
+        self::assertSame(
+            'Ensure your ContainerDefinition validates against all logical constraints',
+            $this->subject->summary()
+        );
     }
 }

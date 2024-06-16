@@ -54,6 +54,10 @@ final class Fixtures {
         return new DelegatedServiceFixture();
     }
 
+    public static function delegatedServiceStaticFactory() : DelegatedServiceStaticFactoryFixture {
+        return new DelegatedServiceStaticFactoryFixture();
+    }
+
     public static function primaryAliasedServices() : PrimaryAliasedServicesFixture {
         return new PrimaryAliasedServicesFixture();
     }

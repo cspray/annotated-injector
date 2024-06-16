@@ -14,5 +14,4 @@ final class FixtureBootstrappingDirectoryResolver implements BootstrappingDirect
     public function rootPath(string $subPath = '') : string {
         return sprintf('%s/%s', Fixtures::getRootPath(), $subPath);
     }
-
 }

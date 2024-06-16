@@ -61,7 +61,6 @@ final class ContainerDefinitionAnalysisOptionsBuilder {
                 return $this->directories;
             }
 
-            #[SingleEntrypointDefinitionProvider]
             public function definitionProvider(): ?DefinitionProvider {
                 return $this->consumer;
             }

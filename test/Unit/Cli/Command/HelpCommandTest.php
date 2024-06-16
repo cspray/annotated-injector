@@ -28,18 +28,24 @@ class HelpCommandTest extends TestCase {
         self::assertSame('help', $this->subject->name());
     }
 
+    public function testHelpSummaryReturnsExpectedText() : void {
+        $expected = 'List available commands and show detailed info about individual commands.';
+
+        self::assertSame($expected, $this->subject->summary());
+    }
+
     public function testHelpTextShowsAddedCommandsWithProperFormatting() : void {
         $a = $this->createMock(Command::class);
         $b = $this->createMock(Command::class);
         $c = $this->createMock(Command::class);
 
-        $a->expects($this->exactly(2))->method('name')->willReturn('a-cmd');
+        $a->method('name')->willReturn('a-cmd');
         $a->expects($this->once())->method('summary')->willReturn('A Summary');
 
-        $b->expects($this->exactly(2))->method('name')->willReturn('b-cmd');
+        $b->method('name')->willReturn('b-cmd');
         $b->expects($this->once())->method('summary')->willReturn('B Summary');
 
-        $c->expects($this->exactly(2))->method('name')->willReturn('c-cmd');
+        $c->method('name')->willReturn('c-cmd');
         $c->expects($this->once())->method('summary')->willReturn('C Summary');
 
         $this->commandExecutor->addCommand($a);
@@ -53,9 +59,9 @@ class HelpCommandTest extends TestCase {
 This is a list of all available commands. For more information on a specific command please run "help <command-name>".
 Commands listed in <fg:red>red</fg:red> are disabled and some action must be taken on your part to enable them.
 
-<fg:green>a-cmd</fg:green>       A Summary
-<fg:green>b-cmd</fg:green>       B Summary
-<fg:green>c-cmd</fg:green>       C Summary
+\033[32ma-cmd\033[0m      A Summary
+\033[32mb-cmd\033[0m      B Summary
+\033[32mc-cmd\033[0m      C Summary
 
 TEXT;
 
@@ -70,7 +76,7 @@ TEXT;
 This is a list of all available commands. For more information on a specific command please run "help <command-name>".
 Commands listed in <fg:red>red</fg:red> are disabled and some action must be taken on your part to enable them.
 
-<fg:red>bad-cmd</fg:red>         Command is disabled. Run "help bad-cmd" to learn how to enable it.
+\033[31mbad-cmd\033[0m      Command is disabled. Run "help bad-cmd" to learn how to enable it.
 
 TEXT;
 
@@ -88,7 +94,7 @@ TEXT;
         );
 
         $a = $this->createMock(Command::class);
-        $a->expects($this->exactly(2))->method('name')->willReturn('cmd-name');
+        $a->method('name')->willReturn('cmd-name');
         $a->expects($this->once())->method('summary')->willReturn('My command summary');
 
         $this->commandExecutor->addCommand($a);
@@ -102,7 +108,7 @@ TEXT;
 This is a list of all available commands. For more information on a specific command please run "help <command-name>".
 Commands listed in \033[31mred\033[0m are disabled and some action must be taken on your part to enable them.
 
-\033[32mcmd-name\033[0m    My command summary
+\033[32mcmd-name\033[0m      My command summary
 
 
 SHELL;
@@ -111,6 +117,74 @@ SHELL;
         self::assertSame(0, $exitCode);
         self::assertSame($expected, $stdout->getContentsAsString());
         self::assertEmpty($stderr->getContents());
+    }
+
+    public function testCommandsAreListedInAlphabeticalOrder() : void {
+        $a = $this->createMock(Command::class);
+        $b = $this->createMock(Command::class);
+        $c = $this->createMock(Command::class);
+
+        $a->method('name')->willReturn('mack');
+        $a->expects($this->once())->method('summary')->willReturn('Mack Summary');
+
+        $b->method('name')->willReturn('ada');
+        $b->expects($this->once())->method('summary')->willReturn('Ada Summary');
+
+        $c->method('name')->willReturn('nick');
+        $c->expects($this->once())->method('summary')->willReturn('Nick Summary');
+
+        $this->commandExecutor->addCommand($a);
+        $this->commandExecutor->addCommand($b);
+        $this->commandExecutor->addCommand($c);
+
+        $version = AnnotatedContainerVersion::version();
+        $expected = <<<TEXT
+<bold>Annotated Container $version</bold>
+
+This is a list of all available commands. For more information on a specific command please run "help <command-name>".
+Commands listed in <fg:red>red</fg:red> are disabled and some action must be taken on your part to enable them.
+
+\033[32mada\033[0m       Ada Summary
+\033[32mmack\033[0m      Mack Summary
+\033[32mnick\033[0m      Nick Summary
+
+TEXT;
+
+        self::assertSame($expected, $this->subject->help());
+    }
+
+    public function testHelpSummaryPaddingHandlesVariableLengthNames() : void {
+        $a = $this->createMock(Command::class);
+        $b = $this->createMock(Command::class);
+        $c = $this->createMock(Command::class);
+
+        $a->method('name')->willReturn(str_repeat('x', 3));
+        $a->expects($this->once())->method('summary')->willReturn('3 Summary');
+
+        $b->method('name')->willReturn(str_repeat('x', 15));
+        $b->expects($this->once())->method('summary')->willReturn('15 Summary');
+
+        $c->method('name')->willReturn(str_repeat('x', 27));
+        $c->expects($this->once())->method('summary')->willReturn('25 Summary');
+
+        $this->commandExecutor->addCommand($a);
+        $this->commandExecutor->addCommand($b);
+        $this->commandExecutor->addCommand($c);
+
+        $version = AnnotatedContainerVersion::version();
+        $expected = <<<TEXT
+<bold>Annotated Container $version</bold>
+
+This is a list of all available commands. For more information on a specific command please run "help <command-name>".
+Commands listed in <fg:red>red</fg:red> are disabled and some action must be taken on your part to enable them.
+
+\033[32mxxx\033[0m                              3 Summary
+\033[32mxxxxxxxxxxxxxxx\033[0m                  15 Summary
+\033[32mxxxxxxxxxxxxxxxxxxxxxxxxxxx\033[0m      25 Summary
+
+TEXT;
+
+        self::assertSame($expected, $this->subject->help());
     }
 
     public function testHelpCommandWithArgumentCommandNotFound() : void {

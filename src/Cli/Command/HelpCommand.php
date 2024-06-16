@@ -19,16 +19,26 @@ final class HelpCommand implements Command {
 
     public function help() : string {
         $version = AnnotatedContainerVersion::version();
-        $commands = '';
-        foreach ($this->commandExecutor->commands() as $command) {
+        $commandOutput = '';
+        $commands = $this->commandExecutor->commands();
+        usort($commands, static fn(Command $a, Command $b) => $a->name() <=> $b->name());
+
+        $longestNamedCommand = array_reduce(
+            $commands,
+            static fn(?Command $carry, Command $item) => strlen($item->name()) > strlen($carry?->name() ?? '') ? $item : $carry
+        );
+
+        $paddingAmount = strlen($longestNamedCommand->name()) + 15;
+
+        foreach ($commands as $command) {
             $colorizedCommandName = sprintf(
-                '<fg:%1$s>%2$s</fg:%1$s>',
-                $command instanceof DisabledCommand ? 'red' : 'green',
+                "\033[%1\$sm%2\$s\033[0m",
+                $command instanceof DisabledCommand ? '31' : '32',
                 $command->name()
             );
 
-            $commands .= sprintf(
-                "%-33s%s%s",
+            $commandOutput .= sprintf(
+                "%-{$paddingAmount}s%s%s",
                 $colorizedCommandName,
                 $command->summary(),
                 PHP_EOL,
@@ -41,7 +51,7 @@ final class HelpCommand implements Command {
 This is a list of all available commands. For more information on a specific command please run "help <command-name>".
 Commands listed in <fg:red>red</fg:red> are disabled and some action must be taken on your part to enable them.
 
-$commands
+$commandOutput
 SHELL;
     }
 
@@ -68,6 +78,6 @@ SHELL;
     }
 
     public function summary() : string {
-        return '';
+        return 'List available commands and show detailed info about individual commands.';
     }
 }

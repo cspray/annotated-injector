@@ -3,10 +3,6 @@
 namespace Cspray\AnnotatedContainer\Unit\Cli\Command;
 
 use Cspray\AnnotatedContainer\Cli\Command\CacheClearCommand;
-use Cspray\AnnotatedContainer\Cli\Exception\CacheDirConfigurationNotFound;
-use Cspray\AnnotatedContainer\Cli\Exception\CacheDirNotFound;
-use Cspray\AnnotatedContainer\Cli\Exception\ConfigurationNotFound;
-use Cspray\AnnotatedContainer\Cli\Exception\InvalidOptionType;
 use Cspray\AnnotatedContainer\Cli\Output\TerminalOutput;
 use Cspray\AnnotatedContainer\Definition\Cache\CacheKey;
 use Cspray\AnnotatedContainer\Definition\Cache\ContainerDefinitionCache;
@@ -14,9 +10,6 @@ use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptions;
 use Cspray\AnnotatedContainer\Unit\Helper\FixtureBootstrappingDirectoryResolver;
 use Cspray\AnnotatedContainer\Unit\Helper\InMemoryOutput;
 use Cspray\AnnotatedContainer\Unit\Helper\StubInput;
-use Cspray\AnnotatedContainerFixture\Fixtures;
-use org\bovigo\vfs\vfsStream as VirtualFilesystem;
-use org\bovigo\vfs\vfsStreamDirectory as VirtualDirectory;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -56,7 +49,7 @@ final class CacheClearCommandTest extends TestCase {
         $expected = <<<SHELL
 NAME
 
-    cache-clear - Remove cached ContainerDefinition, forcing rebuild of your Container
+    cache-clear - Remove any cached ContainerDefinition, forcing static analysis to run again
     
 SYNOPSIS
 
@@ -94,13 +87,17 @@ SHELL;
             ->method('remove')
             ->with($this->callback(
                 fn (CacheKey $cacheKey) =>
-                    $cacheKey->asString() === md5($this->directoryResolver->rootPath('SingleConcreteService')))
-            );
+                $cacheKey->asString() === md5($this->directoryResolver->rootPath('SingleConcreteService'))
+            ));
 
         $input = new StubInput([], ['cache-clear']);
         $this->subject->handle($input, $this->output);
     }
 
-    
-
+    public function testCacheClearSummaryHasExpectedText() : void {
+        self::assertSame(
+            'Remove any cached ContainerDefinition, forcing static analysis to run again',
+            $this->subject->summary()
+        );
+    }
 }

@@ -21,14 +21,15 @@ final class CacheClearCommand implements Command {
     }
 
     public function summary() : string {
-        // TODO: Implement summary() method.
+        return 'Remove any cached ContainerDefinition, forcing static analysis to run again';
     }
 
     public function help() : string {
+        $summary = $this->summary();
         return <<<SHELL
 NAME
 
-    cache-clear - Remove cached ContainerDefinition, forcing rebuild of your Container
+    cache-clear - $summary
     
 SYNOPSIS
 

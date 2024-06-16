@@ -152,7 +152,7 @@ final class FileBackedContainerDefinitionCacheTest extends TestCase {
             $this->serializer,
             $this->filesystem,
             '/cache/dir'
-       );
+        );
 
         $containerDefinition = $this->getMockBuilder(ContainerDefinition::class)->getMock();
         $this->serializer->expects($this->once())
@@ -228,6 +228,45 @@ final class FileBackedContainerDefinitionCacheTest extends TestCase {
                 fn(SerializedContainerDefinition $serializedContainerDefinition) =>
                     $serializedContainerDefinition->asString() === 'my-serialized-container'
             ))->willThrowException(MismatchedContainerDefinitionSerializerVersions::fromVersionIsNotInstalledAnnotatedContainerVersion('1.0'));
+
+        $actual = $subject->get($this->cacheKey);
+
+        self::assertNull($actual);
+    }
+
+    public function testGetWithEmptyFileRemovesOffendingCacheAndReturnsNull() : void {
+        $this->filesystem->expects($this->once())
+            ->method('isDirectory')
+            ->with('/path/to/cache')
+            ->willReturn(true);
+
+        $this->filesystem->expects($this->once())
+            ->method('isWritable')
+            ->with('/path/to/cache')
+            ->willReturn(true);
+
+        $subject = new FileBackedContainerDefinitionCache(
+            $this->serializer,
+            $this->filesystem,
+            '/path/to/cache'
+        );
+
+        $this->filesystem->expects($this->once())
+            ->method('isFile')
+            ->with('/path/to/cache/' . $this->cacheKey->asString())
+            ->willReturn(true);
+
+        $this->filesystem->expects($this->once())
+            ->method('read')
+            ->with('/path/to/cache/' . $this->cacheKey->asString())
+            ->willReturn('');
+
+        $this->filesystem->expects($this->once())
+            ->method('remove')
+            ->with('/path/to/cache/' . $this->cacheKey->asString());
+
+        $this->serializer->expects($this->never())
+            ->method('deserialize');
 
         $actual = $subject->get($this->cacheKey);
 

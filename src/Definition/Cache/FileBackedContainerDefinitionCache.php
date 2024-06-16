@@ -43,12 +43,16 @@ final class FileBackedContainerDefinitionCache implements ContainerDefinitionCac
             return null;
         }
 
-        $serializedContainerDefinition = SerializedContainerDefinition::fromString(
-            $this->filesystem->read($filePath)
-        );
+        $contents = $this->filesystem->read($filePath);
+        if ($contents === '') {
+            $this->remove($cacheKey);
+            return null;
+        }
 
         try {
-            return $this->containerDefinitionSerializer->deserialize($serializedContainerDefinition);
+            return $this->containerDefinitionSerializer->deserialize(
+                SerializedContainerDefinition::fromString($contents)
+            );
         } catch (MismatchedContainerDefinitionSerializerVersions) {
             $this->remove($cacheKey);
             return null;
@@ -59,6 +63,10 @@ final class FileBackedContainerDefinitionCache implements ContainerDefinitionCac
         $this->filesystem->remove($this->cachePath($cacheKey));
     }
 
+    /**
+     * @param CacheKey $cacheKey
+     * @return non-empty-string
+     */
     private function cachePath(CacheKey $cacheKey) : string {
         return sprintf(
             '%s/%s',

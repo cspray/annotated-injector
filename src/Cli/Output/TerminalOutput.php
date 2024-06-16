@@ -45,6 +45,9 @@ final class TerminalOutput {
                 'bg:white' => ['open' => '47', 'close' => '0']
             ];
 
+            /**
+             * @var array{tags: list<string>, codes: list<string>}
+             */
             private readonly array $tagCodes;
 
             public function __construct(private readonly Output $output) {

@@ -10,7 +10,8 @@ final class ContainerDefinitionAnalysisOptionsFromBootstrappingConfiguration {
     public function __construct(
         private readonly BootstrappingConfiguration $configuration,
         private readonly BootstrappingDirectoryResolver $directoryResolver
-    ) {}
+    ) {
+    }
 
     public function create() : ContainerDefinitionAnalysisOptions {
         $scanPaths = [];
@@ -25,5 +26,4 @@ final class ContainerDefinitionAnalysisOptionsFromBootstrappingConfiguration {
 
         return $analysisOptions->build();
     }
-
 }

@@ -9,12 +9,21 @@ use Cspray\Typiphy\ObjectType;
 final class ServicePrepareDefinitionBuilder {
 
     private ObjectType $service;
+    /**
+     * @var non-empty-string
+     */
     private string $method;
     private ?ServicePrepareAttribute $attribute = null;
 
     private function __construct() {
     }
 
+    /**
+     * @param ObjectType $serviceDefinition
+     * @param non-empty-string $method
+     * @return self
+     * @throws InvalidServicePrepareDefinition
+     */
     public static function forMethod(ObjectType $serviceDefinition, string $method) : self {
         if (empty($method)) {
             throw InvalidServicePrepareDefinition::fromEmptyPrepareMethod();
@@ -34,6 +43,11 @@ final class ServicePrepareDefinitionBuilder {
     public function build() : ServicePrepareDefinition {
         return new class($this->service, $this->method, $this->attribute) implements ServicePrepareDefinition {
 
+            /**
+             * @param ObjectType $service
+             * @param non-empty-string $method
+             * @param ServicePrepareAttribute|null $attribute
+             */
             public function __construct(
                 private readonly ObjectType $service,
                 private readonly string $method,
@@ -45,6 +59,9 @@ final class ServicePrepareDefinitionBuilder {
                 return $this->service;
             }
 
+            /**
+             * @return non-empty-string
+             */
             public function methodName() : string {
                 return $this->method;
             }

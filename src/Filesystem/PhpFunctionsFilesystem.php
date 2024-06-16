@@ -24,7 +24,7 @@ final class PhpFunctionsFilesystem implements Filesystem {
     }
 
     public function write(string $path, string $contents) : void {
-        if (! @file_put_contents($path, $contents)) {
+        if (@file_put_contents($path, $contents) === false) {
             throw UnableToWriteFile::fromFailureWritingToPath($path);
         }
     }
@@ -43,5 +43,4 @@ final class PhpFunctionsFilesystem implements Filesystem {
             unlink($path);
         }
     }
-
 }

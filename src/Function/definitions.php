@@ -22,7 +22,7 @@ use ReflectionException;
 
 /**
  * @param ObjectType $type
- * @param string|null $name
+ * @param non-empty-string|null $name
  * @param list<non-empty-string> $profiles
  * @param bool $isPrimary
  * @return ServiceDefinition
@@ -51,16 +51,48 @@ function service(ObjectType $type, ?string $name = null, array $profiles = [], b
     return $serviceDefinitionBuilder->build();
 }
 
+/**
+ * @param ObjectType $service
+ * @param ObjectType $factoryClass
+ * @param non-empty-string $factoryMethod
+ * @return ServiceDelegateDefinition
+ * @throws Exception\InvalidServiceDelegateDefinition
+ */
 function serviceDelegate(ObjectType $service, ObjectType $factoryClass, string $factoryMethod) : ServiceDelegateDefinition {
     return ServiceDelegateDefinitionBuilder::forService($service)
         ->withDelegateMethod($factoryClass, $factoryMethod)->build();
 }
 
+/**
+ * @param ObjectType $service
+ * @param non-empty-string $method
+ * @return ServicePrepareDefinition
+ * @throws Exception\InvalidServicePrepareDefinition
+ */
 function servicePrepare(ObjectType $service, string $method) : ServicePrepareDefinition {
     return ServicePrepareDefinitionBuilder::forMethod($service, $method)->build();
 }
 
-function inject(ObjectType $service, string $method, string $paramName, Type|TypeUnion|TypeIntersect $type, mixed $value, array $profiles = [], string $from = null) : InjectDefinition {
+/**
+ * @param ObjectType $service
+ * @param non-empty-string $method
+ * @param non-empty-string $paramName
+ * @param Type|TypeUnion|TypeIntersect $type
+ * @param mixed $value
+ * @param list<non-empty-string> $profiles
+ * @param non-empty-string|null $from
+ * @return InjectDefinition
+ * @throws Exception\InvalidInjectDefinition
+ */
+function inject(
+    ObjectType $service,
+    string $method,
+    string $paramName,
+    Type|TypeUnion|TypeIntersect $type,
+    mixed $value,
+    array $profiles = [],
+    string $from = null
+) : InjectDefinition {
     $injectDefinitionBuilder = InjectDefinitionBuilder::forService($service)
         ->withMethod($method, $type, $paramName)
         ->withValue($value);

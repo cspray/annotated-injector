@@ -2,6 +2,8 @@
 
 namespace Cspray\AnnotatedContainer\Unit\Cli;
 
+use Cspray\AnnotatedContainer\Cli\Exception\BlankArg;
+use Cspray\AnnotatedContainer\Cli\Exception\BlankOptName;
 use Cspray\AnnotatedContainer\Cli\Exception\OptionNotFound;
 use Cspray\AnnotatedContainer\Cli\Input\InputParser;
 use PHPUnit\Framework\TestCase;
@@ -149,5 +151,32 @@ class InputParserTest extends TestCase {
         $input = $subject->parse(['script.php', '--foo=bar']);
 
         self::assertSame('bar', $input->requireOption('foo'));
+    }
+
+    public function testArgWithPotentiallyBlankOptionThrowsException() : void {
+        $subject = new InputParser();
+
+        $this->expectException(BlankOptName::class);
+        $this->expectExceptionMessage(
+            'A CLI opt MUST NOT be an empty string.'
+        );
+
+        $subject->parse(['script.php', '--=bad-opt']);
+    }
+
+    public function testArgsWithMixedBoolAndStringInArray() : void {
+        $subject = new InputParser();
+        $input = $subject->parse(['script.php', '--a=foo', '--a']);
+
+        self::assertSame(['foo', true], $input->requireOption('a'));
+    }
+
+    public function testArgsWithBlankValueThrowsException() : void {
+        $subject = new InputParser();
+
+        $this->expectException(BlankArg::class);
+        $this->expectExceptionMessage('A CLI argument MUST NOT be an empty string.');
+
+        $subject->parse(['script.php', '']);
     }
 }

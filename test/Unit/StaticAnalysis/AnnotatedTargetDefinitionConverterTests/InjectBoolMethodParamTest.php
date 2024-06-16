@@ -55,6 +55,6 @@ class InjectBoolMethodParamTest extends AnnotatedTargetDefinitionConverterTestCa
 
     public function testGetAttribute() {
         self::assertInstanceOf(Inject::class, $this->definition->attribute());
-        self::assertFalse($this->definition->attribute()->getValue());
+        self::assertFalse($this->definition->attribute()->value());
     }
 }

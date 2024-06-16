@@ -10,5 +10,4 @@ final class UnableToReadFile extends Exception {
             $path
         ));
     }
-
 }

@@ -52,7 +52,7 @@ class InjectEnvMethodParamTest extends AnnotatedTargetDefinitionConverterTestCas
 
     public function testGetAttribute() {
         self::assertInstanceOf(Inject::class, $this->definition->attribute());
-        self::assertSame('USER', $this->definition->attribute()->getValue());
-        self::assertSame('env', $this->definition->attribute()->getFrom());
+        self::assertSame('USER', $this->definition->attribute()->value());
+        self::assertSame('env', $this->definition->attribute()->from());
     }
 }

@@ -10,5 +10,4 @@ final class InvalidAnnotatedTarget extends Exception {
             'an internal error and should be reported to https://github.com/cspray/annotated-container.'
         );
     }
-
 }

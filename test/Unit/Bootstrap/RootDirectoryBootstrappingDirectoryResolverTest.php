@@ -24,5 +24,4 @@ final class RootDirectoryBootstrappingDirectoryResolverTest extends TestCase {
             $subject->rootPath('src')
         );
     }
-
 }

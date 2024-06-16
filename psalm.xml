@@ -19,4 +19,18 @@
     <plugins>
         <pluginClass class="Cspray\Phinal\Plugin" />
     </plugins>
+
+    <issueHandlers>
+        <PropertyNotSetInConstructor>
+            <errorLevel type="suppress">
+                <file name="src/Definition/AliasDefinitionBuilder.php" />
+                <file name="src/Definition/ContainerDefinitionBuilder.php" />
+                <file name="src/Definition/InjectDefinitionBuilder.php" />
+                <file name="src/Definition/ServiceDefinitionBuilder.php" />
+                <file name="src/Definition/ServiceDelegateDefinitionBuilder.php" />
+                <file name="src/Definition/ServicePrepareDefinitionBuilder.php" />
+            </errorLevel>
+        </PropertyNotSetInConstructor>
+    </issueHandlers>
+
 </psalm>

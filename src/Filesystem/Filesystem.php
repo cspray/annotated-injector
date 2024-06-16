@@ -17,6 +17,4 @@ interface Filesystem {
     public function read(string $path) : string;
 
     public function remove(string $path) : void;
-
-
 }

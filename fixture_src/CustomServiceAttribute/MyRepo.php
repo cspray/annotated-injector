@@ -3,6 +3,6 @@
 namespace Cspray\AnnotatedContainerFixture\CustomServiceAttribute;
 
 #[Repository]
-class MyRepo {
+class MyRepo implements Repo {
 
 }

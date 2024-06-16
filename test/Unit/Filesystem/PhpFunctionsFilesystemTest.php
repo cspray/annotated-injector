@@ -164,5 +164,4 @@ class PhpFunctionsFilesystemTest extends TestCase {
 
         self::assertTrue($this->subject->exists('vfs://root/dir'));
     }
-
 }

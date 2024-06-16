@@ -16,6 +16,7 @@ use Cspray\AnnotatedContainer\Definition\ServiceDefinitionBuilder;
 use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinitionBuilder;
 use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinitionBuilder;
 use Cspray\AnnotatedContainer\Event\Emitter;
+use Cspray\AnnotatedContainer\Exception\InvalidSerializedContainerDefinition;
 use Cspray\AnnotatedContainer\Exception\InvalidInjectDefinition;
 use Cspray\AnnotatedContainer\Exception\MismatchedContainerDefinitionSerializerVersions;
 use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalyzer;
@@ -26,6 +27,7 @@ use Cspray\AnnotatedContainerFixture\Fixture;
 use Cspray\AnnotatedContainerFixture\Fixtures;
 use Cspray\AnnotatedContainerFixture\InjectEnumConstructorServices\CardinalDirections;
 use Cspray\AnnotatedTarget\PhpParserAnnotatedTargetParser;
+use Cspray\AssertThrows\ThrowableAssert;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use function Cspray\Typiphy\intType;
@@ -1410,5 +1412,36 @@ XML;
         $actual = $subject->serialize($subject->deserialize($expected));
 
         self::assertSame($expected->asString(), $actual->asString());
+    }
+
+    public function testDeserializeWithSchemaNotValidatedThrowsException() : void {
+        $subject = new XmlContainerDefinitionSerializer();
+
+        $expected = <<<TEXT
+The provided container definition does not validate against the schema.
+
+Errors encountered:
+
+- Start tag expected, '<' not found
+- The document has no document element.
+
+TEXT;
+
+
+        $this->expectException(InvalidSerializedContainerDefinition::class);
+        $this->expectExceptionMessage($expected);
+
+        $subject->deserialize(
+            SerializedContainerDefinition::fromString('not a valid xml schema')
+        );
+    }
+
+    public function testLibxmlFunctionsResetProperly() : void {
+        ThrowableAssert::assertThrows(fn() => (new XmlContainerDefinitionSerializer())->deserialize(
+            SerializedContainerDefinition::fromString('not a valid xml schema')
+        ));
+
+        self::assertSame([], libxml_get_errors());
+        self::assertFalse(libxml_use_internal_errors());
     }
 }

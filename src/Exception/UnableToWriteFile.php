@@ -2,7 +2,7 @@
 
 namespace Cspray\AnnotatedContainer\Exception;
 
-class UnableToWriteFile extends Exception {
+final class UnableToWriteFile extends Exception {
 
     public static function fromFailureWritingToPath(string $path) : self {
         return new self(sprintf(
@@ -10,5 +10,4 @@ class UnableToWriteFile extends Exception {
             $path
         ));
     }
-
 }

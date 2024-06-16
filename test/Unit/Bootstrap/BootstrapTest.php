@@ -5,6 +5,7 @@ namespace Cspray\AnnotatedContainer\Unit\Bootstrap;
 use Cspray\AnnotatedContainer\AnnotatedContainer;
 use Cspray\AnnotatedContainer\Bootstrap\Bootstrap;
 use Cspray\AnnotatedContainer\Bootstrap\BootstrappingConfiguration;
+use Cspray\AnnotatedContainer\Bootstrap\BootstrappingDirectoryResolver;
 use Cspray\AnnotatedContainer\Bootstrap\CacheAwareBootstrappingConfiguration;
 use Cspray\AnnotatedContainer\Bootstrap\ContainerAnalytics;
 use Cspray\AnnotatedContainer\Bootstrap\ServiceFromServiceDefinition;
@@ -13,11 +14,14 @@ use Cspray\AnnotatedContainer\Bootstrap\ServiceWiringListener;
 use Cspray\AnnotatedContainer\ContainerFactory\AurynContainerFactory;
 use Cspray\AnnotatedContainer\ContainerFactory\ContainerFactory;
 use Cspray\AnnotatedContainer\ContainerFactory\ParameterStore;
+use Cspray\AnnotatedContainer\ContainerFactory\PhpDiContainerFactory;
 use Cspray\AnnotatedContainer\Definition\Cache\CacheKey;
 use Cspray\AnnotatedContainer\Definition\Cache\ContainerDefinitionCache;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 use Cspray\AnnotatedContainer\Event\Emitter;
 use Cspray\AnnotatedContainer\Event\Listener\Bootstrap\AfterBootstrap;
+use Cspray\AnnotatedContainer\Exception\InvalidBootstrapConfiguration;
+use Cspray\AnnotatedContainer\Filesystem\Filesystem;
 use Cspray\AnnotatedContainer\Profiles;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
 use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProvider;
@@ -30,8 +34,12 @@ use Cspray\AnnotatedContainerFixture\Fixtures;
 use Cspray\PrecisionStopwatch\KnownIncrementingPreciseTime;
 use Cspray\PrecisionStopwatch\Stopwatch;
 use PHPUnit\Framework\TestCase;
+use org\bovigo\vfs\vfsStream as VirtualFilesystem;
+use org\bovigo\vfs\vfsStreamDirectory as VirtualDirectory;
 
 final class BootstrapTest extends TestCase {
+
+    private VirtualDirectory $vfs;
 
     /**
      * @param list<string> $scanDirectories
@@ -50,6 +58,10 @@ final class BootstrapTest extends TestCase {
         $configuration->method('parameterStores')->willReturn($parameterStores);
 
         return $configuration;
+    }
+
+    protected function setUp() : void {
+        $this->vfs = VirtualFilesystem::setup();
     }
 
     public function testBootstrapSingleConcreteServiceNoCache() : void {
@@ -256,6 +268,7 @@ final class BootstrapTest extends TestCase {
         $actual = $listener->getServices();
 
         $actualServices = array_map(fn(ServiceFromServiceDefinition $fromServiceDefinition) => $fromServiceDefinition->service(), $actual);
+        $actualDefinitions = array_map(fn(ServiceFromServiceDefinition $fromServiceDefinition) => $fromServiceDefinition->definition(), $actual);
 
         usort($actualServices, fn($a, $b) => $a::class <=> $b::class);
 
@@ -263,6 +276,7 @@ final class BootstrapTest extends TestCase {
         self::assertSame([
             $container->get(Fixtures::profileResolvedServices()->prodImplementation()->getName()),
         ], $actualServices);
+        self::assertCount(1, $actualDefinitions);
     }
 
     public function testServiceWiringObserverByAttributesProfileAware() : void {
@@ -411,5 +425,64 @@ final class BootstrapTest extends TestCase {
             new Stopwatch()
         );
         $bootstrap->bootstrapContainer();
+    }
+
+    public function testBootstrapFromAnnotatedContainerConventionsThrowsExceptionIfConfigurationNotPresent() : void {
+        $containerFactory = $this->createMock(ContainerFactory::class);
+        $emitter = new Emitter();
+        $directoryResolver = $this->createMock(BootstrappingDirectoryResolver::class);
+        $filesystem = $this->createMock(Filesystem::class);
+
+        $directoryResolver->expects($this->once())
+            ->method('configurationPath')
+            ->with('annotated-container.xml')
+            ->willReturn('/path/to/annotated-container.xml');
+
+        $filesystem->expects($this->once())
+            ->method('isFile')
+            ->with('/path/to/annotated-container.xml')
+            ->willReturn(false);
+
+        $this->expectException(InvalidBootstrapConfiguration::class);
+        $this->expectExceptionMessage('Provided configuration file /path/to/annotated-container.xml does not exist.');
+
+        Bootstrap::fromAnnotatedContainerConventions(
+            $containerFactory,
+            $emitter,
+            directoryResolver: $directoryResolver,
+            filesystem: $filesystem
+        );
+    }
+
+    public function testBootstrapFromAnnotatedContainerConventionsWithFilePresentReturnsBootstrap() : void {
+        $emitter = new Emitter();
+        $containerFactory = new PhpDiContainerFactory($emitter);
+        $directoryResolver = new FixtureBootstrappingDirectoryResolver();
+        $xml = <<<XML
+<?xml version="1.0" encoding="UTF-8" ?>
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="dev-main">
+    <scanDirectories>
+        <source>
+            <dir>SingleConcreteService</dir>
+        </source>
+    </scanDirectories>
+</annotatedContainer>
+XML;
+
+        VirtualFilesystem::newFile('annotated-container.xml')->at($this->vfs)->setContent($xml);
+
+        $bootstrap = Bootstrap::fromAnnotatedContainerConventions(
+            $containerFactory,
+            $emitter,
+            directoryResolver: $directoryResolver
+        );
+
+        $container = $bootstrap->bootstrapContainer();
+        $service = $container->get(Fixtures::singleConcreteService()->fooImplementation()->getName());
+
+        self::assertInstanceOf(
+            Fixtures::singleConcreteService()->fooImplementation()->getName(),
+            $service
+        );
     }
 }

@@ -41,6 +41,6 @@ class ProfileResolvedServicesConverterTest extends AnnotatedTargetDefinitionConv
 
     public function testGetAttribute() : void {
         self::assertInstanceOf(Service::class, $this->definition->attribute());
-        self::assertSame(['dev'], $this->definition->attribute()->getProfiles());
+        self::assertSame(['dev'], $this->definition->attribute()->profiles());
     }
 }

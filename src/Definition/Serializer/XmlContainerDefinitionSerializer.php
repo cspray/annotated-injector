@@ -11,6 +11,7 @@ use Cspray\AnnotatedContainer\Definition\InjectDefinitionBuilder;
 use Cspray\AnnotatedContainer\Definition\ServiceDefinitionBuilder;
 use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinitionBuilder;
 use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinitionBuilder;
+use Cspray\AnnotatedContainer\Exception\InvalidSerializedContainerDefinition;
 use Cspray\AnnotatedContainer\Exception\InvalidInjectDefinition;
 use Cspray\AnnotatedContainer\Exception\MismatchedContainerDefinitionSerializerVersions;
 use Cspray\AnnotatedContainer\Internal\SerializerInjectValueParser;
@@ -49,9 +50,6 @@ final class XmlContainerDefinitionSerializer implements ContainerDefinitionSeria
         $this->addServicePrepareDefinitionsToDom($root, $containerDefinition);
         $this->addServiceDelegateDefinitionsToDom($root, $containerDefinition);
         $this->addInjectDefinitionsToDom($root, $containerDefinition);
-
-        $schemaPath = dirname(__DIR__, 3) . '/annotated-container-definition.xsd';
-        $dom->schemaValidate($schemaPath);
 
         return SerializedContainerDefinition::fromString($dom->saveXML());
     }
@@ -277,7 +275,21 @@ final class XmlContainerDefinitionSerializer implements ContainerDefinitionSeria
 
     public function deserialize(SerializedContainerDefinition $serializedContainerDefinition) : ContainerDefinition {
         $dom = new DOMDocument(encoding: 'UTF-8');
-        $dom->loadXML($serializedContainerDefinition->asString());
+
+        // Many assert() calls later on on values provided in the serialized container definition are made
+        // because they are being asserted as part of the XML passing the container definition schema.
+
+        libxml_use_internal_errors(true);
+        try {
+            $dom->loadXML($serializedContainerDefinition->asString());
+            $schemaPath = dirname(__DIR__, 3) . '/annotated-container-definition.xsd';
+            if (!$dom->schemaValidate($schemaPath)) {
+                throw InvalidSerializedContainerDefinition::fromNotValidateXmlSchema(libxml_get_errors());
+            }
+        } finally {
+            libxml_clear_errors();
+            libxml_use_internal_errors(false);
+        }
 
         $xpath = new DOMXPath($dom);
         $xpath->registerNamespace('cd', self::XML_SCHEMA);
@@ -365,6 +377,8 @@ final class XmlContainerDefinitionSerializer implements ContainerDefinitionSeria
             $service = $xpath->query('cd:type/text()', $prepareDefinition)[0]->nodeValue;
             $method = $xpath->query('cd:method/text()', $prepareDefinition)[0]->nodeValue;
 
+            assert($method !== null && $method !== '');
+
             $servicePrepareBuilder = ServicePrepareDefinitionBuilder::forMethod(objectType($service), $method);
 
             $attr = $xpath->query('cd:attribute/text()', $prepareDefinition)[0]?->nodeValue;
@@ -386,6 +400,8 @@ final class XmlContainerDefinitionSerializer implements ContainerDefinitionSeria
             $service = $xpath->query('cd:service/text()', $delegateDefinition)[0]->nodeValue;
             $delegateType = $xpath->query('cd:delegateType/text()', $delegateDefinition)[0]->nodeValue;
             $delegateMethod = $xpath->query('cd:delegateMethod/text()', $delegateDefinition)[0]->nodeValue;
+
+            assert($delegateMethod !== null && $delegateMethod !== '');
 
             $serviceDelegateBuilder = ServiceDelegateDefinitionBuilder::forService(objectType($service))
                     ->withDelegateMethod(objectType($delegateType), $delegateMethod);
