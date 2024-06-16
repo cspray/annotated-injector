@@ -4,22 +4,19 @@ _default:
     just --list --unsorted
 
 # Install all dependencies necesesary to run Annotated Container tools
-install: _install_ac _install_labrador_cs _install_phpunit _install_psalm
+install: _install_labrador_cs _install_phpunit _install_psalm _install_ac
 
 _install_ac:
     composer install
 
 _install_labrador_cs:
-    cd tools/labrador-cs
-    composer install
+    cd tools/labrador-cs && composer install
 
 _install_phpunit:
-    cd tools/phpunit
-    composer install
+    cd tools/phpunit && composer install
 
 _install_psalm:
-    cd tools/psalm
-    composer install
+    cd tools/psalm && composer install
 
 # Run unit tests
 test *FLAGS:
