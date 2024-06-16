@@ -5,7 +5,7 @@ namespace Cspray\AnnotatedContainer\Unit\Definition;
 use Cspray\AnnotatedContainer\Attribute\Inject;
 use Cspray\AnnotatedContainer\Definition\InjectDefinitionBuilder;
 use Cspray\AnnotatedContainer\Exception\InvalidInjectDefinition;
-use Cspray\AnnotatedContainerFixture\Fixtures;
+use Cspray\AnnotatedContainer\Fixture\Fixtures;
 use PHPUnit\Framework\TestCase;
 use function Cspray\Typiphy\stringType;
 

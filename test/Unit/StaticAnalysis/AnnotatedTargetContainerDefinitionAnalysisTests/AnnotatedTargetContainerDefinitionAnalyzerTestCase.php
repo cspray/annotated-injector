@@ -11,7 +11,7 @@ use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProvider;
 use Cspray\AnnotatedContainer\Unit\ContainerDefinitionAssertionsTrait;
 use Cspray\AnnotatedContainer\Unit\Helper\AnalysisEventCollection;
 use Cspray\AnnotatedContainer\Unit\Helper\StubAnalysisListener;
-use Cspray\AnnotatedContainerFixture\Fixture;
+use Cspray\AnnotatedContainer\Fixture\Fixture;
 use Cspray\AnnotatedTarget\PhpParserAnnotatedTargetParser;
 use PHPUnit\Framework\TestCase;
 

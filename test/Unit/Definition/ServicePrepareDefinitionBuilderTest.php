@@ -5,7 +5,7 @@ namespace Cspray\AnnotatedContainer\Unit\Definition;
 use Cspray\AnnotatedContainer\Attribute\ServicePrepare;
 use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinitionBuilder;
 use Cspray\AnnotatedContainer\Exception\InvalidServicePrepareDefinition;
-use Cspray\AnnotatedContainerFixture\Fixtures;
+use Cspray\AnnotatedContainer\Fixture\Fixtures;
 use PHPUnit\Framework\TestCase;
 use function Cspray\Typiphy\objectType;
 

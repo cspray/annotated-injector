@@ -15,7 +15,7 @@ use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProvider;
 use Cspray\AnnotatedContainer\Unit\Helper\StubDefinitionProvider;
 use Cspray\AnnotatedContainer\Unit\Helper\StubDefinitionProviderWithDependencies;
 use Cspray\AnnotatedContainer\Unit\Helper\StubParameterStore;
-use Cspray\AnnotatedContainerFixture\Fixtures;
+use Cspray\AnnotatedContainer\Fixture\Fixtures;
 use org\bovigo\vfs\vfsStream as VirtualFilesystem;
 use org\bovigo\vfs\vfsStreamDirectory as VirtualDirectory;
 use PHPUnit\Framework\MockObject\MockObject;

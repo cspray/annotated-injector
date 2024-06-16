@@ -16,8 +16,8 @@ use Cspray\AnnotatedContainer\Unit\StaticAnalysis\AnnotatedTargetContainerDefini
 use Cspray\AnnotatedContainer\Unit\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalysisTests\HasTestsTrait\HasNoServiceDelegateDefinitionsTrait;
 use Cspray\AnnotatedContainer\Unit\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalysisTests\HasTestsTrait\HasNoServicePrepareDefinitionsTrait;
 use Cspray\AnnotatedContainer\Unit\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalysisTests\HasTestsTrait\HasServiceDefinitionTestsTrait;
-use Cspray\AnnotatedContainerFixture\Fixture;
-use Cspray\AnnotatedContainerFixture\Fixtures;
+use Cspray\AnnotatedContainer\Fixture\Fixture;
+use Cspray\AnnotatedContainer\Fixture\Fixtures;
 
 class NamedServicesTest extends AnnotatedTargetContainerDefinitionAnalyzerTestCase {
 

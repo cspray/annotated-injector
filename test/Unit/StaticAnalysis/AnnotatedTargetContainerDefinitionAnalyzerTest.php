@@ -13,7 +13,7 @@ use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsB
 use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProvider;
 use Cspray\AnnotatedContainer\Unit\ContainerDefinitionAssertionsTrait;
 use Cspray\AnnotatedContainer\Unit\LogicalErrorApps;
-use Cspray\AnnotatedContainerFixture\Fixtures;
+use Cspray\AnnotatedContainer\Fixture\Fixtures;
 use Cspray\AnnotatedTarget\PhpParserAnnotatedTargetParser;
 use PHPUnit\Framework\TestCase;
 

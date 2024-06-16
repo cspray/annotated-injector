@@ -4,7 +4,7 @@ namespace Cspray\AnnotatedContainer\Unit\StaticAnalysis;
 
 use Cspray\AnnotatedContainer\StaticAnalysis\CallableDefinitionProvider;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
-use Cspray\AnnotatedContainerFixture\Fixtures;
+use Cspray\AnnotatedContainer\Fixture\Fixtures;
 use PHPUnit\Framework\TestCase;
 
 class ContainerDefinitionAnalysisOptionsBuilderTest extends TestCase {

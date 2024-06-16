@@ -5,7 +5,7 @@ namespace Cspray\AnnotatedContainer\Unit\StaticAnalysis\AnnotatedTargetDefinitio
 use Cspray\AnnotatedContainer\Attribute\Inject;
 use Cspray\AnnotatedContainer\Definition\InjectDefinition;
 use Cspray\AnnotatedContainer\Internal\AttributeType;
-use Cspray\AnnotatedContainerFixture\Fixtures;
+use Cspray\AnnotatedContainer\Fixture\Fixtures;
 use Cspray\AnnotatedTarget\AnnotatedTarget;
 use function Cspray\Typiphy\stringType;
 

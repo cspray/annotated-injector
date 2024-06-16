@@ -4,15 +4,13 @@ namespace Cspray\AnnotatedContainer\Unit\Bootstrap;
 
 use Cspray\AnnotatedContainer\Bootstrap\ComposerJsonScanningThirdPartyInitializerProvider;
 use Cspray\AnnotatedContainer\Bootstrap\PackagesComposerJsonPathProvider;
-use Cspray\AnnotatedContainer\Bootstrap\RootDirectoryBootstrappingDirectoryResolver;
 use Cspray\AnnotatedContainer\Bootstrap\ThirdPartyInitializer;
-use Cspray\AnnotatedContainer\Bootstrap\ThirdPartyInitializerProvider;
-use Cspray\AnnotatedContainer\Exception\InvalidBootstrapConfiguration;
 use Cspray\AnnotatedContainer\Exception\InvalidThirdPartyInitializer;
 use Cspray\AnnotatedContainer\Filesystem\Filesystem;
-use Cspray\AnnotatedContainerFixture\VendorScanningInitializers\FirstInitializer;
-use Cspray\AnnotatedContainerFixture\VendorScanningInitializers\SecondInitializer;
-use Cspray\AnnotatedContainerFixture\VendorScanningInitializers\ThirdInitializer;
+use Cspray\AnnotatedContainer\Fixture\Fixtures;
+use Cspray\AnnotatedContainer\Fixture\VendorScanningInitializers\Vendor\Package\FirstInitializer;
+use Cspray\AnnotatedContainer\Fixture\VendorScanningInitializers\Vendor\Package\SecondInitializer;
+use Cspray\AnnotatedContainer\Fixture\VendorScanningInitializers\Vendor\Package\ThirdInitializer;
 use PHPUnit\Framework\TestCase;
 
 class ComposerJsonScanningThirdPartyInitializerProviderTest extends TestCase {
@@ -35,9 +33,9 @@ class ComposerJsonScanningThirdPartyInitializerProviderTest extends TestCase {
                 'extra' => [
                     '$annotatedContainer' => [
                         'initializers' => [
-                            'Cspray\\AnnotatedContainerFixture\\VendorScanningInitializers\\FirstInitializer',
-                            'Cspray\\AnnotatedContainerFixture\\VendorScanningInitializers\\SecondInitializer',
-                            'Cspray\\AnnotatedContainerFixture\\VendorScanningInitializers\\ThirdInitializer'
+                            'Cspray\\AnnotatedContainer\\Fixture\\VendorScanningInitializers\\Vendor\\Package\\FirstInitializer',
+                            'Cspray\\AnnotatedContainer\\Fixture\\VendorScanningInitializers\\Vendor\\Package\\SecondInitializer',
+                            'Cspray\\AnnotatedContainer\\Fixture\\VendorScanningInitializers\\Vendor\\Package\\ThirdInitializer'
                         ]
                     ]
                 ]

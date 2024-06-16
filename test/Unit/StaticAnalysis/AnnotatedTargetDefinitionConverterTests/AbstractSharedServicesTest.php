@@ -4,7 +4,7 @@ namespace Cspray\AnnotatedContainer\Unit\StaticAnalysis\AnnotatedTargetDefinitio
 
 use Cspray\AnnotatedContainer\Definition\ServiceDefinition;
 use Cspray\AnnotatedContainer\Internal\AttributeType;
-use Cspray\AnnotatedContainerFixture\Fixtures;
+use Cspray\AnnotatedContainer\Fixture\Fixtures;
 use Cspray\AnnotatedTarget\AnnotatedTarget;
 use ReflectionClass;
 

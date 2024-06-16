@@ -23,9 +23,9 @@ use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetContainerDefinitionA
 use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetDefinitionConverter;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
 use Cspray\AnnotatedContainer\Unit\Helper\UnserializableObject;
-use Cspray\AnnotatedContainerFixture\Fixture;
-use Cspray\AnnotatedContainerFixture\Fixtures;
-use Cspray\AnnotatedContainerFixture\InjectEnumConstructorServices\CardinalDirections;
+use Cspray\AnnotatedContainer\Fixture\Fixture;
+use Cspray\AnnotatedContainer\Fixture\Fixtures;
+use Cspray\AnnotatedContainer\Fixture\InjectEnumConstructorServices\CardinalDirections;
 use Cspray\AnnotatedTarget\PhpParserAnnotatedTargetParser;
 use Cspray\AssertThrows\ThrowableAssert;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -38,7 +38,7 @@ class XmlContainerDefinitionSerializerTest extends TestCase {
 
     private const BASE_64_ENCODED_STRING = 'c3RyaW5n';
     private const BASE_64_ENCODED_INT = 'aW50';
-    private const BASE_64_ENCODED_CARDINAL_DIRECTIONS = 'Q3NwcmF5XEFubm90YXRlZENvbnRhaW5lckZpeHR1cmVcSW5qZWN0RW51bUNvbnN0cnVjdG9yU2VydmljZXNcQ2FyZGluYWxEaXJlY3Rpb25z';
+    private const BASE_64_ENCODED_CARDINAL_DIRECTIONS = 'Q3NwcmF5XEFubm90YXRlZENvbnRhaW5lclxGaXh0dXJlXEluamVjdEVudW1Db25zdHJ1Y3RvclNlcnZpY2VzXENhcmRpbmFsRGlyZWN0aW9ucw==';
 
     public function testSerializingSingleConcreteService() : void {
         $version = AnnotatedContainerVersion::version();
@@ -47,7 +47,7 @@ class XmlContainerDefinitionSerializerTest extends TestCase {
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
   <serviceDefinitions>
     <serviceDefinition>
-      <type>Cspray\AnnotatedContainerFixture\SingleConcreteService\FooImplementation</type>
+      <type>Cspray\AnnotatedContainer\Fixture\SingleConcreteService\FooImplementation</type>
       <name/>
       <profiles>
         <profile>default</profile>
@@ -84,7 +84,7 @@ XML;
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
   <serviceDefinitions>
     <serviceDefinition>
-      <type>Cspray\AnnotatedContainerFixture\SingleConcreteService\FooImplementation</type>
+      <type>Cspray\AnnotatedContainer\Fixture\SingleConcreteService\FooImplementation</type>
       <name/>
       <profiles>
         <profile>default</profile>
@@ -122,7 +122,7 @@ XML;
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
   <serviceDefinitions>
     <serviceDefinition>
-      <type>Cspray\AnnotatedContainerFixture\SingleConcreteService\FooImplementation</type>
+      <type>Cspray\AnnotatedContainer\Fixture\SingleConcreteService\FooImplementation</type>
       <name/>
       <profiles>
         <profile>my-profile</profile>
@@ -161,7 +161,7 @@ XML;
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
   <serviceDefinitions>
     <serviceDefinition>
-      <type>Cspray\AnnotatedContainerFixture\ImplicitAliasedServices\FooInterface</type>
+      <type>Cspray\AnnotatedContainer\Fixture\ImplicitAliasedServices\FooInterface</type>
       <name/>
       <profiles>
         <profile>default</profile>
@@ -170,7 +170,7 @@ XML;
       <attribute/>
     </serviceDefinition>
     <serviceDefinition>
-      <type>Cspray\AnnotatedContainerFixture\ImplicitAliasedServices\FooImplementation</type>
+      <type>Cspray\AnnotatedContainer\Fixture\ImplicitAliasedServices\FooImplementation</type>
       <name/>
       <profiles>
         <profile>default</profile>
@@ -181,8 +181,8 @@ XML;
   </serviceDefinitions>
   <aliasDefinitions>
     <aliasDefinition>
-      <abstractService>Cspray\AnnotatedContainerFixture\ImplicitAliasedServices\FooInterface</abstractService>
-      <concreteService>Cspray\AnnotatedContainerFixture\ImplicitAliasedServices\FooImplementation</concreteService>
+      <abstractService>Cspray\AnnotatedContainer\Fixture\ImplicitAliasedServices\FooInterface</abstractService>
+      <concreteService>Cspray\AnnotatedContainer\Fixture\ImplicitAliasedServices\FooImplementation</concreteService>
     </aliasDefinition>
   </aliasDefinitions>
   <servicePrepareDefinitions/>
@@ -217,7 +217,7 @@ XML;
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
   <serviceDefinitions>
     <serviceDefinition isPrimary="true">
-      <type>Cspray\AnnotatedContainerFixture\SingleConcreteService\FooImplementation</type>
+      <type>Cspray\AnnotatedContainer\Fixture\SingleConcreteService\FooImplementation</type>
       <name/>
       <profiles>
         <profile>default</profile>
@@ -253,7 +253,7 @@ XML;
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
   <serviceDefinitions>
     <serviceDefinition>
-      <type>Cspray\AnnotatedContainerFixture\SingleConcreteService\FooImplementation</type>
+      <type>Cspray\AnnotatedContainer\Fixture\SingleConcreteService\FooImplementation</type>
       <name>my-name</name>
       <profiles>
         <profile>default</profile>
@@ -291,7 +291,7 @@ XML;
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
   <serviceDefinitions>
     <serviceDefinition>
-      <type>Cspray\AnnotatedContainerFixture\InterfacePrepareServices\FooInterface</type>
+      <type>Cspray\AnnotatedContainer\Fixture\InterfacePrepareServices\FooInterface</type>
       <name/>
       <profiles>
         <profile>default</profile>
@@ -303,7 +303,7 @@ XML;
   <aliasDefinitions/>
   <servicePrepareDefinitions>
     <servicePrepareDefinition>
-      <type>Cspray\AnnotatedContainerFixture\InterfacePrepareServices\FooInterface</type>
+      <type>Cspray\AnnotatedContainer\Fixture\InterfacePrepareServices\FooInterface</type>
       <method>setBar</method>
       <attribute/>
     </servicePrepareDefinition>
@@ -340,7 +340,7 @@ XML;
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
   <serviceDefinitions>
     <serviceDefinition>
-      <type>Cspray\AnnotatedContainerFixture\InterfacePrepareServices\FooInterface</type>
+      <type>Cspray\AnnotatedContainer\Fixture\InterfacePrepareServices\FooInterface</type>
       <name/>
       <profiles>
         <profile>default</profile>
@@ -352,7 +352,7 @@ XML;
   <aliasDefinitions/>
   <servicePrepareDefinitions>
     <servicePrepareDefinition>
-      <type>Cspray\AnnotatedContainerFixture\InterfacePrepareServices\FooInterface</type>
+      <type>Cspray\AnnotatedContainer\Fixture\InterfacePrepareServices\FooInterface</type>
       <method>setBar</method>
       <attribute>{$attrVal}</attribute>
     </servicePrepareDefinition>
@@ -388,7 +388,7 @@ XML;
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
   <serviceDefinitions>
     <serviceDefinition>
-      <type>Cspray\AnnotatedContainerFixture\DelegatedService\ServiceInterface</type>
+      <type>Cspray\AnnotatedContainer\Fixture\DelegatedService\ServiceInterface</type>
       <name/>
       <profiles>
         <profile>default</profile>
@@ -401,8 +401,8 @@ XML;
   <servicePrepareDefinitions/>
   <serviceDelegateDefinitions>
     <serviceDelegateDefinition>
-      <service>Cspray\AnnotatedContainerFixture\DelegatedService\ServiceInterface</service>
-      <delegateType>Cspray\AnnotatedContainerFixture\DelegatedService\ServiceFactory</delegateType>
+      <service>Cspray\AnnotatedContainer\Fixture\DelegatedService\ServiceInterface</service>
+      <delegateType>Cspray\AnnotatedContainer\Fixture\DelegatedService\ServiceFactory</delegateType>
       <delegateMethod>createService</delegateMethod>
       <attribute/>
     </serviceDelegateDefinition>
@@ -436,7 +436,7 @@ XML;
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
   <serviceDefinitions>
     <serviceDefinition>
-      <type>Cspray\AnnotatedContainerFixture\DelegatedService\ServiceInterface</type>
+      <type>Cspray\AnnotatedContainer\Fixture\DelegatedService\ServiceInterface</type>
       <name/>
       <profiles>
         <profile>default</profile>
@@ -449,8 +449,8 @@ XML;
   <servicePrepareDefinitions/>
   <serviceDelegateDefinitions>
     <serviceDelegateDefinition>
-      <service>Cspray\AnnotatedContainerFixture\DelegatedService\ServiceInterface</service>
-      <delegateType>Cspray\AnnotatedContainerFixture\DelegatedService\ServiceFactory</delegateType>
+      <service>Cspray\AnnotatedContainer\Fixture\DelegatedService\ServiceInterface</service>
+      <delegateType>Cspray\AnnotatedContainer\Fixture\DelegatedService\ServiceFactory</delegateType>
       <delegateMethod>createService</delegateMethod>
       <attribute>{$attrVal}</attribute>
     </serviceDelegateDefinition>
@@ -487,7 +487,7 @@ XML;
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
   <serviceDefinitions>
     <serviceDefinition>
-      <type>Cspray\AnnotatedContainerFixture\InjectConstructorServices\StringInjectService</type>
+      <type>Cspray\AnnotatedContainer\Fixture\InjectConstructorServices\StringInjectService</type>
       <name/>
       <profiles>
         <profile>default</profile>
@@ -501,7 +501,7 @@ XML;
   <serviceDelegateDefinitions/>
   <injectDefinitions>
     <injectDefinition>
-      <class>Cspray\AnnotatedContainerFixture\InjectConstructorServices\StringInjectService</class>
+      <class>Cspray\AnnotatedContainer\Fixture\InjectConstructorServices\StringInjectService</class>
       <method>__construct</method>
       <parameter>val</parameter>
       <valueType>{$type}</valueType>
@@ -544,7 +544,7 @@ XML;
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
   <serviceDefinitions>
     <serviceDefinition>
-      <type>Cspray\AnnotatedContainerFixture\InjectConstructorServices\IntInjectService</type>
+      <type>Cspray\AnnotatedContainer\Fixture\InjectConstructorServices\IntInjectService</type>
       <name/>
       <profiles>
         <profile>default</profile>
@@ -558,7 +558,7 @@ XML;
   <serviceDelegateDefinitions/>
   <injectDefinitions>
     <injectDefinition>
-      <class>Cspray\AnnotatedContainerFixture\InjectConstructorServices\IntInjectService</class>
+      <class>Cspray\AnnotatedContainer\Fixture\InjectConstructorServices\IntInjectService</class>
       <method>__construct</method>
       <parameter>meaningOfLife</parameter>
       <valueType>{$type}</valueType>
@@ -600,7 +600,7 @@ XML;
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
   <serviceDefinitions>
     <serviceDefinition>
-      <type>Cspray\AnnotatedContainerFixture\InjectEnumConstructorServices\EnumInjector</type>
+      <type>Cspray\AnnotatedContainer\Fixture\InjectEnumConstructorServices\EnumInjector</type>
       <name/>
       <profiles>
         <profile>default</profile>
@@ -614,7 +614,7 @@ XML;
   <serviceDelegateDefinitions/>
   <injectDefinitions>
     <injectDefinition>
-      <class>Cspray\AnnotatedContainerFixture\InjectEnumConstructorServices\EnumInjector</class>
+      <class>Cspray\AnnotatedContainer\Fixture\InjectEnumConstructorServices\EnumInjector</class>
       <method>__construct</method>
       <parameter>directions</parameter>
       <valueType>{$type}</valueType>
@@ -655,7 +655,7 @@ XML;
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
   <serviceDefinitions>
     <serviceDefinition>
-      <type>Cspray\AnnotatedContainerFixture\InjectCustomStoreServices\ScalarInjector</type>
+      <type>Cspray\AnnotatedContainer\Fixture\InjectCustomStoreServices\ScalarInjector</type>
       <name/>
       <profiles>
         <profile>default</profile>
@@ -669,7 +669,7 @@ XML;
   <serviceDelegateDefinitions/>
   <injectDefinitions>
     <injectDefinition>
-      <class>Cspray\AnnotatedContainerFixture\InjectCustomStoreServices\ScalarInjector</class>
+      <class>Cspray\AnnotatedContainer\Fixture\InjectCustomStoreServices\ScalarInjector</class>
       <method>__construct</method>
       <parameter>key</parameter>
       <valueType>{$type}</valueType>
@@ -712,7 +712,7 @@ XML;
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
   <serviceDefinitions>
     <serviceDefinition>
-      <type>Cspray\AnnotatedContainerFixture\InjectConstructorServices\StringInjectService</type>
+      <type>Cspray\AnnotatedContainer\Fixture\InjectConstructorServices\StringInjectService</type>
       <name/>
       <profiles>
         <profile>default</profile>
@@ -726,7 +726,7 @@ XML;
   <serviceDelegateDefinitions/>
   <injectDefinitions>
     <injectDefinition>
-      <class>Cspray\AnnotatedContainerFixture\InjectConstructorServices\StringInjectService</class>
+      <class>Cspray\AnnotatedContainer\Fixture\InjectConstructorServices\StringInjectService</class>
       <method>__construct</method>
       <parameter>val</parameter>
       <valueType>{$type}</valueType>
@@ -787,7 +787,7 @@ XML;
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
   <serviceDefinitions>
     <serviceDefinition>
-      <type>Cspray\AnnotatedContainerFixture\SingleConcreteService\FooImplementation</type>
+      <type>Cspray\AnnotatedContainer\Fixture\SingleConcreteService\FooImplementation</type>
       <name/>
       <profiles>
         <profile>default</profile>
@@ -828,7 +828,7 @@ XML;
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
   <serviceDefinitions>
     <serviceDefinition>
-      <type>Cspray\AnnotatedContainerFixture\SingleConcreteService\FooImplementation</type>
+      <type>Cspray\AnnotatedContainer\Fixture\SingleConcreteService\FooImplementation</type>
       <name>my_service_name</name>
       <profiles>
         <profile>default</profile>
@@ -869,7 +869,7 @@ XML;
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
   <serviceDefinitions>
     <serviceDefinition isPrimary="true">
-      <type>Cspray\AnnotatedContainerFixture\SingleConcreteService\FooImplementation</type>
+      <type>Cspray\AnnotatedContainer\Fixture\SingleConcreteService\FooImplementation</type>
       <name/>
       <profiles>
         <profile>default</profile>
@@ -910,7 +910,7 @@ XML;
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
   <serviceDefinitions>
     <serviceDefinition isPrimary="false">
-      <type>Cspray\AnnotatedContainerFixture\SingleConcreteService\FooImplementation</type>
+      <type>Cspray\AnnotatedContainer\Fixture\SingleConcreteService\FooImplementation</type>
       <name/>
       <profiles>
         <profile>foo</profile>
@@ -953,7 +953,7 @@ XML;
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
   <serviceDefinitions>
     <serviceDefinition>
-      <type>Cspray\AnnotatedContainerFixture\ImplicitAliasedServices\FooInterface</type>
+      <type>Cspray\AnnotatedContainer\Fixture\ImplicitAliasedServices\FooInterface</type>
       <name/>
       <profiles>
         <profile>default</profile>
@@ -993,7 +993,7 @@ XML;
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
   <serviceDefinitions>
     <serviceDefinition>
-      <type>Cspray\AnnotatedContainerFixture\ImplicitAliasedServices\FooInterface</type>
+      <type>Cspray\AnnotatedContainer\Fixture\ImplicitAliasedServices\FooInterface</type>
       <name/>
       <profiles>
         <profile>default</profile>
@@ -1002,7 +1002,7 @@ XML;
       <attribute/>
     </serviceDefinition>
     <serviceDefinition>
-      <type>Cspray\AnnotatedContainerFixture\ImplicitAliasedServices\FooImplementation</type>
+      <type>Cspray\AnnotatedContainer\Fixture\ImplicitAliasedServices\FooImplementation</type>
       <name/>
       <profiles>
         <profile>default</profile>
@@ -1013,8 +1013,8 @@ XML;
   </serviceDefinitions>
   <aliasDefinitions>
     <aliasDefinition>
-      <abstractService>Cspray\AnnotatedContainerFixture\ImplicitAliasedServices\FooInterface</abstractService>
-      <concreteService>Cspray\AnnotatedContainerFixture\ImplicitAliasedServices\FooImplementation</concreteService>
+      <abstractService>Cspray\AnnotatedContainer\Fixture\ImplicitAliasedServices\FooInterface</abstractService>
+      <concreteService>Cspray\AnnotatedContainer\Fixture\ImplicitAliasedServices\FooImplementation</concreteService>
     </aliasDefinition>
   </aliasDefinitions>
   <servicePrepareDefinitions/>
@@ -1040,7 +1040,7 @@ XML;
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
   <serviceDefinitions>
     <serviceDefinition>
-      <type>Cspray\AnnotatedContainerFixture\InterfacePrepareServices\FooInterface</type>
+      <type>Cspray\AnnotatedContainer\Fixture\InterfacePrepareServices\FooInterface</type>
       <name/>
       <profiles>
         <profile>default</profile>
@@ -1052,7 +1052,7 @@ XML;
   <aliasDefinitions/>
   <servicePrepareDefinitions>
     <servicePrepareDefinition>
-      <type>Cspray\AnnotatedContainerFixture\InterfacePrepareServices\FooInterface</type>
+      <type>Cspray\AnnotatedContainer\Fixture\InterfacePrepareServices\FooInterface</type>
       <method>setBar</method>
       <attribute/>
     </servicePrepareDefinition>
@@ -1079,7 +1079,7 @@ XML;
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
   <serviceDefinitions>
     <serviceDefinition>
-      <type>Cspray\AnnotatedContainerFixture\DelegatedService\ServiceInterface</type>
+      <type>Cspray\AnnotatedContainer\Fixture\DelegatedService\ServiceInterface</type>
       <name/>
       <profiles>
         <profile>default</profile>
@@ -1092,8 +1092,8 @@ XML;
   <servicePrepareDefinitions/>
   <serviceDelegateDefinitions>
     <serviceDelegateDefinition>
-      <service>Cspray\AnnotatedContainerFixture\DelegatedService\ServiceInterface</service>
-      <delegateType>Cspray\AnnotatedContainerFixture\DelegatedService\ServiceFactory</delegateType>
+      <service>Cspray\AnnotatedContainer\Fixture\DelegatedService\ServiceInterface</service>
+      <delegateType>Cspray\AnnotatedContainer\Fixture\DelegatedService\ServiceFactory</delegateType>
       <delegateMethod>createService</delegateMethod>
       <attribute/>
     </serviceDelegateDefinition>
@@ -1123,7 +1123,7 @@ XML;
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
   <serviceDefinitions>
     <serviceDefinition>
-      <type>Cspray\AnnotatedContainerFixture\InjectConstructorServices\StringInjectService</type>
+      <type>Cspray\AnnotatedContainer\Fixture\InjectConstructorServices\StringInjectService</type>
       <name/>
       <profiles>
         <profile>default</profile>
@@ -1137,7 +1137,7 @@ XML;
   <serviceDelegateDefinitions/>
   <injectDefinitions>
     <injectDefinition>
-      <class>Cspray\AnnotatedContainerFixture\InjectConstructorServices\StringInjectService</class>
+      <class>Cspray\AnnotatedContainer\Fixture\InjectConstructorServices\StringInjectService</class>
       <method>__construct</method>
       <parameter>val</parameter>
       <valueType>{$type}</valueType>
@@ -1181,7 +1181,7 @@ XML;
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
   <serviceDefinitions>
     <serviceDefinition>
-      <type>Cspray\AnnotatedContainerFixture\InjectEnumConstructorServices\EnumInjector</type>
+      <type>Cspray\AnnotatedContainer\Fixture\InjectEnumConstructorServices\EnumInjector</type>
       <name/>
       <profiles>
         <profile>default</profile>
@@ -1195,7 +1195,7 @@ XML;
   <serviceDelegateDefinitions/>
   <injectDefinitions>
     <injectDefinition>
-      <class>Cspray\AnnotatedContainerFixture\InjectEnumConstructorServices\EnumInjector</class>
+      <class>Cspray\AnnotatedContainer\Fixture\InjectEnumConstructorServices\EnumInjector</class>
       <method>__construct</method>
       <parameter>directions</parameter>
       <valueType>{$type}</valueType>
@@ -1239,7 +1239,7 @@ XML;
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
   <serviceDefinitions>
     <serviceDefinition>
-      <type>Cspray\AnnotatedContainerFixture\InjectCustomStoreServices\ScalarInjector</type>
+      <type>Cspray\AnnotatedContainer\Fixture\InjectCustomStoreServices\ScalarInjector</type>
       <name/>
       <profiles>
         <profile>default</profile>
@@ -1253,7 +1253,7 @@ XML;
   <serviceDelegateDefinitions/>
   <injectDefinitions>
     <injectDefinition>
-      <class>Cspray\AnnotatedContainerFixture\InjectCustomStoreServices\ScalarInjector</class>
+      <class>Cspray\AnnotatedContainer\Fixture\InjectCustomStoreServices\ScalarInjector</class>
       <method>__construct</method>
       <parameter>key</parameter>
       <valueType>{$type}</valueType>
@@ -1297,7 +1297,7 @@ XML;
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="{$version}">
   <serviceDefinitions>
     <serviceDefinition>
-      <type>Cspray\AnnotatedContainerFixture\InjectConstructorServices\StringInjectService</type>
+      <type>Cspray\AnnotatedContainer\Fixture\InjectConstructorServices\StringInjectService</type>
       <name/>
       <profiles>
         <profile>default</profile>
@@ -1311,7 +1311,7 @@ XML;
   <serviceDelegateDefinitions/>
   <injectDefinitions>
     <injectDefinition>
-      <class>Cspray\AnnotatedContainerFixture\InjectConstructorServices\StringInjectService</class>
+      <class>Cspray\AnnotatedContainer\Fixture\InjectConstructorServices\StringInjectService</class>
       <method>__construct</method>
       <parameter>val</parameter>
       <valueType>{$type}</valueType>
@@ -1353,7 +1353,7 @@ XML;
 <annotatedContainerDefinition xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd" version="not-up-to-date">
   <serviceDefinitions>
     <serviceDefinition>
-      <type>Cspray\AnnotatedContainerFixture\SingleConcreteService\FooImplementation</type>
+      <type>Cspray\AnnotatedContainer\Fixture\SingleConcreteService\FooImplementation</type>
       <name/>
       <profiles>
         <profile>default</profile>

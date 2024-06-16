@@ -44,17 +44,15 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Cspray\\AnnotatedContainer\\": "test",
-      "Cspray\\AnnotatedContainerFixture\\": "fixture_src"
+      "Cspray\\AnnotatedContainer\\": "test"
     },
     "files": [
-      "fixture_src/VendorScanningInitializers/vendor/cspray/package/other_src/DependencyDefinitionProvider.php",
-      "fixture_src/VendorScanningInitializers/vendor/cspray/package/src/FirstInitializer.php",
-      "fixture_src/VendorScanningInitializers/vendor/cspray/package/src/SecondInitializer.php",
-      "fixture_src/VendorScanningInitializers/vendor/cspray/package/src/SomeService.php",
-      "fixture_src/VendorScanningInitializers/vendor/cspray/package/other_src/ThirdInitializer.php",
-      "fixture_src/VendorScanningInitializers/vendor/cspray/package/src/ThirdPartyDependency.php",
-      "fixture_src/VendorScanningInitializers/src/ActualService.php"
+      "test/Fixture/VendorScanningInitializers/vendor/cspray/package/src/SomeService.php",
+      "test/Fixture/VendorScanningInitializers/src/ActualService.php",
+      "test/Fixture/VendorScanningInitializers/vendor/cspray/package/src/FirstInitializer.php",
+      "test/Fixture/VendorScanningInitializers/vendor/cspray/package/src/SecondInitializer.php",
+      "test/Fixture/VendorScanningInitializers/vendor/cspray/package/src/ThirdPartyDependency.php",
+      "test/Fixture/VendorScanningInitializers/vendor/cspray/package/other_src/ThirdInitializer.php"
     ]
   },
   "suggest": {

@@ -5,7 +5,7 @@ namespace Cspray\AnnotatedContainer\Unit\Definition;
 use Cspray\AnnotatedContainer\Attribute\ServiceDelegate;
 use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinitionBuilder;
 use Cspray\AnnotatedContainer\Exception\InvalidServiceDelegateDefinition;
-use Cspray\AnnotatedContainerFixture\Fixtures;
+use Cspray\AnnotatedContainer\Fixture\Fixtures;
 use PHPUnit\Framework\TestCase;
 
 class ServiceDelegateDefinitionBuilderTest extends TestCase {

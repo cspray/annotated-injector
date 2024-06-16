@@ -23,9 +23,8 @@ use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsB
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalyzer;
 use Cspray\AnnotatedContainer\Unit\Helper\StubContainerFactoryListener;
 use Cspray\AnnotatedContainer\Unit\Helper\StubParameterStore;
-use Cspray\AnnotatedContainerFixture;
-use Cspray\AnnotatedContainerFixture\Fixture;
-use Cspray\AnnotatedContainerFixture\Fixtures;
+use Cspray\AnnotatedContainer\Fixture\Fixture;
+use Cspray\AnnotatedContainer\Fixture\Fixtures;
 use Cspray\AnnotatedTarget\PhpParserAnnotatedTargetParser;
 use Cspray\Typiphy\ObjectType;
 use Cspray\Typiphy\Type;
@@ -341,7 +340,7 @@ abstract class ContainerFactoryTestCase extends TestCase {
 
         $container = $this->getContainer(Fixtures::injectNamedServices()->getPath());
 
-        /** @var AnnotatedContainerFixture\InjectNamedServices\ServiceConsumer $service */
+        /** @var \Cspray\AnnotatedContainer\Fixture\InjectNamedServices\ServiceConsumer $service */
         $service = $container->get(Fixtures::injectNamedServices()->serviceConsumer()->getName());
 
         self::assertInstanceOf(Fixtures::injectNamedServices()->fooImplementation()->getName(), $service->foo);
@@ -371,7 +370,7 @@ abstract class ContainerFactoryTestCase extends TestCase {
         $invoker = $this->getContainer(Fixtures::implicitAliasedServices()->getPath());
         $state = new \stdClass();
         $state->foo = null;
-        $callable = fn(AnnotatedContainerFixture\ImplicitAliasedServices\FooInterface $foo) => $state->foo = $foo;
+        $callable = fn(\Cspray\AnnotatedContainer\Fixture\ImplicitAliasedServices\FooInterface $foo) => $state->foo = $foo;
 
         $invoker->invoke($callable);
 
@@ -382,7 +381,7 @@ abstract class ContainerFactoryTestCase extends TestCase {
         $invoker = $this->getContainer(Fixtures::ambiguousAliasedServices()->getPath());
         $state = new \stdClass();
         $state->foo = null;
-        $callable = fn(AnnotatedContainerFixture\AmbiguousAliasedServices\FooInterface $foo) => $state->foo = $foo;
+        $callable = fn(\Cspray\AnnotatedContainer\Fixture\AmbiguousAliasedServices\FooInterface $foo) => $state->foo = $foo;
         $invoker->invoke($callable, autowiredParams(serviceParam('foo', Fixtures::ambiguousAliasedServices()->quxImplementation())));
 
         self::assertInstanceOf(Fixtures::ambiguousAliasedServices()->quxImplementation()->getName(), $state->foo);
@@ -392,7 +391,7 @@ abstract class ContainerFactoryTestCase extends TestCase {
         $invoker = $this->getContainer(Fixtures::implicitAliasedServices()->getPath());
         $state = new \stdClass();
         $state->bar = null;
-        $callable = fn(AnnotatedContainerFixture\ImplicitAliasedServices\FooInterface $foo, string $bar) => $state->bar = $bar;
+        $callable = fn(\Cspray\AnnotatedContainer\Fixture\ImplicitAliasedServices\FooInterface $foo, string $bar) => $state->bar = $bar;
 
         $invoker->invoke($callable, autowiredParams(rawParam('bar', 'foobaz')));
 

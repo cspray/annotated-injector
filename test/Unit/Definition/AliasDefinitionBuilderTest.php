@@ -3,7 +3,7 @@
 namespace Cspray\AnnotatedContainer\Unit\Definition;
 
 use Cspray\AnnotatedContainer\Definition\AliasDefinitionBuilder;
-use Cspray\AnnotatedContainerFixture\Fixtures;
+use Cspray\AnnotatedContainer\Fixture\Fixtures;
 use PHPUnit\Framework\TestCase;
 
 class AliasDefinitionBuilderTest extends TestCase {
