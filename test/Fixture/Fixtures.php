@@ -2,7 +2,7 @@
 
 namespace Cspray\AnnotatedContainer\Fixture;
 
-use Cspray\AnnotatedContainerFixture\InjectServiceCollectionDecoratorFixture;
+use Cspray\AnnotatedContainer\Fixture\InjectServiceCollectionDecoratorFixture;
 
 final class Fixtures {
 
@@ -176,5 +176,4 @@ final class Fixtures {
     public static function injectServiceCollectionDecorator() : InjectServiceCollectionDecoratorFixture {
         return new InjectServiceCollectionDecoratorFixture();
     }
-
 }

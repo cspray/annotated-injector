@@ -1,13 +1,7 @@
 <?php declare(strict_types=1);
 
-namespace Cspray\AnnotatedContainerFixture;
+namespace Cspray\AnnotatedContainer\Fixture;
 
-use Cspray\AnnotatedContainerFixture\InjectServiceCollectionDecorator\BarImplementation;
-use Cspray\AnnotatedContainerFixture\InjectServiceCollectionDecorator\BazImplementation;
-use Cspray\AnnotatedContainerFixture\InjectServiceCollectionDecorator\CompositeFooImplementation;
-use Cspray\AnnotatedContainerFixture\InjectServiceCollectionDecorator\FooImplementation;
-use Cspray\AnnotatedContainerFixture\InjectServiceCollectionDecorator\FooInterface;
-use Cspray\AnnotatedContainerFixture\InjectServiceCollectionDecorator\FooService;
 use Cspray\Typiphy\ObjectType;
 use function Cspray\Typiphy\objectType;
 
@@ -18,26 +12,26 @@ class InjectServiceCollectionDecoratorFixture implements Fixture {
     }
 
     public function fooService() : ObjectType {
-        return objectType(FooService::class);
+        return objectType(InjectServiceCollectionDecorator\FooService::class);
     }
 
     public function compositeFoo() : ObjectType {
-        return objectType(CompositeFooImplementation::class);
+        return objectType(InjectServiceCollectionDecorator\CompositeFooImplementation::class);
     }
 
     public function fooInterface() : ObjectType {
-        return objectType(FooInterface::class);
+        return objectType(InjectServiceCollectionDecorator\FooInterface::class);
     }
 
     public function fooImplementation() : ObjectType {
-        return objectType(FooImplementation::class);
+        return objectType(InjectServiceCollectionDecorator\FooImplementation::class);
     }
 
     public function barImplementation() : ObjectType {
-        return objectType(BarImplementation::class);
+        return objectType(InjectServiceCollectionDecorator\BarImplementation::class);
     }
 
     public function bazImplementation() : ObjectType {
-        return objectType(BazImplementation::class);
+        return objectType(InjectServiceCollectionDecorator\BazImplementation::class);
     }
 }

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Cspray\AnnotatedContainerFixture\InjectServiceCollectionDecorator;
+namespace Cspray\AnnotatedContainer\Fixture\InjectServiceCollectionDecorator;
 
 use Cspray\AnnotatedContainer\Attribute\Service;
 
@@ -9,6 +9,6 @@ class FooService {
 
     public function __construct(
         public readonly FooInterface $foo
-    ) {}
-
+    ) {
+    }
 }
