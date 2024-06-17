@@ -13,11 +13,8 @@ interface AutowireableFactory {
      * AutowireableParameterSet.
      *
      * @template T of object
-     * @param class-string<T> $classType The FQCN for the type that should be created
-     * @param AutowireableParameterSet|null $parameters A set of AutowireableParameters that should be used for constructor
-     *                                                  arguments in place of or in addition to any autowire-resolved
-     *                                                  parameters.
-     * @return T
+     * @psalm-param class-string<T> $classType
+     * @psalm-return T
      */
     public function make(string $classType, AutowireableParameterSet $parameters = null) : object;
 }

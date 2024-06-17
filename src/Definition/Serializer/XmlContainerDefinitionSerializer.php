@@ -3,6 +3,9 @@
 namespace Cspray\AnnotatedContainer\Definition\Serializer;
 
 use Cspray\AnnotatedContainer\AnnotatedContainerVersion;
+use Cspray\AnnotatedContainer\Attribute\InjectAttribute;
+use Cspray\AnnotatedContainer\Attribute\ServiceAttribute;
+use Cspray\AnnotatedContainer\Attribute\ServiceDelegateAttribute;
 use Cspray\AnnotatedContainer\Attribute\ServicePrepareAttribute;
 use Cspray\AnnotatedContainer\Definition\AliasDefinitionBuilder;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
@@ -359,7 +362,9 @@ final class XmlContainerDefinitionSerializer implements ContainerDefinitionSeria
 
             $attr = $xpath->query('cd:attribute/text()', $serviceDefinition)[0]?->nodeValue;
             if ($attr !== null) {
-                $serviceBuilder = $serviceBuilder->withAttribute(unserialize(base64_decode($attr)));
+                $attrInstance = unserialize(base64_decode($attr));
+                assert($attrInstance instanceof ServiceAttribute);
+                $serviceBuilder = $serviceBuilder->withAttribute($attrInstance);
             }
 
             $builder = $builder->withServiceDefinition($serviceBuilder->build());
@@ -431,7 +436,9 @@ final class XmlContainerDefinitionSerializer implements ContainerDefinitionSeria
 
             $attr = $xpath->query('cd:attribute/text()', $delegateDefinition)[0]?->nodeValue;
             if ($attr !== null) {
-                $serviceDelegateBuilder = $serviceDelegateBuilder->withAttribute(unserialize(base64_decode($attr)));
+                $attrInstance = unserialize(base64_decode($attr));
+                assert($attrInstance instanceof ServiceDelegateAttribute);
+                $serviceDelegateBuilder = $serviceDelegateBuilder->withAttribute($attrInstance);
             }
 
             $builder = $builder->withServiceDelegateDefinition($serviceDelegateBuilder->build());
@@ -454,7 +461,9 @@ final class XmlContainerDefinitionSerializer implements ContainerDefinitionSeria
             $serializedValue = base64_decode($encodedSerializedValue);
             /** @var mixed $value */
             $value = unserialize($serializedValue);
-            $valueType = $this->injectValueParser->convertStringToType(base64_decode($valueType));
+            /** @var non-empty-string $base64DecodedValueType */
+            $base64DecodedValueType = base64_decode($valueType);
+            $valueType = $this->injectValueParser->convertStringToType($base64DecodedValueType);
 
             $type = $xpath->query('cd:class/text()', $injectDefinition)[0]->nodeValue;
             $methodName = $xpath->query('cd:method/text()', $injectDefinition)[0]->nodeValue;
@@ -487,7 +496,9 @@ final class XmlContainerDefinitionSerializer implements ContainerDefinitionSeria
             }
 
             if ($attr !== null) {
-                $injectBuilder = $injectBuilder->withAttribute(unserialize(base64_decode($attr)));
+                $attrInstance = unserialize(base64_decode($attr));
+                assert($attrInstance instanceof InjectAttribute);
+                $injectBuilder = $injectBuilder->withAttribute($attrInstance);
             }
 
             $builder = $builder->withInjectDefinition($injectBuilder->build());

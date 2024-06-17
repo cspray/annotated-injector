@@ -23,7 +23,6 @@ abstract class ServiceWiringListener implements AfterContainerCreation {
                 private readonly AnnotatedContainer $container
             ) {
                 $activeProfiles = $container->get(Profiles::class);
-                assert($activeProfiles instanceof Profiles);
                 $this->containerDefinition = new ProfilesAwareContainerDefinition($containerDefinition, $activeProfiles);
             }
 
@@ -64,7 +63,6 @@ abstract class ServiceWiringListener implements AfterContainerCreation {
                     }
 
                     $service = $this->container->get($serviceDefinition->type()->name());
-                    assert(is_object($service));
                     $services[] = $this->createServiceFromServiceDefinition($service, $serviceDefinition);
                 }
                 return $services;
@@ -83,20 +81,20 @@ abstract class ServiceWiringListener implements AfterContainerCreation {
                      * @implements ServiceFromServiceDefinition<T>
                      */
                     new class($service, $serviceDefinition) implements ServiceFromServiceDefinition {
-                    public function __construct(
+                        public function __construct(
                         private readonly object $service,
                         private readonly ServiceDefinition $definition
-                    ) {
-                    }
+                        ) {
+                        }
 
-                    public function service() : object {
-                        return $this->service;
-                    }
+                        public function service() : object {
+                            return $this->service;
+                        }
 
-                    public function definition() : ServiceDefinition {
-                        return $this->definition;
-                    }
-                };
+                        public function definition() : ServiceDefinition {
+                            return $this->definition;
+                        }
+                    };
 
                 /** @var ServiceFromServiceDefinition<T> $serviceFromDefinition */
                 return $serviceFromDefinition;

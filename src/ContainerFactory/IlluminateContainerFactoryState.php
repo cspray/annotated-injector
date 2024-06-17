@@ -119,6 +119,9 @@ final class IlluminateContainerFactoryState implements ContainerFactoryState {
         return $this->concreteServices;
     }
 
+    /**
+     * @return array<class-string, class-string>
+     */
     public function aliases() : array {
         return $this->aliases;
     }
@@ -130,6 +133,9 @@ final class IlluminateContainerFactoryState implements ContainerFactoryState {
         return $this->delegates;
     }
 
+    /**
+     * @return array<class-string, non-empty-string>
+     */
     public function namedServices() : array {
         return $this->namedServices;
     }

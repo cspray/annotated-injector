@@ -112,6 +112,7 @@ final class AnnotatedTargetDefinitionConverter {
         $attribute = $target->attributeInstance();
         assert($attribute instanceof ServiceDelegateAttribute);
 
+        /** @var class-string|null $service */
         $service = $attribute->service();
         if ($service !== null) {
             return ServiceDelegateDefinitionBuilder::forService(objectType($service))

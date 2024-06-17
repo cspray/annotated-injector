@@ -118,7 +118,11 @@ final class IlluminateContainerFactory extends AbstractContainerFactory {
             }
             $container->singleton(
                 $service,
-                static fn(Container $container) : object => $container->call([$target, $delegateInfo['delegateMethod']])
+                static function(Container $container) use($target, $delegateInfo) : object  {
+                    $object = $container->call([$target, $delegateInfo['delegateMethod']]);
+                    assert(is_object($object));
+                    return $object;
+                }
             );
         }
 
@@ -130,20 +134,24 @@ final class IlluminateContainerFactory extends AbstractContainerFactory {
             $container->singleton($service);
         }
 
-        $container->afterResolving(static function ($created, Container $container) use($state) {
-            foreach ($state->servicePrepares() as $service => $methods) {
-                if ($created instanceof $service) {
-                    foreach ($methods as $method) {
-                        $params = [];
-                        foreach ($state->parametersForMethod($service, $method) as $param => $value) {
-                            $params[$param] = $value instanceof ContainerReference ? $container->get($value->name) : $value;
-                        }
-                        $container->call([$created, $method], $params);
+        foreach ($state->servicePrepares() as $service => $methods) {
+            $container->afterResolving($service, static function (object $created, Container $container) use($state, $service, $methods) {
+                foreach ($methods as $method) {
+                    /** @var array<non-empty-string, mixed> $params */
+                    $params = [];
+                    /**
+                     * @var mixed $value
+                     */
+                    foreach ($state->parametersForMethod($service, $method) as $param => $value) {
+                        /** @var mixed $resolvedValue */
+                        $resolvedValue = $value instanceof ContainerReference ? $container->get($value->name) : $value;
+                        $params[$param] = $resolvedValue;
                     }
-                    break;
+                    $container->call([$created, $method], $params);
                 }
-            }
-        });
+            });
+        }
+
 
         foreach ($state->methodInject() as $service => $methods) {
             foreach ($methods as $method => $params) {
@@ -241,12 +249,19 @@ final class IlluminateContainerFactory extends AbstractContainerFactory {
                 return $params;
             }
 
+            /**
+             * @template T
+             * @param class-string<T>|non-empty-string $id
+             * @return ($id is class-string<T> ? T : mixed)
+             */
             public function get(string $id) {
                 if (!$this->has($id)) {
                     throw ServiceNotFound::fromServiceNotInContainer($id);
                 }
 
-                return $this->state->container->get($id);
+                /** @var T|mixed $object */
+                $object = $this->state->container->get($id);
+                return $object;
             }
 
             public function has(string $id) : bool {

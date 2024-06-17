@@ -120,6 +120,11 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
                 $state->injector->delegate(Profiles::class, fn() => $activeProfiles);
             }
 
+            /**
+             * @template T
+             * @param class-string<T>|non-empty-string $id
+             * @return ($id is class-string<T> ? T : mixed)
+             */
             public function get(string $id) {
                 try {
                     if (!$this->has($id)) {
@@ -132,7 +137,10 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
                     if ($namedType !== null) {
                         $id = $namedType->name();
                     }
-                    return $this->state->injector->make($id);
+
+                    /** @var T|mixed $value */
+                    $value = $this->state->injector->make($id);
+                    return $value;
                 } catch (InjectionException $injectionException) {
                     throw ContainerException::fromCaughtThrowable($injectionException);
                 }
@@ -153,11 +161,19 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
                 return $anyDefined > 0;
             }
 
+            /**
+             * @template T of object
+             * @psalm-param class-string<T> $classType
+             * @psalm-return T
+             */
             public function make(string $classType, AutowireableParameterSet $parameters = null) : object {
-                return $this->state->injector->make(
+                /** @var T $object */
+                $object = $this->state->injector->make(
                     $classType,
                     $this->convertAutowireableParameterSet($parameters)
                 );
+
+                return $object;
             }
 
             public function backingContainer() : Injector {
@@ -172,12 +188,25 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
             }
 
             private function convertAutowireableParameterSet(AutowireableParameterSet $parameters = null) : array {
+                /** @var array<non-empty-string, mixed> $params */
                 $params = [];
                 if (!is_null($parameters)) {
                     /** @var AutowireableParameter $parameter */
                     foreach ($parameters as $parameter) {
-                        $name = $parameter->isServiceIdentifier() ? $parameter->name() : ':' . $parameter->name();
-                        $params[$name] = $parameter->isServiceIdentifier() ? $parameter->value()->name() : $parameter->value();
+                        if ($parameter->isServiceIdentifier()) {
+                            $parameterValue = $parameter->value();
+                            assert($parameterValue instanceof ObjectType);
+
+                            /** @var non-empty-string $value */
+                            $value = $parameterValue->name();
+                            $name = $parameter->name();
+                        } else {
+                            /** @var mixed $value */
+                            $value = $parameter->value();
+                            $name = ':' . $parameter->name();
+                        }
+
+                        $params[$name] = $value;
                     }
                 }
                 return $params;

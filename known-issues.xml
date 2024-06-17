@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="5.24.0@462c80e31c34e58cc4f750c656be3927e80e550e">
+  <file src="src/ContainerFactory/AurynContainerFactory.php">
+    <MethodSignatureMismatch>
+      <code><![CDATA[$id]]></code>
+    </MethodSignatureMismatch>
+    <MixedAssignment>
+      <code><![CDATA[$params[$name]]]></code>
+    </MixedAssignment>
+    <MixedInferredReturnType>
+      <code><![CDATA[T]]></code>
+    </MixedInferredReturnType>
+    <MixedReturnStatement>
+      <code><![CDATA[$value]]></code>
+    </MixedReturnStatement>
+  </file>
+  <file src="src/ContainerFactory/IlluminateContainerFactory.php">
+    <MethodSignatureMismatch>
+      <code><![CDATA[$id]]></code>
+    </MethodSignatureMismatch>
+    <MixedAssignment>
+      <code><![CDATA[$params[$param]]]></code>
+      <code><![CDATA[$params[$parameter->name()]]]></code>
+    </MixedAssignment>
+    <MixedInferredReturnType>
+      <code><![CDATA[object]]></code>
+    </MixedInferredReturnType>
+    <MixedReturnStatement>
+      <code><![CDATA[$object]]></code>
+    </MixedReturnStatement>
+    <NoValue>
+      <code><![CDATA[$object]]></code>
+    </NoValue>
+  </file>
+  <file src="src/ContainerFactory/PhpDiContainerFactory.php">
+    <MethodSignatureMismatch>
+      <code><![CDATA[$id]]></code>
+    </MethodSignatureMismatch>
+    <MixedAssignment>
+      <code><![CDATA[$params[$parameter->name()]]]></code>
+    </MixedAssignment>
+    <MixedReturnStatement>
+      <code><![CDATA[$object]]></code>
+    </MixedReturnStatement>
+  </file>
+</files>

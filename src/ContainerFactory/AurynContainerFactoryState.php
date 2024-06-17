@@ -28,11 +28,10 @@ final class AurynContainerFactoryState implements ContainerFactoryState {
 
 
     /**
-     * @param class-string $class
+     * @template T
+     * @param class-string<T> $class
      * @param non-empty-string $method
      * @param non-empty-string $param
-     * @return void
-     * @throws \Auryn\InjectionException
      */
     public function addMethodInject(string $class, string $method, string $param, mixed $value) : void {
         if ($value instanceof ContainerReference) {
@@ -52,7 +51,9 @@ final class AurynContainerFactoryState implements ContainerFactoryState {
                 }
 
                 if (is_a($serviceDefinition->type()->name(), $value->valueType->name(), true)) {
-                    $values[] = $this->injector->make($serviceDefinition->type()->name());
+                    /** @var T $objectValue */
+                    $objectValue = $this->injector->make($serviceDefinition->type()->name());
+                    $values[] = $objectValue;
                 }
             }
 

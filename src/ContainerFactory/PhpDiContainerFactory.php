@@ -152,11 +152,19 @@ final class PhpDiContainerFactory extends AbstractContainerFactory implements Co
                 return $object;
             }
 
+            /**
+             * @psalm-template T of object
+             * @psalm-param class-string<T>|non-empty-string $id
+             * @psalm-return ($id is class-string<T> ? T : mixed)
+             */
             public function get(string $id) {
                 if (!$this->has($id)) {
                     throw ServiceNotFound::fromServiceNotInContainer($id);
                 }
-                return $this->container->get($id);
+
+                /** @var T|mixed $object */
+                $object = $this->container->get($id);
+                return $object;
             }
 
             public function has(string $id) : bool {
