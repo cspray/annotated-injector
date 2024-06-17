@@ -10,7 +10,7 @@ final class ExpectedInject {
 
     private function __construct(
         public readonly ObjectType $service,
-        public readonly string $targetName,
+        public readonly string $tarname,
         public readonly mixed $value,
         public readonly Type|TypeUnion $type,
         public readonly ?string $methodName = null,

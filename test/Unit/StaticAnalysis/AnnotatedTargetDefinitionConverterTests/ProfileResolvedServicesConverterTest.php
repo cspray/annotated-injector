@@ -12,7 +12,7 @@ use ReflectionClass;
 class ProfileResolvedServicesConverterTest extends AnnotatedTargetDefinitionConverterTestCase {
 
     protected function getSubjectTarget(): AnnotatedTarget {
-        return $this->getAnnotatedTarget(AttributeType::Service, new ReflectionClass(Fixtures::profileResolvedServices()->devImplementation()->getName()));
+        return $this->getAnnotatedTarget(AttributeType::Service, new ReflectionClass(Fixtures::profileResolvedServices()->devImplementation()->name()));
     }
 
     public function testGetServiceDefinitionInstance() {

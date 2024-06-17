@@ -32,8 +32,8 @@ static-analysis-set-baseline:
     @./tools/psalm/vendor/bin/psalm --set-baseline=known-issues.xml --no-cache
 
 # Update the baseline to _remove_ fixed issues. If new issues are to be added please use static-analysis-set-baseline
-static-analysis-update-baseline:
-    @./tools/psalm/vendor/bin/psalm --update-baseline --no-cache
+static-analysis-update-baseline *FLAGS:
+    @./tools/psalm/vendor/bin/psalm --update-baseline --no-cache {{FLAGS}}
 
 static-analysis-clear-cache:
     @./tools/psalm/vendor/bin/psalm --clear-cache
@@ -56,4 +56,4 @@ ci-check:
 
 # Generate a new Architectural Decision Record document
 generate-adr:
-    @./vendor/bin/architectural-decisions
+    @./tools/adr/bin/generate-adr

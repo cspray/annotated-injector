@@ -50,7 +50,7 @@ final class DuplicateServicePrepareTest extends LogicalConstraintTestCase {
         self::assertCount(1, $results);
 
         $violation = $results->get(0);
-        $service = LogicalConstraintFixtures::duplicateServicePrepare()->fooService()->getName();
+        $service = LogicalConstraintFixtures::duplicateServicePrepare()->fooService()->name();
         $prepareAttr = ServicePrepare::class;
         $dummyAttr = DummyPrepare::class;
 
@@ -82,12 +82,12 @@ TEXT;
                     public function consume(DefinitionProviderContext $context) : void {
                         $context->addServicePrepareDefinition(
                             servicePrepare(objectType(
-                                Fixtures::singleConcreteService()->fooImplementation()->getName()
+                                Fixtures::singleConcreteService()->fooImplementation()->name()
                             ), 'postConstruct')
                         );
                         $context->addServicePrepareDefinition(
                             servicePrepare(objectType(
-                                Fixtures::singleConcreteService()->fooImplementation()->getName()
+                                Fixtures::singleConcreteService()->fooImplementation()->name()
                             ), 'postConstruct')
                         );
                     }
@@ -100,7 +100,7 @@ TEXT;
         self::assertCount(1, $results);
 
         $violation = $results->get(0);
-        $service = Fixtures::singleConcreteService()->fooImplementation()->getName();
+        $service = Fixtures::singleConcreteService()->fooImplementation()->name();
         $expected = <<<TEXT
 The method "$service::postConstruct" has been defined to prepare multiple times!
 

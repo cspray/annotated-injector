@@ -27,15 +27,20 @@ abstract class ServiceWiringListener implements AfterContainerCreation {
                 $this->containerDefinition = new ProfilesAwareContainerDefinition($containerDefinition, $activeProfiles);
             }
 
+            /**
+             * @template T of object
+             * @param class-string<T> $type
+             * @return list<ServiceFromServiceDefinition<T>>
+             */
             public function servicesForType(string $type) : array {
-                /** @var list<ServiceFromServiceDefinition> $services */
+                /** @var list<ServiceFromServiceDefinition<T>> $services */
                 $services = [];
                 foreach ($this->containerDefinition->serviceDefinitions() as $serviceDefinition) {
                     if ($serviceDefinition->isAbstract()) {
                         continue;
                     }
 
-                    $serviceType = $serviceDefinition->type()->getName();
+                    $serviceType = $serviceDefinition->type()->name();
                     if (is_a($serviceType, $type, true)) {
                         $service = $this->container->get($serviceType);
                         assert($service instanceof $type);
@@ -58,7 +63,7 @@ abstract class ServiceWiringListener implements AfterContainerCreation {
                         continue;
                     }
 
-                    $service = $this->container->get($serviceDefinition->type()->getName());
+                    $service = $this->container->get($serviceDefinition->type()->name());
                     assert(is_object($service));
                     $services[] = $this->createServiceFromServiceDefinition($service, $serviceDefinition);
                 }
@@ -72,7 +77,12 @@ abstract class ServiceWiringListener implements AfterContainerCreation {
              * @return ServiceFromServiceDefinition<T>
              */
             private function createServiceFromServiceDefinition(object $service, ServiceDefinition $serviceDefinition) : ServiceFromServiceDefinition {
-                return new class($service, $serviceDefinition) implements ServiceFromServiceDefinition {
+                $serviceFromDefinition =
+
+                    /**
+                     * @implements ServiceFromServiceDefinition<T>
+                     */
+                    new class($service, $serviceDefinition) implements ServiceFromServiceDefinition {
                     public function __construct(
                         private readonly object $service,
                         private readonly ServiceDefinition $definition
@@ -87,6 +97,9 @@ abstract class ServiceWiringListener implements AfterContainerCreation {
                         return $this->definition;
                     }
                 };
+
+                /** @var ServiceFromServiceDefinition<T> $serviceFromDefinition */
+                return $serviceFromDefinition;
             }
         };
         $this->wireServices($container, $serviceGatherer);

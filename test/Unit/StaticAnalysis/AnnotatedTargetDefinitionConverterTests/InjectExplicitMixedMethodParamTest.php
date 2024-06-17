@@ -15,7 +15,7 @@ class InjectExplicitMixedMethodParamTest extends AnnotatedTargetDefinitionConver
         return $this->getAnnotatedTarget(
             AttributeType::Inject,
             new \ReflectionParameter(
-                [Fixtures::injectConstructorServices()->injectExplicitMixedService()->getName(), '__construct'],
+                [Fixtures::injectConstructorServices()->injectExplicitMixedService()->name(), '__construct'],
                 'value'
             )
         );

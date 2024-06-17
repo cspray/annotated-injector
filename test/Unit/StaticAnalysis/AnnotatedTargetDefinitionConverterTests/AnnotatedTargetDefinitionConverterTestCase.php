@@ -39,16 +39,16 @@ abstract class AnnotatedTargetDefinitionConverterTestCase extends TestCase {
             ) {
             }
 
-            public function getTargetReflection(): ReflectionClass|ReflectionMethod|ReflectionParameter|ReflectionProperty {
+            public function targetReflection(): ReflectionClass|ReflectionMethod|ReflectionParameter|ReflectionProperty {
                 return $this->reflection;
             }
 
-            public function getAttributeReflection() : ReflectionAttribute {
+            public function attributeReflection() : ReflectionAttribute {
                 return $this->reflection->getAttributes($this->attributeType->value, ReflectionAttribute::IS_INSTANCEOF)[$this->attributeIndex];
             }
 
-            public function getAttributeInstance(): Service|ServicePrepare|ServiceDelegate|Inject {
-                return $this->getAttributeReflection()->newInstance();
+            public function attributeInstance(): Service|ServicePrepare|ServiceDelegate|Inject {
+                return $this->attributeReflection()->newInstance();
             }
         };
     }

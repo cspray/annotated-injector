@@ -2,10 +2,13 @@
 
 namespace Cspray\AnnotatedContainer\ContainerFactory;
 
+use Closure;
 use Cspray\AnnotatedContainer\Autowire\AutowireableFactory;
 use Cspray\AnnotatedContainer\Autowire\AutowireableInvoker;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 use DI\Container;
+use DI\Definition\Helper\AutowireDefinitionHelper;
+use DI\Definition\Helper\DefinitionHelper;
 use DI\Definition\Reference;
 use Cspray\AnnotatedContainer\Profiles;
 use function DI\autowire;
@@ -18,10 +21,19 @@ final class PhpDiContainerFactoryState implements ContainerFactoryState {
         HasMethodInjectState::addMethodInject as addResolvedMethodInject;
     }
 
+    /**
+     * @var list<non-empty-string>
+     */
     private array $services = [];
 
+    /**
+     * @var array<non-empty-string, Reference|DefinitionHelper|AutowireDefinitionHelper|Closure>
+     */
     private array $definitions = [];
 
+    /**
+     * @var array<class-string, non-empty-string>
+     */
     private array $serviceKeys = [];
 
     public function __construct(
@@ -46,20 +58,23 @@ final class PhpDiContainerFactoryState implements ContainerFactoryState {
         if ($value instanceof ServiceCollectorReference) {
             $values = [];
             foreach ($this->containerDefinition->serviceDefinitions() as $serviceDefinition) {
-                if ($serviceDefinition->isAbstract() || $serviceDefinition->type()->getName() === $class) {
+                if ($serviceDefinition->isAbstract() || $serviceDefinition->type()->name() === $class) {
                     continue;
                 }
 
-                if (is_a($serviceDefinition->type()->getName(), $value->valueType->getName(), true)) {
-                    $values[] = get($serviceDefinition->type()->getName());
+                if (is_a($serviceDefinition->type()->name(), $value->valueType->name(), true)) {
+                    $values[] = get($serviceDefinition->type()->name());
                 }
             }
 
-            $value = factory(function(Container $container) use ($values, $value) {
+            $value = factory(function(Container $container) use ($values, $value) : mixed {
+                /** @var list<object> $resolvedValues */
                 $resolvedValues = [];
                 /** @var Reference $val */
                 foreach ($values as $val) {
-                    $resolvedValues[] = $val->resolve($container);
+                    $resolvedVal = $val->resolve($container);
+                    assert(is_object($resolvedVal));
+                    $resolvedValues[] = $resolvedVal;
                 }
                 return $value->listOf->toCollection($resolvedValues);
             });
@@ -68,34 +83,67 @@ final class PhpDiContainerFactoryState implements ContainerFactoryState {
         $this->addResolvedMethodInject($class, $method, $param, $value);
     }
 
+    /**
+     * @return array<non-empty-string, Reference|DefinitionHelper|AutowireDefinitionHelper|Closure>
+     */
     public function definitions() : array {
         return $this->definitions;
     }
 
+    /**
+     * @return list<non-empty-string>
+     */
     public function services() : array {
         return $this->services;
     }
 
+    /**
+     * @param non-empty-string $service
+     * @return void
+     */
     public function addService(string $service) : void {
         $this->services[] = $service;
     }
 
+    /**
+     * @param class-string $service
+     * @return void
+     */
     public function autowireService(string $service) : void {
         $this->definitions[$service] = autowire();
     }
 
+    /**
+     * @param non-empty-string $name
+     * @param non-empty-string $service
+     * @return void
+     */
     public function referenceService(string $name, string $service) : void {
         $this->definitions[$name] = get($service);
     }
 
-    public function factoryService(string $name, \Closure $closure) : void {
+    /**
+     * @param non-empty-string $name
+     * @param Closure $closure
+     * @return void
+     */
+    public function factoryService(string $name, Closure $closure) : void {
         $this->definitions[$name] = $closure;
     }
 
+    /**
+     * @param class-string $serviceType
+     * @param non-empty-string $key
+     * @return void
+     */
     public function setServiceKey(string $serviceType, string $key) : void {
         $this->serviceKeys[$serviceType] = $key;
     }
 
+    /**
+     * @param class-string $serviceType
+     * @return non-empty-string|null
+     */
     public function serviceKey(string $serviceType) : ?string {
         return $this->serviceKeys[$serviceType] ?? null;
     }

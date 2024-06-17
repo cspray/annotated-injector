@@ -13,7 +13,7 @@ final class AnnotatedTargetDefinitionConverterTest extends TestCase {
         $subject = new AnnotatedTargetDefinitionConverter();
 
         $target = $this->createMock(AnnotatedTarget::class);
-        $target->expects($this->once())->method('getAttributeInstance')->willReturn(new \stdClass());
+        $target->expects($this->once())->method('attributeInstance')->willReturn(new \stdClass());
 
         $this->expectException(InvalidAnnotatedTarget::class);
         $this->expectExceptionMessage(

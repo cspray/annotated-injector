@@ -6,8 +6,8 @@ use Cspray\Typiphy\ObjectType;
 use function Cspray\Typiphy\objectType;
 
 /**
- * @template ItemType
- * @implements ListOf<list<ItemType>>
+ * @template ItemType of object
+ * @implements ListOf<ItemType, list<ItemType>>
  */
 final class ListOfAsArray implements ListOf {
 
@@ -23,10 +23,6 @@ final class ListOfAsArray implements ListOf {
         return objectType($this->type);
     }
 
-    /**
-     * @param list<ItemType> $servicesOfType
-     * @return list<ItemType>
-     */
     public function toCollection(array $servicesOfType) : array {
         return $servicesOfType;
     }

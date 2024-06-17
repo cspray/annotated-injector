@@ -14,7 +14,7 @@ interface ServiceGatherer {
     /**
      * @template T
      * @param class-string<T> $attributeType
-     * @return list<ServiceFromServiceDefinition<T>>
+     * @return list<ServiceFromServiceDefinition>
      */
     public function servicesWithAttribute(string $attributeType) : array;
 }

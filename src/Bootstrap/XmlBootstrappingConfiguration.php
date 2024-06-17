@@ -54,7 +54,9 @@ final class XmlBootstrappingConfiguration implements BootstrappingConfiguration 
             $scanDirectoriesNodes = $xpath->query('/ac:annotatedContainer/ac:scanDirectories/ac:source/ac:dir');
             $scanDirectories = [];
             foreach ($scanDirectoriesNodes as $scanDirectory) {
-                $scanDirectories[] = $scanDirectory->textContent;
+                $sourceDirectory = $scanDirectory->nodeValue;
+                assert($sourceDirectory !== null);
+                $scanDirectories[] = $sourceDirectory;
             }
 
             $vendorPackagesNodes = $xpath->query('/ac:annotatedContainer/ac:scanDirectories/ac:vendor/ac:package');

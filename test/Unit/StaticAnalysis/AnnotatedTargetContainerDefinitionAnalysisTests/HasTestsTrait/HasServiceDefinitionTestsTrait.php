@@ -102,7 +102,7 @@ trait HasServiceDefinitionTestsTrait {
 
     #[DataProvider('serviceTypeProvider')]
     final public function testExpectedServiceTypes(ExpectedServiceType $expectedServiceType) : void {
-        $serviceDefinition = $this->getServiceDefinition($this->getSubject()->serviceDefinitions(), $expectedServiceType->type->getName());
+        $serviceDefinition = $this->getServiceDefinition($this->getSubject()->serviceDefinitions(), $expectedServiceType->type->name());
 
         $this->assertNotNull(
             $serviceDefinition,
@@ -112,35 +112,35 @@ trait HasServiceDefinitionTestsTrait {
 
     #[DataProvider('serviceNameProvider')]
     final public function testExpectedServiceNames(ExpectedServiceName $expectedServiceName) : void {
-        $serviceDefinition = $this->getServiceDefinition($this->getSubject()->serviceDefinitions(), $expectedServiceName->type->getName());
+        $serviceDefinition = $this->getServiceDefinition($this->getSubject()->serviceDefinitions(), $expectedServiceName->type->name());
 
         $this->assertSame($expectedServiceName->name, $serviceDefinition?->name());
     }
 
     #[DataProvider('serviceIsPrimaryProvider')]
     final public function testExpectedServiceIsPrimary(ExpectedServiceIsPrimary $expectedServiceIsPrimary) : void {
-        $serviceDefinition = $this->getServiceDefinition($this->getSubject()->serviceDefinitions(), $expectedServiceIsPrimary->type->getName());
+        $serviceDefinition = $this->getServiceDefinition($this->getSubject()->serviceDefinitions(), $expectedServiceIsPrimary->type->name());
 
         $this->assertSame($expectedServiceIsPrimary->isPrimary, $serviceDefinition?->isPrimary());
     }
 
     #[DataProvider('serviceIsConcreteProvider')]
     final public function testExpectedServiceIsConcrete(ExpectedServiceIsConcrete $expectedServiceIsConcrete) : void {
-        $serviceDefinition = $this->getServiceDefinition($this->getSubject()->serviceDefinitions(), $expectedServiceIsConcrete->type->getName());
+        $serviceDefinition = $this->getServiceDefinition($this->getSubject()->serviceDefinitions(), $expectedServiceIsConcrete->type->name());
 
         $this->assertSame($expectedServiceIsConcrete->isConcrete, $serviceDefinition?->isConcrete());
     }
 
     #[DataProvider('serviceIsAbstractProvider')]
     final public function testExpectedServiceIsAbstract(ExpectedServiceIsAbstract $expectedServiceIsAbstract) : void {
-        $serviceDefinition = $this->getServiceDefinition($this->getSubject()->serviceDefinitions(), $expectedServiceIsAbstract->type->getName());
+        $serviceDefinition = $this->getServiceDefinition($this->getSubject()->serviceDefinitions(), $expectedServiceIsAbstract->type->name());
 
         $this->assertSame($expectedServiceIsAbstract->isAbstract, $serviceDefinition?->isAbstract());
     }
 
     #[DataProvider('serviceProfilesProvider')]
     final public function testExpectedServiceProfiles(ExpectedServiceProfiles $expectedServiceProfiles) : void {
-        $serviceDefinition = $this->getServiceDefinition($this->getSubject()->serviceDefinitions(), $expectedServiceProfiles->type->getName());
+        $serviceDefinition = $this->getServiceDefinition($this->getSubject()->serviceDefinitions(), $expectedServiceProfiles->type->name());
 
         $this->assertSame($expectedServiceProfiles->profiles, $serviceDefinition?->profiles());
     }

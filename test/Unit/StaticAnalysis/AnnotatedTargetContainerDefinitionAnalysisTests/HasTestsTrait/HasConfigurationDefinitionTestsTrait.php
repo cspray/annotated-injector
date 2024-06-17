@@ -32,15 +32,15 @@ trait HasConfigurationDefinitionTestsTrait {
 
     #[DataProvider('configurationTypeProvider')]
     final public function testConfigurationType(ExpectedConfigurationType $expectedConfigurationType) : void {
-        $configurationDefinition = $this->getConfigurationDefinition($this->getSubject()->getConfigurationDefinitions(), $expectedConfigurationType->configuration->getName());
+        $configurationDefinition = $this->getConfigurationDefinition($this->getSubject()->getConfigurationDefinitions(), $expectedConfigurationType->configuration->name());
 
         $this->assertNotNull($configurationDefinition);
     }
 
     #[DataProvider('configurationNameProvider')]
     final public function testConfigurationName(ExpectedConfigurationName $expectedConfigurationName) : void {
-        $configurationDefinition = $this->getConfigurationDefinition($this->getSubject()->getConfigurationDefinitions(), $expectedConfigurationName->configuration->getName());
+        $configurationDefinition = $this->getConfigurationDefinition($this->getSubject()->getConfigurationDefinitions(), $expectedConfigurationName->configuration->name());
 
-        $this->assertSame($expectedConfigurationName->name, $configurationDefinition->getName());
+        $this->assertSame($expectedConfigurationName->name, $configurationDefinition->name());
     }
 }

@@ -12,7 +12,7 @@ class AbstractSharedServicesTest extends AnnotatedTargetDefinitionConverterTestC
 
     protected function getSubjectTarget(): AnnotatedTarget {
         return $this->getAnnotatedTarget(AttributeType::Service, new ReflectionClass(
-            Fixtures::abstractClassAliasedService()->fooAbstract()->getName()
+            Fixtures::abstractClassAliasedService()->fooAbstract()->name()
         ));
     }
 

@@ -108,7 +108,7 @@ class ProfilesAwareContainerDefinitionTest extends TestCase {
         self::expectException(InvalidAlias::class);
         self::expectExceptionMessage(sprintf(
             'An AliasDefinition has an abstract type, %s, that is not a registered ServiceDefinition.',
-            Fixtures::ambiguousAliasedServices()->fooInterface()->getName()
+            Fixtures::ambiguousAliasedServices()->fooInterface()->name()
         ));
 
         $subject->aliasDefinitions();
@@ -130,7 +130,7 @@ class ProfilesAwareContainerDefinitionTest extends TestCase {
         self::expectException(InvalidAlias::class);
         self::expectExceptionMessage(sprintf(
             'An AliasDefinition has a concrete type, %s, that is not a registered ServiceDefinition.',
-            Fixtures::ambiguousAliasedServices()->barImplementation()->getName()
+            Fixtures::ambiguousAliasedServices()->barImplementation()->name()
         ));
 
         $subject->aliasDefinitions();

@@ -39,7 +39,7 @@ final class AurynContainerFactoryState implements ContainerFactoryState {
             $key = $param;
             $nameType = $this->typeForName($value->name);
             if ($nameType !== null) {
-                $value = $nameType->getName();
+                $value = $nameType->name();
             } else {
                 $value = $value->name;
             }
@@ -47,16 +47,16 @@ final class AurynContainerFactoryState implements ContainerFactoryState {
             $key = '+' . $param;
             $values = [];
             foreach ($this->containerDefinition->serviceDefinitions() as $serviceDefinition) {
-                if ($serviceDefinition->isAbstract() || $serviceDefinition->type()->getName() === $class) {
+                if ($serviceDefinition->isAbstract() || $serviceDefinition->type()->name() === $class) {
                     continue;
                 }
 
-                if (is_a($serviceDefinition->type()->getName(), $value->valueType->getName(), true)) {
-                    $values[] = $this->injector->make($serviceDefinition->type()->getName());
+                if (is_a($serviceDefinition->type()->name(), $value->valueType->name(), true)) {
+                    $values[] = $this->injector->make($serviceDefinition->type()->name());
                 }
             }
 
-            $value = static fn() => $value->listOf->toCollection($values);
+            $value = static fn() : mixed => $value->listOf->toCollection($values);
         } else {
             $key = ':' . $param;
         }

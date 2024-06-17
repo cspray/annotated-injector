@@ -18,12 +18,12 @@ final class IlluminateContainerFactoryState implements ContainerFactoryState {
     private array $delegates = [];
 
     /**
-     * @var array<class-string>
+     * @var list<class-string>
      */
     private array $concreteServices = [];
 
     /**
-     * @var array<class-string>
+     * @var list<class-string>
      */
     private array $abstractServices = [];
 
@@ -57,6 +57,12 @@ final class IlluminateContainerFactoryState implements ContainerFactoryState {
         ];
     }
 
+    /**
+     * @param class-string $service
+     * @param class-string $delegate
+     * @param non-empty-string $method
+     * @return void
+     */
     public function addInstanceDelegate(string $service, string $delegate, string $method) : void {
         $this->delegates[$service] = [
             'delegateType' => $delegate,
@@ -65,26 +71,50 @@ final class IlluminateContainerFactoryState implements ContainerFactoryState {
         ];
     }
 
+    /**
+     * @param class-string $service
+     * @return void
+     */
     public function addAbstractService(string $service) : void {
         $this->abstractServices[] = $service;
     }
 
+    /**
+     * @param class-string $service
+     * @return void
+     */
     public function addConcreteService(string $service) : void {
         $this->concreteServices[] = $service;
     }
 
+    /**
+     * @param class-string $service
+     * @param non-empty-string $name
+     * @return void
+     */
     public function addNamedService(string $service, string $name) : void {
         $this->namedServices[$service] = $name;
     }
 
+    /**
+     * @param class-string $abstract
+     * @param class-string $concrete
+     * @return void
+     */
     public function addAlias(string $abstract, string $concrete) : void {
         $this->aliases[$abstract] = $concrete;
     }
 
+    /**
+     * @return list<class-string>
+     */
     public function abstractServices() : array {
         return $this->abstractServices;
     }
 
+    /**
+     * @return list<class-string>
+     */
     public function concreteServices() : array {
         return $this->concreteServices;
     }

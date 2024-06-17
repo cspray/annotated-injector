@@ -57,7 +57,7 @@ final class AnnotatedTargetDefinitionConverter {
      * @return ServiceDefinition|ServicePrepareDefinition|ServiceDelegateDefinition|InjectDefinition
      */
     public function convert(AnnotatedTarget $target) : ServiceDefinition|ServicePrepareDefinition|ServiceDelegateDefinition|InjectDefinition {
-        $attrInstance = $target->getAttributeInstance();
+        $attrInstance = $target->attributeInstance();
         if ($attrInstance instanceof ServiceAttribute) {
             return $this->buildServiceDefinition($target);
         }
@@ -78,11 +78,11 @@ final class AnnotatedTargetDefinitionConverter {
     }
 
     private function buildServiceDefinition(AnnotatedTarget $target) : ServiceDefinition {
-        $serviceType = objectType($target->getTargetReflection()->getName());
-        /** @var Service $attribute */
-        $attribute = $target->getAttributeInstance();
-        $reflection = $target->getTargetReflection();
+        $reflection = $target->targetReflection();
         assert($reflection instanceof ReflectionClass);
+        $serviceType = objectType($reflection->getName());
+        /** @var Service $attribute */
+        $attribute = $target->attributeInstance();
         if ($reflection->isInterface() || $reflection->isAbstract()) {
             $builder = ServiceDefinitionBuilder::forAbstract($serviceType);
         } else {
@@ -105,11 +105,11 @@ final class AnnotatedTargetDefinitionConverter {
     }
 
     private function buildServiceDelegateDefinition(AnnotatedTarget $target) : ServiceDelegateDefinition {
-        $reflection = $target->getTargetReflection();
+        $reflection = $target->targetReflection();
         assert($reflection instanceof ReflectionMethod);
         $delegateType = $reflection->getDeclaringClass()->getName();
         $delegateMethod = $reflection->getName();
-        $attribute = $target->getAttributeInstance();
+        $attribute = $target->attributeInstance();
         assert($attribute instanceof ServiceDelegateAttribute);
 
         $service = $attribute->service();
@@ -143,11 +143,11 @@ final class AnnotatedTargetDefinitionConverter {
     }
 
     private function buildServicePrepareDefinition(AnnotatedTarget $target) : ServicePrepareDefinition {
-        $reflection = $target->getTargetReflection();
+        $reflection = $target->targetReflection();
         assert($reflection instanceof ReflectionMethod);
         $prepareType = $reflection->getDeclaringClass()->getName();
         $method = $reflection->getName();
-        $attribute = $target->getAttributeInstance();
+        $attribute = $target->attributeInstance();
         assert($attribute instanceof ServicePrepareAttribute);
 
         return ServicePrepareDefinitionBuilder::forMethod(objectType($prepareType), $method)
@@ -160,7 +160,7 @@ final class AnnotatedTargetDefinitionConverter {
     }
 
     private function buildMethodInjectDefinition(AnnotatedTarget $target) : InjectDefinition {
-        $targetReflection = $target->getTargetReflection();
+        $targetReflection = $target->targetReflection();
         assert($targetReflection instanceof \ReflectionParameter);
         $declaringClass = $targetReflection->getDeclaringClass();
         assert(!is_null($declaringClass));
@@ -169,7 +169,7 @@ final class AnnotatedTargetDefinitionConverter {
         $method = $targetReflection->getDeclaringFunction()->getName();
         $param = $targetReflection->getName();
         $paramType = $this->convertReflectionType($targetReflection->getType());
-        $attributeInstance = $target->getAttributeInstance();
+        $attributeInstance = $target->attributeInstance();
         assert($attributeInstance instanceof InjectAttribute);
 
         $builder = InjectDefinitionBuilder::forService($serviceType)->withMethod($method, $paramType, $param);
@@ -227,14 +227,22 @@ final class AnnotatedTargetDefinitionConverter {
     }
 
     private function convertReflectionNamedType(ReflectionNamedType $reflectionNamedType) : Type {
-        return  match ($type = $reflectionNamedType->getName()) {
+        $type = $reflectionNamedType->getName();
+        $parsedType = match ($type) {
             'int' => intType(),
             'string' => stringType(),
             'bool' => boolType(),
             'array' => arrayType(),
             'float' => floatType(),
             'mixed' => mixedType(),
-            default => objectType($type)
+            default => null
         };
+
+        if ($parsedType === null) {
+            assert(class_exists($type));
+            $parsedType = objectType($type);
+        }
+
+        return $parsedType;
     }
 }

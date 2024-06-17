@@ -13,7 +13,7 @@ class ServicePrepareConverterTest extends AnnotatedTargetDefinitionConverterTest
 
     protected function getSubjectTarget(): AnnotatedTarget {
         return $this->getAnnotatedTarget(AttributeType::ServicePrepare, new ReflectionMethod(
-            Fixtures::interfacePrepareServices()->fooInterface()->getName(),
+            Fixtures::interfacePrepareServices()->fooInterface()->name(),
             'setBar'
         ));
     }

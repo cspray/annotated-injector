@@ -5,8 +5,8 @@
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
     xmlns="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd"
     elementFormDefault="qualified"
-    attributeFormDefault="unqualified"
-    targetNamespace="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd">
+    targetNamespace="https://annotated-container.cspray.io/schema/annotated-container-definition.xsd"
+    >
 
   <xs:annotation>
     <xs:documentation>
@@ -42,11 +42,11 @@
 
   <xs:complexType name="serviceDefinitionType">
     <xs:all>
-      <xs:element name="type" type="fullyQualifiedClassNameType" />
+      <xs:element name="type" type="fullyQualifiedClassNameString" />
       <xs:element name="name" type="xs:token" />
       <xs:element name="profiles" type="profilesType" />
       <xs:element name="concreteOrAbstract" type="concreteOrAbstractType" />
-      <xs:element name="attribute" type="xs:string" />
+      <xs:element name="attribute" type="base64EncodedString" />
     </xs:all>
     <xs:attribute name="isPrimary" type="xs:boolean" default="false" />
   </xs:complexType>
@@ -59,8 +59,8 @@
 
   <xs:complexType name="aliasDefinitionType">
     <xs:all>
-      <xs:element name="abstractService" type="fullyQualifiedClassNameType" />
-      <xs:element name="concreteService" type="fullyQualifiedClassNameType" />
+      <xs:element name="abstractService" type="fullyQualifiedClassNameString" />
+      <xs:element name="concreteService" type="fullyQualifiedClassNameString" />
     </xs:all>
   </xs:complexType>
 
@@ -72,9 +72,9 @@
 
   <xs:complexType name="servicePrepareDefinitionType">
     <xs:all>
-      <xs:element name="type" type="fullyQualifiedClassNameType" />
-      <xs:element name="method" type="classMethodType" />
-      <xs:element name="attribute" type="xs:string" />
+      <xs:element name="type" type="fullyQualifiedClassNameString" />
+      <xs:element name="method" type="classMethodString" />
+      <xs:element name="attribute" type="base64EncodedString" />
     </xs:all>
   </xs:complexType>
 
@@ -86,10 +86,10 @@
 
   <xs:complexType name="serviceDelegateDefinitionType">
     <xs:all>
-      <xs:element name="service" type="fullyQualifiedClassNameType" />
-      <xs:element name="delegateType" type="fullyQualifiedClassNameType" />
-      <xs:element name="delegateMethod" type="classMethodType" />
-      <xs:element name="attribute" type="xs:string" />
+      <xs:element name="service" type="fullyQualifiedClassNameString" />
+      <xs:element name="delegateType" type="fullyQualifiedClassNameString" />
+      <xs:element name="delegateMethod" type="classMethodString" />
+      <xs:element name="attribute" type="base64EncodedString" />
     </xs:all>
   </xs:complexType>
 
@@ -101,22 +101,28 @@
 
   <xs:complexType name="injectDefinitionType">
     <xs:all>
-      <xs:element name="class" type="fullyQualifiedClassNameType" />
-      <xs:element name="method" type="classMethodType" />
-      <xs:element name="parameter" type="xs:token" />
-      <xs:element name="valueType" type="xs:token" />
-      <xs:element name="value" type="xs:string" />
+      <xs:element name="class" type="fullyQualifiedClassNameString" />
+      <xs:element name="method" type="classMethodString" />
+      <xs:element name="parameter" type="classMethodParameterString" />
+      <xs:element name="valueType" type="base64EncodedString" />
+      <xs:element name="value" type="base64EncodedString" />
       <xs:element name="profiles" type="profilesType" />
       <xs:element name="store" type="xs:token" />
-      <xs:element name="attribute" type="xs:string" />
+      <xs:element name="attribute" type="base64EncodedString" />
     </xs:all>
   </xs:complexType>
 
   <xs:complexType name="profilesType">
     <xs:sequence maxOccurs="unbounded">
-      <xs:element name="profile" type="xs:token" />
+      <xs:element name="profile" type="profileString" />
     </xs:sequence>
   </xs:complexType>
+
+  <xs:simpleType name="profileString">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1" />
+    </xs:restriction>
+  </xs:simpleType>
 
   <xs:simpleType name="concreteOrAbstractType">
     <xs:restriction base="xs:string">
@@ -125,17 +131,35 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="fullyQualifiedClassNameType">
+  <xs:simpleType name="fullyQualifiedClassNameString">
     <xs:restriction base="xs:string">
       <xs:minLength value="1" />
       <xs:pattern value="[a-zA-Z_&#x80;-&#xff;][a-zA-Z0-9_&#x80;-&#xff;]*(\\[a-zA-Z_&#x80;-&#xff;][a-zA-Z0-9_&#x80;-&#xff;]*)*" />
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="classMethodType">
+  <xs:simpleType name="serviceString">
+    <xs:restriction base="xs:string">
+
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="classMethodString">
     <xs:restriction base="xs:string">
       <xs:minLength value="1" />
       <xs:pattern value="[a-zA-Z_&#x80;-&#xff;][a-zA-Z0-9_&#x80;-&#xff;]*" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="classMethodParameterString">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1" />
+      <xs:pattern value="[a-zA-Z_&#x80;-&#xff;][a-zA-Z0-9_&#x80;-&#xff;]*" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="base64EncodedString">
+    <xs:restriction base="xs:base64Binary">
     </xs:restriction>
   </xs:simpleType>
 </xs:schema>

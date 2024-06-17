@@ -23,7 +23,7 @@ interface ServicePrepareDefinition {
     /**
      * The method that should be invoked on the Service.
      *
-     * @return string
+     * @return non-empty-string
      */
     public function methodName() : string;
 

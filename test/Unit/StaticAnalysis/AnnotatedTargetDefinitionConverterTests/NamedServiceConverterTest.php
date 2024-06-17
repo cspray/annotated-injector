@@ -12,7 +12,7 @@ use ReflectionClass;
 class NamedServiceConverterTest extends AnnotatedTargetDefinitionConverterTestCase {
 
     protected function getSubjectTarget(): AnnotatedTarget {
-        return $this->getAnnotatedTarget(AttributeType::Service, new ReflectionClass(Fixtures::namedServices()->fooInterface()->getName()));
+        return $this->getAnnotatedTarget(AttributeType::Service, new ReflectionClass(Fixtures::namedServices()->fooInterface()->name()));
     }
     public function testGetServiceDefinitionInstance() {
         $this->assertInstanceOf(ServiceDefinition::class, $this->definition);

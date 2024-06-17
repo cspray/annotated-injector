@@ -48,7 +48,7 @@ class InjectServiceConstructorServicesTest extends AnnotatedTargetContainerDefin
                 Fixtures::injectServiceConstructorServices()->serviceInjector(),
                 'foo',
                 Fixtures::injectServiceConstructorServices()->fooInterface(),
-                Fixtures::injectServiceConstructorServices()->fooImplementation()->getName()
+                Fixtures::injectServiceConstructorServices()->fooImplementation()->name()
             )],
             [ExpectedInject::forConstructParam(
                 Fixtures::injectServiceConstructorServices()->nullableServiceInjector(),

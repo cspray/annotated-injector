@@ -164,7 +164,19 @@ SHELL;
             throw ComposerConfigurationNotFound::fromMissingComposerJson();
         }
 
-        $composer = json_decode($this->filesystem->read($composerFile), true);
+
+        // Normally we'd want to test that this is what we expect. However, if you have a composer.json file we
+        // expect it to adhere to the composer.json schema and this is how the relevant pieces of autoloading work.
+        // Testing that this piece is formatted correctly is a waste. It is covered by Composer's spec and how
+        // Composer autoloading works. If you've messed up this portion of your composer.json chances are this code
+        // will never run in the first place.
+        /**
+         * @var array{
+         *     autoload?: array{"psr-0"?: list<non-empty-string>, "psr-4"?: list<non-empty-string>},
+         *     "autoload-dev"?: array{"psr-0"?: list<non-empty-string>, "psr-4"?: list<non-empty-string>}
+         * } $composer
+         */
+        $composer = json_decode($this->filesystem->read($composerFile), associative: true, flags: JSON_THROW_ON_ERROR);
 
         $this->generateAndSaveConfiguration($input, $composer, $configFile);
 
@@ -193,36 +205,44 @@ SHELL;
     }
 
     /**
+     * @param array{
+     *      autoload?: array{"psr-4"?: list<non-empty-string>, "psr-0"?: list<non-empty-string>},
+     *      "autoload-dev"?: array{"psr-4"?: list<non-empty-string>, "psr-0"?: list<non-empty-string>}
+     *  } $composer
      * @return list<string>
      */
     private function getComposerDirectories(array $composer) : array {
-        $autoloadPsr4 = $composer['autoload']['psr-4'] ?? [];
-        $autoloadPsr0 = $composer['autoload']['psr-0'] ?? [];
-        $autoloadDevPsr4 = $composer['autoload-dev']['psr-4'] ?? [];
-        $autoloadDevPsr0 = $composer['autoload-dev']['psr-0'] ?? [];
-
-        $composerDirs = [
-            ...$autoloadPsr0,
-            ...$autoloadPsr4,
-        ];
-        $composerDevDirs = [
-            ...$autoloadDevPsr0,
-            ...$autoloadDevPsr4,
-        ];
+        $normalizedData = $this->normalizedComposerJson($composer);
 
         $dirs = [];
+        $composerDirectories = [
+            ...$normalizedData['autoload']['psr-0'],
+            ...$normalizedData['autoload']['psr-4'],
+            ...$normalizedData['autoload-dev']['psr-0'],
+            ...$normalizedData['autoload-dev']['psr-4'],
+        ];
 
-        foreach (new RecursiveIteratorIterator(new RecursiveArrayIterator($composerDirs)) as $composerDir) {
-            $dirs[] = (string) $composerDir;
-        }
-
-        foreach (new RecursiveIteratorIterator(new RecursiveArrayIterator($composerDevDirs)) as $composerDevDir) {
-            $dirs[] = (string) $composerDevDir;
+        /**
+         * @var non-empty-string $composerDir
+         */
+        foreach (new RecursiveIteratorIterator(new RecursiveArrayIterator($composerDirectories)) as $composerDir) {
+            $dirs[] = $composerDir;
         }
 
         return $dirs;
     }
 
+    /**
+     * @param Input $input
+     * @param array{
+     *      autoload?: array{"psr-4"?: list<non-empty-string>, "psr-0"?: list<non-empty-string>},
+     *      "autoload-dev"?: array{"psr-4"?: list<non-empty-string>, "psr-0"?: list<non-empty-string>}
+     *  } $composer
+     * @param string $configFile
+     * @return void
+     * @throws ComposerAutoloadNotFound
+     * @throws DOMException
+     */
     private function generateAndSaveConfiguration(Input $input, array $composer, string $configFile) : void {
         $composerDirectories = $this->getComposerDirectories($composer);
         if ($composerDirectories === []) {
@@ -253,11 +273,14 @@ SHELL;
             );
         }
 
-        /** @var string|array|null $parameterStores */
-        $parameterStores = $input->option('parameter-store');
-        if ($parameterStores !== null) {
-            $parameterStores = is_string($parameterStores) ? [$parameterStores] : $parameterStores;
+        $parameterStoresInput = $input->option('parameter-store');
+        if ($parameterStoresInput !== null) {
+            $parameterStores = is_string($parameterStoresInput) ? [$parameterStoresInput] : $parameterStoresInput;
             $parameterStoresNode = $root->appendChild($dom->createElementNS(self::XML_SCHEMA, 'parameterStores'));
+
+            assert(is_array($parameterStores));
+
+            /** @var non-empty-string $parameterStore */
             foreach ($parameterStores as $parameterStore) {
                 $parameterStoresNode->appendChild($dom->createElementNS(self::XML_SCHEMA, 'parameterStore', $parameterStore));
             }
@@ -297,5 +320,39 @@ SHELL;
         $schemaPath = dirname(__DIR__, 3) . '/annotated-container.xsd';
         $dom->schemaValidate($schemaPath);
         $this->filesystem->write($configFile, $dom->saveXML());
+    }
+
+    /**
+     * @param array{
+     *     autoload?: array{"psr-4"?: list<non-empty-string>, "psr-0"?: list<non-empty-string>},
+     *     "autoload-dev"?: array{"psr-4"?: list<non-empty-string>, "psr-0"?: list<non-empty-string>}
+     * } $composer
+     * @return array{
+     *      autoload: array{"psr-4": list<non-empty-string>, "psr-0": list<non-empty-string>},
+     *     "autoload-dev": array{"psr-4": list<non-empty-string>, "psr-0": list<non-empty-string>}
+     *  }
+     */
+    private function normalizedComposerJson(array $composer) : array {
+        /**
+         * @var array{
+         *      autoload: array{"psr-4": list<non-empty-string>, "psr-0": list<non-empty-string>},
+         *      "autoload-dev": array{"psr-4": list<non-empty-string>, "psr-0": list<non-empty-string>}
+         *  } $normalized
+         */
+        $normalized = array_merge_recursive(
+            [
+                'autoload' => [
+                    'psr-4' => [],
+                    'psr-0' => []
+                ],
+                'autoload-dev' => [
+                    'psr-4' => [],
+                    'psr-0' => []
+                ]
+            ],
+            $composer
+        );
+
+        return $normalized;
     }
 }

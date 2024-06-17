@@ -15,7 +15,7 @@ class InjectNullableServiceMethodParamTest extends AnnotatedTargetDefinitionConv
     protected function getSubjectTarget(): AnnotatedTarget {
         return $this->getAnnotatedTarget(
             AttributeType::Inject,
-            new \ReflectionParameter([Fixtures::injectServiceConstructorServices()->nullableServiceInjector()->getName(), '__construct'], 'maybeFoo')
+            new \ReflectionParameter([Fixtures::injectServiceConstructorServices()->nullableServiceInjector()->name(), '__construct'], 'maybeFoo')
         );
     }
 

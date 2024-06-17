@@ -47,9 +47,9 @@ final class MultiplePrimaryForAbstractServiceTest extends LogicalConstraintTestC
         self::assertCount(1, $violations);
 
         $violation = $violations->get(0);
-        $abstractService = LogicalConstraintFixtures::multiplePrimaryService()->fooInterface()->getName();
-        $fooService = LogicalConstraintFixtures::multiplePrimaryService()->fooService()->getName();
-        $barService = LogicalConstraintFixtures::multiplePrimaryService()->barService()->getName();
+        $abstractService = LogicalConstraintFixtures::multiplePrimaryService()->fooInterface()->name();
+        $fooService = LogicalConstraintFixtures::multiplePrimaryService()->fooService()->name();
+        $barService = LogicalConstraintFixtures::multiplePrimaryService()->barService()->name();
 
         $expected = <<<TEXT
 The abstract service "$abstractService" has multiple concrete services marked primary!

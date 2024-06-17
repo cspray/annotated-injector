@@ -15,7 +15,7 @@ namespace Cspray\AnnotatedContainer\Autowire;
 interface AutowireableParameter {
 
     /**
-     * @return string The name of the parameter the value should be injected into
+     * @return non-empty-string The name of the parameter the value should be injected into
      */
     public function name() : string;
 

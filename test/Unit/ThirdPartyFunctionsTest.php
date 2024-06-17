@@ -66,8 +66,8 @@ class ThirdPartyFunctionsTest extends TestCase {
         $service = Fixtures::delegatedService()->serviceInterface();
         $serviceDelegateDefinition = serviceDelegate($service, Fixtures::delegatedService()->serviceFactory(), 'createService');
 
-        $this->assertSame(Fixtures::delegatedService()->serviceInterface()->getName(), $serviceDelegateDefinition->serviceType()->getName());
-        $this->assertSame(Fixtures::delegatedService()->serviceFactory()->getName(), $serviceDelegateDefinition->delegateType()->getName());
+        $this->assertSame(Fixtures::delegatedService()->serviceInterface()->name(), $serviceDelegateDefinition->serviceType()->name());
+        $this->assertSame(Fixtures::delegatedService()->serviceFactory()->name(), $serviceDelegateDefinition->delegateType()->name());
         $this->assertSame('createService', $serviceDelegateDefinition->delegateMethod());
     }
 
@@ -75,7 +75,7 @@ class ThirdPartyFunctionsTest extends TestCase {
         $servicePrepareDefinition = servicePrepare(Fixtures::interfacePrepareServices()->fooInterface(), 'setBar');
 
         $this->assertServicePrepareTypes([
-            [Fixtures::interfacePrepareServices()->fooInterface()->getName(), 'setBar']
+            [Fixtures::interfacePrepareServices()->fooInterface()->name(), 'setBar']
         ], [$servicePrepareDefinition]);
     }
 

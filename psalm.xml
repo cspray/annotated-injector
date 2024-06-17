@@ -7,7 +7,6 @@
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
     findUnusedBaselineEntry="true"
     findUnusedCode="false"
-    errorBaseline="known-issues.xml"
 >
     <projectFiles>
         <directory name="src" />
@@ -19,10 +18,17 @@
     <plugins>
         <pluginClass class="Cspray\Phinal\Plugin" />
     </plugins>
+    
+    <stubs>
+        <file name="stubs.php"/>
+    </stubs>
 
     <issueHandlers>
         <PropertyNotSetInConstructor>
+            <!-- We expect these properties not to be set in constructor as part of the Builder pattern -->
+            <!-- The property potentially being set or not is handled at runtime -->
             <errorLevel type="suppress">
+                <file name="src/ContainerFactory/ContainerFactoryOptionsBuilder.php" />
                 <file name="src/Definition/AliasDefinitionBuilder.php" />
                 <file name="src/Definition/ContainerDefinitionBuilder.php" />
                 <file name="src/Definition/InjectDefinitionBuilder.php" />
@@ -31,6 +37,13 @@
                 <file name="src/Definition/ServicePrepareDefinitionBuilder.php" />
             </errorLevel>
         </PropertyNotSetInConstructor>
+
+        <MissingTemplateParam>
+            <errorLevel type="suppress">
+                <!-- This anonymous class is 100% documented with the appropriate template param but it is not getting picked up properly -->
+                <file name="src/Bootstrap/ServiceWiringListener.php" />
+            </errorLevel>
+        </MissingTemplateParam>
     </issueHandlers>
 
 </psalm>

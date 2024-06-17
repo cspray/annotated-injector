@@ -17,7 +17,7 @@ class InjectScalarTypeUnionMethodParamTest extends AnnotatedTargetDefinitionConv
     protected function getSubjectTarget(): AnnotatedTarget {
         return $this->getAnnotatedTarget(
             AttributeType::Inject,
-            new \ReflectionParameter([Fixtures::injectConstructorServices()->injectTypeUnionService()->getName(), '__construct'], 'value')
+            new \ReflectionParameter([Fixtures::injectConstructorServices()->injectTypeUnionService()->name(), '__construct'], 'value')
         );
     }
 

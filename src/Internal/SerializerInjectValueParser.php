@@ -25,10 +25,15 @@ use function Cspray\Typiphy\voidType;
  */
 final class SerializerInjectValueParser {
 
+    /**
+     * @param non-empty-string|class-string $rawType
+     * @return Type|TypeUnion|TypeIntersect
+     */
     public function convertStringToType(string $rawType) : Type|TypeUnion|TypeIntersect {
         if (str_contains($rawType, '|')) {
             $types = [];
             foreach (explode('|', $rawType) as $unionType) {
+                assert($unionType !== '');
                 $types[] = $this->convertStringToType($unionType);
             }
             /** @psalm-var non-empty-list<Type> $types */
@@ -36,6 +41,7 @@ final class SerializerInjectValueParser {
         } elseif (str_contains($rawType, '&')) {
             $types = [];
             foreach (explode('&', $rawType) as $intersectType) {
+                assert(class_exists($intersectType));
                 $parsedType = $this->convertStringToType($intersectType);
                 assert($parsedType instanceof ObjectType);
                 $types[] = $parsedType;
@@ -53,8 +59,13 @@ final class SerializerInjectValueParser {
                 'null', 'NULL' => nullType(),
                 'void' => voidType(),
                 'callable' => callableType(),
-                default => objectType($rawType)
+                default => null
             };
+
+            if ($type === null) {
+                assert(class_exists($rawType));
+                $type = objectType($rawType);
+            }
         }
 
         return $type;
