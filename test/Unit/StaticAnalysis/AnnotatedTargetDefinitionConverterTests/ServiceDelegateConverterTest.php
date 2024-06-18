@@ -13,7 +13,7 @@ class ServiceDelegateConverterTest extends AnnotatedTargetDefinitionConverterTes
 
     protected function getSubjectTarget(): AnnotatedTarget {
         return $this->getAnnotatedTarget(AttributeType::ServiceDelegate, new ReflectionMethod(
-            Fixtures::delegatedService()->serviceFactory()->getName(),
+            Fixtures::delegatedService()->serviceFactory()->name(),
             'createService'
         ));
     }

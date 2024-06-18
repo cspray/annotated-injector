@@ -63,23 +63,30 @@ function autowiredParams(AutowireableParameter...$parameters) : AutowireablePara
  * Specify a parameter on a method, by $name, to have a service injected from the Container; if the $objectType is an
  * abstract service its concrete alias will be resolved and used.
  *
- * @param string $name
+ * @param non-empty-string $name
  * @param ObjectType $service
  * @return AutowireableParameter
  * @throws InvalidAutowireParameter
  */
 function serviceParam(string $name, ObjectType $service) : AutowireableParameter {
     if (empty($name)) {
-        throw InvalidAutowireParameter::fromParameterWithMissingValue();
+        throw InvalidAutowireParameter::fromParameterWithMissingName();
     }
     return new class($name, $service) implements AutowireableParameter {
 
+        /**
+         * @param non-empty-string $name
+         * @param ObjectType $value
+         */
         public function __construct(
             private readonly string $name,
             private readonly ObjectType $value
         ) {
         }
 
+        /**
+         * @return non-empty-string
+         */
         public function name() : string {
             return $this->name;
         }
@@ -98,7 +105,7 @@ function serviceParam(string $name, ObjectType $service) : AutowireableParameter
  * Inject a parameter on a method, by $name, to have a value injected directly; whatever is passed to $value will be
  * passed to the parameter.
  *
- * @param string $name
+ * @param non-empty-string $name
  * @return AutowireableParameter
  * @throws InvalidAutowireParameter
  */
@@ -108,12 +115,19 @@ function rawParam(string $name, mixed $value) : AutowireableParameter {
     }
     return new class($name, $value) implements AutowireableParameter {
 
+        /**
+         * @param non-empty-string $name
+         * @param mixed $value
+         */
         public function __construct(
             private readonly string $name,
             private readonly mixed $value
         ) {
         }
 
+        /**
+         * @return non-empty-string
+         */
         public function name() : string {
             return $this->name;
         }

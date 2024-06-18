@@ -13,7 +13,7 @@ use function Cspray\Typiphy\objectType;
 class SingleConcreteServiceConverterTest extends AnnotatedTargetDefinitionConverterTestCase {
 
     private function getClass() : string {
-        return Fixtures::singleConcreteService()->fooImplementation()->getName();
+        return Fixtures::singleConcreteService()->fooImplementation()->name();
     }
 
     protected function getSubjectTarget(): AnnotatedTarget {

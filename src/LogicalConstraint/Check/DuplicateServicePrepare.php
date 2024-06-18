@@ -20,7 +20,7 @@ final class DuplicateServicePrepare implements LogicalConstraint {
         foreach ($containerDefinition->servicePrepareDefinitions() as $prepareDefinition) {
             $classMethod = sprintf(
                 '%s::%s',
-                $prepareDefinition->service()->getName(),
+                $prepareDefinition->service()->name(),
                 $prepareDefinition->methodName()
             );
 

@@ -49,8 +49,8 @@ trait ContainerDefinitionAssertionsTrait /** extends \PHPUnit\TestCase */ {
         foreach ($aliasDefinitions as $aliasDefinition) {
             $this->assertInstanceOf(AliasDefinition::class, $aliasDefinition);
             $actualMap[] = [
-                $aliasDefinition->abstractService()->getName(),
-                $aliasDefinition->concreteService()->getName()
+                $aliasDefinition->abstractService()->name(),
+                $aliasDefinition->concreteService()->name()
             ];
         }
 
@@ -67,7 +67,7 @@ trait ContainerDefinitionAssertionsTrait /** extends \PHPUnit\TestCase */ {
         $actualMap = [];
         foreach ($servicePrepareDefinitions as $servicePrepareDefinition) {
             $this->assertInstanceOf(ServicePrepareDefinition::class, $servicePrepareDefinition);
-            $key = $servicePrepareDefinition->service()->getName();
+            $key = $servicePrepareDefinition->service()->name();
             $actualMap[] = [$key, $servicePrepareDefinition->methodName()];
         }
 
@@ -83,7 +83,7 @@ trait ContainerDefinitionAssertionsTrait /** extends \PHPUnit\TestCase */ {
      */
     protected function getServiceDefinition(array $serviceDefinitions, string $serviceDefinitionType) : ?ServiceDefinition {
         foreach ($serviceDefinitions as $serviceDefinition) {
-            if ($serviceDefinitionType === $serviceDefinition->type()->getName()) {
+            if ($serviceDefinitionType === $serviceDefinition->type()->name()) {
                 return $serviceDefinition;
             }
         }

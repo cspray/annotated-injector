@@ -28,18 +28,17 @@ final class AurynContainerFactoryState implements ContainerFactoryState {
 
 
     /**
-     * @param class-string $class
+     * @template T
+     * @param class-string<T> $class
      * @param non-empty-string $method
      * @param non-empty-string $param
-     * @return void
-     * @throws \Auryn\InjectionException
      */
     public function addMethodInject(string $class, string $method, string $param, mixed $value) : void {
         if ($value instanceof ContainerReference) {
             $key = $param;
             $nameType = $this->typeForName($value->name);
             if ($nameType !== null) {
-                $value = $nameType->getName();
+                $value = $nameType->name();
             } else {
                 $value = $value->name;
             }
@@ -47,16 +46,18 @@ final class AurynContainerFactoryState implements ContainerFactoryState {
             $key = '+' . $param;
             $values = [];
             foreach ($this->containerDefinition->serviceDefinitions() as $serviceDefinition) {
-                if ($serviceDefinition->isAbstract() || $serviceDefinition->type()->getName() === $class) {
+                if ($serviceDefinition->isAbstract() || $serviceDefinition->type()->name() === $class) {
                     continue;
                 }
 
-                if (is_a($serviceDefinition->type()->getName(), $value->valueType->getName(), true)) {
-                    $values[] = $this->injector->make($serviceDefinition->type()->getName());
+                if (is_a($serviceDefinition->type()->name(), $value->valueType->name(), true)) {
+                    /** @var T $objectValue */
+                    $objectValue = $this->injector->make($serviceDefinition->type()->name());
+                    $values[] = $objectValue;
                 }
             }
 
-            $value = static fn() => $value->listOf->toCollection($values);
+            $value = static fn() : mixed => $value->listOf->toCollection($values);
         } else {
             $key = ':' . $param;
         }

@@ -131,8 +131,8 @@ TEXT;
 
     public function testHandleWithConfigurationFilePresentShowsLogicalConstraints() : void {
         $banner = str_repeat('*', 80);
-        $barService = LogicalConstraintFixtures::duplicateServiceName()->getBarService()->getName();
-        $fooService = LogicalConstraintFixtures::duplicateServiceName()->getFooService()->getName();
+        $barService = LogicalConstraintFixtures::duplicateServiceName()->getBarService()->name();
+        $fooService = LogicalConstraintFixtures::duplicateServiceName()->getFooService()->name();
         $configClass = $this->bootstrappingConfiguration::class;
         $expected = <<<TEXT
 Annotated Container Validation
@@ -164,7 +164,7 @@ TEXT;
 
     public function testViolationWithWarningHasCorrectColorEncoded() : void {
         $banner = str_repeat('*', 80);
-        $service = LogicalConstraintFixtures::duplicateServiceType()->fooService()->getName();
+        $service = LogicalConstraintFixtures::duplicateServiceType()->fooService()->name();
         $serviceAttr = Service::class;
         $dummyAttr = DummyService::class;
         $configClass = $this->bootstrappingConfiguration::class;

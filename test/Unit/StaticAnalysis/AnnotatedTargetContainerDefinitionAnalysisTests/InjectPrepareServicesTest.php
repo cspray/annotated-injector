@@ -58,7 +58,7 @@ class InjectPrepareServicesTest extends AnnotatedTargetContainerDefinitionAnalyz
                 'setVals',
                 'service',
                 Fixtures::injectPrepareServices()->fooInterface(),
-                Fixtures::injectPrepareServices()->barImplementation()->getName()
+                Fixtures::injectPrepareServices()->barImplementation()->name()
             )],
             [ExpectedInject::forMethodParam(
                 Fixtures::injectPrepareServices()->serviceScalarUnionPrepareInjector(),

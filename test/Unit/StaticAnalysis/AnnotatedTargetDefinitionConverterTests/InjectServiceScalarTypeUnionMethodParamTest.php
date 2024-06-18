@@ -15,7 +15,7 @@ class InjectServiceScalarTypeUnionMethodParamTest extends AnnotatedTargetDefinit
     protected function getSubjectTarget(): AnnotatedTarget {
         return $this->getAnnotatedTarget(
             AttributeType::Inject,
-            new \ReflectionParameter([Fixtures::injectPrepareServices()->serviceScalarUnionPrepareInjector()->getName(), 'setValue'], 'val')
+            new \ReflectionParameter([Fixtures::injectPrepareServices()->serviceScalarUnionPrepareInjector()->name(), 'setValue'], 'val')
         );
     }
 

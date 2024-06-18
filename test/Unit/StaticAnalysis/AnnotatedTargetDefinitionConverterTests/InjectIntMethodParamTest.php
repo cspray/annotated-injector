@@ -15,7 +15,7 @@ class InjectIntMethodParamTest extends AnnotatedTargetDefinitionConverterTestCas
         return $this->getAnnotatedTarget(
             AttributeType::Inject,
             new \ReflectionParameter(
-                [Fixtures::injectConstructorServices()->injectIntService()->getName(), '__construct'],
+                [Fixtures::injectConstructorServices()->injectIntService()->name(), '__construct'],
                 'meaningOfLife'
             )
         );

@@ -38,16 +38,22 @@
 
   <xs:complexType name="scanDirectoriesType">
     <xs:all>
-      <xs:element name="source" type="sourceDirsType" minOccurs="1" maxOccurs="1" />
+      <xs:element name="source" type="sourceDirectoriesListType" minOccurs="1" maxOccurs="1" />
       <xs:element name="vendor" type="vendorPackagesType" minOccurs="0" maxOccurs="1" />
     </xs:all>
   </xs:complexType>
 
-  <xs:complexType name="sourceDirsType">
+  <xs:complexType name="sourceDirectoriesListType">
     <xs:sequence minOccurs="1" maxOccurs="unbounded">
-      <xs:element name="dir" type="xs:token"/>
+      <xs:element name="dir" type="sourceDirectoryType"/>
     </xs:sequence>
   </xs:complexType>
+
+  <xs:simpleType name="sourceDirectoryType">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1" />
+    </xs:restriction>
+  </xs:simpleType>
 
   <xs:complexType name="vendorPackagesType">
     <xs:sequence minOccurs="0" maxOccurs="unbounded">

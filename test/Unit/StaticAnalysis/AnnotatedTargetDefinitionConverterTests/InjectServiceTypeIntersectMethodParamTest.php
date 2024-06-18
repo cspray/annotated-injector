@@ -14,7 +14,7 @@ class InjectServiceTypeIntersectMethodParamTest extends AnnotatedTargetDefinitio
     protected function getSubjectTarget(): AnnotatedTarget {
         return $this->getAnnotatedTarget(
             AttributeType::Inject,
-            new \ReflectionParameter([Fixtures::injectServiceIntersectConstructorServices()->fooBarConsumer()->getName(), '__construct'], 'fooBar')
+            new \ReflectionParameter([Fixtures::injectServiceIntersectConstructorServices()->fooBarConsumer()->name(), '__construct'], 'fooBar')
         );
     }
 
@@ -42,7 +42,7 @@ class InjectServiceTypeIntersectMethodParamTest extends AnnotatedTargetDefinitio
     }
 
     public function testGetValue() {
-        $this->assertSame(Fixtures::injectServiceIntersectConstructorServices()->fooBarImplementation()->getName(), $this->definition->value());
+        $this->assertSame(Fixtures::injectServiceIntersectConstructorServices()->fooBarImplementation()->name(), $this->definition->value());
     }
 
     public function testGetStore() {
@@ -55,6 +55,6 @@ class InjectServiceTypeIntersectMethodParamTest extends AnnotatedTargetDefinitio
 
     public function testGetAttribute() {
         self::assertInstanceOf(Inject::class, $this->definition->attribute());
-        self::assertSame(Fixtures::injectServiceIntersectConstructorServices()->fooBarImplementation()->getName(), $this->definition->attribute()->value());
+        self::assertSame(Fixtures::injectServiceIntersectConstructorServices()->fooBarImplementation()->name(), $this->definition->attribute()->value());
     }
 }

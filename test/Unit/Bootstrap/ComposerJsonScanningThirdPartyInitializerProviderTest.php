@@ -166,4 +166,143 @@ class ComposerJsonScanningThirdPartyInitializerProviderTest extends TestCase {
             $composerJsonProvider
         );
     }
+
+    public function testHandleComposerJsonExtraNotArray() : void {
+        $composerJsonProvider = $this->createMock(PackagesComposerJsonPathProvider::class);
+        $composerJsonProvider->expects($this->once())
+            ->method('composerJsonPaths')
+            ->willReturn([
+                '/path/to/vendor/package/composer.json'
+            ]);
+
+        $filesystem = $this->createMock(Filesystem::class);
+        $filesystem->expects($this->once())
+            ->method('read')
+            ->with('/path/to/vendor/package/composer.json')
+            ->willReturn(json_encode([
+                'name' => 'cspray/package',
+                'extra' => 'not an array',
+            ]));
+
+        $provider = new ComposerJsonScanningThirdPartyInitializerProvider(
+            $filesystem,
+            $composerJsonProvider
+        );
+
+        self::assertSame([], $provider->thirdPartyInitializers());
+    }
+
+    public function testHandleComposerJsonExtraWithNoAnnotatedContainerKey() : void {
+        $composerJsonProvider = $this->createMock(PackagesComposerJsonPathProvider::class);
+        $composerJsonProvider->expects($this->once())
+            ->method('composerJsonPaths')
+            ->willReturn([
+                '/path/to/vendor/package/composer.json'
+            ]);
+
+        $filesystem = $this->createMock(Filesystem::class);
+        $filesystem->expects($this->once())
+            ->method('read')
+            ->with('/path/to/vendor/package/composer.json')
+            ->willReturn(json_encode([
+                'name' => 'cspray/package',
+                'extra' => [],
+            ]));
+
+        $provider = new ComposerJsonScanningThirdPartyInitializerProvider(
+            $filesystem,
+            $composerJsonProvider
+        );
+
+        self::assertSame([], $provider->thirdPartyInitializers());
+    }
+
+    public function testComposerJsonExtraWithAnnotatedContainerKeyNotArrayThrowsException() : void {
+        $composerJsonProvider = $this->createMock(PackagesComposerJsonPathProvider::class);
+        $composerJsonProvider->expects($this->once())
+            ->method('composerJsonPaths')
+            ->willReturn([
+                '/path/to/vendor/package/composer.json'
+            ]);
+
+        $filesystem = $this->createMock(Filesystem::class);
+        $filesystem->expects($this->once())
+            ->method('read')
+            ->with('/path/to/vendor/package/composer.json')
+            ->willReturn(json_encode([
+                'name' => 'cspray/package',
+                'extra' => [
+                    '$annotatedContainer' => 'not an array'
+                ],
+            ]));
+
+
+        $this->expectException(InvalidThirdPartyInitializer::class);
+        $this->expectExceptionMessage('The value listed in composer.json extra.$annotatedContainer MUST be an array.');
+
+        new ComposerJsonScanningThirdPartyInitializerProvider(
+            $filesystem,
+            $composerJsonProvider
+        );
+    }
+
+    public function testComposerJsonExtraWithAnnotatedContainerKeyArrayHasNoInitializers() : void {
+        $composerJsonProvider = $this->createMock(PackagesComposerJsonPathProvider::class);
+        $composerJsonProvider->expects($this->once())
+            ->method('composerJsonPaths')
+            ->willReturn([
+                '/path/to/vendor/package/composer.json'
+            ]);
+
+        $filesystem = $this->createMock(Filesystem::class);
+        $filesystem->expects($this->once())
+            ->method('read')
+            ->with('/path/to/vendor/package/composer.json')
+            ->willReturn(json_encode([
+                'name' => 'cspray/package',
+                'extra' => [
+                    '$annotatedContainer' => []
+                ],
+            ]));
+
+
+        $this->expectException(InvalidThirdPartyInitializer::class);
+        $this->expectExceptionMessage('The value listed in composer.json extra.$annotatedContainer MUST have a key "initializers" that holds a list of ThirdPartyInitializers to use.');
+
+        new ComposerJsonScanningThirdPartyInitializerProvider(
+            $filesystem,
+            $composerJsonProvider
+        );
+    }
+
+    public function testComposerJsonExtraWithAnnotatedContainerKeyArrayHasInitializersNotArray() : void {
+        $composerJsonProvider = $this->createMock(PackagesComposerJsonPathProvider::class);
+        $composerJsonProvider->expects($this->once())
+            ->method('composerJsonPaths')
+            ->willReturn([
+                '/path/to/vendor/package/composer.json'
+            ]);
+
+        $filesystem = $this->createMock(Filesystem::class);
+        $filesystem->expects($this->once())
+            ->method('read')
+            ->with('/path/to/vendor/package/composer.json')
+            ->willReturn(json_encode([
+                'name' => 'cspray/package',
+                'extra' => [
+                    '$annotatedContainer' => [
+                        'initializers' => false
+                    ]
+                ],
+            ]));
+
+
+        $this->expectException(InvalidThirdPartyInitializer::class);
+        $this->expectExceptionMessage('The value listed in composer.json extra.$annotatedContainer.initializers MUST be a list of ThirdPartyInitializers to use.');
+
+        new ComposerJsonScanningThirdPartyInitializerProvider(
+            $filesystem,
+            $composerJsonProvider
+        );
+    }
 }

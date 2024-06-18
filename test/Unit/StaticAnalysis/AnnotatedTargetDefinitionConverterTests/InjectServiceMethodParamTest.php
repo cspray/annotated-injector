@@ -13,7 +13,7 @@ class InjectServiceMethodParamTest extends AnnotatedTargetDefinitionConverterTes
     protected function getSubjectTarget(): AnnotatedTarget {
         return $this->getAnnotatedTarget(
             AttributeType::Inject,
-            new \ReflectionParameter([Fixtures::injectServiceConstructorServices()->serviceInjector()->getName(), '__construct'], 'foo')
+            new \ReflectionParameter([Fixtures::injectServiceConstructorServices()->serviceInjector()->name(), '__construct'], 'foo')
         );
     }
 
@@ -38,7 +38,7 @@ class InjectServiceMethodParamTest extends AnnotatedTargetDefinitionConverterTes
     }
 
     public function testGetValue() {
-        $this->assertSame(Fixtures::injectServiceConstructorServices()->fooImplementation()->getName(), $this->definition->value());
+        $this->assertSame(Fixtures::injectServiceConstructorServices()->fooImplementation()->name(), $this->definition->value());
     }
 
     public function testGetStore() {
@@ -51,6 +51,6 @@ class InjectServiceMethodParamTest extends AnnotatedTargetDefinitionConverterTes
 
     public function testGetAttribute() {
         self::assertInstanceOf(Inject::class, $this->definition->attribute());
-        self::assertSame(Fixtures::injectServiceConstructorServices()->fooImplementation()->getName(), $this->definition->attribute()->value());
+        self::assertSame(Fixtures::injectServiceConstructorServices()->fooImplementation()->name(), $this->definition->attribute()->value());
     }
 }

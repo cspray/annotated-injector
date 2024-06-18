@@ -15,7 +15,7 @@ class InjectFloatMethodParamTest extends AnnotatedTargetDefinitionConverterTestC
         return $this->getAnnotatedTarget(
             AttributeType::Inject,
             new \ReflectionParameter(
-                [Fixtures::injectConstructorServices()->injectFloatService()->getName(), '__construct'],
+                [Fixtures::injectConstructorServices()->injectFloatService()->name(), '__construct'],
                 'dessert'
             )
         );

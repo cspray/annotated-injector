@@ -12,7 +12,13 @@ use Cspray\Typiphy\TypeUnion;
 final class InjectDefinitionBuilder {
 
     private ObjectType $service;
+    /**
+     * @var non-empty-string|null
+     */
     private ?string $method = null;
+    /**
+     * @var non-empty-string|null
+     */
     private ?string $paramName = null;
     private Type|TypeUnion|TypeIntersect $type;
     private mixed $value;
@@ -23,6 +29,10 @@ final class InjectDefinitionBuilder {
      * @var list<non-empty-string>
      */
     private array $profiles = [];
+
+    /**
+     * @var non-empty-string|null
+     */
     private ?string $store = null;
 
     private function __construct() {
@@ -34,6 +44,12 @@ final class InjectDefinitionBuilder {
         return $instance;
     }
 
+    /**
+     * @param non-empty-string $method
+     * @param Type|TypeUnion|TypeIntersect $type
+     * @param non-empty-string $paramName
+     * @return $this
+     */
     public function withMethod(string $method, Type|TypeUnion|TypeIntersect $type, string $paramName) : self {
         $instance = clone $this;
         $instance->method = $method;
@@ -62,6 +78,10 @@ final class InjectDefinitionBuilder {
         return $instance;
     }
 
+    /**
+     * @param non-empty-string $storeName
+     * @return $this
+     */
     public function withStore(string $storeName) : self {
         $instance = clone $this;
         $instance->store = $storeName;
@@ -75,7 +95,7 @@ final class InjectDefinitionBuilder {
     }
 
     public function build() : InjectDefinition {
-        if (!isset($this->method)) {
+        if (!isset($this->method) || !isset($this->paramName)) {
             throw InvalidInjectDefinition::fromMissingMethod();
         } elseif (!$this->isValueCalled) {
             throw InvalidInjectDefinition::fromMissingValue();
@@ -90,7 +110,9 @@ final class InjectDefinitionBuilder {
 
             /**
              * @param Type|TypeUnion|TypeIntersect $type
-             * @param string|null $store
+             * @param non-empty-string $methodName
+             * @param non-empty-string $paramName
+             * @param non-empty-string|null $store
              * @param list<non-empty-string> $profiles
              */
             public function __construct(

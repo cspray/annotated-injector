@@ -40,7 +40,7 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
 
     protected function handleServiceDefinition(ContainerFactoryState $state, ServiceDefinition $definition) : void {
         assert($state instanceof AurynContainerFactoryState);
-        $state->injector->share($definition->type()->getName());
+        $state->injector->share($definition->type()->name());
         $name = $definition->name();
         if ($name !== null) {
             $state->addNameType($name, $definition->type());
@@ -52,36 +52,37 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
         $alias = $resolution->aliasDefinition();
         if ($alias !== null) {
             $state->injector->alias(
-                $alias->abstractService()->getName(),
-                $alias->concreteService()->getName()
+                $alias->abstractService()->name(),
+                $alias->concreteService()->name()
             );
         }
     }
 
     protected function handleServiceDelegateDefinition(ContainerFactoryState $state, ServiceDelegateDefinition $definition) : void {
         assert($state instanceof AurynContainerFactoryState);
-        $delegateType = $definition->delegateType()->getName();
+        $delegateType = $definition->delegateType()->name();
         $delegateMethod = $definition->delegateMethod();
 
         $parameters = $state->parametersForMethod($delegateType, $delegateMethod);
         $state->injector->delegate(
-            $definition->serviceType()->getName(),
+            $definition->serviceType()->name(),
             static fn() : mixed => $state->injector->execute([$delegateType, $delegateMethod], $parameters)
         );
     }
 
     protected function handleServicePrepareDefinition(ContainerFactoryState $state, ServicePrepareDefinition $definition) : void {
         assert($state instanceof AurynContainerFactoryState);
-        $serviceType = $definition->service()->getName();
+        $serviceType = $definition->service()->name();
 
         $state->addServicePrepare($serviceType, $definition->methodName());
     }
 
     protected function handleInjectDefinition(ContainerFactoryState $state, InjectDefinition $definition) : void {
         assert($state instanceof AurynContainerFactoryState);
-        $injectTargetType = $definition->class()->getName();
+        $injectTargetType = $definition->class()->name();
         $method = $definition->methodName();
         $parameterName = $definition->parameterName();
+        /** @var mixed $value */
         $value = $this->injectDefinitionValue($definition);
 
         $state->addMethodInject($injectTargetType, $method, $parameterName, $value);
@@ -96,10 +97,6 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
             }
         }
 
-        /**
-         * @var class-string $serviceType
-         * @var list<string> $methods
-         */
         foreach ($state->servicePrepares() as $serviceType => $methods) {
             $state->injector->prepare(
                 $serviceType,
@@ -123,23 +120,35 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
                 $state->injector->delegate(Profiles::class, fn() => $activeProfiles);
             }
 
+            /**
+             * @template T
+             * @param class-string<T>|non-empty-string $id
+             * @return ($id is class-string<T> ? T : mixed)
+             */
             public function get(string $id) {
                 try {
                     if (!$this->has($id)) {
                         throw ServiceNotFound::fromServiceNotInContainer($id);
                     }
 
+                    assert($id !== '');
+
                     $namedType = $this->state->typeForName($id);
                     if ($namedType !== null) {
-                        $id = $namedType->getName();
+                        $id = $namedType->name();
                     }
-                    return $this->state->injector->make($id);
+
+                    /** @var T|mixed $value */
+                    $value = $this->state->injector->make($id);
+                    return $value;
                 } catch (InjectionException $injectionException) {
                     throw ContainerException::fromCaughtThrowable($injectionException);
                 }
             }
 
             public function has(string $id): bool {
+                assert($id !== '');
+
                 $namedType = $this->state->typeForName($id);
                 if ($namedType !== null) {
                     return true;
@@ -152,11 +161,19 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
                 return $anyDefined > 0;
             }
 
+            /**
+             * @template T of object
+             * @psalm-param class-string<T> $classType
+             * @psalm-return T
+             */
             public function make(string $classType, AutowireableParameterSet $parameters = null) : object {
-                return $this->state->injector->make(
+                /** @var T $object */
+                $object = $this->state->injector->make(
                     $classType,
                     $this->convertAutowireableParameterSet($parameters)
                 );
+
+                return $object;
             }
 
             public function backingContainer() : Injector {
@@ -171,12 +188,25 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
             }
 
             private function convertAutowireableParameterSet(AutowireableParameterSet $parameters = null) : array {
+                /** @var array<non-empty-string, mixed> $params */
                 $params = [];
                 if (!is_null($parameters)) {
                     /** @var AutowireableParameter $parameter */
                     foreach ($parameters as $parameter) {
-                        $name = $parameter->isServiceIdentifier() ? $parameter->name() : ':' . $parameter->name();
-                        $params[$name] = $parameter->isServiceIdentifier() ? $parameter->value()->getName() : $parameter->value();
+                        if ($parameter->isServiceIdentifier()) {
+                            $parameterValue = $parameter->value();
+                            assert($parameterValue instanceof ObjectType);
+
+                            /** @var non-empty-string $value */
+                            $value = $parameterValue->name();
+                            $name = $parameter->name();
+                        } else {
+                            /** @var mixed $value */
+                            $value = $parameter->value();
+                            $name = ':' . $parameter->name();
+                        }
+
+                        $params[$name] = $value;
                     }
                 }
                 return $params;

@@ -104,6 +104,9 @@ abstract class AbstractContainerFactory implements ContainerFactory {
             if ($parameterStore === null) {
                 throw ParameterStoreNotFound::fromParameterStoreNotAddedToContainerFactory($store);
             }
+            assert(is_string($value) && $value !== '');
+
+            /** @var mixed $value */
             $value = $parameterStore->fetch($definition->type(), $value);
         }
 
@@ -114,7 +117,8 @@ abstract class AbstractContainerFactory implements ContainerFactory {
                 $value->type(),
                 $type
             );
-        } elseif ($type instanceof ObjectType && !is_a($definition->type()->getName(), UnitEnum::class, true)) {
+        } elseif ($type instanceof ObjectType && !is_a($definition->type()->name(), UnitEnum::class, true)) {
+            assert(is_string($value) && $value !== '');
             $value = new ContainerReference($value, $type);
         }
 

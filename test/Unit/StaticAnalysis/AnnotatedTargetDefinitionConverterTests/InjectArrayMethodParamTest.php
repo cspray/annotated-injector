@@ -15,7 +15,7 @@ class InjectArrayMethodParamTest extends AnnotatedTargetDefinitionConverterTestC
         return $this->getAnnotatedTarget(
             AttributeType::Inject,
             new \ReflectionParameter(
-                [Fixtures::injectConstructorServices()->injectArrayService()->getName(), '__construct'],
+                [Fixtures::injectConstructorServices()->injectArrayService()->name(), '__construct'],
                 'values'
             )
         );

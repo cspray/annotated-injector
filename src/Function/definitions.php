@@ -29,7 +29,7 @@ use ReflectionException;
  * @throws ReflectionException
  */
 function service(ObjectType $type, ?string $name = null, array $profiles = [], bool $isPrimary = false) : ServiceDefinition {
-    $typeName = $type->getName();
+    $typeName = $type->name();
     $reflection = new ReflectionClass($typeName);
     $methodArgs = [$type];
     $method = $reflection->isAbstract() || $reflection->isInterface() ? 'forAbstract' : 'forConcrete';

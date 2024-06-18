@@ -113,7 +113,7 @@ class AnnotatedTargetContainerDefinitionAnalyzerTest extends TestCase {
 
         $serviceDef = $this->getServiceDefinition(
             $containerDef->serviceDefinitions(),
-            Fixtures::beanLikeConfigConcrete()->fooService()->getName()
+            Fixtures::beanLikeConfigConcrete()->fooService()->name()
         );
 
         self::assertNotNull($serviceDef);
@@ -130,7 +130,7 @@ class AnnotatedTargetContainerDefinitionAnalyzerTest extends TestCase {
 
         $serviceDef = $this->getServiceDefinition(
             $containerDef->serviceDefinitions(),
-            Fixtures::beanLikeConfigInterface()->fooInterface()->getName()
+            Fixtures::beanLikeConfigInterface()->fooInterface()->name()
         );
 
         self::assertNotNull($serviceDef);
@@ -147,7 +147,7 @@ class AnnotatedTargetContainerDefinitionAnalyzerTest extends TestCase {
 
         $serviceDef = $this->getServiceDefinition(
             $containerDef->serviceDefinitions(),
-            Fixtures::beanLikeConfigAbstract()->abstractFooService()->getName()
+            Fixtures::beanLikeConfigAbstract()->abstractFooService()->name()
         );
 
         self::assertNotNull($serviceDef);

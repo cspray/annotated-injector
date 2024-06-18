@@ -15,7 +15,7 @@ class InjectBoolMethodParamTest extends AnnotatedTargetDefinitionConverterTestCa
         return $this->getAnnotatedTarget(
             AttributeType::Inject,
             new \ReflectionParameter(
-                [Fixtures::injectConstructorServices()->injectBoolService()->getName(), '__construct'],
+                [Fixtures::injectConstructorServices()->injectBoolService()->name(), '__construct'],
                 'flag'
             )
         );

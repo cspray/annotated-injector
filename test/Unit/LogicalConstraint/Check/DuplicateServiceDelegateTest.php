@@ -49,8 +49,8 @@ final class DuplicateServiceDelegateTest extends LogicalConstraintTestCase {
         self::assertCount(1, $violations);
 
         $violation = $violations->get(0);
-        $fooService = LogicalConstraintFixtures::duplicateServiceDelegate()->fooService()->getName();
-        $factory = LogicalConstraintFixtures::duplicateServiceDelegate()->factory()->getName();
+        $fooService = LogicalConstraintFixtures::duplicateServiceDelegate()->fooService()->name();
+        $factory = LogicalConstraintFixtures::duplicateServiceDelegate()->factory()->name();
         $serviceDelegate = ServiceDelegate::class;
 
         $expected = <<<TEXT
@@ -93,8 +93,8 @@ TEXT;
 
         $violation = $violations->get(0);
 
-        $fooService = Fixtures::implicitServiceDelegateType()->fooService()->getName();
-        $factory = Fixtures::implicitServiceDelegateType()->fooServiceFactory()->getName();
+        $fooService = Fixtures::implicitServiceDelegateType()->fooService()->name();
+        $factory = Fixtures::implicitServiceDelegateType()->fooServiceFactory()->name();
         $serviceDelegate = ServiceDelegate::class;
 
         $expected = <<<TEXT

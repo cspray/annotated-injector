@@ -25,7 +25,7 @@ final class DuplicateServiceName implements LogicalConstraint {
             }
 
             $namedServiceMap[$name] ??= [];
-            $namedServiceMap[$name][] = $definition->type()->getName();
+            $namedServiceMap[$name][] = $definition->type()->name();
         }
 
         foreach ($namedServiceMap as $name => $services) {

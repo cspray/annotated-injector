@@ -14,7 +14,7 @@ class MultipleServicesWithPrimaryTest extends AnnotatedTargetDefinitionConverter
     protected function getSubjectTarget(): AnnotatedTarget {
         return $this->getAnnotatedTarget(
             AttributeType::Service,
-            new ReflectionClass(Fixtures::primaryAliasedServices()->fooImplementation()->getName())
+            new ReflectionClass(Fixtures::primaryAliasedServices()->fooImplementation()->name())
         );
     }
     public function testGetServiceDefinitionInstance() {

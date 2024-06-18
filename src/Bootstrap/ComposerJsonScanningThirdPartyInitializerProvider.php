@@ -36,8 +36,28 @@ final class ComposerJsonScanningThirdPartyInitializerProvider implements ThirdPa
                 512,
                 JSON_THROW_ON_ERROR
             );
+            assert(is_array($composerData));
 
-            $packageInitializers = $composerData['extra']['$annotatedContainer']['initializers'] ?? [];
+            $extra = $composerData['extra'] ?? null;
+            if (!is_array($extra) || !array_key_exists('$annotatedContainer', $extra)) {
+                return [];
+            }
+
+            $annotatedContainerExtra = $extra['$annotatedContainer'];
+
+            if (!is_array($annotatedContainerExtra)) {
+                throw InvalidThirdPartyInitializer::fromComposerExtraAnnotatedContainerConfigNotArray();
+            }
+
+            if (!array_key_exists('initializers', $annotatedContainerExtra)) {
+                throw InvalidThirdPartyInitializer::fromComposerExtraAnnotatedContainerConfigNoInitializers();
+            }
+
+            $packageInitializers = $annotatedContainerExtra['initializers'];
+            if (!is_array($packageInitializers)) {
+                throw InvalidThirdPartyInitializer::fromComposerExtraAnnotatedContainerConfigInitializersNotArray();
+            }
+
             foreach ($packageInitializers as $packageInitializer) {
                 if (!is_string($packageInitializer) || !class_exists($packageInitializer)) {
                     throw InvalidThirdPartyInitializer::fromConfiguredProviderNotClass(

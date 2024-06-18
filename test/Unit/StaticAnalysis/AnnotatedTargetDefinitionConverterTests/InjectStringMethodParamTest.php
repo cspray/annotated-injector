@@ -14,7 +14,7 @@ class InjectStringMethodParamTest extends AnnotatedTargetDefinitionConverterTest
     protected function getSubjectTarget(): AnnotatedTarget {
         return $this->getAnnotatedTarget(
             AttributeType::Inject,
-            new \ReflectionParameter([Fixtures::injectConstructorServices()->injectStringService()->getName(), '__construct'], 'val')
+            new \ReflectionParameter([Fixtures::injectConstructorServices()->injectStringService()->name(), '__construct'], 'val')
         );
     }
 

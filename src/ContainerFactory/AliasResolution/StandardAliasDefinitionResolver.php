@@ -19,7 +19,7 @@ final class StandardAliasDefinitionResolver implements AliasDefinitionResolver {
         } else {
             $aliases = [];
             foreach ($containerDefinition->aliasDefinitions() as $aliasDefinition) {
-                if ($aliasDefinition->abstractService()->getName() === $abstractService->getName()) {
+                if ($aliasDefinition->abstractService()->name() === $abstractService->name()) {
                     $aliases[] = $aliasDefinition;
                 }
             }
@@ -71,7 +71,7 @@ final class StandardAliasDefinitionResolver implements AliasDefinitionResolver {
 
     private function isServiceDelegate(ContainerDefinition $containerDefinition, ObjectType $service) : bool {
         foreach ($containerDefinition->serviceDelegateDefinitions() as $serviceDelegateDefinition) {
-            if ($serviceDelegateDefinition->serviceType()->getName() === $service->getName()) {
+            if ($serviceDelegateDefinition->serviceType()->name() === $service->name()) {
                 return true;
             }
         }

@@ -5,6 +5,7 @@ namespace Cspray\AnnotatedContainer\ContainerFactory;
 use Cspray\Typiphy\ObjectType;
 
 /**
+ * @template ServiceType of object
  * @template CollectionType
  */
 interface ListOf {
@@ -12,7 +13,7 @@ interface ListOf {
     public function type() : ObjectType;
 
     /**'
-     * @param list<object> $servicesOfType
+     * @psalm-param list<ServiceType> $servicesOfType
      * @return CollectionType
      */
     public function toCollection(array $servicesOfType) : mixed;

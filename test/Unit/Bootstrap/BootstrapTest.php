@@ -77,10 +77,10 @@ final class BootstrapTest extends TestCase {
         );
         $container = $bootstrap->bootstrapContainer();
 
-        $service = $container->get(Fixtures::singleConcreteService()->fooImplementation()->getName());
+        $service = $container->get(Fixtures::singleConcreteService()->fooImplementation()->name());
 
         self::assertInstanceOf(
-            Fixtures::singleConcreteService()->fooImplementation()->getName(),
+            Fixtures::singleConcreteService()->fooImplementation()->name(),
             $service
         );
     }
@@ -100,8 +100,8 @@ final class BootstrapTest extends TestCase {
         );
         $container = $bootstrap->bootstrapContainer();
 
-        $service = $container->get(Fixtures::thirdPartyServices()->fooInterface()->getName());
-        self::assertInstanceOf(Fixtures::thirdPartyServices()->fooImplementation()->getName(), $service);
+        $service = $container->get(Fixtures::thirdPartyServices()->fooInterface()->name());
+        self::assertInstanceOf(Fixtures::thirdPartyServices()->fooImplementation()->name(), $service);
     }
 
     public function testBootstrapWithParameterStores() : void {
@@ -119,8 +119,8 @@ final class BootstrapTest extends TestCase {
         );
         $container = $bootstrap->bootstrapContainer();
 
-        $service = $container->get(Fixtures::injectCustomStoreServices()->scalarInjector()->getName());
-        self::assertInstanceOf(Fixtures::injectCustomStoreServices()->scalarInjector()->getName(), $service);
+        $service = $container->get(Fixtures::injectCustomStoreServices()->scalarInjector()->name());
+        self::assertInstanceOf(Fixtures::injectCustomStoreServices()->scalarInjector()->name(), $service);
         self::assertSame('from test-store key', $service->key);
     }
 
@@ -135,8 +135,8 @@ final class BootstrapTest extends TestCase {
             new Stopwatch()
         );
         $container = $bootstrap->bootstrapContainer(profiles: Profiles::fromList(['default', 'dev']));
-        $service = $container->get(Fixtures::profileResolvedServices()->fooInterface()->getName());
-        self::assertInstanceOf(Fixtures::profileResolvedServices()->devImplementation()->getName(), $service);
+        $service = $container->get(Fixtures::profileResolvedServices()->fooInterface()->name());
+        self::assertInstanceOf(Fixtures::profileResolvedServices()->devImplementation()->name(), $service);
     }
 
     public function testServiceWiringObserver() : void {
@@ -165,7 +165,7 @@ final class BootstrapTest extends TestCase {
 
             protected function wireServices(AnnotatedContainer $container, ServiceGatherer $gatherer) : void {
                 $this->container = $container;
-                $this->services = $gatherer->servicesForType(Fixtures::ambiguousAliasedServices()->fooInterface()->getName());
+                $this->services = $gatherer->servicesForType(Fixtures::ambiguousAliasedServices()->fooInterface()->name());
             }
         };
 
@@ -181,9 +181,9 @@ final class BootstrapTest extends TestCase {
 
         self::assertSame($container, $listener->getAnnotatedContainer());
         self::assertSame([
-            $container->get(Fixtures::ambiguousAliasedServices()->barImplementation()->getName()),
-            $container->get(Fixtures::ambiguousAliasedServices()->bazImplementation()->getName()),
-            $container->get(Fixtures::ambiguousAliasedServices()->quxImplementation()->getName()),
+            $container->get(Fixtures::ambiguousAliasedServices()->barImplementation()->name()),
+            $container->get(Fixtures::ambiguousAliasedServices()->bazImplementation()->name()),
+            $container->get(Fixtures::ambiguousAliasedServices()->quxImplementation()->name()),
         ], $actualServices);
     }
 
@@ -226,7 +226,7 @@ final class BootstrapTest extends TestCase {
 
         self::assertSame($container, $listener->getAnnotatedContainer());
         self::assertSame([
-            $container->get(Fixtures::customServiceAttribute()->myRepo()->getName()),
+            $container->get(Fixtures::customServiceAttribute()->myRepo()->name()),
         ], $actualServices);
     }
 
@@ -257,7 +257,7 @@ final class BootstrapTest extends TestCase {
 
             protected function wireServices(AnnotatedContainer $container, ServiceGatherer $gatherer) : void {
                 $this->container = $container;
-                $this->services = $gatherer->servicesForType(Fixtures::profileResolvedServices()->fooInterface()->getName());
+                $this->services = $gatherer->servicesForType(Fixtures::profileResolvedServices()->fooInterface()->name());
             }
         };
 
@@ -274,7 +274,7 @@ final class BootstrapTest extends TestCase {
 
         self::assertSame($container, $listener->getAnnotatedContainer());
         self::assertSame([
-            $container->get(Fixtures::profileResolvedServices()->prodImplementation()->getName()),
+            $container->get(Fixtures::profileResolvedServices()->prodImplementation()->name()),
         ], $actualServices);
         self::assertCount(1, $actualDefinitions);
     }
@@ -478,10 +478,10 @@ XML;
         );
 
         $container = $bootstrap->bootstrapContainer();
-        $service = $container->get(Fixtures::singleConcreteService()->fooImplementation()->getName());
+        $service = $container->get(Fixtures::singleConcreteService()->fooImplementation()->name());
 
         self::assertInstanceOf(
-            Fixtures::singleConcreteService()->fooImplementation()->getName(),
+            Fixtures::singleConcreteService()->fooImplementation()->name(),
             $service
         );
     }
