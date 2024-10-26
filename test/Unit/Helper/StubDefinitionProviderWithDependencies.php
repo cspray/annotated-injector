@@ -2,14 +2,14 @@
 
 namespace Cspray\AnnotatedContainer\Unit\Helper;
 
+use Cspray\AnnotatedContainer\Reflection\Type;
 use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProvider;
 use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProviderContext;
-use Cspray\Typiphy\ObjectType;
-use function Cspray\AnnotatedContainer\service;
+use function Cspray\AnnotatedContainer\Definition\service;
 
 final class StubDefinitionProviderWithDependencies implements DefinitionProvider {
 
-    public function __construct(private readonly ObjectType $service) {
+    public function __construct(private readonly Type $service) {
     }
 
     public function consume(DefinitionProviderContext $context) : void {

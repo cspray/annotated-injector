@@ -6,8 +6,8 @@ use Cspray\AnnotatedContainer\Fixture\Fixture;
 use Cspray\AnnotatedContainer\Fixture\LogicalConstraints\MultiplePrimaryService\BarService;
 use Cspray\AnnotatedContainer\Fixture\LogicalConstraints\MultiplePrimaryService\FooInterface;
 use Cspray\AnnotatedContainer\Fixture\LogicalConstraints\MultiplePrimaryService\FooService;
-use Cspray\Typiphy\ObjectType;
-use function Cspray\Typiphy\objectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 final class MultiplePrimaryServiceFixture implements Fixture {
 
@@ -15,15 +15,15 @@ final class MultiplePrimaryServiceFixture implements Fixture {
         return __DIR__ . '/MultiplePrimaryService';
     }
 
-    public function fooInterface() : ObjectType {
-        return objectType(FooInterface::class);
+    public function fooInterface() : Type {
+        return types()->class(FooInterface::class);
     }
 
-    public function fooService() : ObjectType {
-        return objectType(FooService::class);
+    public function fooService() : Type {
+        return types()->class(FooService::class);
     }
 
-    public function barService() : ObjectType {
-        return objectType(BarService::class);
+    public function barService() : Type {
+        return types()->class(BarService::class);
     }
 }

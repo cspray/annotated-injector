@@ -4,6 +4,7 @@ namespace Cspray\AnnotatedContainer\LogicalConstraint\Check;
 
 use Cspray\AnnotatedContainer\Attribute\ServicePrepareAttribute;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
+use Cspray\AnnotatedContainer\Internal\ServicePrepareFromFunctionalApi;
 use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraint;
 use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraintViolation;
 use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraintViolationCollection;
@@ -31,7 +32,7 @@ final class DuplicateServicePrepare implements LogicalConstraint {
         foreach ($servicePrepareMap as $classMethod => $attributes) {
             if (count($attributes) > 1) {
                 $attributeTypes = trim(implode('- ', array_map(
-                    static fn(?ServicePrepareAttribute $attribute) => ($attribute === null ? 'Call to servicePrepare() in DefinitionProvider' : 'Attributed with ' . $attribute::class) . PHP_EOL,
+                    static fn(ServicePrepareAttribute $attribute) => ($attribute instanceof ServicePrepareFromFunctionalApi ? 'Call to servicePrepare() in DefinitionProvider' : 'Attributed with ' . $attribute::class) . PHP_EOL,
                     $attributes
                 )));
                 $message = <<<TEXT

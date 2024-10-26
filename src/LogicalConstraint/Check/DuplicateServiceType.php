@@ -4,6 +4,7 @@ namespace Cspray\AnnotatedContainer\LogicalConstraint\Check;
 
 use Cspray\AnnotatedContainer\Attribute\ServiceAttribute;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
+use Cspray\AnnotatedContainer\Internal\ServiceFromFunctionalApi;
 use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraint;
 use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraintViolation;
 use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraintViolationCollection;
@@ -28,7 +29,7 @@ final class DuplicateServiceType implements LogicalConstraint {
         foreach ($serviceTypeMap as $type => $attributes) {
             if (count($attributes) > 1) {
                 $attributeTypes = trim(implode('- ', array_map(
-                    static fn(?ServiceAttribute $attribute) => ($attribute === null ? 'Call to service() in DefinitionProvider' : 'Attributed with ' . $attribute::class) . PHP_EOL,
+                    static fn(?ServiceAttribute $attribute) => ($attribute instanceof ServiceFromFunctionalApi ? 'Call to service() in DefinitionProvider' : 'Attributed with ' . $attribute::class) . PHP_EOL,
                     $attributes
                 )));
                 $message = <<<TEXT

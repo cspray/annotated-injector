@@ -117,7 +117,7 @@ abstract class AbstractContainerFactory implements ContainerFactory {
                 $value->type(),
                 $type
             );
-        } elseif ($type instanceof ObjectType && !is_a($definition->type()->name(), UnitEnum::class, true)) {
+        } elseif ((class_exists($definition->type()->name()) || interface_exists($definition->type()->name())) && !is_a($definition->type()->name(), UnitEnum::class, true)) {
             assert(is_string($value) && $value !== '');
             $value = new ContainerReference($value, $type);
         }

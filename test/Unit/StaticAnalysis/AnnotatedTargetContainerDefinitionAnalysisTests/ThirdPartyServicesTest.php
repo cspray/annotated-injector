@@ -21,7 +21,7 @@ use Cspray\AnnotatedContainer\Unit\StaticAnalysis\AnnotatedTargetContainerDefini
 use Cspray\AnnotatedContainer\Unit\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalysisTests\HasTestsTrait\HasServiceDefinitionTestsTrait;
 use Cspray\AnnotatedContainer\Fixture\Fixture;
 use Cspray\AnnotatedContainer\Fixture\Fixtures;
-use function Cspray\AnnotatedContainer\service;
+use function Cspray\AnnotatedContainer\Definition\service;
 
 class ThirdPartyServicesTest extends AnnotatedTargetContainerDefinitionAnalyzerTestCase {
 

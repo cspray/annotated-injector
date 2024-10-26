@@ -2,8 +2,8 @@
 
 namespace Cspray\AnnotatedContainer\Fixture;
 
-use Cspray\Typiphy\ObjectType;
-use function Cspray\Typiphy\objectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 final class BeanLikeConfigInterfaceFixture implements Fixture {
 
@@ -11,7 +11,7 @@ final class BeanLikeConfigInterfaceFixture implements Fixture {
         return __DIR__ . '/BeanLikeConfigInterface';
     }
 
-    public function fooInterface() : ObjectType {
-        return objectType(BeanLikeConfigInterface\FooInterface::class);
+    public function fooInterface() : Type {
+        return types()->class(BeanLikeConfigInterface\FooInterface::class);
     }
 }

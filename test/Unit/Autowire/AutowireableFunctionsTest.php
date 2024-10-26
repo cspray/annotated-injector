@@ -6,10 +6,10 @@ use Cspray\AnnotatedContainer\Exception\AutowireParameterNotFound;
 use Cspray\AnnotatedContainer\Exception\InvalidAutowireParameter;
 use PHPUnit\Framework\TestCase;
 use stdClass;
-use function Cspray\AnnotatedContainer\autowiredParams;
-use function Cspray\AnnotatedContainer\rawParam;
-use function Cspray\AnnotatedContainer\serviceParam;
-use function Cspray\Typiphy\objectType;
+use function Cspray\AnnotatedContainer\Autowire\autowiredParams;
+use function Cspray\AnnotatedContainer\Autowire\rawParam;
+use function Cspray\AnnotatedContainer\Autowire\serviceParam;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 class AutowireableFunctionsTest extends TestCase {
 
@@ -37,7 +37,7 @@ class AutowireableFunctionsTest extends TestCase {
 
     #[\PHPUnit\Framework\Attributes\DataProvider('nameProvider')]
     public function testServiceParameterGetName(string $name) {
-        $param = serviceParam($name, objectType(static::class));
+        $param = serviceParam($name, types()->class(static::class));
 
         $this->assertSame($name, $param->name());
     }
@@ -45,7 +45,7 @@ class AutowireableFunctionsTest extends TestCase {
     public function testServiceParameterWithEmptyNameThrowsException() {
         $this->expectException(InvalidAutowireParameter::class);
         $this->expectExceptionMessage('A parameter name must have a non-empty value.');
-        serviceParam('', objectType(static::class));
+        serviceParam('', types()->class(static::class));
     }
 
     public static function valueProvider() : array {
@@ -67,7 +67,7 @@ class AutowireableFunctionsTest extends TestCase {
     }
 
     public function testServiceParameterGetValue() {
-        $param = serviceParam('foo', $type = objectType(static::class));
+        $param = serviceParam('foo', $type = types()->class(static::class));
 
         $this->assertSame($type, $param->value());
     }
@@ -77,7 +77,7 @@ class AutowireableFunctionsTest extends TestCase {
     }
 
     public function testServiceParameterIsServiceIdentifier() {
-        $this->assertTrue(serviceParam('foo', objectType(static::class))->isServiceIdentifier());
+        $this->assertTrue(serviceParam('foo', types()->class(static::class))->isServiceIdentifier());
     }
 
     public function testAutowireableSetWithNoParamsIsEmpty() {
@@ -134,7 +134,7 @@ class AutowireableFunctionsTest extends TestCase {
     public function testAutowireableSetOriginalParameters() {
         $set = autowiredParams(
             $one = rawParam('foo', 'value'),
-            $two = serviceParam('bar', objectType(static::class))
+            $two = serviceParam('bar', types()->class(static::class))
         );
 
         $arraySet = iterator_to_array($set);
@@ -145,7 +145,7 @@ class AutowireableFunctionsTest extends TestCase {
     public function testAutowireableSetAddWithOriginalParameters() {
         $set = autowiredParams(
             $one = rawParam('foo', 'value'),
-            $two = serviceParam('bar', objectType(static::class))
+            $two = serviceParam('bar', types()->class(static::class))
         );
         $set->add($three = rawParam('baz', 1234));
 
@@ -156,6 +156,6 @@ class AutowireableFunctionsTest extends TestCase {
     public function testAutowireableSetWithDuplicateParameterNamesThrowsException() {
         $this->expectException(InvalidAutowireParameter::class);
         $this->expectExceptionMessage('A parameter named "foo" has already been added to this set.');
-        autowiredParams(rawParam('foo', 'value'), serviceParam('foo', objectType(static::class)));
+        autowiredParams(rawParam('foo', 'value'), serviceParam('foo', types()->class(static::class)));
     }
 }

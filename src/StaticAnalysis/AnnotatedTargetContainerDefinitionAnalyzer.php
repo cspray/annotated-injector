@@ -2,13 +2,15 @@
 
 namespace Cspray\AnnotatedContainer\StaticAnalysis;
 
-use Cspray\AnnotatedContainer\Definition\AliasDefinition;
-use Cspray\AnnotatedContainer\Definition\AliasDefinitionBuilder;
+use Cspray\AnnotatedContainer\Attribute\InjectAttribute;
+use Cspray\AnnotatedContainer\Attribute\Service;
+use Cspray\AnnotatedContainer\Attribute\ServiceAttribute;
+use Cspray\AnnotatedContainer\Attribute\ServiceDelegateAttribute;
+use Cspray\AnnotatedContainer\Attribute\ServicePrepareAttribute;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinitionBuilder;
 use Cspray\AnnotatedContainer\Definition\InjectDefinition;
 use Cspray\AnnotatedContainer\Definition\ServiceDefinition;
-use Cspray\AnnotatedContainer\Definition\ServiceDefinitionBuilder;
 use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinition;
 use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinition;
 use Cspray\AnnotatedContainer\Event\StaticAnalysisEmitter;
@@ -16,14 +18,12 @@ use Cspray\AnnotatedContainer\Exception\InvalidScanDirectories;
 use Cspray\AnnotatedContainer\Exception\InvalidServiceDelegate;
 use Cspray\AnnotatedContainer\Exception\InvalidServicePrepare;
 use Cspray\AnnotatedContainer\Internal\AttributeType;
-use Cspray\AnnotatedTarget\AnnotatedTarget;
+use Cspray\AnnotatedContainer\Reflection\Type;
 use Cspray\AnnotatedTarget\AnnotatedTargetParser;
-use Cspray\AnnotatedTarget\AnnotatedTargetParserOptionsBuilder;
+use Cspray\AnnotatedTarget\AnnotatedTargetParserOptions;
 use Cspray\AnnotatedTarget\Exception\InvalidArgumentException;
-use Cspray\Typiphy\ObjectType;
-use ReflectionClass;
 use stdClass;
-use function Cspray\Typiphy\objectType;
+use function Cspray\AnnotatedContainer\Definition\definitionFactory;
 
 /**
  * A ContainerDefinitionCompiler that utilizes the AnnotatedTarget concept by parsing given source code directories and
@@ -40,7 +40,6 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
 
     public function __construct(
         private readonly AnnotatedTargetParser $annotatedTargetCompiler,
-        private readonly AnnotatedTargetDefinitionConverter $definitionConverter,
         private readonly StaticAnalysisEmitter $emitter
     ) {
     }
@@ -100,33 +99,28 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
         $consumer->servicePrepareDefinitions = [];
         $consumer->serviceDelegateDefinitions = [];
         $consumer->injectDefinitions = [];
-        $attributeTypes = array_map(
-            static function(AttributeType $attributeType) : ObjectType {
-                /** @var class-string $value */
-                $value = $attributeType->value;
-                return objectType($value);
-            },
-            AttributeType::cases()
-        );
         $dirs = $containerDefinitionAnalysisOptions->scanDirectories();
-        $options = AnnotatedTargetParserOptionsBuilder::scanDirectories(...$dirs)
-            ->filterAttributes(...$attributeTypes)
-            ->build();
+        $options = AnnotatedTargetParserOptions::scanForSpecificAttributes(
+            $dirs,
+            array_map(static fn(AttributeType $attributeType) => $attributeType->value, AttributeType::cases()),
+        );
 
-        /** @var AnnotatedTarget $target */
         foreach ($this->annotatedTargetCompiler->parse($options) as $target) {
-            $definition = $this->definitionConverter->convert($target);
-
-            if ($definition instanceof ServiceDefinition) {
+            $attribute = $target->attributeInstance();
+            if ($attribute instanceof ServiceAttribute) {
+                $definition = definitionFactory()->serviceDefinitionFromAnnotatedTarget($target);
                 $consumer->serviceDefinitions[] = $definition;
                 $this->emitter->emitAnalyzedServiceDefinitionFromAttribute($target, $definition);
-            } elseif ($definition instanceof ServicePrepareDefinition) {
+            } elseif ($attribute instanceof ServicePrepareAttribute) {
+                $definition = definitionFactory()->servicePrepareDefinitionFromAnnotatedTarget($target);
                 $consumer->servicePrepareDefinitions[] = $definition;
                 $this->emitter->emitAnalyzedServicePrepareDefinitionFromAttribute($target, $definition);
-            } elseif ($definition instanceof ServiceDelegateDefinition) {
+            } elseif ($attribute instanceof ServiceDelegateAttribute) {
+                $definition = definitionFactory()->serviceDelegateDefinitionFromAnnotatedTarget($target);
                 $consumer->serviceDelegateDefinitions[] = $definition;
                 $this->emitter->emitAnalyzedServiceDelegateDefinitionFromAttribute($target, $definition);
-            } elseif ($definition instanceof InjectDefinition) {
+            } elseif ($attribute instanceof InjectAttribute) {
+                $definition = definitionFactory()->injectDefinitionFromAnnotatedTarget($target);
                 $consumer->injectDefinitions[] = $definition;
                 $this->emitter->emitAnalyzedInjectDefinitionFromAttribute($target, $definition);
             }
@@ -156,14 +150,19 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
 
         foreach ($consumer['serviceDelegateDefinitions'] as $serviceDelegateDefinition) {
             $serviceDef = $this->serviceDefinition($containerDefinitionBuilder, $serviceDelegateDefinition->serviceType());
+
+            // We need to handle the scenario where a user is using Annotated Container with limited or no Attributes
+            // In that use case the user is providing many ServiceDelegate attributes, we should not require manually
+            // defining those services, but we still want them to get added to the ContainerDefinition in the end
+            // to properly represent the state of the Container for tooling and analysis.
             if ($serviceDef === null) {
-                $reflection = new ReflectionClass($serviceDelegateDefinition->serviceType()->name());
-                if ($reflection->isInterface() || $reflection->isAbstract()) {
-                    $serviceDef = ServiceDefinitionBuilder::forAbstract($serviceDelegateDefinition->serviceType())->build();
-                } else {
-                    $serviceDef = ServiceDefinitionBuilder::forConcrete($serviceDelegateDefinition->serviceType())->build();
-                }
-                $containerDefinitionBuilder = $containerDefinitionBuilder->withServiceDefinition($serviceDef);
+                $impliedThroughDelegationServiceDefinition = definitionFactory()->serviceDefinitionFromObjectTypeAndAttribute(
+                    $serviceDelegateDefinition->serviceType(),
+                    new Service()
+                );
+                $containerDefinitionBuilder = $containerDefinitionBuilder->withServiceDefinition(
+                    $impliedThroughDelegationServiceDefinition
+                );
             }
             $containerDefinitionBuilder = $containerDefinitionBuilder->withServiceDelegateDefinition($serviceDelegateDefinition);
         }
@@ -207,7 +206,7 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
         return $containerDefinitionBuilder;
     }
 
-    private function serviceDefinition(ContainerDefinitionBuilder $containerDefinitionBuilder, ObjectType $objectType) : ?ServiceDefinition {
+    private function serviceDefinition(ContainerDefinitionBuilder $containerDefinitionBuilder, Type $objectType) : ?ServiceDefinition {
         $return = null;
         foreach ($containerDefinitionBuilder->serviceDefinitions() as $serviceDefinition) {
             if ($serviceDefinition->type() === $objectType) {
@@ -263,8 +262,8 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
     }
 
     private function addAliasDefinitions(ContainerDefinitionBuilder $containerDefinitionBuilder) : ContainerDefinitionBuilder {
-        /** @var list<ObjectType> $abstractTypes */
-        /** @var list<ObjectType> $concreteTypes */
+        /** @var list<Type> $abstractTypes */
+        /** @var list<Type> $concreteTypes */
         $abstractTypes = [];
         $concreteTypes = [];
 
@@ -280,9 +279,7 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
             foreach ($concreteTypes as $concreteType) {
                 $abstractTypeString = $abstractType->name();
                 if (is_subclass_of($concreteType->name(), $abstractTypeString)) {
-                    $aliasDefinition = AliasDefinitionBuilder::forAbstract($abstractType)
-                        ->withConcrete($concreteType)
-                        ->build();
+                    $aliasDefinition = definitionFactory()->aliasDefinition($abstractType, $concreteType);
                     $containerDefinitionBuilder = $containerDefinitionBuilder->withAliasDefinition($aliasDefinition);
                     $this->emitter->emitAddedAliasDefinition($aliasDefinition);
                 }

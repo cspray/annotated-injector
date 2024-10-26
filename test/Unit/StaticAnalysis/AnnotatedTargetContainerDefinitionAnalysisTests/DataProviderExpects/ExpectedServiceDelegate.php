@@ -2,13 +2,13 @@
 
 namespace Cspray\AnnotatedContainer\Unit\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalysisTests\DataProviderExpects;
 
-use Cspray\Typiphy\ObjectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
 
 final class ExpectedServiceDelegate {
 
     public function __construct(
-        public readonly ObjectType $service,
-        public readonly ObjectType $factory,
+        public readonly Type $service,
+        public readonly Type $factory,
         public readonly string $method
     ) {
     }

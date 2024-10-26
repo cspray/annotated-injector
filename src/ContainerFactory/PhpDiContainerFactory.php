@@ -194,7 +194,6 @@ final class PhpDiContainerFactory extends AbstractContainerFactory implements Co
                         /** @var Reference|mixed $value */
                         $value = $parameter->value();
                         if ($parameter->isServiceIdentifier()) {
-                            assert($value instanceof ObjectType);
                             $value = get($value->name());
                         }
 

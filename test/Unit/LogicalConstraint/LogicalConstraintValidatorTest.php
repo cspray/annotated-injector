@@ -12,7 +12,6 @@ use Cspray\AnnotatedContainer\Profiles;
 use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalyzer;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalyzer;
-use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetDefinitionConverter;
 use Cspray\AnnotatedContainer\Fixture\Fixtures;
 use Cspray\AnnotatedTarget\PhpParserAnnotatedTargetParser;
 use PHPUnit\Framework\TestCase;
@@ -24,7 +23,6 @@ class LogicalConstraintValidatorTest extends TestCase {
     protected function setUp(): void {
         $this->analyzer = new AnnotatedTargetContainerDefinitionAnalyzer(
             new PhpParserAnnotatedTargetParser(),
-            new AnnotatedTargetDefinitionConverter(),
             new Emitter()
         );
     }

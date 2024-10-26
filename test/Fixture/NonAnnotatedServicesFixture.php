@@ -2,8 +2,8 @@
 
 namespace Cspray\AnnotatedContainer\Fixture;
 
-use Cspray\Typiphy\ObjectType;
-use function Cspray\Typiphy\objectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 final class NonAnnotatedServicesFixture implements Fixture {
 
@@ -11,11 +11,11 @@ final class NonAnnotatedServicesFixture implements Fixture {
         return __DIR__ . '/NonAnnotatedServices';
     }
 
-    public function annotatedService() : ObjectType {
-        return objectType(NonAnnotatedServices\AnnotatedService::class);
+    public function annotatedService() : Type {
+        return types()->class(NonAnnotatedServices\AnnotatedService::class);
     }
 
-    public function nonAnnotatedService() : ObjectType {
-        return objectType(NonAnnotatedServices\NotAnnotatedObject::class);
+    public function nonAnnotatedService() : Type {
+        return types()->class(NonAnnotatedServices\NotAnnotatedObject::class);
     }
 }

@@ -3,16 +3,13 @@
 namespace Cspray\AnnotatedContainer\Definition;
 
 use Cspray\AnnotatedContainer\Attribute\InjectAttribute;
-use Cspray\Typiphy\ObjectType;
-use Cspray\Typiphy\Type;
-use Cspray\Typiphy\TypeIntersect;
-use Cspray\Typiphy\TypeUnion;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use Cspray\AnnotatedContainer\Reflection\TypeIntersect;
+use Cspray\AnnotatedContainer\Reflection\TypeUnion;
 
 /**
  * A definition that provides details on values that should be injected into method parameters or Configuration properties
  * that can't be implicitly derived through static analysis.
- *
- * @see InjectDefinitionBuilder
  */
 interface InjectDefinition {
 
@@ -45,14 +42,12 @@ interface InjectDefinition {
      */
     public function storeName() : ?string;
 
-    public function attribute() : ?InjectAttribute;
+    public function attribute() : InjectAttribute;
 
     /**
      * The class that has the method being injected into.
-     *
-     * @return ObjectType
      */
-    public function class() : ObjectType;
+    public function class() : Type;
 
     /**
      * @return non-empty-string

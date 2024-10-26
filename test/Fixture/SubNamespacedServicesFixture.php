@@ -2,8 +2,8 @@
 
 namespace Cspray\AnnotatedContainer\Fixture;
 
-use Cspray\Typiphy\ObjectType;
-use function Cspray\Typiphy\objectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 final class SubNamespacedServicesFixture implements Fixture {
 
@@ -11,27 +11,27 @@ final class SubNamespacedServicesFixture implements Fixture {
         return __DIR__ . '/SubNamespacedServices';
     }
 
-    public function barInterface() : ObjectType {
-        return objectType(SubNamespacedServices\BarInterface::class);
+    public function barInterface() : Type {
+        return types()->class(SubNamespacedServices\BarInterface::class);
     }
 
-    public function bazInterface() : ObjectType {
-        return objectType(SubNamespacedServices\BazInterface::class);
+    public function bazInterface() : Type {
+        return types()->class(SubNamespacedServices\BazInterface::class);
     }
 
-    public function fooInterface() : ObjectType {
-        return objectType(SubNamespacedServices\FooInterface::class);
+    public function fooInterface() : Type {
+        return types()->class(SubNamespacedServices\FooInterface::class);
     }
 
-    public function fooImplementation() : ObjectType {
-        return objectType(SubNamespacedServices\Foo\FooImplementation::class);
+    public function fooImplementation() : Type {
+        return types()->class(SubNamespacedServices\Foo\FooImplementation::class);
     }
 
-    public function barImplementation() : ObjectType {
-        return objectType(SubNamespacedServices\Foo\Bar\BarImplementation::class);
+    public function barImplementation() : Type {
+        return types()->class(SubNamespacedServices\Foo\Bar\BarImplementation::class);
     }
 
-    public function bazImplementation() : ObjectType {
-        return objectType(SubNamespacedServices\Foo\Bar\Baz\BazImplementation::class);
+    public function bazImplementation() : Type {
+        return types()->class(SubNamespacedServices\Foo\Bar\Baz\BazImplementation::class);
     }
 }

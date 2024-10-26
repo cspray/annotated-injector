@@ -5,6 +5,7 @@ namespace Cspray\AnnotatedContainer\LogicalConstraint\Check;
 use Cspray\AnnotatedContainer\Attribute\ServiceAttribute;
 use Cspray\AnnotatedContainer\Attribute\ServiceDelegateAttribute;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
+use Cspray\AnnotatedContainer\Internal\ServiceDelegateFromFunctionalApi;
 use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraint;
 use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraintViolation;
 use Cspray\AnnotatedContainer\LogicalConstraint\LogicalConstraintViolationCollection;
@@ -25,10 +26,10 @@ final class DuplicateServiceDelegate implements LogicalConstraint {
             $method = sprintf('%s::%s', $definition->delegateType()->name(), $definition->delegateMethod());
             $delegateMap[$service] ??= [];
             $attribute = $definition->attribute();
-            if ($attribute !== null) {
-                $message = sprintf('%s attributed with %s%s', $method, $definition->attribute()::class, PHP_EOL);
-            } else {
+            if ($attribute instanceof ServiceDelegateFromFunctionalApi) {
                 $message = sprintf('%s added with serviceDelegate()%s', $method, PHP_EOL);
+            } else {
+                $message = sprintf('%s attributed with %s%s', $method, $definition->attribute()::class, PHP_EOL);
             }
             $delegateMap[$service][] = $message;
         }

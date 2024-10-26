@@ -2,8 +2,8 @@
 
 namespace Cspray\AnnotatedContainer\Fixture;
 
-use Cspray\Typiphy\ObjectType;
-use function Cspray\Typiphy\objectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 final class SingleConcreteServiceFixture implements Fixture {
 
@@ -11,7 +11,7 @@ final class SingleConcreteServiceFixture implements Fixture {
         return __DIR__ . '/SingleConcreteService';
     }
 
-    public function fooImplementation() : ObjectType {
-        return objectType(SingleConcreteService\FooImplementation::class);
+    public function fooImplementation() : Type {
+        return types()->class(SingleConcreteService\FooImplementation::class);
     }
 }

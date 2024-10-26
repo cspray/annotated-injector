@@ -20,9 +20,7 @@ use Cspray\AnnotatedContainer\Unit\StaticAnalysis\AnnotatedTargetContainerDefini
 use Cspray\AnnotatedContainer\Unit\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalysisTests\HasTestsTrait\HasServicePrepareDefinitionTestsTrait;
 use Cspray\AnnotatedContainer\Fixture\Fixture;
 use Cspray\AnnotatedContainer\Fixture\Fixtures;
-use function Cspray\Typiphy\floatType;
-use function Cspray\Typiphy\stringType;
-use function Cspray\Typiphy\typeUnion;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 class InjectPrepareServicesTest extends AnnotatedTargetContainerDefinitionAnalyzerTestCase {
 
@@ -50,7 +48,7 @@ class InjectPrepareServicesTest extends AnnotatedTargetContainerDefinitionAnalyz
                 Fixtures::injectPrepareServices()->prepareInjector(),
                 'setVals',
                 'val',
-                stringType(),
+                types()->string(),
                 'foo'
             )],
             [ExpectedInject::forMethodParam(
@@ -64,7 +62,7 @@ class InjectPrepareServicesTest extends AnnotatedTargetContainerDefinitionAnalyz
                 Fixtures::injectPrepareServices()->serviceScalarUnionPrepareInjector(),
                 'setValue',
                 'val',
-                typeUnion(floatType(), Fixtures::injectPrepareServices()->fooInterface()),
+                types()->union(types()->float(), Fixtures::injectPrepareServices()->fooInterface()),
                 3.14
             )]
         ];

@@ -43,12 +43,9 @@
   <xs:complexType name="serviceDefinitionType">
     <xs:all>
       <xs:element name="type" type="fullyQualifiedClassNameString" />
-      <xs:element name="name" type="xs:token" />
-      <xs:element name="profiles" type="profilesType" />
-      <xs:element name="concreteOrAbstract" type="concreteOrAbstractType" />
       <xs:element name="attribute" type="base64EncodedString" />
     </xs:all>
-    <xs:attribute name="isPrimary" type="xs:boolean" default="false" />
+    <xs:attribute name="isConcrete" type="xs:boolean" />
   </xs:complexType>
 
   <xs:complexType name="aliasDefinitionsType">
@@ -104,32 +101,33 @@
       <xs:element name="class" type="fullyQualifiedClassNameString" />
       <xs:element name="method" type="classMethodString" />
       <xs:element name="parameter" type="classMethodParameterString" />
-      <xs:element name="valueType" type="base64EncodedString" />
-      <xs:element name="value" type="base64EncodedString" />
-      <xs:element name="profiles" type="profilesType" />
-      <xs:element name="store" type="xs:token" />
+      <xs:element name="valueType" type="injectValueType" />
       <xs:element name="attribute" type="base64EncodedString" />
     </xs:all>
   </xs:complexType>
 
-  <xs:complexType name="profilesType">
+  <xs:complexType name="injectValueType">
+    <xs:choice>
+      <xs:element name="type" type="xs:token" />
+      <xs:element name="typeUnion" type="typeUnionType" />
+      <xs:element name="typeIntersect" type="typeIntersectType" />
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="typeIntersectType">
     <xs:sequence maxOccurs="unbounded">
-      <xs:element name="profile" type="profileString" />
+      <xs:element name="type" type="xs:token" />
     </xs:sequence>
   </xs:complexType>
 
-  <xs:simpleType name="profileString">
-    <xs:restriction base="xs:string">
-      <xs:minLength value="1" />
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:simpleType name="concreteOrAbstractType">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="Concrete" />
-      <xs:enumeration value="Abstract" />
-    </xs:restriction>
-  </xs:simpleType>
+  <xs:complexType name="typeUnionType">
+    <xs:sequence maxOccurs="unbounded">
+      <xs:choice>
+        <xs:element name="type" type="xs:token" />
+        <xs:element name="typeIntersect" type="typeIntersectType" />
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
 
   <xs:simpleType name="fullyQualifiedClassNameString">
     <xs:restriction base="xs:string">

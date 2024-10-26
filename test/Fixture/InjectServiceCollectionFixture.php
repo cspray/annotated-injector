@@ -2,8 +2,8 @@
 
 namespace Cspray\AnnotatedContainer\Fixture;
 
-use Cspray\Typiphy\ObjectType;
-use function Cspray\Typiphy\objectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 class InjectServiceCollectionFixture implements Fixture {
 
@@ -11,11 +11,11 @@ class InjectServiceCollectionFixture implements Fixture {
         return __DIR__ . '/InjectServiceCollection';
     }
 
-    public function collectionInjector() : ObjectType {
-        return objectType(InjectServiceCollection\CollectionInjector::class);
+    public function collectionInjector() : Type {
+        return types()->class(InjectServiceCollection\CollectionInjector::class);
     }
 
-    public function fooInterface() : ObjectType {
-        return objectType(InjectServiceCollection\FooInterface::class);
+    public function fooInterface() : Type {
+        return types()->class(InjectServiceCollection\FooInterface::class);
     }
 }

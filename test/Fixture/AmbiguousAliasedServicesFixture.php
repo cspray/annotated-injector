@@ -2,8 +2,8 @@
 
 namespace Cspray\AnnotatedContainer\Fixture;
 
-use Cspray\Typiphy\ObjectType;
-use function Cspray\Typiphy\objectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 final class AmbiguousAliasedServicesFixture implements Fixture {
 
@@ -12,19 +12,19 @@ final class AmbiguousAliasedServicesFixture implements Fixture {
         return __DIR__ . '/AmbiguousAliasedServices';
     }
 
-    public function fooInterface() : ObjectType {
-        return objectType(AmbiguousAliasedServices\FooInterface::class);
+    public function fooInterface() : Type {
+        return types()->class(AmbiguousAliasedServices\FooInterface::class);
     }
 
-    public function barImplementation() : ObjectType {
-        return objectType(AmbiguousAliasedServices\BarImplementation::class);
+    public function barImplementation() : Type {
+        return types()->class(AmbiguousAliasedServices\BarImplementation::class);
     }
 
-    public function bazImplementation() : ObjectType {
-        return objectType(AmbiguousAliasedServices\BazImplementation::class);
+    public function bazImplementation() : Type {
+        return types()->class(AmbiguousAliasedServices\BazImplementation::class);
     }
 
-    public function quxImplementation() : ObjectType {
-        return objectType(AmbiguousAliasedServices\QuxImplementation::class);
+    public function quxImplementation() : Type {
+        return types()->class(AmbiguousAliasedServices\QuxImplementation::class);
     }
 }

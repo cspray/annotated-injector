@@ -2,13 +2,13 @@
 
 namespace Cspray\AnnotatedContainer\Unit\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalysisTests\DataProviderExpects;
 
-use Cspray\Typiphy\ObjectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
 
 final class ExpectedAliasDefinition {
 
     public function __construct(
-        public readonly ObjectType $abstractType,
-        public readonly ObjectType $concreteType
+        public readonly Type $abstractType,
+        public readonly Type $concreteType
     ) {
     }
 }

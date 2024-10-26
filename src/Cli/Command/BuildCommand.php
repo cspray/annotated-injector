@@ -8,7 +8,6 @@ use Cspray\AnnotatedContainer\Definition\Cache\CacheKey;
 use Cspray\AnnotatedContainer\Definition\Cache\ContainerDefinitionCache;
 use Cspray\AnnotatedContainer\Event\Emitter;
 use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalyzer;
-use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetDefinitionConverter;
 use Cspray\AnnotatedContainer\StaticAnalysis\CacheAwareContainerDefinitionAnalyzer;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptions;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalyzer;
@@ -75,7 +74,6 @@ SHELL;
         return new CacheAwareContainerDefinitionAnalyzer(
             new AnnotatedTargetContainerDefinitionAnalyzer(
                 new PhpParserAnnotatedTargetParser(),
-                new AnnotatedTargetDefinitionConverter(),
                 new Emitter()
             ),
             $this->cache,

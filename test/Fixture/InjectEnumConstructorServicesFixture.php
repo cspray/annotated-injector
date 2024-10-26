@@ -2,8 +2,8 @@
 
 namespace Cspray\AnnotatedContainer\Fixture;
 
-use Cspray\Typiphy\ObjectType;
-use function Cspray\Typiphy\objectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 class InjectEnumConstructorServicesFixture implements Fixture {
 
@@ -11,7 +11,7 @@ class InjectEnumConstructorServicesFixture implements Fixture {
         return __DIR__ . '/InjectEnumConstructorServices';
     }
 
-    public function enumInjector() : ObjectType {
-        return objectType(InjectEnumConstructorServices\EnumInjector::class);
+    public function enumInjector() : Type {
+        return types()->class(InjectEnumConstructorServices\EnumInjector::class);
     }
 }

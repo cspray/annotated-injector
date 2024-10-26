@@ -7,6 +7,10 @@ use Cspray\AnnotatedContainer\Event\Emitter;
 use Cspray\AnnotatedContainer\Exception\InvalidScanDirectories;
 use Cspray\AnnotatedContainer\Exception\InvalidServiceDelegate;
 use Cspray\AnnotatedContainer\Exception\InvalidServicePrepare;
+use Cspray\AnnotatedContainer\Exception\ServiceDelegateReturnsIntersectionType;
+use Cspray\AnnotatedContainer\Exception\ServiceDelegateReturnsScalarType;
+use Cspray\AnnotatedContainer\Exception\ServiceDelegateReturnsUnionType;
+use Cspray\AnnotatedContainer\Exception\ServiceDelegateReturnsUnknownType;
 use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalyzer;
 use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetDefinitionConverter;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
@@ -26,7 +30,6 @@ class AnnotatedTargetContainerDefinitionAnalyzerTest extends TestCase {
     public function setUp() : void {
         $this->subject = new AnnotatedTargetContainerDefinitionAnalyzer(
             new PhpParserAnnotatedTargetParser(),
-            new AnnotatedTargetDefinitionConverter(),
             new Emitter()
         );
     }
@@ -73,36 +76,36 @@ class AnnotatedTargetContainerDefinitionAnalyzerTest extends TestCase {
     }
 
     public function testImplicitServiceDelegateHasNoReturnType() {
-        $this->expectException(InvalidServiceDelegate::class);
+        $this->expectException(ServiceDelegateReturnsUnknownType::class);
         $this->expectExceptionMessage(
-            'The #[ServiceDelegate] Attribute on ' . LogicalErrorApps\ImplicitServiceDelegateNoType\FooFactory::class . '::create does not declare a service in the Attribute or as a return type of the method.'
+            'The ServiceDelegate ' . LogicalErrorApps\ImplicitServiceDelegateNoType\FooFactory::class . '::create does not have a return type. A ServiceDelegate MUST declare an object return type.'
         );
 
         $this->runAnalysisDirectory(__DIR__ . '/../LogicalErrorApps/ImplicitServiceDelegateNoType');
     }
 
     public function testImplicitServiceDelegateHasScalarReturnType() {
-        $this->expectException(InvalidServiceDelegate::class);
+        $this->expectException(ServiceDelegateReturnsScalarType::class);
         $this->expectExceptionMessage(
-            'The #[ServiceDelegate] Attribute on ' . LogicalErrorApps\ImplicitServiceDelegateScalarType\FooFactory::class . '::create declares a scalar value as a service type.'
+            'The ServiceDelegate ' . LogicalErrorApps\ImplicitServiceDelegateScalarType\FooFactory::class . '::create returns a scalar type. All ServiceDelegates MUST return an object type.'
         );
 
         $this->runAnalysisDirectory(__DIR__ . '/../LogicalErrorApps/ImplicitServiceDelegateScalarType');
     }
 
     public function testImplicitServiceDelegateHasIntersectionReturnType() {
-        $this->expectException(InvalidServiceDelegate::class);
+        $this->expectException(ServiceDelegateReturnsIntersectionType::class);
         $this->expectExceptionMessage(
-            'The #[ServiceDelegate] Attribute on ' . LogicalErrorApps\ImplicitServiceDelegateIntersectionType\FooFactory::class . '::create declares an unsupported intersection as a service type.'
+            'The ServiceDelegate ' . LogicalErrorApps\ImplicitServiceDelegateIntersectionType\FooFactory::class . '::create returns an intersection type. At this time intersection types are not supported.'
         );
 
         $this->runAnalysisDirectory(__DIR__ . '/../LogicalErrorApps/ImplicitServiceDelegateIntersectionType');
     }
 
     public function testImplicitServiceDelegateHasUnionReturnType() {
-        $this->expectException(InvalidServiceDelegate::class);
+        $this->expectException(ServiceDelegateReturnsUnionType::class);
         $this->expectExceptionMessage(
-            'The #[ServiceDelegate] Attribute on ' . LogicalErrorApps\ImplicitServiceDelegateUnionType\FooFactory::class . '::create declares an unsupported union as a service type.'
+            'The ServiceDelegate ' . LogicalErrorApps\ImplicitServiceDelegateUnionType\FooFactory::class . '::create returns a union type. At this time union types are not supported.'
         );
 
         $this->runAnalysisDirectory(__DIR__ . '/../LogicalErrorApps/ImplicitServiceDelegateUnionType');

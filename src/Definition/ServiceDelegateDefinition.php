@@ -3,6 +3,7 @@
 namespace Cspray\AnnotatedContainer\Definition;
 
 use Cspray\AnnotatedContainer\Attribute\ServiceDelegateAttribute;
+use Cspray\AnnotatedContainer\Reflection\Type;
 use Cspray\Typiphy\ObjectType;
 
 /**
@@ -15,10 +16,8 @@ interface ServiceDelegateDefinition {
      *
      * Please note that you can specify other Services in the Container and have them injected into the constructor
      * of this factory class.
-     *
-     * @return ObjectType
      */
-    public function delegateType() : ObjectType;
+    public function delegateType() : Type;
 
     /**
      * Return the method on the delegateType that should be invoked to create the Service.
@@ -30,7 +29,7 @@ interface ServiceDelegateDefinition {
      */
     public function delegateMethod() : string;
 
-    public function serviceType() : ObjectType;
+    public function serviceType() : Type;
 
-    public function attribute() : ?ServiceDelegateAttribute;
+    public function attribute() : ServiceDelegateAttribute;
 }

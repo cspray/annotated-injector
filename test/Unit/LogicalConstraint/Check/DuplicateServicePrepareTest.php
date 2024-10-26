@@ -13,8 +13,8 @@ use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProviderContext;
 use Cspray\AnnotatedContainer\Fixture\Fixtures;
 use Cspray\AnnotatedContainer\Fixture\LogicalConstraints\DuplicateServicePrepare\DummyPrepare;
 use Cspray\AnnotatedContainer\Fixture\LogicalConstraints\LogicalConstraintFixtures;
-use function Cspray\Typiphy\objectType;
-use function Cspray\AnnotatedContainer\servicePrepare;
+use function Cspray\AnnotatedContainer\Definition\servicePrepare;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 final class DuplicateServicePrepareTest extends LogicalConstraintTestCase {
 
@@ -81,12 +81,12 @@ TEXT;
                 new class implements DefinitionProvider {
                     public function consume(DefinitionProviderContext $context) : void {
                         $context->addServicePrepareDefinition(
-                            servicePrepare(objectType(
+                            servicePrepare(types()->class(
                                 Fixtures::singleConcreteService()->fooImplementation()->name()
                             ), 'postConstruct')
                         );
                         $context->addServicePrepareDefinition(
-                            servicePrepare(objectType(
+                            servicePrepare(types()->class(
                                 Fixtures::singleConcreteService()->fooImplementation()->name()
                             ), 'postConstruct')
                         );

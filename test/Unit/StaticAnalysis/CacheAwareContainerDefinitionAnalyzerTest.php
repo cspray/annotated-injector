@@ -6,7 +6,6 @@ use Cspray\AnnotatedContainer\Definition\Cache\CacheKey;
 use Cspray\AnnotatedContainer\Definition\Cache\ContainerDefinitionCache;
 use Cspray\AnnotatedContainer\Event\Emitter;
 use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalyzer;
-use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetDefinitionConverter;
 use Cspray\AnnotatedContainer\StaticAnalysis\CacheAwareContainerDefinitionAnalyzer;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalyzer;
@@ -24,7 +23,6 @@ class CacheAwareContainerDefinitionAnalyzerTest extends TestCase {
         $this->cache = $this->getMockBuilder(ContainerDefinitionCache::class)->getMock();
         $this->annotatedTargetContainerDefinitionAnalyzer = new AnnotatedTargetContainerDefinitionAnalyzer(
             new PhpParserAnnotatedTargetParser(),
-            new AnnotatedTargetDefinitionConverter(),
             new Emitter()
         );
     }

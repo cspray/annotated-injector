@@ -2,7 +2,7 @@
 
 namespace Cspray\AnnotatedContainer\ContainerFactory;
 
-use Cspray\Typiphy\ObjectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
 
 /**
  * @internal
@@ -11,11 +11,11 @@ final class ContainerReference {
 
     /**
      * @param non-empty-string $name
-     * @param ObjectType $type
+     * @param Type $type
      */
     public function __construct(
         public readonly string $name,
-        public readonly ObjectType $type
+        public readonly Type $type
     ) {
     }
 }

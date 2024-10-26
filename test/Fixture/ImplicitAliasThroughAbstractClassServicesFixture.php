@@ -2,8 +2,8 @@
 
 namespace Cspray\AnnotatedContainer\Fixture;
 
-use Cspray\Typiphy\ObjectType;
-use function Cspray\Typiphy\objectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 final class ImplicitAliasThroughAbstractClassServicesFixture implements Fixture {
 
@@ -11,15 +11,15 @@ final class ImplicitAliasThroughAbstractClassServicesFixture implements Fixture 
         return __DIR__ . '/ImplicitAliasThroughAbstractClassServices';
     }
 
-    public function fooAbstract() : ObjectType {
-        return objectType(ImplicitAliasThroughAbstractClassServices\AbstractFoo::class);
+    public function fooAbstract() : Type {
+        return types()->class(ImplicitAliasThroughAbstractClassServices\AbstractFoo::class);
     }
 
-    public function fooInterface() : ObjectType {
-        return objectType(ImplicitAliasThroughAbstractClassServices\FooInterface::class);
+    public function fooInterface() : Type {
+        return types()->class(ImplicitAliasThroughAbstractClassServices\FooInterface::class);
     }
 
-    public function fooImplementation() : ObjectType {
-        return objectType(ImplicitAliasThroughAbstractClassServices\FooImplementation::class);
+    public function fooImplementation() : Type {
+        return types()->class(ImplicitAliasThroughAbstractClassServices\FooImplementation::class);
     }
 }

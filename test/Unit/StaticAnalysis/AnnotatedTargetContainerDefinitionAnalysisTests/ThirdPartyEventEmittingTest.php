@@ -26,12 +26,11 @@ use Cspray\AnnotatedContainer\Fixture\Fixture;
 use Cspray\AnnotatedContainer\Fixture\Fixtures;
 use Cspray\AnnotatedContainer\Fixture\ThirdPartyKitchenSink\NonAnnotatedInterface;
 use Cspray\AnnotatedContainer\Fixture\ThirdPartyKitchenSink\NonAnnotatedService;
-use function Cspray\AnnotatedContainer\inject;
-use function Cspray\AnnotatedContainer\service;
-use function Cspray\AnnotatedContainer\serviceDelegate;
-use function Cspray\AnnotatedContainer\servicePrepare;
-use function Cspray\Typiphy\objectType;
-use function Cspray\Typiphy\stringType;
+use function Cspray\AnnotatedContainer\Definition\inject;
+use function Cspray\AnnotatedContainer\Definition\service;
+use function Cspray\AnnotatedContainer\Definition\serviceDelegate;
+use function Cspray\AnnotatedContainer\Definition\servicePrepare;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 class ThirdPartyEventEmittingTest extends AnnotatedTargetContainerDefinitionAnalyzerTestCase {
 
@@ -47,27 +46,26 @@ class ThirdPartyEventEmittingTest extends AnnotatedTargetContainerDefinitionAnal
 
     protected function getDefinitionProvider() : ?DefinitionProvider {
         return new CallableDefinitionProvider(static function(DefinitionProviderContext $context) {
-            $context->addServiceDefinition(service(objectType(NonAnnotatedInterface::class)));
-            $context->addServiceDefinition(service(objectType(NonAnnotatedService::class)));
+            $context->addServiceDefinition(service(types()->class(NonAnnotatedInterface::class)));
+            $context->addServiceDefinition(service(types()->class(NonAnnotatedService::class)));
             $context->addServiceDelegateDefinition(
                 serviceDelegate(
-                    objectType(NonAnnotatedService::class),
-                    objectType(NonAnnotatedService::class),
+                    types()->class(NonAnnotatedService::class),
                     'create'
                 )
             );
             $context->addServicePrepareDefinition(
                 servicePrepare(
-                    objectType(NonAnnotatedService::class),
+                    types()->class(NonAnnotatedService::class),
                     'init'
                 )
             );
             $context->addInjectDefinition(
                 inject(
-                    objectType(NonAnnotatedService::class),
+                    types()->class(NonAnnotatedService::class),
                     'init',
                     'value',
-                    stringType(),
+                    types()->string(),
                     'calledFromApi'
                 )
             );
@@ -87,17 +85,17 @@ class ThirdPartyEventEmittingTest extends AnnotatedTargetContainerDefinitionAnal
 
     public static function aliasProvider() : array {
         return [
-            [new ExpectedAliasDefinition(objectType(NonAnnotatedInterface::class), objectType(NonAnnotatedService::class))]
+            [new ExpectedAliasDefinition(types()->class(NonAnnotatedInterface::class), types()->class(NonAnnotatedService::class))]
         ];
     }
 
     public static function injectProvider() : array {
         return [
             [ExpectedInject::forMethodParam(
-                objectType(NonAnnotatedService::class),
+                types()->class(NonAnnotatedService::class),
                 'init',
                 'value',
-                stringType(),
+                types()->string(),
                 'calledFromApi'
             )]
         ];
@@ -105,55 +103,55 @@ class ThirdPartyEventEmittingTest extends AnnotatedTargetContainerDefinitionAnal
 
     public static function serviceTypeProvider() : array {
         return [
-            [new ExpectedServiceType(objectType(NonAnnotatedInterface::class))],
-            [new ExpectedServiceType(objectType(NonAnnotatedService::class))],
+            [new ExpectedServiceType(types()->class(NonAnnotatedInterface::class))],
+            [new ExpectedServiceType(types()->class(NonAnnotatedService::class))],
         ];
     }
 
     public static function serviceNameProvider() : array {
         return [
-            [new ExpectedServiceName(objectType(NonAnnotatedInterface::class), null)],
-            [new ExpectedServiceName(objectType(NonAnnotatedService::class), null)]
+            [new ExpectedServiceName(types()->class(NonAnnotatedInterface::class), null)],
+            [new ExpectedServiceName(types()->class(NonAnnotatedService::class), null)]
         ];
     }
 
     public static function serviceIsPrimaryProvider() : array {
         return [
-            [new ExpectedServiceIsPrimary(objectType(NonAnnotatedInterface::class), false)],
-            [new ExpectedServiceIsPrimary(objectType(NonAnnotatedService::class), false)],
+            [new ExpectedServiceIsPrimary(types()->class(NonAnnotatedInterface::class), false)],
+            [new ExpectedServiceIsPrimary(types()->class(NonAnnotatedService::class), false)],
         ];
     }
 
     public static function serviceIsConcreteProvider() : array {
         return [
-            [new ExpectedServiceIsConcrete(objectType(NonAnnotatedInterface::class), false)],
-            [new ExpectedServiceIsConcrete(objectType(NonAnnotatedService::class), true)],
+            [new ExpectedServiceIsConcrete(types()->class(NonAnnotatedInterface::class), false)],
+            [new ExpectedServiceIsConcrete(types()->class(NonAnnotatedService::class), true)],
         ];
     }
 
     public static function serviceIsAbstractProvider() : array {
         return [
-            [new ExpectedServiceIsAbstract(objectType(NonAnnotatedInterface::class), true)],
-            [new ExpectedServiceIsAbstract(objectType(NonAnnotatedService::class), false)],
+            [new ExpectedServiceIsAbstract(types()->class(NonAnnotatedInterface::class), true)],
+            [new ExpectedServiceIsAbstract(types()->class(NonAnnotatedService::class), false)],
         ];
     }
 
     public static function serviceProfilesProvider() : array {
         return [
-            [new ExpectedServiceProfiles(objectType(NonAnnotatedInterface::class), ['default'])],
-            [new ExpectedServiceProfiles(objectType(NonAnnotatedService::class), ['default'])],
+            [new ExpectedServiceProfiles(types()->class(NonAnnotatedInterface::class), ['default'])],
+            [new ExpectedServiceProfiles(types()->class(NonAnnotatedService::class), ['default'])],
         ];
     }
 
     public static function serviceDelegateProvider() : array {
         return [
-            [new ExpectedServiceDelegate(objectType(NonAnnotatedService::class), objectType(NonAnnotatedService::class), 'create')],
+            [new ExpectedServiceDelegate(types()->class(NonAnnotatedService::class), types()->class(NonAnnotatedService::class), 'create')],
         ];
     }
 
     public static function servicePrepareProvider() : array {
         return [
-            [new ExpectedServicePrepare(objectType(NonAnnotatedService::class), 'init')]
+            [new ExpectedServicePrepare(types()->class(NonAnnotatedService::class), 'init')]
         ];
     }
 }

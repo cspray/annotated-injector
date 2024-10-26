@@ -49,7 +49,7 @@ class ThirdPartyServicesProvider implements DefinitionProvider {
     public function consume(DefinitionProviderContext $context) : void {
         $context->addServiceDefinition(service($loggerType = objectType(LoggerInterface::class)));
         $context->addServiceDelegateDefinition(
-            serviceDelegate($loggerType, objectType(MonologLoggerFactory::class), 'createLogger')
+            serviceDelegate(objectType(MonologLoggerFactory::class), 'createLogger')
         );
         $context->addServicePrepareDefinition(
             servicePrepare(

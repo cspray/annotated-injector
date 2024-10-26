@@ -20,6 +20,7 @@ use org\bovigo\vfs\vfsStream as VirtualFilesystem;
 use org\bovigo\vfs\vfsStreamDirectory as VirtualDirectory;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use function Cspray\AnnotatedContainer\Reflection\types;
 use function Cspray\Typiphy\stringType;
 
 class XmlBootstrappingConfigurationTest extends TestCase {
@@ -273,7 +274,7 @@ XML;
         );
 
         self::assertCount(1, $config->parameterStores());
-        self::assertSame('passed to constructor my-key', $config->parameterStores()[0]->fetch(stringType(), 'my-key'));
+        self::assertSame('passed to constructor my-key', $config->parameterStores()[0]->fetch(types()->string(), 'my-key'));
     }
 
     public function testDefinitionProviderFactoryPresentRespected() : void {

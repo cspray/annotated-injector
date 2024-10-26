@@ -18,14 +18,7 @@ use Cspray\AnnotatedContainer\Unit\StaticAnalysis\AnnotatedTargetContainerDefini
 use Cspray\AnnotatedContainer\Unit\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalysisTests\HasTestsTrait\HasServiceDefinitionTestsTrait;
 use Cspray\AnnotatedContainer\Fixture\Fixture;
 use Cspray\AnnotatedContainer\Fixture\Fixtures;
-use function Cspray\Typiphy\arrayType;
-use function Cspray\Typiphy\boolType;
-use function Cspray\Typiphy\floatType;
-use function Cspray\Typiphy\intType;
-use function Cspray\Typiphy\mixedType;
-use function Cspray\Typiphy\nullType;
-use function Cspray\Typiphy\stringType;
-use function Cspray\Typiphy\typeUnion;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 class InjectConstructorServicesTest extends AnnotatedTargetContainerDefinitionAnalyzerTestCase {
 
@@ -45,83 +38,83 @@ class InjectConstructorServicesTest extends AnnotatedTargetContainerDefinitionAn
             [ExpectedInject::forConstructParam(
                 Fixtures::injectConstructorServices()->injectArrayService(),
                 'values',
-                arrayType(),
+                types()->array(),
                 ['dependency', 'injection', 'rocks']
             )],
             [ExpectedInject::forConstructParam(
                 Fixtures::injectConstructorServices()->injectIntService(),
                 'meaningOfLife',
-                intType(),
+                types()->int(),
                 42
             )],
             [ExpectedInject::forConstructParam(
                 Fixtures::injectConstructorServices()->injectBoolService(),
                 'flag',
-                boolType(),
+                types()->bool(),
                 false
             )],
             [ExpectedInject::forConstructParam(
                 Fixtures::injectConstructorServices()->injectFloatService(),
                 'dessert',
-                floatType(),
+                types()->float(),
                 3.14
             )],
             [ExpectedInject::forConstructParam(
                 Fixtures::injectConstructorServices()->injectStringService(),
                 'val',
-                stringType(),
+                types()->string(),
                 'foobar'
             )],
             [ExpectedInject::forConstructParam(
                 Fixtures::injectConstructorServices()->injectEnvService(),
                 'user',
-                stringType(),
+                types()->string(),
                 'USER',
                 store: 'env'
             )],
             [ExpectedInject::forConstructParam(
                 Fixtures::injectConstructorServices()->injectExplicitMixedService(),
                 'value',
-                mixedType(),
+                types()->mixed(),
                 'whatever'
             )],
             [ExpectedInject::forConstructParam(
                 Fixtures::injectConstructorServices()->injectImplicitMixedService(),
                 'val',
-                mixedType(),
+                types()->mixed(),
                 'something'
             )],
             [ExpectedInject::forConstructParam(
                 Fixtures::injectConstructorServices()->injectNullableStringService(),
                 'maybe',
-                typeUnion(nullType(), stringType()),
+                types()->nullable(types()->string()),
                 null
             )],
             [ExpectedInject::forConstructParam(
                 Fixtures::injectConstructorServices()->injectProfilesStringService(),
                 'val',
-                stringType(),
+                types()->string(),
                 'from-dev',
                 ['dev']
             )],
             [ExpectedInject::forConstructParam(
                 Fixtures::injectConstructorServices()->injectProfilesStringService(),
                 'val',
-                stringType(),
+                types()->string(),
                 'from-test',
                 ['test']
             )],
             [ExpectedInject::forConstructParam(
                 Fixtures::injectConstructorServices()->injectProfilesStringService(),
                 'val',
-                stringType(),
+                types()->string(),
                 'from-prod',
                 ['prod']
             )],
             [ExpectedInject::forConstructParam(
                 Fixtures::injectConstructorServices()->injectTypeUnionService(),
                 'value',
-                typeUnion(stringType(), intType(), floatType()),
+                types()->union(types()->string(), types()->int(), types()->float()),
                 4.20
             )]
         ];

@@ -2,8 +2,8 @@
 
 namespace Cspray\AnnotatedContainer\Fixture;
 
-use Cspray\Typiphy\ObjectType;
-use function Cspray\Typiphy\objectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 final class InjectConstructorServicesFixture implements Fixture {
 
@@ -11,47 +11,47 @@ final class InjectConstructorServicesFixture implements Fixture {
         return __DIR__ . '/InjectConstructorServices';
     }
 
-    public function injectArrayService() : ObjectType {
-        return objectType(InjectConstructorServices\ArrayInjectService::class);
+    public function injectArrayService() : Type {
+        return types()->class(InjectConstructorServices\ArrayInjectService::class);
     }
 
-    public function injectIntService() : ObjectType {
-        return objectType(InjectConstructorServices\IntInjectService::class);
+    public function injectIntService() : Type {
+        return types()->class(InjectConstructorServices\IntInjectService::class);
     }
 
-    public function injectBoolService() : ObjectType {
-        return objectType(InjectConstructorServices\BoolInjectService::class);
+    public function injectBoolService() : Type {
+        return types()->class(InjectConstructorServices\BoolInjectService::class);
     }
 
-    public function injectFloatService() : ObjectType {
-        return objectType(InjectConstructorServices\FloatInjectService::class);
+    public function injectFloatService() : Type {
+        return types()->class(InjectConstructorServices\FloatInjectService::class);
     }
 
-    public function injectStringService() : ObjectType {
-        return objectType(InjectConstructorServices\StringInjectService::class);
+    public function injectStringService() : Type {
+        return types()->class(InjectConstructorServices\StringInjectService::class);
     }
 
-    public function injectEnvService() : ObjectType {
-        return objectType(InjectConstructorServices\EnvInjectService::class);
+    public function injectEnvService() : Type {
+        return types()->class(InjectConstructorServices\EnvInjectService::class);
     }
 
-    public function injectExplicitMixedService() : ObjectType {
-        return objectType(InjectConstructorServices\ExplicitMixedInjectService::class);
+    public function injectExplicitMixedService() : Type {
+        return types()->class(InjectConstructorServices\ExplicitMixedInjectService::class);
     }
 
-    public function injectImplicitMixedService() : ObjectType {
-        return objectType(InjectConstructorServices\ImplicitMixedInjectService::class);
+    public function injectImplicitMixedService() : Type {
+        return types()->class(InjectConstructorServices\ImplicitMixedInjectService::class);
     }
 
-    public function injectNullableStringService() : ObjectType {
-        return objectType(InjectConstructorServices\NullableStringInjectService::class);
+    public function injectNullableStringService() : Type {
+        return types()->class(InjectConstructorServices\NullableStringInjectService::class);
     }
 
-    public function injectProfilesStringService() : ObjectType {
-        return objectType(InjectConstructorServices\ProfilesStringInjectService::class);
+    public function injectProfilesStringService() : Type {
+        return types()->class(InjectConstructorServices\ProfilesStringInjectService::class);
     }
 
-    public function injectTypeUnionService() : ObjectType {
-        return objectType(InjectConstructorServices\TypeUnionInjectService::class);
+    public function injectTypeUnionService() : Type {
+        return types()->class(InjectConstructorServices\TypeUnionInjectService::class);
     }
 }

@@ -1,13 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace Cspray\AnnotatedContainer;
+namespace Cspray\AnnotatedContainer\Autowire;
 
 use ArrayIterator;
-use Cspray\AnnotatedContainer\Autowire\AutowireableParameter;
-use Cspray\AnnotatedContainer\Autowire\AutowireableParameterSet;
 use Cspray\AnnotatedContainer\Exception\InvalidAutowireParameter;
 use Cspray\AnnotatedContainer\Exception\AutowireParameterNotFound;
-use Cspray\Typiphy\ObjectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
 use Traversable;
 
 /**
@@ -64,11 +62,11 @@ function autowiredParams(AutowireableParameter...$parameters) : AutowireablePara
  * abstract service its concrete alias will be resolved and used.
  *
  * @param non-empty-string $name
- * @param ObjectType $service
+ * @param Type $service
  * @return AutowireableParameter
  * @throws InvalidAutowireParameter
  */
-function serviceParam(string $name, ObjectType $service) : AutowireableParameter {
+function serviceParam(string $name, Type $service) : AutowireableParameter {
     if (empty($name)) {
         throw InvalidAutowireParameter::fromParameterWithMissingName();
     }
@@ -76,11 +74,11 @@ function serviceParam(string $name, ObjectType $service) : AutowireableParameter
 
         /**
          * @param non-empty-string $name
-         * @param ObjectType $value
+         * @param Type $value
          */
         public function __construct(
             private readonly string $name,
-            private readonly ObjectType $value
+            private readonly Type $value
         ) {
         }
 
@@ -91,7 +89,7 @@ function serviceParam(string $name, ObjectType $service) : AutowireableParameter
             return $this->name;
         }
 
-        public function value() : ObjectType {
+        public function value() : Type {
             return $this->value;
         }
 

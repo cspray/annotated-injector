@@ -4,7 +4,7 @@ namespace Cspray\AnnotatedContainer\ContainerFactory;
 
 use Auryn\Injector;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
-use Cspray\Typiphy\ObjectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
 
 final class AurynContainerFactoryState implements ContainerFactoryState {
 
@@ -15,7 +15,7 @@ final class AurynContainerFactoryState implements ContainerFactoryState {
     public readonly Injector $injector;
 
     /**
-     * @var array<non-empty-string, ObjectType>
+     * @var array<non-empty-string, Type>
      */
     private array $nameTypeMap = [];
 
@@ -67,18 +67,18 @@ final class AurynContainerFactoryState implements ContainerFactoryState {
 
     /**
      * @param non-empty-string $name
-     * @param ObjectType $type
+     * @param Type $type
      * @return void
      */
-    public function addNameType(string $name, ObjectType $type) : void {
+    public function addNameType(string $name, Type $type) : void {
         $this->nameTypeMap[$name] = $type;
     }
 
     /**
      * @param non-empty-string $name
-     * @return ObjectType|null
+     * @return Type|null
      */
-    public function typeForName(string $name) : ?ObjectType {
+    public function typeForName(string $name) : ?Type {
         return $this->nameTypeMap[$name] ?? null;
     }
 }

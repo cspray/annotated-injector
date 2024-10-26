@@ -2,8 +2,8 @@
 
 namespace Cspray\AnnotatedContainer\Fixture;
 
-use Cspray\Typiphy\ObjectType;
-use function Cspray\Typiphy\objectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 final class InjectServiceConstructorServicesFixture implements Fixture {
 
@@ -11,23 +11,23 @@ final class InjectServiceConstructorServicesFixture implements Fixture {
         return __DIR__ . '/InjectServiceConstructorServices';
     }
 
-    public function fooInterface() : ObjectType {
-        return objectType(InjectServiceConstructorServices\FooInterface::class);
+    public function fooInterface() : Type {
+        return types()->class(InjectServiceConstructorServices\FooInterface::class);
     }
 
-    public function fooImplementation() : ObjectType {
-        return objectType(InjectServiceConstructorServices\FooImplementation::class);
+    public function fooImplementation() : Type {
+        return types()->class(InjectServiceConstructorServices\FooImplementation::class);
     }
 
-    public function barImplementation() : ObjectType {
-        return objectType(InjectServiceConstructorServices\BarImplementation::class);
+    public function barImplementation() : Type {
+        return types()->class(InjectServiceConstructorServices\BarImplementation::class);
     }
 
-    public function serviceInjector() : ObjectType {
-        return objectType(InjectServiceConstructorServices\ServiceInjector::class);
+    public function serviceInjector() : Type {
+        return types()->class(InjectServiceConstructorServices\ServiceInjector::class);
     }
 
-    public function nullableServiceInjector() : ObjectType {
-        return objectType(InjectServiceConstructorServices\NullableServiceInjector::class);
+    public function nullableServiceInjector() : Type {
+        return types()->class(InjectServiceConstructorServices\NullableServiceInjector::class);
     }
 }

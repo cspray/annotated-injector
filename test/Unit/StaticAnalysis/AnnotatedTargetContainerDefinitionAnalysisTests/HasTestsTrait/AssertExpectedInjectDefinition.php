@@ -3,6 +3,7 @@
 namespace Cspray\AnnotatedContainer\Unit\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalysisTests\HasTestsTrait;
 
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
+use Cspray\AnnotatedContainer\Definition\InjectDefinition;
 use Cspray\AnnotatedContainer\Unit\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalysisTests\DataProviderExpects\ExpectedInject;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
@@ -32,7 +33,7 @@ final class AssertExpectedInjectDefinition {
         if (empty($definitionsForService)) {
             Assert::fail(sprintf(
                 'Could not find an InjectDefinition for %s in the provided ContainerDefinition.',
-                $expectedInject->service
+                $expectedInject->service->name()
             ));
         }
         return $definitionsForService;
@@ -43,7 +44,7 @@ final class AssertExpectedInjectDefinition {
         if (empty($definitionsForInjectTarget)) {
             Assert::fail(sprintf(
                 'Could not find an InjectDefinition for method %s::%s.',
-                $expectedInject->service,
+                $expectedInject->service->name(),
                 $expectedInject->methodName
             ));
         }
@@ -56,7 +57,7 @@ final class AssertExpectedInjectDefinition {
             Assert::fail(sprintf(
                 'Could not find an InjectDefinition for parameter \'%s\' on method %s::%s.',
                 $expectedInject->tarname,
-                $expectedInject->service,
+                $expectedInject->service->name(),
                 $expectedInject->methodName
             ));
         }
@@ -64,14 +65,14 @@ final class AssertExpectedInjectDefinition {
     }
 
     private function validateMethodType(ExpectedInject $expectedInject, array $injectDefinitions) : void {
-        $definitionsWithTypes = array_filter($injectDefinitions, fn($injectDefinition) => $injectDefinition->type() === $expectedInject->type);
+        $definitionsWithTypes = array_filter($injectDefinitions, static fn(InjectDefinition $injectDefinition): bool => $injectDefinition->type()->equals($expectedInject->type));
         if (empty($definitionsWithTypes)) {
             Assert::fail(sprintf(
                 'Could not find an InjectDefinition for parameter \'%s\' on method %s::%s with type \'%s\'.',
                 $expectedInject->tarname,
-                $expectedInject->service,
+                $expectedInject->service->name(),
                 $expectedInject->methodName,
-                $expectedInject->type
+                $expectedInject->type->name()
             ));
         }
     }
@@ -82,8 +83,8 @@ final class AssertExpectedInjectDefinition {
             Assert::fail(sprintf(
                 'Could not find an InjectDefinition for property \'%s\' on %s with type \'%s\'.',
                 $expectedInject->tarname,
-                $expectedInject->service,
-                $expectedInject->type
+                $expectedInject->service->name(),
+                $expectedInject->type->name()
             ));
         }
     }
@@ -94,7 +95,7 @@ final class AssertExpectedInjectDefinition {
             $message = sprintf(
                 'Could not find an InjectDefinition for parameter \'%s\' on method %s::%s with a value matching:%s %s.',
                 $expectedInject->tarname,
-                $expectedInject->service,
+                $expectedInject->service->name(),
                 $expectedInject->methodName,
                 str_repeat(PHP_EOL, 2),
                 var_export($expectedInject->value, true)
@@ -112,7 +113,7 @@ final class AssertExpectedInjectDefinition {
             $message = sprintf(
                 'Could not find an InjectDefinition for parameter \'%s\' on method %s::%s with %s.',
                 $expectedInject->tarname,
-                $expectedInject->service,
+                $expectedInject->service->name(),
                 $expectedInject->methodName,
                 $profileDescriptor()
             );
@@ -127,7 +128,7 @@ final class AssertExpectedInjectDefinition {
             $message = sprintf(
                 'Could not find an InjectDefinition for parameter \'%s\' on method %s::%s with %s.',
                 $expectedInject->tarname,
-                $expectedInject->service,
+                $expectedInject->service->name(),
                 $expectedInject->methodName,
                 $storeDescriptor()
             );

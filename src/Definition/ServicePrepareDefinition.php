@@ -4,6 +4,7 @@
 namespace Cspray\AnnotatedContainer\Definition;
 
 use Cspray\AnnotatedContainer\Attribute\ServicePrepareAttribute;
+use Cspray\AnnotatedContainer\Reflection\Type;
 use Cspray\Typiphy\ObjectType;
 
 /**
@@ -15,10 +16,8 @@ interface ServicePrepareDefinition {
 
     /**
      * The Service that requires some method to be invoked on it after it is instantiated.
-     *
-     * @return ObjectType
      */
-    public function service() : ObjectType;
+    public function service() : Type;
 
     /**
      * The method that should be invoked on the Service.
@@ -27,5 +26,5 @@ interface ServicePrepareDefinition {
      */
     public function methodName() : string;
 
-    public function attribute() : ?ServicePrepareAttribute;
+    public function attribute() : ServicePrepareAttribute;
 }

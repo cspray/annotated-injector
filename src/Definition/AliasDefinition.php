@@ -2,26 +2,20 @@
 
 namespace Cspray\AnnotatedContainer\Definition;
 
-use Cspray\Typiphy\ObjectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
 
 /**
  * Define the concrete Service that should be used when constructing an abstract Service.
- *
- * @see AliasDefinitionBuilder
  */
 interface AliasDefinition {
 
     /**
      * An abstract Service used by your application but cannot be constructed directly.
-     *
-     * @return ObjectType
      */
-    public function abstractService() : ObjectType;
+    public function abstractService() : Type;
 
     /**
      * The concrete Service that should be used where your applications requires the corresponding abstract Service.
-     *
-     * @return ObjectType
      */
-    public function concreteService() : ObjectType;
+    public function concreteService() : Type;
 }

@@ -23,7 +23,6 @@ This document lists the functions for each purpose.
 ) : \Cspray\AnnotatedContainer\Definition\AliasDefinition;
 
 \Cspray\AnnotatedContainer\serviceDelegate(
-    \Cspray\Typiphy\ObjectType $service,
     \Cspray\Typiphy\ObjectType $factoryClass,
     string $factoryMethod
 ) : \Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinition;

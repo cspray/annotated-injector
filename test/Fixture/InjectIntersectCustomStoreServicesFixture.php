@@ -2,8 +2,8 @@
 
 namespace Cspray\AnnotatedContainer\Fixture;
 
-use Cspray\Typiphy\ObjectType;
-use function Cspray\Typiphy\objectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 class InjectIntersectCustomStoreServicesFixture implements Fixture {
 
@@ -11,19 +11,19 @@ class InjectIntersectCustomStoreServicesFixture implements Fixture {
         return __DIR__ . '/InjectIntersectCustomStoreServices';
     }
 
-    public function barInterface() : ObjectType {
-        return objectType(InjectIntersectCustomStoreServices\BarInterface::class);
+    public function barInterface() : Type {
+        return types()->class(InjectIntersectCustomStoreServices\BarInterface::class);
     }
 
-    public function fooInterface() : ObjectType {
-        return objectType(InjectIntersectCustomStoreServices\FooInterface::class);
+    public function fooInterface() : Type {
+        return types()->class(InjectIntersectCustomStoreServices\FooInterface::class);
     }
 
-    public function intersectInjector() : ObjectType {
-        return objectType(InjectIntersectCustomStoreServices\IntersectInjector::class);
+    public function intersectInjector() : Type {
+        return types()->class(InjectIntersectCustomStoreServices\IntersectInjector::class);
     }
 
-    public function fooBarImplementation() : ObjectType {
-        return objectType(InjectIntersectCustomStoreServices\FooBarImplementation::class);
+    public function fooBarImplementation() : Type {
+        return types()->class(InjectIntersectCustomStoreServices\FooBarImplementation::class);
     }
 }

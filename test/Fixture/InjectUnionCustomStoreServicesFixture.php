@@ -2,8 +2,8 @@
 
 namespace Cspray\AnnotatedContainer\Fixture;
 
-use Cspray\Typiphy\ObjectType;
-use function Cspray\Typiphy\objectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 final class InjectUnionCustomStoreServicesFixture implements Fixture {
 
@@ -11,19 +11,19 @@ final class InjectUnionCustomStoreServicesFixture implements Fixture {
         return __DIR__ . '/InjectUnionCustomStoreServices';
     }
 
-    public function fooInterface() : ObjectType {
-        return objectType(InjectUnionCustomStoreServices\FooInterface::class);
+    public function fooInterface() : Type {
+        return types()->class(InjectUnionCustomStoreServices\FooInterface::class);
     }
 
-    public function barInterface() : ObjectType {
-        return objectType(InjectUnionCustomStoreServices\BarInterface::class);
+    public function barInterface() : Type {
+        return types()->class(InjectUnionCustomStoreServices\BarInterface::class);
     }
 
-    public function fooImplementation() : ObjectType {
-        return objectType(InjectUnionCustomStoreServices\FooImplementation::class);
+    public function fooImplementation() : Type {
+        return types()->class(InjectUnionCustomStoreServices\FooImplementation::class);
     }
 
-    public function unionInjector() : ObjectType {
-        return objectType(InjectUnionCustomStoreServices\UnionInjector::class);
+    public function unionInjector() : Type {
+        return types()->class(InjectUnionCustomStoreServices\UnionInjector::class);
     }
 }

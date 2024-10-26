@@ -2,8 +2,8 @@
 
 namespace Cspray\AnnotatedContainer\Fixture;
 
-use Cspray\Typiphy\ObjectType;
-use function Cspray\Typiphy\objectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 final class InjectPrepareServicesFixture implements Fixture {
 
@@ -11,23 +11,23 @@ final class InjectPrepareServicesFixture implements Fixture {
         return __DIR__ . '/InjectPrepareServices';
     }
 
-    public function fooInterface() : ObjectType {
-        return objectType(InjectPrepareServices\FooInterface::class);
+    public function fooInterface() : Type {
+        return types()->class(InjectPrepareServices\FooInterface::class);
     }
 
-    public function fooImplementation() : ObjectType {
-        return objectType(InjectPrepareServices\FooImplementation::class);
+    public function fooImplementation() : Type {
+        return types()->class(InjectPrepareServices\FooImplementation::class);
     }
 
-    public function barImplementation() : ObjectType {
-        return objectType(InjectPrepareServices\BarImplementation::class);
+    public function barImplementation() : Type {
+        return types()->class(InjectPrepareServices\BarImplementation::class);
     }
 
-    public function prepareInjector() : ObjectType {
-        return objectType(InjectPrepareServices\PrepareInjector::class);
+    public function prepareInjector() : Type {
+        return types()->class(InjectPrepareServices\PrepareInjector::class);
     }
 
-    public function serviceScalarUnionPrepareInjector() : ObjectType {
-        return objectType(InjectPrepareServices\ServiceScalarUnionPrepareInjector::class);
+    public function serviceScalarUnionPrepareInjector() : Type {
+        return types()->class(InjectPrepareServices\ServiceScalarUnionPrepareInjector::class);
     }
 }

@@ -4,7 +4,7 @@ namespace Cspray\AnnotatedContainer\Definition;
 
 use Cspray\AnnotatedContainer\Exception\InvalidAlias;
 use Cspray\AnnotatedContainer\Profiles;
-use Cspray\Typiphy\ObjectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
 
 final class ProfilesAwareContainerDefinition implements ContainerDefinition {
 
@@ -63,7 +63,7 @@ final class ProfilesAwareContainerDefinition implements ContainerDefinition {
         return $filtered;
     }
 
-    private function getServiceDefinition(ObjectType $objectType) : ?ServiceDefinition {
+    private function getServiceDefinition(Type $objectType) : ?ServiceDefinition {
         foreach ($this->containerDefinition->serviceDefinitions() as $serviceDefinition) {
             if ($serviceDefinition->type() === $objectType) {
                 return $serviceDefinition;
