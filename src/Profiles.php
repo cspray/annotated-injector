@@ -6,12 +6,28 @@ use Cspray\AnnotatedContainer\Exception\InvalidProfiles;
 
 final class Profiles {
 
-    private function __construct(
-        /**
-         * @var non-empty-list<non-empty-string> $profiles
-         */
-        private readonly array $profiles
-    ) {
+    /**
+     * @var non-empty-list<non-empty-string> $profiles
+     */
+    private readonly array $profiles;
+
+    /**
+     * @param list<string> $profiles
+     */
+    private function __construct(array $profiles) {
+        if ($profiles === []) {
+            throw InvalidProfiles::fromEmptyProfilesList();
+        }
+
+        $clean = [];
+        foreach ($profiles as $profile) {
+            if ($profile === '') {
+                throw InvalidProfiles::fromEmptyProfile();
+            }
+            $clean[] = $profile;
+        }
+
+        $this->profiles = $clean;
     }
 
     public static function defaultOnly() : self {
@@ -24,20 +40,24 @@ final class Profiles {
      * @throws InvalidProfiles
      */
     public static function fromList(array $profiles) : self {
-        if ($profiles === []) {
-            throw InvalidProfiles::fromEmptyProfilesList();
-        }
+        return new self($profiles);
+    }
 
-        $clean = [];
+    public static function fromCommaDelimitedString(string $profiles) : self {
+        return self::fromDelimitedString($profiles, ',');
+    }
 
-        foreach ($profiles as $profile) {
-            if ($profile === '') {
-                throw InvalidProfiles::fromEmptyProfile();
-            }
-
-            $clean[] = $profile;
-        }
-        return new self($clean);
+    /**
+     * @param string $profilesString
+     * @param non-empty-string $delimiter
+     * @return self
+     * @throws InvalidProfiles
+     */
+    public static function fromDelimitedString(string $profilesString, string $delimiter) : self {
+        return new self(array_map(
+            static fn(string $profile) => trim($profile),
+            explode($delimiter, $profilesString)
+        ));
     }
 
     /**

@@ -4,7 +4,9 @@ namespace Cspray\AnnotatedContainer\Unit;
 
 use Cspray\AnnotatedContainer\Exception\InvalidProfiles;
 use Cspray\AnnotatedContainer\Profiles;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Closure;
 
 class ProfilesTest extends TestCase {
 
@@ -55,17 +57,63 @@ class ProfilesTest extends TestCase {
         self::assertFalse($subject->isAnyActive($actual));
     }
 
-    public function testPassEmptyListToProfilesFromListThrowsException() : void {
+    public static function emptyProfilesProvider() : array {
+        return [
+            'fromList' => [static fn() => Profiles::fromList([])],
+        ];
+    }
+
+    #[DataProvider('emptyProfilesProvider')]
+    public function testPassEmptyListToProfilesFromListThrowsException(Closure $closure) : void {
         $this->expectException(InvalidProfiles::class);
         $this->expectExceptionMessage('A non-empty list of non-empty strings MUST be provided for Profiles.');
 
-        Profiles::fromList([]);
+        $closure();
     }
 
-    public function testPassEmptyProfileToProfilesFromListThrowsException() : void {
+    public static function emptyProfileProvider() : array {
+        return [
+            'fromList' => [static fn() => Profiles::fromList([''])],
+            'fromDelimitedString' => [static fn() => Profiles::fromDelimitedString('', ',')],
+        ];
+    }
+
+    #[DataProvider('emptyProfileProvider')]
+    public function testPassEmptyProfileToProfilesFromListThrowsException(Closure $closure) : void {
         $this->expectException(InvalidProfiles::class);
         $this->expectExceptionMessage('All profiles MUST be non-empty strings.');
 
-        Profiles::fromList(['']);
+        $closure();
+    }
+
+    public static function delimitedStringProvider() : array {
+        return [
+            ['foo,bar,baz', ',', ['foo', 'bar', 'baz']],
+            ['erykah|badu|on|on', '|', ['erykah', 'badu', 'on', 'on']],
+            ['harry/mack/goat', '/', ['harry', 'mack', 'goat']],
+            ['  check   ;   for    ;     trailing ; leading   ; spaces', ';', ['check', 'for', 'trailing', 'leading', 'spaces']],
+        ];
+    }
+
+    #[DataProvider('delimitedStringProvider')]
+    public function testDelimitedStringParsedCorrectly(string $profiles, string $delimiter, array $expected) : void {
+        $profiles = Profiles::fromDelimitedString($profiles, $delimiter);
+
+        self::assertSame($expected, $profiles->toArray());
+    }
+
+    public static function commaDelimitedStringProvider() : array {
+        return [
+            ['foo,bar,baz', ['foo', 'bar', 'baz']],
+            [' not  ,  worth  ,  it  ', ['not', 'worth', 'it']],
+            ['some|non|comma|delimiter', ['some|non|comma|delimiter']],
+        ];
+    }
+
+    #[DataProvider('commaDelimitedStringProvider')]
+    public function testCommaDelimitedStringParsedCorrectly(string $profiles, array $expected) : void {
+        $profiles = Profiles::fromCommaDelimitedString($profiles);
+
+        self::assertSame($expected, $profiles->toArray());
     }
 }
