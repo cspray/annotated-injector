@@ -633,6 +633,8 @@ final class DefinitionFactoryTest extends TestCase {
         Closure $definitionCreator
     ) : void {
         $attribute = $this->createMock(ServiceDelegateAttribute::class);
+        $attribute->method('profiles')->willReturn([]);
+        $attribute->method('service')->willReturn(null);
 
         $definition = ($definitionCreator->bindTo($this, $this))($attribute);
 
@@ -648,11 +650,17 @@ final class DefinitionFactoryTest extends TestCase {
             'createService',
             $definition->delegateMethod(),
         );
+        self::assertSame(
+            ['default'],
+            $definition->profiles(),
+        );
         self::assertSame($attribute, $definition->attribute());
     }
 
     public function testServiceDelegateDefinitionFromStaticFactoryReturnsSelfCreatesObject() : void {
         $attribute = $this->createMock(ServiceDelegateAttribute::class);
+        $attribute->method('profiles')->willReturn([]);
+        $attribute->method('service')->willReturn(null);
 
         $definition = $this->subject->serviceDelegateDefinitionFromClassMethodAndAttribute(
             Fixtures::thirdPartyKitchenSink()->nonAnnotatedService(),
@@ -671,6 +679,40 @@ final class DefinitionFactoryTest extends TestCase {
         self::assertSame(
             'create',
             $definition->delegateMethod(),
+        );
+        self::assertSame(
+            ['default'],
+            $definition->profiles(),
+        );
+        self::assertSame($attribute, $definition->attribute());
+    }
+
+    #[DataProvider('serviceDelegateDefinitionCreatorProvider')]
+    /**
+     * @param Closure(ServiceDelegateAttribute):ServiceDelegateDefinition $definitionCreator
+     */
+    public function testServiceDelegateWithExplicitProfilesRespected(Closure $definitionCreator) : void {
+        $attribute = $this->createMock(ServiceDelegateAttribute::class);
+        $attribute->method('profiles')->willReturn(['drip', 'hippopotamus', 'chameleon']);
+        $attribute->method('service')->willReturn(null);
+
+        $definition = ($definitionCreator->bindTo($this, $this))($attribute);
+
+        self::assertSame(
+            Fixtures::delegatedService()->serviceInterface(),
+            $definition->serviceType()
+        );
+        self::assertSame(
+            Fixtures::delegatedService()->serviceFactory(),
+            $definition->delegateType()
+        );
+        self::assertSame(
+            'createService',
+            $definition->delegateMethod(),
+        );
+        self::assertSame(
+            ['drip', 'hippopotamus', 'chameleon'],
+            $definition->profiles(),
         );
         self::assertSame($attribute, $definition->attribute());
     }

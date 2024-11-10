@@ -146,15 +146,33 @@ final class ProfilesAwareContainerDefinitionTest extends TestCase {
         self::assertSame([], $subject->servicePrepareDefinitions());
     }
 
-    public function testGetServiceDelegateDefinitionsDelegatesToInjectedContainerDefinition() : void {
-        $containerDefinition = $this->getMockBuilder(ContainerDefinition::class)->getMock();
-        $containerDefinition->expects($this->once())
-            ->method('serviceDelegateDefinitions')
-            ->willReturn([]);
+    public function testGetServiceDelegateReturnsOnlyThoseWithActiveProfiles() : void {
+        $containerDefinition = $this->containerDefinition(
+            serviceDelegateDefinitions: [
+                $this->serviceDelegateDefinition(
+                    Fixtures::injectConstructorServices()->injectStringService(),
+                    Fixtures::injectConstructorServices()->injectStringService(),
+                    'create',
+                    ['appletree']
+                ),
+                $one = $this->serviceDelegateDefinition(
+                    Fixtures::injectConstructorServices()->injectIntService(),
+                    Fixtures::injectConstructorServices()->injectIntService(),
+                    'create',
+                    ['not', 'like', 'us']
+                ),
+                $two = $this->serviceDelegateDefinition(
+                    Fixtures::injectConstructorServices()->injectArrayService(),
+                    Fixtures::injectConstructorServices()->injectArrayService(),
+                    'create',
+                    ['default', 'us']
+                )
+            ]
+        );
 
-        $subject = new ProfilesAwareContainerDefinition($containerDefinition, Profiles::fromList(['default']));
+        $subject = new ProfilesAwareContainerDefinition($containerDefinition, Profiles::fromList(['us']));
 
-        self::assertSame([], $subject->serviceDelegateDefinitions());
+        self::assertSame([$one, $two], $subject->serviceDelegateDefinitions());
     }
 
     public function testGetInjectDefinitionsRespectProfiles() : void {

@@ -31,5 +31,10 @@ interface ServiceDelegateDefinition {
 
     public function serviceType() : Type;
 
+    /**
+     * @return list<non-empty-string>
+     */
+    public function profiles() : array;
+
     public function attribute() : ServiceDelegateAttribute;
 }

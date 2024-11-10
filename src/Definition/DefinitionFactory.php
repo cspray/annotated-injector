@@ -268,6 +268,15 @@ final class DefinitionFactory {
                 return $this->serviceType;
             }
 
+            public function profiles() : array {
+                $profiles = $this->attribute->profiles();
+                if ($profiles === []) {
+                    $profiles = ['default'];
+                }
+
+                return $profiles;
+            }
+
             public function attribute() : ServiceDelegateAttribute {
                 return $this->attribute;
             }

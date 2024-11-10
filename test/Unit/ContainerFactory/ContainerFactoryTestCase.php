@@ -527,4 +527,20 @@ abstract class ContainerFactoryTestCase extends TestCase {
             $collectionInjector->collection->services
         );
     }
+
+    public static function profileAwareServiceDelegateProvider() : array {
+        return [
+            [['default', 'test'], Fixtures::profileAwareServiceDelegate()->testService()->name()],
+            [['default', 'prod'], Fixtures::profileAwareServiceDelegate()->prodService()->name()],
+        ];
+    }
+
+    #[DataProvider('profileAwareServiceDelegateProvider')]
+    public function testCreatingServiceWithProfileAwareServiceDelegate(array $profiles, string $expected) : void {
+        $container = $this->getContainer(Fixtures::profileAwareServiceDelegate()->getPath(), Profiles::fromList($profiles));
+
+        $service = $container->get(Fixtures::profileAwareServiceDelegate()->service()->name());
+
+        self::assertSame($expected, $service->get());
+    }
 }

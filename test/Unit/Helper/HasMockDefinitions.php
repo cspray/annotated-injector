@@ -103,13 +103,16 @@ trait HasMockDefinitions {
     private function serviceDelegateDefinition(
         Type $service,
         Type $factory,
-        string $method
+        string $method,
+        array $profiles = [],
     ) : ServiceDelegateDefinition {
         $mock = $this->createMock(ServiceDelegateDefinition::class);
         $mock->method('delegateType')->willReturn($factory);
         $mock->method('delegateMethod')->willReturn($method);
         $mock->method('serviceType')->willReturn($service);
+        $mock->method('profiles')->willReturn($profiles);
         $attribute = $this->createMock(ServiceDelegateAttribute::class);
+        $attribute->method('profiles')->willReturn([]);
         $attribute->method('service')->willReturn(null);
         $mock->method('attribute')->willReturn($attribute);
 
