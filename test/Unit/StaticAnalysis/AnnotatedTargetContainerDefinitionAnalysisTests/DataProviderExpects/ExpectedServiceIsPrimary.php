@@ -2,10 +2,10 @@
 
 namespace Cspray\AnnotatedContainer\Unit\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalysisTests\DataProviderExpects;
 
-use Cspray\Typiphy\ObjectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
 
 final class ExpectedServiceIsPrimary {
 
-    public function __construct(public readonly ObjectType $type, public readonly bool $isPrimary) {
+    public function __construct(public readonly Type $type, public readonly bool $isPrimary) {
     }
 }

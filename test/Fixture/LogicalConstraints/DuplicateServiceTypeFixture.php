@@ -4,8 +4,8 @@ namespace Cspray\AnnotatedContainer\Fixture\LogicalConstraints;
 
 use Cspray\AnnotatedContainer\Fixture\Fixture;
 use Cspray\AnnotatedContainer\Fixture\LogicalConstraints\DuplicateServiceType\FooService;
-use Cspray\Typiphy\ObjectType;
-use function Cspray\Typiphy\objectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 final class DuplicateServiceTypeFixture implements Fixture {
 
@@ -13,7 +13,7 @@ final class DuplicateServiceTypeFixture implements Fixture {
         return __DIR__ . '/DuplicateServiceType';
     }
 
-    public function fooService() : ObjectType {
-        return objectType(FooService::class);
+    public function fooService() : Type {
+        return types()->class(FooService::class);
     }
 }

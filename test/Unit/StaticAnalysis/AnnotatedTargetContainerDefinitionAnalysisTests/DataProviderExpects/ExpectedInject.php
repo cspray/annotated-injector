@@ -2,14 +2,14 @@
 
 namespace Cspray\AnnotatedContainer\Unit\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalysisTests\DataProviderExpects;
 
-use Cspray\Typiphy\ObjectType;
-use Cspray\Typiphy\Type;
-use Cspray\Typiphy\TypeUnion;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use Cspray\AnnotatedContainer\Reflection\TypeIntersect;
+use Cspray\AnnotatedContainer\Reflection\TypeUnion;
 
 final class ExpectedInject {
 
     private function __construct(
-        public readonly ObjectType $service,
+        public readonly Type $service,
         public readonly string $tarname,
         public readonly mixed $value,
         public readonly Type|TypeUnion $type,
@@ -19,11 +19,11 @@ final class ExpectedInject {
     ) {
     }
 
-    public static function forConstructParam(ObjectType $service, string $param, Type|TypeUnion $type, mixed $value, array $profiles = ['default'], ?string $store = null) : ExpectedInject {
+    public static function forConstructParam(Type $service, string $param, Type|TypeUnion $type, mixed $value, array $profiles = ['default'], ?string $store = null) : ExpectedInject {
         return self::forMethodParam($service, '__construct', $param, $type, $value, $profiles, $store);
     }
 
-    public static function forMethodParam(ObjectType $service, string $method, string $param, Type|TypeUnion $type, mixed $value, array $profiles = ['default'], ?string $store = null) : ExpectedInject {
+    public static function forMethodParam(Type $service, string $method, string $param, Type|TypeUnion $type, mixed $value, array $profiles = ['default'], ?string $store = null) : ExpectedInject {
         return new self($service, $param, $value, $type, $method, $profiles, $store);
     }
 }

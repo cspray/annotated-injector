@@ -2,8 +2,8 @@
 
 namespace Cspray\AnnotatedContainer\Fixture;
 
-use Cspray\Typiphy\ObjectType;
-use function Cspray\Typiphy\objectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 final class MultiplePrepareServicesFixture implements Fixture {
 
@@ -11,7 +11,7 @@ final class MultiplePrepareServicesFixture implements Fixture {
         return __DIR__ . '/MultiplePrepareServices';
     }
 
-    public function fooImplementation() : ObjectType {
-        return objectType(MultiplePrepareServices\FooImplementation::class);
+    public function fooImplementation() : Type {
+        return types()->class(MultiplePrepareServices\FooImplementation::class);
     }
 }

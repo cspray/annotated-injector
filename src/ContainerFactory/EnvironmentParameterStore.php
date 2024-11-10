@@ -3,10 +3,9 @@
 namespace Cspray\AnnotatedContainer\ContainerFactory;
 
 use Cspray\AnnotatedContainer\Exception\EnvironmentVarNotFound;
-use Cspray\AnnotatedContainer\Exception\InvalidParameterException;
-use Cspray\Typiphy\Type;
-use Cspray\Typiphy\TypeIntersect;
-use Cspray\Typiphy\TypeUnion;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use Cspray\AnnotatedContainer\Reflection\TypeUnion;
+use Cspray\AnnotatedContainer\Reflection\TypeIntersect;
 
 final class EnvironmentParameterStore implements ParameterStore {
 

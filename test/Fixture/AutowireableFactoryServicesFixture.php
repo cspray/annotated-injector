@@ -2,8 +2,8 @@
 
 namespace Cspray\AnnotatedContainer\Fixture;
 
-use Cspray\Typiphy\ObjectType;
-use function Cspray\Typiphy\objectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 class AutowireableFactoryServicesFixture implements Fixture {
 
@@ -11,19 +11,19 @@ class AutowireableFactoryServicesFixture implements Fixture {
         return __DIR__ . '/AutowireableFactoryServices';
     }
 
-    public function fooInterface() : ObjectType {
-        return objectType(AutowireableFactoryServices\FooInterface::class);
+    public function fooInterface() : Type {
+        return types()->class(AutowireableFactoryServices\FooInterface::class);
     }
 
-    public function fooImplementation() : ObjectType {
-        return objectType(AutowireableFactoryServices\FooImplementation::class);
+    public function fooImplementation() : Type {
+        return types()->class(AutowireableFactoryServices\FooImplementation::class);
     }
 
-    public function barImplementation() : ObjectType {
-        return objectType(AutowireableFactoryServices\BarImplementation::class);
+    public function barImplementation() : Type {
+        return types()->class(AutowireableFactoryServices\BarImplementation::class);
     }
 
-    public function factoryCreatedService() : ObjectType {
-        return objectType(AutowireableFactoryServices\FactoryCreatedService::class);
+    public function factoryCreatedService() : Type {
+        return types()->class(AutowireableFactoryServices\FactoryCreatedService::class);
     }
 }

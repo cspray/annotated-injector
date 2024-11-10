@@ -5,8 +5,8 @@ namespace Cspray\AnnotatedContainer\Fixture\LogicalConstraints;
 use Cspray\AnnotatedContainer\Fixture\Fixture;
 use Cspray\AnnotatedContainer\Fixture\LogicalConstraints\DuplicateServiceName\BarService;
 use Cspray\AnnotatedContainer\Fixture\LogicalConstraints\DuplicateServiceName\FooService;
-use Cspray\Typiphy\ObjectType;
-use function Cspray\Typiphy\objectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 final class DuplicateServiceNameFixture implements Fixture {
 
@@ -14,11 +14,11 @@ final class DuplicateServiceNameFixture implements Fixture {
         return __DIR__ . '/DuplicateServiceName';
     }
 
-    public function getBarService() : ObjectType {
-        return objectType(BarService::class);
+    public function getBarService() : Type {
+        return types()->class(BarService::class);
     }
 
-    public function getFooService() : ObjectType {
-        return objectType(FooService::class);
+    public function getFooService() : Type {
+        return types()->class(FooService::class);
     }
 }

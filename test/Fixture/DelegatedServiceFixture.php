@@ -2,8 +2,8 @@
 
 namespace Cspray\AnnotatedContainer\Fixture;
 
-use Cspray\Typiphy\ObjectType;
-use function Cspray\Typiphy\objectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 final class DelegatedServiceFixture implements Fixture {
 
@@ -11,15 +11,15 @@ final class DelegatedServiceFixture implements Fixture {
         return __DIR__ . '/DelegatedService';
     }
 
-    public function serviceInterface() : ObjectType {
-        return objectType(DelegatedService\ServiceInterface::class);
+    public function serviceInterface() : Type {
+        return types()->class(DelegatedService\ServiceInterface::class);
     }
 
-    public function serviceFactory() : ObjectType {
-        return objectType(DelegatedService\ServiceFactory::class);
+    public function serviceFactory() : Type {
+        return types()->class(DelegatedService\ServiceFactory::class);
     }
 
-    public function fooService() : ObjectType {
-        return objectType(DelegatedService\FooService::class);
+    public function fooService() : Type {
+        return types()->class(DelegatedService\FooService::class);
     }
 }

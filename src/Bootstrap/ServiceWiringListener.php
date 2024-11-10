@@ -75,12 +75,10 @@ abstract class ServiceWiringListener implements AfterContainerCreation {
              * @return ServiceFromServiceDefinition<T>
              */
             private function createServiceFromServiceDefinition(object $service, ServiceDefinition $serviceDefinition) : ServiceFromServiceDefinition {
-                $serviceFromDefinition =
-
                     /**
                      * @implements ServiceFromServiceDefinition<T>
                      */
-                    new class($service, $serviceDefinition) implements ServiceFromServiceDefinition {
+                    return new class($service, $serviceDefinition) implements ServiceFromServiceDefinition {
                         public function __construct(
                         private readonly object $service,
                         private readonly ServiceDefinition $definition
@@ -95,9 +93,6 @@ abstract class ServiceWiringListener implements AfterContainerCreation {
                             return $this->definition;
                         }
                     };
-
-                /** @var ServiceFromServiceDefinition<T> $serviceFromDefinition */
-                return $serviceFromDefinition;
             }
         };
         $this->wireServices($container, $serviceGatherer);

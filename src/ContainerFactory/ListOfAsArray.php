@@ -2,8 +2,8 @@
 
 namespace Cspray\AnnotatedContainer\ContainerFactory;
 
-use Cspray\Typiphy\ObjectType;
-use function Cspray\Typiphy\objectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 /**
  * @template ItemType of object
@@ -19,8 +19,8 @@ final class ListOfAsArray implements ListOf {
     ) {
     }
 
-    public function type() : ObjectType {
-        return objectType($this->type);
+    public function type() : Type {
+        return types()->class($this->type);
     }
 
     public function toCollection(array $servicesOfType) : array {

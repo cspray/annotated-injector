@@ -8,42 +8,40 @@ use Cspray\AnnotatedContainer\Autowire\AutowireableInvoker;
 use Cspray\AnnotatedContainer\ContainerFactory\ContainerFactory;
 use Cspray\AnnotatedContainer\ContainerFactory\ContainerFactoryOptionsBuilder;
 use Cspray\AnnotatedContainer\ContainerFactory\ParameterStore;
-use Cspray\AnnotatedContainer\Definition\AliasDefinitionBuilder;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinitionBuilder;
 use Cspray\AnnotatedContainer\Definition\Serializer\XmlContainerDefinitionSerializer;
-use Cspray\AnnotatedContainer\Definition\ServiceDefinitionBuilder;
 use Cspray\AnnotatedContainer\Event\Emitter;
 use Cspray\AnnotatedContainer\Exception\InvalidAlias;
 use Cspray\AnnotatedContainer\Exception\ParameterStoreNotFound;
 use Cspray\AnnotatedContainer\Profiles;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use Cspray\AnnotatedContainer\Reflection\TypeUnion;
+use Cspray\AnnotatedContainer\Reflection\TypeIntersect;
 use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalyzer;
-use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetDefinitionConverter;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalyzer;
+use Cspray\AnnotatedContainer\Unit\Helper\HasMockDefinitions;
 use Cspray\AnnotatedContainer\Unit\Helper\StubContainerFactoryListener;
 use Cspray\AnnotatedContainer\Unit\Helper\StubParameterStore;
 use Cspray\AnnotatedContainer\Fixture\Fixture;
 use Cspray\AnnotatedContainer\Fixture\Fixtures;
 use Cspray\AnnotatedTarget\PhpParserAnnotatedTargetParser;
-use Cspray\Typiphy\ObjectType;
-use Cspray\Typiphy\Type;
-use Cspray\Typiphy\TypeIntersect;
-use Cspray\Typiphy\TypeUnion;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use function Cspray\AnnotatedContainer\autowiredParams;
-use function Cspray\AnnotatedContainer\rawParam;
-use function Cspray\AnnotatedContainer\serviceParam;
-use function Cspray\Typiphy\objectType;
+use function Cspray\AnnotatedContainer\Autowire\autowiredParams;
+use function Cspray\AnnotatedContainer\Autowire\rawParam;
+use function Cspray\AnnotatedContainer\Autowire\serviceParam;
 
 abstract class ContainerFactoryTestCase extends TestCase {
 
+    use HasMockDefinitions;
+
     abstract protected function getContainerFactory(Emitter $emitter = new Emitter()) : ContainerFactory;
 
-    abstract protected function getBackingContainerInstanceOf() : ObjectType;
+    abstract protected function getBackingContainerInstanceOf() : Type;
 
     protected function supportsInjectingMultipleNamedServices() : bool {
         return true;
@@ -52,7 +50,6 @@ abstract class ContainerFactoryTestCase extends TestCase {
     private function getContainerDefinitionCompiler() : ContainerDefinitionAnalyzer {
         return new AnnotatedTargetContainerDefinitionAnalyzer(
             new PhpParserAnnotatedTargetParser(),
-            new AnnotatedTargetDefinitionConverter(),
             new Emitter()
         );
     }
@@ -169,18 +166,20 @@ abstract class ContainerFactoryTestCase extends TestCase {
     }
 
     public function testConcreteAliasDefinitionDoesNotHaveServiceDefinition() {
-        $abstractService = Fixtures::implicitAliasedServices()->fooInterface()->name();
-        $concreteService = Fixtures::implicitAliasedServices()->fooImplementation()->name();
-        $containerDefinition = ContainerDefinitionBuilder::newDefinition()
-            ->withServiceDefinition(
-                ServiceDefinitionBuilder::forAbstract($abstract = objectType($abstractService))->build()
-            )
-            ->withAliasDefinition(
-                AliasDefinitionBuilder::forAbstract($abstract)->withConcrete($concrete = objectType($concreteService))->build()
-            )->build();
+        $containerDefinition = $this->containerDefinition(
+            serviceDefinitions: [
+                $this->abstractServiceDefinition(Fixtures::implicitAliasedServices()->fooInterface()),
+            ],
+            aliasDefinitions: [
+                $this->aliasDefinition(
+                    Fixtures::implicitAliasedServices()->fooInterface(),
+                    Fixtures::implicitAliasedServices()->fooImplementation()
+                )
+            ]
+        );
 
         $this->expectException(InvalidAlias::class);
-        $this->expectExceptionMessage('An AliasDefinition has a concrete type, ' . $concrete->name() . ', that is not a registered ServiceDefinition.');
+        $this->expectExceptionMessage('An AliasDefinition has a concrete type, ' . Fixtures::implicitAliasedServices()->fooImplementation()->name() . ', that is not a registered ServiceDefinition.');
         $this->getContainerFactory()->createContainer($containerDefinition);
     }
 

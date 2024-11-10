@@ -2,54 +2,46 @@
 
 namespace Cspray\AnnotatedContainer\Unit\Definition;
 
-use Cspray\AnnotatedContainer\Definition\AliasDefinitionBuilder;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
-use Cspray\AnnotatedContainer\Definition\ContainerDefinitionBuilder;
-use Cspray\AnnotatedContainer\Definition\InjectDefinitionBuilder;
 use Cspray\AnnotatedContainer\Definition\ProfilesAwareContainerDefinition;
-use Cspray\AnnotatedContainer\Definition\ServiceDefinitionBuilder;
 use Cspray\AnnotatedContainer\Exception\InvalidAlias;
 use Cspray\AnnotatedContainer\Profiles;
 use Cspray\AnnotatedContainer\Fixture\Fixtures;
+use Cspray\AnnotatedContainer\Unit\Helper\HasMockDefinitions;
 use PHPUnit\Framework\TestCase;
-use function Cspray\Typiphy\stringType;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
-class ProfilesAwareContainerDefinitionTest extends TestCase {
+final class ProfilesAwareContainerDefinitionTest extends TestCase {
+
+    use HasMockDefinitions;
 
     public function testGetServiceDefinitionsOnlyReturnThoseMatchingProfiles() : void {
-        $serviceDefinition1 = ServiceDefinitionBuilder::forConcrete(Fixtures::singleConcreteService()->fooImplementation())
-            ->withProfiles(['foo'])
-            ->build();
-        $serviceDefinition2 = ServiceDefinitionBuilder::forConcrete(Fixtures::ambiguousAliasedServices()->quxImplementation())
-            ->withProfiles(['default', 'bar', 'baz'])
-            ->build();
-        $serviceDefinition3 = ServiceDefinitionBuilder::forAbstract(Fixtures::ambiguousAliasedServices()->fooInterface())
-            ->withProfiles(['foo', 'qux', 'test'])
-            ->build();
-
-        $containerDefinition = ContainerDefinitionBuilder::newDefinition()
-            ->withServiceDefinition($serviceDefinition1)
-            ->withServiceDefinition($serviceDefinition2)
-            ->withServiceDefinition($serviceDefinition3)
-            ->build();
+        $containerDefinition = $this->containerDefinition(
+            serviceDefinitions: [
+                $fooImplementation = $this->concreteServiceDefinition(Fixtures::singleConcreteService()->fooImplementation(), profiles: ['foo']),
+                $this->concreteServiceDefinition(Fixtures::ambiguousAliasedServices()->quxImplementation(), profiles: ['default', 'bar', 'baz']),
+                $fooInterface = $this->abstractServiceDefinition(Fixtures::ambiguousAliasedServices()->fooInterface(), profiles: ['foo', 'qux', 'test']),
+            ]
+        );
 
         $subject = new ProfilesAwareContainerDefinition($containerDefinition, Profiles::fromList(['foo']));
 
-        self::assertSame([$serviceDefinition1, $serviceDefinition3], $subject->serviceDefinitions());
+        self::assertSame([$fooImplementation, $fooInterface], $subject->serviceDefinitions());
     }
 
     public function testGetAliasDefinitionsDoNotIncludeAliasWithInvalidAbstractProfiles() : void {
-        $abstract = ServiceDefinitionBuilder::forAbstract(Fixtures::ambiguousAliasedServices()->fooInterface())
-            ->withProfiles(['bar'])
-            ->build();
-        $concrete = ServiceDefinitionBuilder::forConcrete(Fixtures::ambiguousAliasedServices()->barImplementation())
-            ->build();
-        $alias = AliasDefinitionBuilder::forAbstract($abstract->type())->withConcrete($concrete->type())->build();
-        $containerDefinition = ContainerDefinitionBuilder::newDefinition()
-            ->withServiceDefinition($abstract)
-            ->withServiceDefinition($concrete)
-            ->withAliasDefinition($alias)
-            ->build();
+        $containerDefinition = $this->containerDefinition(
+            serviceDefinitions: [
+                $this->abstractServiceDefinition(Fixtures::ambiguousAliasedServices()->fooInterface(), profiles: ['bar']),
+                $this->concreteServiceDefinition(Fixtures::ambiguousAliasedServices()->barImplementation()),
+            ],
+            aliasDefinitions: [
+                $this->aliasDefinition(
+                    Fixtures::ambiguousAliasedServices()->fooInterface(),
+                    Fixtures::ambiguousAliasedServices()->barImplementation()
+                )
+            ],
+        );
 
         $subject = new ProfilesAwareContainerDefinition($containerDefinition, Profiles::fromList(['default']));
 
@@ -58,17 +50,18 @@ class ProfilesAwareContainerDefinitionTest extends TestCase {
 
 
     public function testGetAliasDefinitionsDoNotIncludeAliasWithInvalidConcreteProfiles() : void {
-        $abstract = ServiceDefinitionBuilder::forAbstract(Fixtures::ambiguousAliasedServices()->fooInterface())
-            ->build();
-        $concrete = ServiceDefinitionBuilder::forConcrete(Fixtures::ambiguousAliasedServices()->barImplementation())
-            ->withProfiles(['foo'])
-            ->build();
-        $alias = AliasDefinitionBuilder::forAbstract($abstract->type())->withConcrete($concrete->type())->build();
-        $containerDefinition = ContainerDefinitionBuilder::newDefinition()
-            ->withServiceDefinition($abstract)
-            ->withServiceDefinition($concrete)
-            ->withAliasDefinition($alias)
-            ->build();
+        $containerDefinition = $this->containerDefinition(
+            serviceDefinitions: [
+                $this->abstractServiceDefinition(Fixtures::ambiguousAliasedServices()->fooInterface()),
+                $this->concreteServiceDefinition(Fixtures::ambiguousAliasedServices()->barImplementation(), profiles: ['foo']),
+            ],
+            aliasDefinitions: [
+                $this->aliasDefinition(
+                    Fixtures::ambiguousAliasedServices()->fooInterface(),
+                    Fixtures::ambiguousAliasedServices()->barImplementation(),
+                ),
+            ],
+        );
 
         $subject = new ProfilesAwareContainerDefinition($containerDefinition, Profiles::fromList(['default']));
 
@@ -76,16 +69,18 @@ class ProfilesAwareContainerDefinitionTest extends TestCase {
     }
 
     public function testGetAliasDefinitionsIncludeCorrectProfiles() : void {
-        $abstract = ServiceDefinitionBuilder::forAbstract(Fixtures::ambiguousAliasedServices()->fooInterface())
-            ->build();
-        $concrete = ServiceDefinitionBuilder::forConcrete(Fixtures::ambiguousAliasedServices()->barImplementation())
-            ->build();
-        $alias = AliasDefinitionBuilder::forAbstract($abstract->type())->withConcrete($concrete->type())->build();
-        $containerDefinition = ContainerDefinitionBuilder::newDefinition()
-            ->withServiceDefinition($abstract)
-            ->withServiceDefinition($concrete)
-            ->withAliasDefinition($alias)
-            ->build();
+        $containerDefinition = $this->containerDefinition(
+            serviceDefinitions: [
+                $this->abstractServiceDefinition(Fixtures::ambiguousAliasedServices()->fooInterface()),
+                $this->concreteServiceDefinition(Fixtures::ambiguousAliasedServices()->barImplementation()),
+            ],
+            aliasDefinitions: [
+                $this->aliasDefinition(
+                    Fixtures::ambiguousAliasedServices()->fooInterface(),
+                    Fixtures::ambiguousAliasedServices()->barImplementation(),
+                ),
+            ],
+        );
 
         $subject = new ProfilesAwareContainerDefinition($containerDefinition, Profiles::fromList(['default']));
 
@@ -93,15 +88,17 @@ class ProfilesAwareContainerDefinitionTest extends TestCase {
     }
 
     public function testGetAliasDefinitionAbstractNotServiceDefinitionThrowsException() : void {
-        $concrete = ServiceDefinitionBuilder::forConcrete(Fixtures::ambiguousAliasedServices()->barImplementation())
-            ->build();
-        $alias = AliasDefinitionBuilder::forAbstract(Fixtures::ambiguousAliasedServices()->fooInterface())
-            ->withConcrete($concrete->type())
-            ->build();
-        $containerDefinition = ContainerDefinitionBuilder::newDefinition()
-            ->withServiceDefinition($concrete)
-            ->withAliasDefinition($alias)
-            ->build();
+        $containerDefinition = $this->containerDefinition(
+            serviceDefinitions: [
+                $this->concreteServiceDefinition(Fixtures::ambiguousAliasedServices()->barImplementation()),
+            ],
+            aliasDefinitions: [
+                $this->aliasDefinition(
+                    Fixtures::ambiguousAliasedServices()->fooInterface(),
+                    Fixtures::ambiguousAliasedServices()->barImplementation(),
+                ),
+            ],
+        );
 
         $subject = new ProfilesAwareContainerDefinition($containerDefinition, Profiles::fromList(['default']));
 
@@ -115,15 +112,17 @@ class ProfilesAwareContainerDefinitionTest extends TestCase {
     }
 
     public function testGetAliasDefinitionConcreteNotServiceDefinitionThrowsException() : void {
-        $abstract = ServiceDefinitionBuilder::forAbstract(Fixtures::ambiguousAliasedServices()->fooInterface())
-            ->build();
-        $alias = AliasDefinitionBuilder::forAbstract($abstract->type())
-            ->withConcrete(Fixtures::ambiguousAliasedServices()->barImplementation())
-            ->build();
-        $containerDefinition = ContainerDefinitionBuilder::newDefinition()
-            ->withServiceDefinition($abstract)
-            ->withAliasDefinition($alias)
-            ->build();
+        $containerDefinition = $this->containerDefinition(
+            serviceDefinitions: [
+                $this->abstractServiceDefinition(Fixtures::ambiguousAliasedServices()->fooInterface()),
+            ],
+            aliasDefinitions: [
+                $this->aliasDefinition(
+                    Fixtures::ambiguousAliasedServices()->fooInterface(),
+                    Fixtures::ambiguousAliasedServices()->barImplementation()
+                ),
+            ],
+        );
 
         $subject = new ProfilesAwareContainerDefinition($containerDefinition, Profiles::fromList(['default']));
 
@@ -159,28 +158,33 @@ class ProfilesAwareContainerDefinitionTest extends TestCase {
     }
 
     public function testGetInjectDefinitionsRespectProfiles() : void {
-        $service = ServiceDefinitionBuilder::forConcrete(Fixtures::injectConstructorServices()->injectProfilesStringService())
-            ->build();
-        $injectDefinition1 = InjectDefinitionBuilder::forService($service->type())
-            ->withMethod('__construct', stringType(), 'val')
-            ->withValue('a string')
-            ->withProfiles('test')
-            ->build();
-        $injectDefinition2 = InjectDefinitionBuilder::forService($service->type())
-            ->withMethod('__construct', stringType(), 'val')
-            ->withValue('a different string')
-            ->withProfiles('prod')
-            ->build();
-
-        $containerDefinition = ContainerDefinitionBuilder::newDefinition()
-            ->withServiceDefinition($service)
-            ->withInjectDefinition($injectDefinition1)
-            ->withInjectDefinition($injectDefinition2)
-            ->build();
+        $containerDefinition = $this->containerDefinition(
+            serviceDefinitions: [
+                $this->concreteServiceDefinition(Fixtures::injectConstructorServices()->injectProfilesStringService()),
+            ],
+            injectDefinitions: [
+                $this->injectDefinition(
+                    Fixtures::injectConstructorServices()->injectProfilesStringService(),
+                    '__construct',
+                    'val',
+                    types()->string(),
+                    'a string',
+                    profiles: ['test'],
+                ),
+                $injectDefinition = $this->injectDefinition(
+                    Fixtures::injectConstructorServices()->injectProfilesStringService(),
+                    '__construct',
+                    'val',
+                    types()->string(),
+                    'a different string',
+                    profiles: ['prod'],
+                ),
+            ]
+        );
 
         $subject = new ProfilesAwareContainerDefinition($containerDefinition, Profiles::fromList(['prod']));
 
-        $expected = [$injectDefinition2];
+        $expected = [$injectDefinition];
         self::assertSame($expected, $subject->injectDefinitions());
     }
 }

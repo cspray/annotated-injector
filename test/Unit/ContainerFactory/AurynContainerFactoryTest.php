@@ -6,8 +6,8 @@ use Auryn\Injector;
 use Cspray\AnnotatedContainer\ContainerFactory\AurynContainerFactory;
 use Cspray\AnnotatedContainer\ContainerFactory\ContainerFactory;
 use Cspray\AnnotatedContainer\Event\Emitter;
-use Cspray\Typiphy\ObjectType;
-use function Cspray\Typiphy\objectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 class AurynContainerFactoryTest extends ContainerFactoryTestCase {
 
@@ -15,7 +15,7 @@ class AurynContainerFactoryTest extends ContainerFactoryTestCase {
         return new AurynContainerFactory(emitter: $emitter);
     }
 
-    protected function getBackingContainerInstanceOf() : ObjectType {
-        return objectType(Injector::class);
+    protected function getBackingContainerInstanceOf() : Type {
+        return types()->class(Injector::class);
     }
 }

@@ -2,28 +2,28 @@
 
 namespace Cspray\AnnotatedContainer\Fixture;
 
-use Cspray\Typiphy\ObjectType;
-use function Cspray\Typiphy\objectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 class NamedProfileResolvedServicesFixture implements Fixture {
 
-    public function getPath(): string {
+    public function getPath() : string {
         return __DIR__ . '/NamedProfileResolvedServices';
     }
 
-    public function fooInterface() : ObjectType {
-        return objectType(NamedProfileResolvedServices\FooInterface::class);
+    public function fooInterface() : Type {
+        return types()->class(NamedProfileResolvedServices\FooInterface::class);
     }
 
-    public function devImplementation() : ObjectType {
-        return objectType(NamedProfileResolvedServices\DevFooImplementation::class);
+    public function devImplementation() : Type {
+        return types()->class(NamedProfileResolvedServices\DevFooImplementation::class);
     }
 
-    public function prodImplementation() : ObjectType {
-        return objectType(NamedProfileResolvedServices\ProdFooImplementation::class);
+    public function prodImplementation() : Type {
+        return types()->class(NamedProfileResolvedServices\ProdFooImplementation::class);
     }
 
-    public function testImplementation() : ObjectType {
-        return objectType(NamedProfileResolvedServices\TestFooImplementation::class);
+    public function testImplementation() : Type {
+        return types()->class(NamedProfileResolvedServices\TestFooImplementation::class);
     }
 }

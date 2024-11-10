@@ -5,7 +5,7 @@ namespace Cspray\AnnotatedContainer\Unit\Helper;
 use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProvider;
 use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProviderContext;
 use Cspray\AnnotatedContainer\Fixture\Fixtures;
-use function Cspray\AnnotatedContainer\service;
+use function Cspray\AnnotatedContainer\Definition\service;
 
 final class StubDefinitionProvider implements DefinitionProvider {
 

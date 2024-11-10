@@ -3,9 +3,9 @@
 namespace Cspray\AnnotatedContainer\Unit\Helper;
 
 use Cspray\AnnotatedContainer\ContainerFactory\ParameterStore;
-use Cspray\Typiphy\Type;
-use Cspray\Typiphy\TypeIntersect;
-use Cspray\Typiphy\TypeUnion;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use Cspray\AnnotatedContainer\Reflection\TypeUnion;
+use Cspray\AnnotatedContainer\Reflection\TypeIntersect;
 
 final class StubParameterStoreWithDependencies implements ParameterStore {
 
@@ -16,7 +16,7 @@ final class StubParameterStoreWithDependencies implements ParameterStore {
         return 'test-store';
     }
 
-    public function fetch(TypeUnion|Type|TypeIntersect $type, string $key) : string {
+    public function fetch(Type|TypeUnion|TypeIntersect $type, string $key) : string {
         return $this->prefix . $key;
     }
 }

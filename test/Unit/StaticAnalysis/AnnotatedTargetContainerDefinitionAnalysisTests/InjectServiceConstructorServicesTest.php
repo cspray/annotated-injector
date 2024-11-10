@@ -19,8 +19,7 @@ use Cspray\AnnotatedContainer\Unit\StaticAnalysis\AnnotatedTargetContainerDefini
 use Cspray\AnnotatedContainer\Unit\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalysisTests\HasTestsTrait\HasServiceDefinitionTestsTrait;
 use Cspray\AnnotatedContainer\Fixture\Fixture;
 use Cspray\AnnotatedContainer\Fixture\Fixtures;
-use function Cspray\Typiphy\nullType;
-use function Cspray\Typiphy\typeUnion;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 class InjectServiceConstructorServicesTest extends AnnotatedTargetContainerDefinitionAnalyzerTestCase {
 
@@ -53,7 +52,7 @@ class InjectServiceConstructorServicesTest extends AnnotatedTargetContainerDefin
             [ExpectedInject::forConstructParam(
                 Fixtures::injectServiceConstructorServices()->nullableServiceInjector(),
                 'maybeFoo',
-                typeUnion(nullType(), Fixtures::injectServiceConstructorServices()->fooInterface()),
+                types()->nullable(Fixtures::injectServiceConstructorServices()->fooInterface()),
                 null
             )]
         ];

@@ -29,13 +29,7 @@
             <!-- We expect these properties not to be set in constructor as part of the Builder pattern -->
             <!-- The property potentially being set or not is handled at runtime -->
             <errorLevel type="suppress">
-                <file name="src/ContainerFactory/ContainerFactoryOptionsBuilder.php" />
-                <file name="src/Definition/AliasDefinitionBuilder.php" />
                 <file name="src/Definition/ContainerDefinitionBuilder.php" />
-                <file name="src/Definition/InjectDefinitionBuilder.php" />
-                <file name="src/Definition/ServiceDefinitionBuilder.php" />
-                <file name="src/Definition/ServiceDelegateDefinitionBuilder.php" />
-                <file name="src/Definition/ServicePrepareDefinitionBuilder.php" />
             </errorLevel>
         </PropertyNotSetInConstructor>
 

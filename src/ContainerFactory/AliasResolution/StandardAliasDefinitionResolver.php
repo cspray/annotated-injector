@@ -4,14 +4,13 @@ namespace Cspray\AnnotatedContainer\ContainerFactory\AliasResolution;
 
 use Cspray\AnnotatedContainer\Definition\AliasDefinition;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
-use Cspray\AnnotatedContainer\Definition\ServiceDefinition;
-use Cspray\Typiphy\ObjectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
 
 final class StandardAliasDefinitionResolver implements AliasDefinitionResolver {
 
     public function resolveAlias(
         ContainerDefinition $containerDefinition,
-        ObjectType $abstractService
+        Type $abstractService
     ) : AliasDefinitionResolution {
         if ($this->isServiceDelegate($containerDefinition, $abstractService)) {
             $definition = null;
@@ -69,7 +68,7 @@ final class StandardAliasDefinitionResolver implements AliasDefinitionResolver {
         };
     }
 
-    private function isServiceDelegate(ContainerDefinition $containerDefinition, ObjectType $service) : bool {
+    private function isServiceDelegate(ContainerDefinition $containerDefinition, Type $service) : bool {
         foreach ($containerDefinition->serviceDelegateDefinitions() as $serviceDelegateDefinition) {
             if ($serviceDelegateDefinition->serviceType()->name() === $service->name()) {
                 return true;
@@ -80,7 +79,7 @@ final class StandardAliasDefinitionResolver implements AliasDefinitionResolver {
     }
 
     /**
-     * @return list<ObjectType>
+     * @return list<Type>
      */
     private function primaryServiceNames(ContainerDefinition $containerDefinition) : array {
         $names = [];

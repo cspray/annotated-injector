@@ -2,8 +2,8 @@
 
 namespace Cspray\AnnotatedContainer\Fixture;
 
-use Cspray\Typiphy\ObjectType;
-use function Cspray\Typiphy\objectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 final class InjectServiceIntersectConstructorServicesFixture implements Fixture {
 
@@ -11,23 +11,23 @@ final class InjectServiceIntersectConstructorServicesFixture implements Fixture 
         return __DIR__ . '/InjectServiceIntersectUnionServices';
     }
 
-    public function fooInterface() : ObjectType {
-        return objectType(InjectServiceIntersectUnionServices\FooInterface::class);
+    public function fooInterface() : Type {
+        return types()->class(InjectServiceIntersectUnionServices\FooInterface::class);
     }
 
-    public function barInterface() : ObjectType {
-        return objectType(InjectServiceIntersectUnionServices\BarInterface::class);
+    public function barInterface() : Type {
+        return types()->class(InjectServiceIntersectUnionServices\BarInterface::class);
     }
 
-    public function fooBarImplementation() : ObjectType {
-        return objectType(InjectServiceIntersectUnionServices\FooBarImplementation::class);
+    public function fooBarImplementation() : Type {
+        return types()->class(InjectServiceIntersectUnionServices\FooBarImplementation::class);
     }
 
-    public function barImplementation() : ObjectType {
-        return objectType(InjectServiceIntersectUnionServices\BarImplementation::class);
+    public function barImplementation() : Type {
+        return types()->class(InjectServiceIntersectUnionServices\BarImplementation::class);
     }
 
-    public function fooBarConsumer() : ObjectType {
-        return objectType(InjectServiceIntersectUnionServices\FooBarConsumer::class);
+    public function fooBarConsumer() : Type {
+        return types()->class(InjectServiceIntersectUnionServices\FooBarConsumer::class);
     }
 }

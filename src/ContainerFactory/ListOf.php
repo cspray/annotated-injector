@@ -2,7 +2,7 @@
 
 namespace Cspray\AnnotatedContainer\ContainerFactory;
 
-use Cspray\Typiphy\ObjectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
 
 /**
  * @template ServiceType of object
@@ -10,7 +10,7 @@ use Cspray\Typiphy\ObjectType;
  */
 interface ListOf {
 
-    public function type() : ObjectType;
+    public function type() : Type;
 
     /**'
      * @psalm-param list<ServiceType> $servicesOfType

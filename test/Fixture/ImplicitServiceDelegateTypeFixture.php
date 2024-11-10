@@ -2,8 +2,8 @@
 
 namespace Cspray\AnnotatedContainer\Fixture;
 
-use Cspray\Typiphy\ObjectType;
-use function Cspray\Typiphy\objectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 final class ImplicitServiceDelegateTypeFixture implements Fixture {
 
@@ -11,11 +11,11 @@ final class ImplicitServiceDelegateTypeFixture implements Fixture {
         return __DIR__ . '/ImplicitServiceDelegateType';
     }
 
-    public function fooService() : ObjectType {
-        return objectType(ImplicitServiceDelegateType\FooService::class);
+    public function fooService() : Type {
+        return types()->class(ImplicitServiceDelegateType\FooService::class);
     }
 
-    public function fooServiceFactory() : ObjectType {
-        return objectType(ImplicitServiceDelegateType\FooServiceFactory::class);
+    public function fooServiceFactory() : Type {
+        return types()->class(ImplicitServiceDelegateType\FooServiceFactory::class);
     }
 }

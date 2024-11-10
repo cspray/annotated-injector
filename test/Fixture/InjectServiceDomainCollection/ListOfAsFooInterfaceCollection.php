@@ -3,8 +3,8 @@
 namespace Cspray\AnnotatedContainer\Fixture\InjectServiceDomainCollection;
 
 use Cspray\AnnotatedContainer\ContainerFactory\ListOf;
-use Cspray\Typiphy\ObjectType;
-use function Cspray\Typiphy\objectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 /**
  * @implements ListOf<FooInterfaceCollection>
@@ -16,8 +16,8 @@ final class ListOfAsFooInterfaceCollection implements ListOf {
     ) {
     }
 
-    public function type() : ObjectType {
-        return objectType($this->type);
+    public function type() : Type {
+        return types()->class($this->type);
     }
 
     public function toCollection(array $servicesOfType) : FooInterfaceCollection {

@@ -3,12 +3,12 @@
 namespace Cspray\AnnotatedContainer\ContainerFactory\AliasResolution;
 
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
-use Cspray\Typiphy\ObjectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
 
 interface AliasDefinitionResolver {
 
     public function resolveAlias(
         ContainerDefinition $containerDefinition,
-        ObjectType $abstractService
+        Type $abstractService
     ) : AliasDefinitionResolution;
 }

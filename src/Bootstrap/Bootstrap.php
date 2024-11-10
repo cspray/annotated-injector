@@ -11,7 +11,6 @@ use Cspray\AnnotatedContainer\Filesystem\Filesystem;
 use Cspray\AnnotatedContainer\Filesystem\PhpFunctionsFilesystem;
 use Cspray\AnnotatedContainer\Profiles;
 use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalyzer;
-use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetDefinitionConverter;
 use Cspray\AnnotatedContainer\StaticAnalysis\CacheAwareContainerDefinitionAnalyzer;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptions;
 use Cspray\AnnotatedTarget\PhpParserAnnotatedTargetParser;
@@ -118,7 +117,6 @@ final class Bootstrap {
     ) : ContainerDefinition {
         $analyzer = new AnnotatedTargetContainerDefinitionAnalyzer(
             new PhpParserAnnotatedTargetParser(),
-            new AnnotatedTargetDefinitionConverter(),
             $this->emitter
         );
         $cache = $configuration->cache();

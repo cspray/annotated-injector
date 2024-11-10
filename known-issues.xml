@@ -1,26 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files psalm-version="5.24.0@462c80e31c34e58cc4f750c656be3927e80e550e">
+  <file src="src/Bootstrap/ServiceWiringListener.php">
+    <MixedArgument>
+      <code><![CDATA[$service]]></code>
+    </MixedArgument>
+    <MixedAssignment>
+      <code><![CDATA[$service]]></code>
+    </MixedAssignment>
+    <MixedReturnTypeCoercion>
+      <code><![CDATA[ServiceFromServiceDefinition<T>]]></code>
+      <code><![CDATA[new class($service, $serviceDefinition) implements ServiceFromServiceDefinition {
+                        public function __construct(
+                        private readonly object $service,
+                        private readonly ServiceDefinition $definition
+                        ) {
+                        }
+
+                        public function service() : object {
+                            return $this->service;
+                        }
+
+                        public function definition() : ServiceDefinition {
+                            return $this->definition;
+                        }
+                    }]]></code>
+    </MixedReturnTypeCoercion>
+  </file>
+  <file src="src/ContainerFactory/AbstractContainerFactory.php">
+    <PossiblyInvalidArgument>
+      <code><![CDATA[$type]]></code>
+    </PossiblyInvalidArgument>
+  </file>
   <file src="src/ContainerFactory/AurynContainerFactory.php">
+    <ArgumentTypeCoercion>
+      <code><![CDATA[$delegateType]]></code>
+      <code><![CDATA[$injectTargetType]]></code>
+      <code><![CDATA[$serviceType]]></code>
+    </ArgumentTypeCoercion>
     <MethodSignatureMismatch>
       <code><![CDATA[$id]]></code>
     </MethodSignatureMismatch>
     <MixedAssignment>
+      <code><![CDATA[$parameterValue]]></code>
       <code><![CDATA[$params[$name]]]></code>
     </MixedAssignment>
     <MixedInferredReturnType>
       <code><![CDATA[T]]></code>
     </MixedInferredReturnType>
+    <MixedMethodCall>
+      <code><![CDATA[name]]></code>
+    </MixedMethodCall>
     <MixedReturnStatement>
       <code><![CDATA[$value]]></code>
     </MixedReturnStatement>
   </file>
+  <file src="src/ContainerFactory/AurynContainerFactoryState.php">
+    <ArgumentTypeCoercion>
+      <code><![CDATA[$value->valueType->name()]]></code>
+    </ArgumentTypeCoercion>
+  </file>
+  <file src="src/ContainerFactory/ContainerFactoryOptionsBuilder.php">
+    <PropertyNotSetInConstructor>
+      <code><![CDATA[$activeProfiles]]></code>
+    </PropertyNotSetInConstructor>
+  </file>
   <file src="src/ContainerFactory/IlluminateContainerFactory.php">
+    <ArgumentTypeCoercion>
+      <code><![CDATA[$definition->abstractService()->name()]]></code>
+      <code><![CDATA[$definition->class()->name()]]></code>
+      <code><![CDATA[$definition->concreteService()->name()]]></code>
+      <code><![CDATA[$definition->delegateType()->name()]]></code>
+      <code><![CDATA[$definition->delegateType()->name()]]></code>
+      <code><![CDATA[$definition->delegateType()->name()]]></code>
+      <code><![CDATA[$definition->service()->name()]]></code>
+      <code><![CDATA[$definition->serviceType()->name()]]></code>
+      <code><![CDATA[$definition->serviceType()->name()]]></code>
+      <code><![CDATA[$definition->type()->name()]]></code>
+      <code><![CDATA[$definition->type()->name()]]></code>
+      <code><![CDATA[$definition->type()->name()]]></code>
+      <code><![CDATA[$value->valueType->name()]]></code>
+    </ArgumentTypeCoercion>
     <MethodSignatureMismatch>
       <code><![CDATA[$id]]></code>
     </MethodSignatureMismatch>
+    <MixedArgument>
+      <code><![CDATA[$parameterValue->name()]]></code>
+    </MixedArgument>
     <MixedAssignment>
       <code><![CDATA[$params[$param]]]></code>
       <code><![CDATA[$params[$parameter->name()]]]></code>
+      <code><![CDATA[$values[]]]></code>
     </MixedAssignment>
     <MixedInferredReturnType>
       <code><![CDATA[object]]></code>
@@ -31,16 +100,298 @@
     <NoValue>
       <code><![CDATA[$object]]></code>
     </NoValue>
+    <UndefinedClass>
+      <code><![CDATA[$parameterValue]]></code>
+      <code><![CDATA[ObjectType]]></code>
+    </UndefinedClass>
+  </file>
+  <file src="src/ContainerFactory/ListOfAsArray.php">
+    <InvalidReturnStatement>
+      <code><![CDATA[types()->class($this->type)]]></code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code><![CDATA[Type]]></code>
+    </InvalidReturnType>
   </file>
   <file src="src/ContainerFactory/PhpDiContainerFactory.php">
+    <ArgumentTypeCoercion>
+      <code><![CDATA[$aliasDefinition->abstractService()->name()]]></code>
+      <code><![CDATA[$definition->class()->name()]]></code>
+      <code><![CDATA[$definition->service()->name()]]></code>
+      <code><![CDATA[$serviceType]]></code>
+      <code><![CDATA[$serviceType]]></code>
+    </ArgumentTypeCoercion>
     <MethodSignatureMismatch>
       <code><![CDATA[$id]]></code>
     </MethodSignatureMismatch>
+    <MixedArgument>
+      <code><![CDATA[$value->name()]]></code>
+    </MixedArgument>
     <MixedAssignment>
       <code><![CDATA[$params[$parameter->name()]]]></code>
     </MixedAssignment>
+    <MixedMethodCall>
+      <code><![CDATA[name]]></code>
+    </MixedMethodCall>
     <MixedReturnStatement>
       <code><![CDATA[$object]]></code>
     </MixedReturnStatement>
+    <PossiblyUndefinedMethod>
+      <code><![CDATA[name]]></code>
+    </PossiblyUndefinedMethod>
+  </file>
+  <file src="src/ContainerFactory/PhpDiContainerFactoryState.php">
+    <ArgumentTypeCoercion>
+      <code><![CDATA[$value->valueType->name()]]></code>
+    </ArgumentTypeCoercion>
+  </file>
+  <file src="src/Definition/DefinitionFactory.php">
+    <ArgumentTypeCoercion>
+      <code><![CDATA[$delegateType->name()]]></code>
+      <code><![CDATA[$method]]></code>
+      <code><![CDATA[$objectType->name()]]></code>
+    </ArgumentTypeCoercion>
+    <InvalidArgument>
+      <code><![CDATA[$class]]></code>
+      <code><![CDATA[$delegateType]]></code>
+      <code><![CDATA[$delegateType]]></code>
+      <code><![CDATA[$delegateType]]></code>
+      <code><![CDATA[$delegateType]]></code>
+      <code><![CDATA[$delegateType]]></code>
+      <code><![CDATA[$objectType]]></code>
+      <code><![CDATA[$serviceType]]></code>
+      <code><![CDATA[$this->typeFactory->class($reflection->getDeclaringClass()->getName())]]></code>
+    </InvalidArgument>
+    <LessSpecificReturnStatement>
+      <code><![CDATA[$this->delegateMethod]]></code>
+      <code><![CDATA[$this->method]]></code>
+      <code><![CDATA[$this->parameter]]></code>
+    </LessSpecificReturnStatement>
+    <MixedArgument>
+      <code><![CDATA[$returnTypeName]]></code>
+      <code><![CDATA[$returnTypeName]]></code>
+    </MixedArgument>
+    <MixedAssignment>
+      <code><![CDATA[$returnTypeName]]></code>
+    </MixedAssignment>
+    <MoreSpecificReturnType>
+      <code><![CDATA[string]]></code>
+      <code><![CDATA[string]]></code>
+      <code><![CDATA[string]]></code>
+    </MoreSpecificReturnType>
+    <PossiblyNullReference>
+      <code><![CDATA[getName]]></code>
+    </PossiblyNullReference>
+    <UndefinedMethod>
+      <code><![CDATA[getName]]></code>
+      <code><![CDATA[name]]></code>
+    </UndefinedMethod>
+  </file>
+  <file src="src/Definition/Serializer/XmlContainerDefinitionSerializer.php">
+    <ArgumentTypeCoercion>
+      <code><![CDATA[$domElement->nodeValue]]></code>
+      <code><![CDATA[static fn(DOMElement $domElement) => types()->class($domElement->nodeValue)]]></code>
+      <code><![CDATA[static fn(DOMElement $domElement) => types()->fromName($domElement->nodeValue)]]></code>
+    </ArgumentTypeCoercion>
+    <InvalidArgument>
+      <code><![CDATA[array_map(
+                        static fn(DOMElement $domElement) => types()->class($domElement->nodeValue),
+                        iterator_to_array($xpath->query('cd:valueType/cd:typeIntersect/*', $injectDefinition))
+                    )]]></code>
+      <code><![CDATA[array_map(
+                        static fn(DOMElement $domElement) => types()->class($domElement->nodeValue),
+                        iterator_to_array($xpath->query('cd:valueType/cd:typeIntersect/*', $injectDefinition))
+                    )]]></code>
+      <code><![CDATA[array_map(
+                        static fn(DOMElement $domElement) => types()->class($domElement->nodeValue),
+                        iterator_to_array($xpath->query('cd:valueType/cd:typeIntersect/*', $injectDefinition))
+                    )]]></code>
+      <code><![CDATA[types()->class($abstract)]]></code>
+      <code><![CDATA[types()->class($concrete)]]></code>
+      <code><![CDATA[types()->class($delegateType)]]></code>
+      <code><![CDATA[types()->class($service)]]></code>
+      <code><![CDATA[types()->class($serviceType)]]></code>
+    </InvalidArgument>
+    <MixedArgument>
+      <code><![CDATA[$attr]]></code>
+      <code><![CDATA[$attr]]></code>
+      <code><![CDATA[$attr]]></code>
+      <code><![CDATA[$valueType]]></code>
+      <code><![CDATA[$valueTypeElement]]></code>
+    </MixedArgument>
+    <MixedAssignment>
+      <code><![CDATA[$attr]]></code>
+      <code><![CDATA[$attr]]></code>
+      <code><![CDATA[$attr]]></code>
+    </MixedAssignment>
+    <PossiblyNullArgument>
+      <code><![CDATA[$attr]]></code>
+      <code><![CDATA[$domElement->nodeValue]]></code>
+      <code><![CDATA[$domElement->nodeValue]]></code>
+      <code><![CDATA[$xpath->query('cd:attribute/text()', $delegateDefinition)[0]?->nodeValue]]></code>
+      <code><![CDATA[$xpath->query('cd:attribute/text()', $prepareDefinition)[0]?->nodeValue]]></code>
+      <code><![CDATA[$xpath->query('cd:attribute/text()', $serviceDefinition)[0]?->nodeValue]]></code>
+    </PossiblyNullArgument>
+    <PossiblyUndefinedVariable>
+      <code><![CDATA[$valueType]]></code>
+      <code><![CDATA[$valueTypeElement]]></code>
+    </PossiblyUndefinedVariable>
+  </file>
+  <file src="src/Function/types.php">
+    <MixedAssignment>
+      <code><![CDATA[$typeFactory]]></code>
+    </MixedAssignment>
+    <MixedInferredReturnType>
+      <code><![CDATA[TypeFactory]]></code>
+    </MixedInferredReturnType>
+    <MixedReturnStatement>
+      <code><![CDATA[$typeFactory]]></code>
+      <code><![CDATA[$typeFactory]]></code>
+    </MixedReturnStatement>
+  </file>
+  <file src="src/Internal/ServiceFromFunctionalApi.php">
+    <ClassNotFinal>
+      <code><![CDATA[class ServiceFromFunctionalApi implements ServiceAttribute {]]></code>
+    </ClassNotFinal>
+    <LessSpecificReturnStatement>
+      <code><![CDATA[$this->name]]></code>
+      <code><![CDATA[$this->profiles]]></code>
+    </LessSpecificReturnStatement>
+    <MoreSpecificReturnType>
+      <code><![CDATA[?string]]></code>
+      <code><![CDATA[array]]></code>
+    </MoreSpecificReturnType>
+  </file>
+  <file src="src/LogicalConstraint/Check/DuplicateServicePrepare.php">
+    <PossiblyInvalidArgument>
+      <code><![CDATA[static fn(ServicePrepareAttribute $attribute) => ($attribute instanceof ServicePrepareFromFunctionalApi ? 'Call to servicePrepare() in DefinitionProvider' : 'Attributed with ' . $attribute::class) . PHP_EOL]]></code>
+    </PossiblyInvalidArgument>
+  </file>
+  <file src="src/LogicalConstraint/Check/MultiplePrimaryForAbstractService.php">
+    <ArgumentTypeCoercion>
+      <code><![CDATA[$serviceDefinition->type()->name()]]></code>
+    </ArgumentTypeCoercion>
+  </file>
+  <file src="src/Reflection/TypeFactory.php">
+    <ArgumentTypeCoercion>
+      <code><![CDATA[$name]]></code>
+    </ArgumentTypeCoercion>
+    <InvalidReturnStatement>
+      <code><![CDATA[match ($name) {
+            'array' => $this->array(),
+            'bool' => $this->bool(),
+            'float' => $this->float(),
+            'int' => $this->int(),
+            'mixed' => $this->mixed(),
+            'never' => $this->never(),
+            'null' => $this->null(),
+            'object' => $this->object(),
+            'self' => $this->self(),
+            'static' => $this->static(),
+            'string' => $this->string(),
+            'void' => $this->void(),
+            default => $this->class($name),
+        }]]></code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code><![CDATA[Type]]></code>
+    </InvalidReturnType>
+    <LessSpecificReturnStatement>
+      <code><![CDATA[$this->name]]></code>
+      <code><![CDATA[$this->name]]></code>
+      <code><![CDATA[$this->types]]></code>
+      <code><![CDATA[$this->types]]></code>
+    </LessSpecificReturnStatement>
+    <MismatchingDocblockReturnType>
+      <code><![CDATA[self]]></code>
+    </MismatchingDocblockReturnType>
+    <MixedAssignment>
+      <code><![CDATA[$type]]></code>
+      <code><![CDATA[$type]]></code>
+      <code><![CDATA[$type]]></code>
+      <code><![CDATA[$type]]></code>
+      <code><![CDATA[$type]]></code>
+      <code><![CDATA[$type]]></code>
+      <code><![CDATA[$type]]></code>
+      <code><![CDATA[$type]]></code>
+      <code><![CDATA[$type]]></code>
+      <code><![CDATA[$type]]></code>
+      <code><![CDATA[$type]]></code>
+      <code><![CDATA[$type]]></code>
+    </MixedAssignment>
+    <MixedInferredReturnType>
+      <code><![CDATA[Type]]></code>
+      <code><![CDATA[Type]]></code>
+      <code><![CDATA[Type]]></code>
+      <code><![CDATA[Type]]></code>
+      <code><![CDATA[Type]]></code>
+      <code><![CDATA[Type]]></code>
+      <code><![CDATA[Type]]></code>
+      <code><![CDATA[Type]]></code>
+      <code><![CDATA[Type]]></code>
+      <code><![CDATA[Type]]></code>
+      <code><![CDATA[Type]]></code>
+      <code><![CDATA[Type]]></code>
+      <code><![CDATA[Type|TypeUnion|TypeIntersect]]></code>
+      <code><![CDATA[self]]></code>
+    </MixedInferredReturnType>
+    <MixedReturnStatement>
+      <code><![CDATA[$type]]></code>
+      <code><![CDATA[$type ??= $this->createType('array')]]></code>
+      <code><![CDATA[$type ??= $this->createType('array')]]></code>
+      <code><![CDATA[$type ??= $this->createType('bool')]]></code>
+      <code><![CDATA[$type ??= $this->createType('bool')]]></code>
+      <code><![CDATA[$type ??= $this->createType('float')]]></code>
+      <code><![CDATA[$type ??= $this->createType('float')]]></code>
+      <code><![CDATA[$type ??= $this->createType('int')]]></code>
+      <code><![CDATA[$type ??= $this->createType('int')]]></code>
+      <code><![CDATA[$type ??= $this->createType('mixed')]]></code>
+      <code><![CDATA[$type ??= $this->createType('mixed')]]></code>
+      <code><![CDATA[$type ??= $this->createType('never')]]></code>
+      <code><![CDATA[$type ??= $this->createType('never')]]></code>
+      <code><![CDATA[$type ??= $this->createType('null')]]></code>
+      <code><![CDATA[$type ??= $this->createType('null')]]></code>
+      <code><![CDATA[$type ??= $this->createType('object')]]></code>
+      <code><![CDATA[$type ??= $this->createType('object')]]></code>
+      <code><![CDATA[$type ??= $this->createType('self')]]></code>
+      <code><![CDATA[$type ??= $this->createType('self')]]></code>
+      <code><![CDATA[$type ??= $this->createType('static')]]></code>
+      <code><![CDATA[$type ??= $this->createType('static')]]></code>
+      <code><![CDATA[$type ??= $this->createType('string')]]></code>
+      <code><![CDATA[$type ??= $this->createType('string')]]></code>
+      <code><![CDATA[$type ??= $this->createType('void')]]></code>
+      <code><![CDATA[$type ??= $this->createType('void')]]></code>
+    </MixedReturnStatement>
+    <MoreSpecificReturnType>
+      <code><![CDATA[array]]></code>
+      <code><![CDATA[list<Type|TypeIntersect>]]></code>
+      <code><![CDATA[string]]></code>
+      <code><![CDATA[string]]></code>
+    </MoreSpecificReturnType>
+    <PossiblyInvalidArgument>
+      <code><![CDATA[$intersectTypes]]></code>
+      <code><![CDATA[$intersectTypes]]></code>
+      <code><![CDATA[$intersectTypes]]></code>
+      <code><![CDATA[$unionTypes]]></code>
+      <code><![CDATA[$unionTypes]]></code>
+      <code><![CDATA[$unionTypes]]></code>
+    </PossiblyInvalidArgument>
+    <PossiblyUndefinedVariable>
+      <code><![CDATA[$type]]></code>
+    </PossiblyUndefinedVariable>
+    <RedundantCondition>
+      <code><![CDATA[$reflectionType->getName()]]></code>
+    </RedundantCondition>
+    <TypeDoesNotContainNull>
+      <code><![CDATA['mixed']]></code>
+    </TypeDoesNotContainNull>
+  </file>
+  <file src="src/StaticAnalysis/AnnotatedTargetContainerDefinitionAnalyzer.php">
+    <ArgumentTypeCoercion>
+      <code><![CDATA[$abstractServiceName]]></code>
+      <code><![CDATA[$abstractTypeString]]></code>
+      <code><![CDATA[$dirs]]></code>
+      <code><![CDATA[array_map(static fn(AttributeType $attributeType) => $attributeType->value, AttributeType::cases())]]></code>
+    </ArgumentTypeCoercion>
   </file>
 </files>

@@ -2,8 +2,8 @@
 
 namespace Cspray\AnnotatedContainer\Fixture;
 
-use Cspray\Typiphy\ObjectType;
-use function Cspray\Typiphy\objectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 final class DuplicateNamedServiceDifferentProfilesFixture implements Fixture {
 
@@ -11,11 +11,11 @@ final class DuplicateNamedServiceDifferentProfilesFixture implements Fixture {
         return __DIR__ . '/DuplicateNamedServiceDifferentProfiles';
     }
 
-    public function barService() : ObjectType {
-        return objectType(DuplicateNamedServiceDifferentProfiles\BarService::class);
+    public function barService() : Type {
+        return types()->class(DuplicateNamedServiceDifferentProfiles\BarService::class);
     }
 
-    public function fooService() : ObjectType {
-        return objectType(DuplicateNamedServiceDifferentProfiles\FooService::class);
+    public function fooService() : Type {
+        return types()->class(DuplicateNamedServiceDifferentProfiles\FooService::class);
     }
 }

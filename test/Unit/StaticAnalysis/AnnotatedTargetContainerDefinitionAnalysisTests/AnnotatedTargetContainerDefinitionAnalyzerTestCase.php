@@ -5,7 +5,6 @@ namespace Cspray\AnnotatedContainer\Unit\StaticAnalysis\AnnotatedTargetContainer
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 use Cspray\AnnotatedContainer\Event\Emitter;
 use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetContainerDefinitionAnalyzer;
-use Cspray\AnnotatedContainer\StaticAnalysis\AnnotatedTargetDefinitionConverter;
 use Cspray\AnnotatedContainer\StaticAnalysis\ContainerDefinitionAnalysisOptionsBuilder;
 use Cspray\AnnotatedContainer\StaticAnalysis\DefinitionProvider;
 use Cspray\AnnotatedContainer\Unit\ContainerDefinitionAssertionsTrait;
@@ -41,7 +40,6 @@ abstract class AnnotatedTargetContainerDefinitionAnalyzerTestCase extends TestCa
 
         $this->analyzer = new AnnotatedTargetContainerDefinitionAnalyzer(
             new PhpParserAnnotatedTargetParser(),
-            new AnnotatedTargetDefinitionConverter(),
             $emitter,
         );
 

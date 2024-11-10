@@ -106,7 +106,7 @@ trait HasServiceDefinitionTestsTrait {
 
         $this->assertNotNull(
             $serviceDefinition,
-            sprintf('Could not find a service that matches the expected type \'%s\'.', $expectedServiceType->type)
+            sprintf('Could not find a service that matches the expected type \'%s\'.', $expectedServiceType->type->name())
         );
     }
 

@@ -4,29 +4,22 @@ namespace Cspray\AnnotatedContainer\Definition\Serializer;
 
 use Cspray\AnnotatedContainer\AnnotatedContainerVersion;
 use Cspray\AnnotatedContainer\Attribute\InjectAttribute;
-use Cspray\AnnotatedContainer\Attribute\ServiceAttribute;
-use Cspray\AnnotatedContainer\Attribute\ServiceDelegateAttribute;
-use Cspray\AnnotatedContainer\Attribute\ServicePrepareAttribute;
-use Cspray\AnnotatedContainer\Definition\AliasDefinitionBuilder;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinitionBuilder;
 use Cspray\AnnotatedContainer\Definition\InjectDefinition;
-use Cspray\AnnotatedContainer\Definition\InjectDefinitionBuilder;
-use Cspray\AnnotatedContainer\Definition\ServiceDefinitionBuilder;
-use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinitionBuilder;
-use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinition;
-use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinitionBuilder;
 use Cspray\AnnotatedContainer\Exception\InvalidSerializedContainerDefinition;
 use Cspray\AnnotatedContainer\Exception\InvalidInjectDefinition;
 use Cspray\AnnotatedContainer\Exception\MismatchedContainerDefinitionSerializerVersions;
-use Cspray\AnnotatedContainer\Internal\SerializerInjectValueParser;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use Cspray\AnnotatedContainer\Reflection\TypeIntersect;
+use Cspray\AnnotatedContainer\Reflection\TypeUnion;
 use DOMDocument;
 use DOMElement;
 use DOMNodeList;
 use DOMXPath;
 use Exception as PhpException;
-use function Cspray\Typiphy\objectType;
-use function PHPUnit\Framework\assertSame;
+use function Cspray\AnnotatedContainer\Definition\definitionFactory;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 /**
  * @internal
@@ -37,31 +30,33 @@ final class XmlContainerDefinitionSerializer implements ContainerDefinitionSeria
 
     private const ROOT_ELEMENT = 'annotatedContainerDefinition';
 
-    private readonly SerializerInjectValueParser $injectValueParser;
-
-    public function __construct() {
-        $this->injectValueParser = new SerializerInjectValueParser();
-    }
-
     public function serialize(ContainerDefinition $containerDefinition) : SerializedContainerDefinition {
-        $dom = new DOMDocument(encoding: 'UTF-8');
-        $dom->formatOutput = true;
-        $root = $dom->createElementNS(self::XML_SCHEMA, self::ROOT_ELEMENT);
-        $root->setAttribute('version', AnnotatedContainerVersion::version());
+        try {
+            libxml_use_internal_errors(true);
+            $dom = new DOMDocument(encoding: 'UTF-8');
+            $dom->formatOutput = true;
+            $root = $dom->createElementNS(self::XML_SCHEMA, self::ROOT_ELEMENT);
+            $root->setAttribute('version', AnnotatedContainerVersion::version());
 
-        $dom->appendChild($root);
+            $dom->appendChild($root);
 
-        $this->addServiceDefinitionsToDom($root, $containerDefinition);
-        $this->addAliasDefinitionsToDom($root, $containerDefinition);
-        $this->addServicePrepareDefinitionsToDom($root, $containerDefinition);
-        $this->addServiceDelegateDefinitionsToDom($root, $containerDefinition);
-        $this->addInjectDefinitionsToDom($root, $containerDefinition);
+            $this->addServiceDefinitionsToDom($root, $containerDefinition);
+            $this->addAliasDefinitionsToDom($root, $containerDefinition);
+            $this->addServicePrepareDefinitionsToDom($root, $containerDefinition);
+            $this->addServiceDelegateDefinitionsToDom($root, $containerDefinition);
+            $this->addInjectDefinitionsToDom($root, $containerDefinition);
 
-        // if we get to this point then we know the XML document will contain _something_
-        $xml = $dom->saveXML();
-        assert($xml !== false && $xml !== '');
+            $this->validateDom($dom);
 
-        return SerializedContainerDefinition::fromString($xml);
+            // if we get to this point then we know the XML document will contain _something_
+            $xml = $dom->saveXML();
+            assert($xml !== false && $xml !== '');
+
+            return SerializedContainerDefinition::fromString($xml);
+        } finally {
+            libxml_clear_errors();
+            libxml_use_internal_errors(false);
+        }
     }
 
     private function addServiceDefinitionsToDom(DOMElement $root, ContainerDefinition $containerDefinition) : void {
@@ -76,44 +71,17 @@ final class XmlContainerDefinitionSerializer implements ContainerDefinitionSeria
                 $serviceDefinitionNode = $dom->createElementNS(self::XML_SCHEMA, 'serviceDefinition')
             );
 
-            if ($serviceDefinition->isPrimary()) {
-                $serviceDefinitionNode->setAttribute('isPrimary', 'true');
-            }
+            $serviceDefinitionNode->setAttribute('isConcrete', $serviceDefinition->isConcrete() ? 'true' : 'false');
 
             $serviceDefinitionNode->appendChild(
                 $dom->createElementNS(self::XML_SCHEMA, 'type', $serviceDefinition->type()->name())
-            );
-            $serviceDefinitionNode->appendChild(
-                $nameNode = $dom->createElementNS(self::XML_SCHEMA, 'name')
-            );
-
-            $name = $serviceDefinition->name();
-            if ($name !== null) {
-                $nameNode->nodeValue = $name;
-            }
-
-            $serviceDefinitionNode->appendChild(
-                $profilesNode = $dom->createElementNS(self::XML_SCHEMA, 'profiles')
-            );
-
-            foreach ($serviceDefinition->profiles() as $profile) {
-                $profilesNode->appendChild(
-                    $dom->createElementNS(self::XML_SCHEMA, 'profile', $profile)
-                );
-            }
-
-            $serviceDefinitionNode->appendChild(
-                $dom->createElementNS(self::XML_SCHEMA, 'concreteOrAbstract', $serviceDefinition->isConcrete() ? 'Concrete' : 'Abstract')
             );
 
             $serviceDefinitionNode->appendChild(
                 $attrNode = $dom->createElementNS(self::XML_SCHEMA, 'attribute')
             );
 
-            $attr = $serviceDefinition->attribute();
-            if ($attr !== null) {
-                $attrNode->nodeValue = base64_encode(serialize($attr));
-            }
+            $attrNode->nodeValue = base64_encode(serialize($serviceDefinition->attribute()));
         }
     }
 
@@ -153,19 +121,13 @@ final class XmlContainerDefinitionSerializer implements ContainerDefinitionSeria
             $servicePrepareDefinitionNode->appendChild(
                 $dom->createElementNS(self::XML_SCHEMA, 'type', $servicePrepareDefinition->service()->name())
             );
-
             $servicePrepareDefinitionNode->appendChild(
                 $dom->createElementNS(self::XML_SCHEMA, 'method', $servicePrepareDefinition->methodName())
             );
 
             $servicePrepareDefinitionNode->appendChild(
-                $attrNode = $dom->createElementNS(self::XML_SCHEMA, 'attribute')
+                $dom->createElementNS(self::XML_SCHEMA, 'attribute', base64_encode(serialize($servicePrepareDefinition->attribute())))
             );
-
-            $attr = $servicePrepareDefinition->attribute();
-            if ($attr !== null) {
-                $attrNode->nodeValue = base64_encode(serialize($attr));
-            }
         }
     }
 
@@ -191,13 +153,8 @@ final class XmlContainerDefinitionSerializer implements ContainerDefinitionSeria
                 $dom->createElementNS(self::XML_SCHEMA, 'delegateMethod', $serviceDelegateDefinition->delegateMethod())
             );
             $serviceDelegateDefinitionNode->appendChild(
-                $attrNode = $dom->createElementNS(self::XML_SCHEMA, 'attribute')
+                $dom->createElementNS(self::XML_SCHEMA, 'attribute', base64_encode(serialize($serviceDelegateDefinition->attribute())))
             );
-
-            $attr = $serviceDelegateDefinition->attribute();
-            if ($attr !== null) {
-                $attrNode->nodeValue = base64_encode(serialize($attr));
-            }
         }
     }
 
@@ -210,7 +167,7 @@ final class XmlContainerDefinitionSerializer implements ContainerDefinitionSeria
 
         foreach ($containerDefinition->injectDefinitions() as $injectDefinition) {
             try {
-                $serializedValue = serialize($injectDefinition->value());
+                $serializedAttribute = base64_encode(serialize($injectDefinition->attribute()));
             } catch (PhpException $exception) {
                 throw InvalidInjectDefinition::fromValueNotSerializable($exception);
             }
@@ -224,45 +181,62 @@ final class XmlContainerDefinitionSerializer implements ContainerDefinitionSeria
             $this->addMethodParameterInjectDefinitionToDom($injectDefinitionNode, $injectDefinition);
 
             $injectDefinitionNode->appendChild(
-                $dom->createElementNS(self::XML_SCHEMA, 'valueType', base64_encode($injectDefinition->type()->name()))
+                $this->createAppropriateElementForValueType($dom, $injectDefinition)
             );
 
             $injectDefinitionNode->appendChild(
-                $valueNode = $dom->createElementNS(self::XML_SCHEMA, 'value')
+                $dom->createElementNS(self::XML_SCHEMA, 'attribute', $serializedAttribute)
             );
+        }
+    }
 
-            $valueNode->appendChild(
-                $dom->createCDATASection(base64_encode($serializedValue))
-            );
+    private function createAppropriateElementForValueType(DOMDocument $dom, InjectDefinition $injectDefinition) : DOMElement {
+        $valueType = $injectDefinition->type();
+        if ($valueType instanceof Type) {
+            $valueTypeElement = $this->createTypeElement($dom, $valueType);
+        } elseif ($valueType instanceof TypeUnion) {
+            $valueTypeElement = $this->createTypeUnionElement($dom, $valueType);
+        } elseif ($valueType instanceof TypeIntersect) {
+            $valueTypeElement = $this->createTypeIntersectElement($dom, $valueType);
+        }
 
-            $injectDefinitionNode->appendChild(
-                $profilesNode = $dom->createElementNS(self::XML_SCHEMA, 'profiles')
-            );
+        $valueTypeNode = $dom->createElementNS(self::XML_SCHEMA, 'valueType');
+        $valueTypeNode->appendChild($valueTypeElement);
 
-            foreach ($injectDefinition->profiles() as $profile) {
-                $profilesNode->appendChild(
-                    $dom->createElementNS(self::XML_SCHEMA, 'profile', $profile)
-                );
-            }
+        return $valueTypeNode;
+    }
 
-            $injectDefinitionNode->appendChild(
-                $storeNode = $dom->createElementNS(self::XML_SCHEMA, 'store')
-            );
+    private function createTypeElement(DOMDocument $dom, Type $type) : DOMElement {
+        return $dom->createElementNS(
+            self::XML_SCHEMA,
+            'type',
+            $type->name(),
+        );
+    }
 
-            $injectDefinitionNode->appendChild(
-                $attrNode = $dom->createElementNS(self::XML_SCHEMA, 'attribute')
-            );
-
-            $store = $injectDefinition->storeName();
-            if ($store !== null) {
-                $storeNode->nodeValue = $store;
-            }
-
-            $attr = $injectDefinition->attribute();
-            if ($attr !== null) {
-                $attrNode->nodeValue = base64_encode(serialize($attr));
+    private function createTypeUnionElement(DOMDocument $dom, TypeUnion $type) : DOMElement {
+        $element = $dom->createElementNS(self::XML_SCHEMA, 'typeUnion');
+        foreach ($type->types() as $typeOrTypeIntersect) {
+            if ($typeOrTypeIntersect instanceof Type) {
+                $element->appendChild($this->createTypeElement($dom, $typeOrTypeIntersect));
+            } else {
+                $element->appendChild($this->createTypeIntersectElement($dom, $typeOrTypeIntersect));
             }
         }
+
+        return $element;
+    }
+
+    private function createTypeIntersectElement(DOMDocument $dom, TypeIntersect $type) : DOMElement {
+        $valueTypeElement = $dom->createElementNS(
+            self::XML_SCHEMA,
+            'typeIntersect'
+        );
+        foreach ($type->types() as $t) {
+            $valueTypeElement->appendChild($this->createTypeElement($dom, $t));
+        }
+
+        return $valueTypeElement;
     }
 
     private function addMethodParameterInjectDefinitionToDom(DOMElement $root, InjectDefinition $injectDefinition) : void {
@@ -282,43 +256,47 @@ final class XmlContainerDefinitionSerializer implements ContainerDefinitionSeria
         );
     }
 
+    private function validateDom(DOMDocument $dom) : void {
+        $schemaPath = dirname(__DIR__, 3) . '/annotated-container-definition.xsd';
+        if (!$dom->schemaValidate($schemaPath)) {
+            throw InvalidSerializedContainerDefinition::fromNotValidateXmlSchema(libxml_get_errors());
+        }
+    }
+
     public function deserialize(SerializedContainerDefinition $serializedContainerDefinition) : ContainerDefinition {
-        $dom = new DOMDocument(encoding: 'UTF-8');
-
-        // The assert() calls and docblock annotations in other methods, on values provided in the serialized container
-        // definition are made because they are being asserted as part of the XML passing the container definition
-        // schema below. If the code executes beyond the call to $dom->schemaValidate() then we can assume the stuff
-        // covered by the schema definition is covered and we don't need to cover it again.
-
-        libxml_use_internal_errors(true);
         try {
+            libxml_use_internal_errors(true);
+            $dom = new DOMDocument(encoding: 'UTF-8');
+
+            // The assert() calls and docblock annotations in other methods, on values provided in the serialized container
+            // definition are made because they are being asserted as part of the XML passing the container definition
+            // schema below. If the code executes beyond the call to $dom->schemaValidate() then we can assume the stuff
+            // covered by the schema definition is covered and we don't need to cover it again.
             $dom->loadXML($serializedContainerDefinition->asString());
-            $schemaPath = dirname(__DIR__, 3) . '/annotated-container-definition.xsd';
-            if (!$dom->schemaValidate($schemaPath)) {
-                throw InvalidSerializedContainerDefinition::fromNotValidateXmlSchema(libxml_get_errors());
+
+            $this->validateDom($dom);
+
+            $xpath = new DOMXPath($dom);
+            $xpath->registerNamespace('cd', self::XML_SCHEMA);
+
+            $version = (string) $xpath->query('/cd:annotatedContainerDefinition/@version')[0]?->nodeValue;
+            if ($version !== AnnotatedContainerVersion::version()) {
+                throw MismatchedContainerDefinitionSerializerVersions::fromVersionIsNotInstalledAnnotatedContainerVersion($version);
             }
+
+            $builder = ContainerDefinitionBuilder::newDefinition();
+
+            $builder = $this->addServiceDefinitionsToBuilder($builder, $xpath);
+            $builder = $this->addAliasDefinitionsToBuilder($builder, $xpath);
+            $builder = $this->addServicePrepareDefinitionsToBuilder($builder, $xpath);
+            $builder = $this->addServiceDelegateDefinitionsToBuilder($builder, $xpath);
+            $builder = $this->addInjectDefinitionsToBuilder($builder, $xpath);
+
+            return $builder->build();
         } finally {
             libxml_clear_errors();
             libxml_use_internal_errors(false);
         }
-
-        $xpath = new DOMXPath($dom);
-        $xpath->registerNamespace('cd', self::XML_SCHEMA);
-
-        $version = (string) $xpath->query('/cd:annotatedContainerDefinition/@version')[0]?->nodeValue;
-        if ($version !== AnnotatedContainerVersion::version()) {
-            throw MismatchedContainerDefinitionSerializerVersions::fromVersionIsNotInstalledAnnotatedContainerVersion($version);
-        }
-
-        $builder = ContainerDefinitionBuilder::newDefinition();
-
-        $builder = $this->addServiceDefinitionsToBuilder($builder, $xpath);
-        $builder = $this->addAliasDefinitionsToBuilder($builder, $xpath);
-        $builder = $this->addServicePrepareDefinitionsToBuilder($builder, $xpath);
-        $builder = $this->addServiceDelegateDefinitionsToBuilder($builder, $xpath);
-        $builder = $this->addInjectDefinitionsToBuilder($builder, $xpath);
-
-        return $builder->build();
     }
 
     private function addServiceDefinitionsToBuilder(ContainerDefinitionBuilder $builder, DOMXPath $xpath) : ContainerDefinitionBuilder {
@@ -328,46 +306,18 @@ final class XmlContainerDefinitionSerializer implements ContainerDefinitionSeria
         foreach ($serviceDefinitions as $serviceDefinition) {
             $serviceType = $xpath->query('cd:type/text()', $serviceDefinition)[0]->nodeValue;
             assert(class_exists($serviceType));
+            $isConcrete = $xpath->query('@isConcrete', $serviceDefinition)[0]->nodeValue === 'true';
+            $attr = unserialize(base64_decode(
+                $xpath->query('cd:attribute/text()', $serviceDefinition)[0]?->nodeValue
+            ));
 
-            $type = objectType($serviceType);
-
-            $concreteOrAbstract = $xpath->query('cd:concreteOrAbstract/text()', $serviceDefinition)[0]->nodeValue;
-            $isPrimary = $xpath->query('@isPrimary', $serviceDefinition)[0]?->nodeValue;
-            if ($concreteOrAbstract === 'Concrete') {
-                $serviceBuilder = ServiceDefinitionBuilder::forConcrete($type, $isPrimary === 'true');
-            } else {
-                $serviceBuilder = ServiceDefinitionBuilder::forAbstract($type);
-            }
-
-            $name = $xpath->query('cd:name/text()', $serviceDefinition)[0]?->nodeValue;
-            if ($name !== null) {
-                // We make several assertions that a name cannot be an empty string before a container is serialized and
-                // a blank name should not be possible
-                assert($name !== '');
-                $serviceBuilder = $serviceBuilder->withName($name);
-            }
-
-            $profiles = $xpath->query('cd:profiles/cd:profile', $serviceDefinition);
-            $serviceProfiles = [];
-            foreach ($profiles as $profile) {
-                $value = $profile->nodeValue;
-                // The profileString type ensures that there is a value listed greater than 1
-                assert($value !== null && $value !== '');
-                $serviceProfiles[] = $value;
-            }
-            // The profilesType ensures there's at least 1 profile, additionally definitions are never assigned empty profiles
-            assert($serviceProfiles !== []);
-
-            $serviceBuilder = $serviceBuilder->withProfiles($serviceProfiles);
-
-            $attr = $xpath->query('cd:attribute/text()', $serviceDefinition)[0]?->nodeValue;
-            if ($attr !== null) {
-                $attrInstance = unserialize(base64_decode($attr));
-                assert($attrInstance instanceof ServiceAttribute);
-                $serviceBuilder = $serviceBuilder->withAttribute($attrInstance);
-            }
-
-            $builder = $builder->withServiceDefinition($serviceBuilder->build());
+            $builder = $builder->withServiceDefinition(
+                definitionFactory()->serviceDefinitionFromManualSetup(
+                    types()->class($serviceType),
+                    $attr,
+                    $isConcrete
+                )
+            );
         }
 
         return $builder;
@@ -385,7 +335,7 @@ final class XmlContainerDefinitionSerializer implements ContainerDefinitionSeria
             assert(class_exists($concrete));
 
             $builder = $builder->withAliasDefinition(
-                AliasDefinitionBuilder::forAbstract(objectType($abstract))->withConcrete(objectType($concrete))->build()
+                definitionFactory()->aliasDefinition(types()->class($abstract), types()->class($concrete))
             );
         }
 
@@ -399,20 +349,14 @@ final class XmlContainerDefinitionSerializer implements ContainerDefinitionSeria
         foreach ($prepareDefinitions as $prepareDefinition) {
             $service = $xpath->query('cd:type/text()', $prepareDefinition)[0]->nodeValue;
             $method = $xpath->query('cd:method/text()', $prepareDefinition)[0]->nodeValue;
+            $attr = unserialize(base64_decode($xpath->query('cd:attribute/text()', $prepareDefinition)[0]?->nodeValue));
 
             assert(class_exists($service));
             assert($method !== null && $method !== '');
 
-            $servicePrepareBuilder = ServicePrepareDefinitionBuilder::forMethod(objectType($service), $method);
-
-            $attr = $xpath->query('cd:attribute/text()', $prepareDefinition)[0]?->nodeValue;
-            if ($attr !== null) {
-                $attrObject = unserialize(base64_decode($attr));
-                assert($attrObject instanceof ServicePrepareAttribute);
-                $servicePrepareBuilder = $servicePrepareBuilder->withAttribute($attrObject);
-            }
-
-            $builder = $builder->withServicePrepareDefinition($servicePrepareBuilder->build());
+            $builder = $builder->withServicePrepareDefinition(
+                definitionFactory()->servicePrepareDefinitionFromClassMethodAndAttribute(types()->class($service), $method, $attr)
+            );
         }
 
         return $builder;
@@ -426,22 +370,19 @@ final class XmlContainerDefinitionSerializer implements ContainerDefinitionSeria
             $service = $xpath->query('cd:service/text()', $delegateDefinition)[0]->nodeValue;
             $delegateType = $xpath->query('cd:delegateType/text()', $delegateDefinition)[0]->nodeValue;
             $delegateMethod = $xpath->query('cd:delegateMethod/text()', $delegateDefinition)[0]->nodeValue;
+            $attr = unserialize(base64_decode($xpath->query('cd:attribute/text()', $delegateDefinition)[0]?->nodeValue));
 
             assert(class_exists($service));
             assert(class_exists($delegateType));
             assert($delegateMethod !== null && $delegateMethod !== '');
 
-            $serviceDelegateBuilder = ServiceDelegateDefinitionBuilder::forService(objectType($service))
-                    ->withDelegateMethod(objectType($delegateType), $delegateMethod);
-
-            $attr = $xpath->query('cd:attribute/text()', $delegateDefinition)[0]?->nodeValue;
-            if ($attr !== null) {
-                $attrInstance = unserialize(base64_decode($attr));
-                assert($attrInstance instanceof ServiceDelegateAttribute);
-                $serviceDelegateBuilder = $serviceDelegateBuilder->withAttribute($attrInstance);
-            }
-
-            $builder = $builder->withServiceDelegateDefinition($serviceDelegateBuilder->build());
+            $builder = $builder->withServiceDelegateDefinition(
+                definitionFactory()->serviceDelegateDefinitionFromClassMethodAndAttribute(
+                    types()->class($delegateType),
+                    $delegateMethod,
+                    $attr
+                )
+            );
         }
 
         return $builder;
@@ -452,56 +393,46 @@ final class XmlContainerDefinitionSerializer implements ContainerDefinitionSeria
         assert($injectDefinitions instanceof DOMNodeList);
 
         foreach ($injectDefinitions as $injectDefinition) {
-            $valueType = $xpath->query('cd:valueType/text()', $injectDefinition)[0]->nodeValue;
-            $store = $xpath->query('cd:store/text()', $injectDefinition)[0]?->nodeValue;
-            $attr = $xpath->query('cd:attribute/text()', $injectDefinition)[0]?->nodeValue;
-            $profiles = $xpath->query('cd:profiles/cd:profile/text()', $injectDefinition);
-            $encodedSerializedValue = $xpath->query('cd:value/text()', $injectDefinition)[0]->nodeValue;
-
-            $serializedValue = base64_decode($encodedSerializedValue);
-            /** @var mixed $value */
-            $value = unserialize($serializedValue);
-            /** @var non-empty-string $base64DecodedValueType */
-            $base64DecodedValueType = base64_decode($valueType);
-            $valueType = $this->injectValueParser->convertStringToType($base64DecodedValueType);
-
             $type = $xpath->query('cd:class/text()', $injectDefinition)[0]->nodeValue;
             $methodName = $xpath->query('cd:method/text()', $injectDefinition)[0]->nodeValue;
             $parameter = $xpath->query('cd:parameter/text()', $injectDefinition)[0]->nodeValue;
+            $attr = $xpath->query('cd:attribute/text()', $injectDefinition)[0]?->nodeValue;
+            $valueTypeName = $xpath->query('cd:valueType/*[1]', $injectDefinition)->item(0)->nodeName;
 
             assert(class_exists($type));
             assert($methodName !== null && $methodName !== '');
             assert($parameter !== null && $parameter !== '');
 
-            $injectBuilder = InjectDefinitionBuilder::forService(objectType($type))
-                ->withMethod($methodName, $valueType, $parameter);
-
-            $injectBuilder = $injectBuilder->withValue($value);
-
-            $injectProfiles = [];
-            foreach ($profiles as $profile) {
-                $value = $profile->nodeValue;
-                // The profileString type ensures that there is a value listed greater than 1
-                assert($value !== null && $value !== '');
-                $injectProfiles[] = $value;
-            }
-            // The profilesType ensures there's at least 1 profile, additionally definitions are never assigned empty profiles
-            assert($injectProfiles !== []);
-
-            $injectBuilder = $injectBuilder->withProfiles(...$injectProfiles);
-
-            if ($store !== null) {
-                assert($store !== '');
-                $injectBuilder = $injectBuilder->withStore($store);
+            if ($valueTypeName === 'type') {
+                $valueType = types()->fromName($xpath->query('cd:valueType/cd:type/text()', $injectDefinition)->item(0)->nodeValue);
+            } elseif ($valueTypeName === 'typeUnion') {
+                $valueType = types()->union(
+                    ...array_map(
+                        static fn(DOMElement $domElement) => types()->fromName($domElement->nodeValue),
+                        iterator_to_array($xpath->query('cd:valueType/cd:typeUnion/*', $injectDefinition))
+                    )
+                );
+            } elseif ($valueTypeName === 'typeIntersect') {
+                $valueType = types()->intersect(
+                    ...array_map(
+                        static fn(DOMElement $domElement) => types()->class($domElement->nodeValue),
+                        iterator_to_array($xpath->query('cd:valueType/cd:typeIntersect/*', $injectDefinition))
+                    )
+                );
             }
 
-            if ($attr !== null) {
-                $attrInstance = unserialize(base64_decode($attr));
-                assert($attrInstance instanceof InjectAttribute);
-                $injectBuilder = $injectBuilder->withAttribute($attrInstance);
-            }
+            $attrInstance = unserialize(base64_decode($attr));
+            assert($attrInstance instanceof InjectAttribute);
 
-            $builder = $builder->withInjectDefinition($injectBuilder->build());
+            $builder = $builder->withInjectDefinition(
+                definitionFactory()->injectDefinitionFromManualSetup(
+                    types()->fromName($type),
+                    $methodName,
+                    $valueType,
+                    $parameter,
+                    $attrInstance
+                )
+            );
         }
 
         return $builder;

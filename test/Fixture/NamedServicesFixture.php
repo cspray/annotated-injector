@@ -2,8 +2,8 @@
 
 namespace Cspray\AnnotatedContainer\Fixture;
 
-use Cspray\Typiphy\ObjectType;
-use function Cspray\Typiphy\objectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 final class NamedServicesFixture implements Fixture {
 
@@ -11,11 +11,11 @@ final class NamedServicesFixture implements Fixture {
         return __DIR__ . '/NamedServices';
     }
 
-    public function fooInterface() : ObjectType {
-        return objectType(NamedServices\FooInterface::class);
+    public function fooInterface() : Type {
+        return types()->class(NamedServices\FooInterface::class);
     }
 
-    public function fooImplementation() : ObjectType {
-        return objectType(NamedServices\FooImplementation::class);
+    public function fooImplementation() : Type {
+        return types()->class(NamedServices\FooImplementation::class);
     }
 }

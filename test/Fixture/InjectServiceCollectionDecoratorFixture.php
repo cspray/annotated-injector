@@ -2,8 +2,8 @@
 
 namespace Cspray\AnnotatedContainer\Fixture;
 
-use Cspray\Typiphy\ObjectType;
-use function Cspray\Typiphy\objectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 class InjectServiceCollectionDecoratorFixture implements Fixture {
 
@@ -11,27 +11,27 @@ class InjectServiceCollectionDecoratorFixture implements Fixture {
         return __DIR__ . '/InjectServiceCollectionDecorator';
     }
 
-    public function fooService() : ObjectType {
-        return objectType(InjectServiceCollectionDecorator\FooService::class);
+    public function fooService() : Type {
+        return types()->class(InjectServiceCollectionDecorator\FooService::class);
     }
 
-    public function compositeFoo() : ObjectType {
-        return objectType(InjectServiceCollectionDecorator\CompositeFooImplementation::class);
+    public function compositeFoo() : Type {
+        return types()->class(InjectServiceCollectionDecorator\CompositeFooImplementation::class);
     }
 
-    public function fooInterface() : ObjectType {
-        return objectType(InjectServiceCollectionDecorator\FooInterface::class);
+    public function fooInterface() : Type {
+        return types()->class(InjectServiceCollectionDecorator\FooInterface::class);
     }
 
-    public function fooImplementation() : ObjectType {
-        return objectType(InjectServiceCollectionDecorator\FooImplementation::class);
+    public function fooImplementation() : Type {
+        return types()->class(InjectServiceCollectionDecorator\FooImplementation::class);
     }
 
-    public function barImplementation() : ObjectType {
-        return objectType(InjectServiceCollectionDecorator\BarImplementation::class);
+    public function barImplementation() : Type {
+        return types()->class(InjectServiceCollectionDecorator\BarImplementation::class);
     }
 
-    public function bazImplementation() : ObjectType {
-        return objectType(InjectServiceCollectionDecorator\BazImplementation::class);
+    public function bazImplementation() : Type {
+        return types()->class(InjectServiceCollectionDecorator\BazImplementation::class);
     }
 }

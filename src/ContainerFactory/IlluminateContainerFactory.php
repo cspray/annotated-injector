@@ -20,6 +20,7 @@ use Cspray\AnnotatedContainer\Exception\ServiceNotFound;
 use Cspray\AnnotatedContainer\Profiles;
 use Cspray\Typiphy\ObjectType;
 use Illuminate\Contracts\Container\Container;
+use function Cspray\AnnotatedContainer\Reflection\types;
 use function Cspray\Typiphy\arrayType;
 use function Cspray\Typiphy\objectType;
 
@@ -163,7 +164,7 @@ final class IlluminateContainerFactory extends AbstractContainerFactory {
                                 ->needs($value->type->name())
                                 ->give($value->name);
                         } elseif ($value instanceof ServiceCollectorReference) {
-                            if ($value->collectionType === arrayType()) {
+                            if ($value->collectionType === types()->array()) {
                                 $paramIdentifier = sprintf('$%s', $param);
                             } else {
                                 $paramIdentifier = $value->collectionType->name();

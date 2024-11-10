@@ -2,8 +2,8 @@
 
 namespace Cspray\AnnotatedContainer\Fixture;
 
-use Cspray\Typiphy\ObjectType;
-use function Cspray\Typiphy\objectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 final class ThirdPartyDelegatedServicesFixture implements Fixture {
 
@@ -11,7 +11,7 @@ final class ThirdPartyDelegatedServicesFixture implements Fixture {
         return __DIR__ . '/ThirdPartyDelegatedServices';
     }
 
-    public function loggerFactory() : ObjectType {
-        return objectType(ThirdPartyDelegatedServices\LoggerFactory::class);
+    public function loggerFactory() : Type {
+        return types()->class(ThirdPartyDelegatedServices\LoggerFactory::class);
     }
 }

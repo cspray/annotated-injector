@@ -3,26 +3,23 @@
 namespace Cspray\AnnotatedContainer\Definition;
 
 use Cspray\AnnotatedContainer\Attribute\ServiceAttribute;
-use Cspray\Typiphy\ObjectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
 
 /**
- * Defines a Service, a class or interface that should be shared or aliased on the wired Injector.
- *
- * @see ServiceDefinitionBuilder
+ * Defines an object that will be shared in the created AnnotatedContainer.
  */
 interface ServiceDefinition {
+
+    /**
+     * Returns the fully-qualified class/interface name for the given Service.
+     *
+     */
+    public function type() : Type;
 
     /**
      * @return non-empty-string|null
      */
     public function name() : ?string;
-
-    /**
-     * Returns the fully-qualified class/interface name for the given Service.
-     *
-     * @return ObjectType
-     */
-    public function type() : ObjectType;
 
     /**
      * Returns an array of profiles that this service is attached to.
@@ -56,5 +53,5 @@ interface ServiceDefinition {
      */
     public function isAbstract() : bool;
 
-    public function attribute() : ?ServiceAttribute;
+    public function attribute() : ServiceAttribute;
 }

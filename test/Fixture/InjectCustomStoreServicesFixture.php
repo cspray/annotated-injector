@@ -2,8 +2,8 @@
 
 namespace Cspray\AnnotatedContainer\Fixture;
 
-use Cspray\Typiphy\ObjectType;
-use function Cspray\Typiphy\objectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 final class InjectCustomStoreServicesFixture implements Fixture {
 
@@ -11,7 +11,7 @@ final class InjectCustomStoreServicesFixture implements Fixture {
         return __DIR__ . '/InjectCustomStoreServices';
     }
 
-    public function scalarInjector() : ObjectType {
-        return objectType(InjectCustomStoreServices\ScalarInjector::class);
+    public function scalarInjector() : Type {
+        return types()->class(InjectCustomStoreServices\ScalarInjector::class);
     }
 }

@@ -195,7 +195,6 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
                     foreach ($parameters as $parameter) {
                         if ($parameter->isServiceIdentifier()) {
                             $parameterValue = $parameter->value();
-                            assert($parameterValue instanceof ObjectType);
 
                             /** @var non-empty-string $value */
                             $value = $parameterValue->name();

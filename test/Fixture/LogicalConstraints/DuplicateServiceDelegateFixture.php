@@ -5,8 +5,8 @@ namespace Cspray\AnnotatedContainer\Fixture\LogicalConstraints;
 use Cspray\AnnotatedContainer\Fixture\Fixture;
 use Cspray\AnnotatedContainer\Fixture\LogicalConstraints\DuplicateServiceDelegate\Factory;
 use Cspray\AnnotatedContainer\Fixture\LogicalConstraints\DuplicateServiceDelegate\FooService;
-use Cspray\Typiphy\ObjectType;
-use function Cspray\Typiphy\objectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 class DuplicateServiceDelegateFixture implements Fixture {
 
@@ -14,11 +14,11 @@ class DuplicateServiceDelegateFixture implements Fixture {
         return __DIR__ . '/DuplicateServiceDelegate';
     }
 
-    public function fooService() : ObjectType {
-        return objectType(FooService::class);
+    public function fooService() : Type {
+        return types()->class(FooService::class);
     }
 
-    public function factory() : ObjectType {
-        return objectType(Factory::class);
+    public function factory() : Type {
+        return types()->class(Factory::class);
     }
 }

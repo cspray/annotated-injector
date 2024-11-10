@@ -23,8 +23,8 @@ use Cspray\AnnotatedContainer\Fixture\Fixture;
 use Cspray\AnnotatedContainer\Fixture\Fixtures;
 use Cspray\AnnotatedContainer\Fixture\ThirdPartyDelegatedServicesFixture;
 use Psr\Log\LoggerInterface;
-use function Cspray\AnnotatedContainer\service;
-use function Cspray\Typiphy\objectType;
+use function Cspray\AnnotatedContainer\Definition\service;
+use function Cspray\AnnotatedContainer\Reflection\types;
 
 class ThirdPartyDelegatedServicesTest extends AnnotatedTargetContainerDefinitionAnalyzerTestCase {
 
@@ -41,50 +41,50 @@ class ThirdPartyDelegatedServicesTest extends AnnotatedTargetContainerDefinition
 
     protected function getDefinitionProvider() : ?DefinitionProvider {
         return new CallableDefinitionProvider(function(DefinitionProviderContext $context) {
-            $context->addServiceDefinition(service(objectType(LoggerInterface::class)));
+            $context->addServiceDefinition(service(types()->class(LoggerInterface::class)));
         });
     }
 
     public static function serviceTypeProvider() : array {
         return [
-            [new ExpectedServiceType(objectType(LoggerInterface::class))]
+            [new ExpectedServiceType(types()->class(LoggerInterface::class))]
         ];
     }
 
     public static function serviceNameProvider() : array {
         return [
-            [new ExpectedServiceName(objectType(LoggerInterface::class), null)]
+            [new ExpectedServiceName(types()->class(LoggerInterface::class), null)]
         ];
     }
 
     public static function serviceIsPrimaryProvider() : array {
         return [
-            [new ExpectedServiceIsPrimary(objectType(LoggerInterface::class), false)]
+            [new ExpectedServiceIsPrimary(types()->class(LoggerInterface::class), false)]
         ];
     }
 
     public static function serviceIsConcreteProvider() : array {
         return [
-            [new ExpectedServiceIsConcrete(objectType(LoggerInterface::class), false)]
+            [new ExpectedServiceIsConcrete(types()->class(LoggerInterface::class), false)]
         ];
     }
 
     public static function serviceIsAbstractProvider() : array {
         return [
-            [new ExpectedServiceIsAbstract(objectType(LoggerInterface::class), true)]
+            [new ExpectedServiceIsAbstract(types()->class(LoggerInterface::class), true)]
         ];
     }
 
     public static function serviceProfilesProvider() : array {
         return [
-            [new ExpectedServiceProfiles(objectType(LoggerInterface::class), ['default'])]
+            [new ExpectedServiceProfiles(types()->class(LoggerInterface::class), ['default'])]
         ];
     }
 
     public static function serviceDelegateProvider() : array {
         return [
             [new ExpectedServiceDelegate(
-                objectType(LoggerInterface::class),
+                types()->class(LoggerInterface::class),
                 Fixtures::thirdPartyDelegatedServices()->loggerFactory(),
                 'create'
             )]
