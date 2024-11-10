@@ -15,14 +15,10 @@ final class ProfilesAwareContainerDefinition implements ContainerDefinition {
     }
 
     public function serviceDefinitions() : array {
-        $filtered = [];
-        foreach ($this->containerDefinition->serviceDefinitions() as $serviceDefinition) {
-            if ($this->hasActiveProfile($serviceDefinition)) {
-                $filtered[] = $serviceDefinition;
-            }
-        }
-
-        return $filtered;
+        return array_values(array_filter(
+            $this->containerDefinition->serviceDefinitions(),
+            fn(ServiceDefinition $definition) => $this->hasActiveProfile($definition)
+        ));
     }
 
     public function aliasDefinitions() : array {
@@ -50,17 +46,17 @@ final class ProfilesAwareContainerDefinition implements ContainerDefinition {
     }
 
     public function serviceDelegateDefinitions() : array {
-        return $this->containerDefinition->serviceDelegateDefinitions();
+        return array_values(array_filter(
+            $this->containerDefinition->serviceDelegateDefinitions(),
+            fn(ServiceDelegateDefinition $definition) => $this->hasActiveProfile($definition)
+        ));
     }
 
     public function injectDefinitions() : array {
-        $filtered = [];
-        foreach ($this->containerDefinition->injectDefinitions() as $injectDefinition) {
-            if ($this->hasActiveProfile($injectDefinition)) {
-                $filtered[] = $injectDefinition;
-            }
-        }
-        return $filtered;
+        return array_values(array_filter(
+            $this->containerDefinition->injectDefinitions(),
+            fn(InjectDefinition $definition) => $this->hasActiveProfile($definition)
+        ));
     }
 
     private function getServiceDefinition(Type $objectType) : ?ServiceDefinition {
@@ -73,7 +69,7 @@ final class ProfilesAwareContainerDefinition implements ContainerDefinition {
         return null;
     }
 
-    private function hasActiveProfile(ServiceDefinition|InjectDefinition $definition) : bool {
+    private function hasActiveProfile(ServiceDefinition|InjectDefinition|ServiceDelegateDefinition $definition) : bool {
         return $this->activeProfiles->isAnyActive($definition->profiles());
     }
 }

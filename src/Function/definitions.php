@@ -30,12 +30,13 @@ function service(Type $type, ?string $name = null, array $profiles = [], bool $i
 /**
  * @param Type $factoryClass
  * @param non-empty-string $factoryMethod
+ * @param list<non-empty-string> $profiles
  */
-function serviceDelegate(Type $factoryClass, string $factoryMethod) : ServiceDelegateDefinition {
+function serviceDelegate(Type $factoryClass, string $factoryMethod, array $profiles = []) : ServiceDelegateDefinition {
     return definitionFactory()->serviceDelegateDefinitionFromClassMethodAndAttribute(
         $factoryClass,
         $factoryMethod,
-        new ServiceDelegateFromFunctionalApi()
+        new ServiceDelegateFromFunctionalApi($profiles)
     );
 }
 

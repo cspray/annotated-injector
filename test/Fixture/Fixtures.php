@@ -176,4 +176,8 @@ final class Fixtures {
     public static function injectServiceCollectionDecorator() : InjectServiceCollectionDecoratorFixture {
         return new InjectServiceCollectionDecoratorFixture();
     }
+
+    public static function profileAwareServiceDelegate() : ProfileAwareServiceDelegateFixture {
+        return new ProfileAwareServiceDelegateFixture();
+    }
 }
