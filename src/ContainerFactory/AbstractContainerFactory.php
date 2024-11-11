@@ -3,9 +3,11 @@
 namespace Cspray\AnnotatedContainer\ContainerFactory;
 
 use Cspray\AnnotatedContainer\AnnotatedContainer;
-use Cspray\AnnotatedContainer\ContainerFactory\AliasResolution\AliasDefinitionResolution;
 use Cspray\AnnotatedContainer\ContainerFactory\AliasResolution\AliasDefinitionResolver;
 use Cspray\AnnotatedContainer\ContainerFactory\AliasResolution\StandardAliasDefinitionResolver;
+use Cspray\AnnotatedContainer\ContainerFactory\State\ContainerFactoryState;
+use Cspray\AnnotatedContainer\ContainerFactory\State\InjectParameterValue;
+use Cspray\AnnotatedContainer\ContainerFactory\State\ServiceCollectorReference;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 use Cspray\AnnotatedContainer\Definition\InjectDefinition;
 use Cspray\AnnotatedContainer\Definition\ProfilesAwareContainerDefinition;
@@ -13,17 +15,18 @@ use Cspray\AnnotatedContainer\Definition\ServiceDefinition;
 use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinition;
 use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinition;
 use Cspray\AnnotatedContainer\Event\ContainerFactoryEmitter;
-use Cspray\AnnotatedContainer\Exception\ParameterStoreNotFound;
 use Cspray\AnnotatedContainer\Profiles;
-use Cspray\Typiphy\ObjectType;
-use UnitEnum;
 
+/**
+ * @template ContainerBuilder of object
+ * @template IntermediaryContainer of object
+ */
 abstract class AbstractContainerFactory implements ContainerFactory {
 
     private readonly ?ContainerFactoryEmitter $emitter;
 
     /**
-     * @var ParameterStore[]
+     * @var array<non-empty-string, ParameterStore>
      */
     private array $parameterStores = [];
 
@@ -39,46 +42,110 @@ abstract class AbstractContainerFactory implements ContainerFactory {
     }
 
     final public function createContainer(ContainerDefinition $containerDefinition, ContainerFactoryOptions $containerFactoryOptions = null) : AnnotatedContainer {
-        $activeProfiles = $containerFactoryOptions?->profiles() ?? Profiles::fromList(['default']);
+        $activeProfiles = $containerFactoryOptions?->profiles() ?? Profiles::defaultOnly();
 
         $this->emitter?->emitBeforeContainerCreation($activeProfiles, $containerDefinition);
 
-        $container = $this->createAnnotatedContainer(
-            $this->createContainerState($containerDefinition, $activeProfiles),
-            $activeProfiles
+        $state = new ContainerFactoryState(
+            new ProfilesAwareContainerDefinition($containerDefinition, $activeProfiles),
+            $activeProfiles,
+            $this->aliasDefinitionResolver,
+            $this->parameterStores,
         );
+        $container = $this->createAnnotatedContainer($state);
 
         $this->emitter?->emitAfterContainerCreation($activeProfiles, $containerDefinition, $container);
 
         return $container;
     }
 
-    private function createContainerState(ContainerDefinition $containerDefinition, Profiles $activeProfiles) : ContainerFactoryState {
-        $definition = new ProfilesAwareContainerDefinition($containerDefinition, $activeProfiles);
-        $state = $this->containerFactoryState($definition);
+    /**
+     * @param ContainerBuilder $containerBuilder
+     * @return array<non-empty-string, mixed>
+     */
+    final protected function parametersForServiceConstructorToArray(
+        object                $containerBuilder,
+        ContainerFactoryState $state,
+        ServiceDefinition     $serviceDefinition
+    ) : array {
+        return $this->listOfInjectDefinitionsToArray(
+            $containerBuilder,
+            $state,
+            $state->constructorInjectDefinitionsForServiceDefinition($serviceDefinition)
+        );
+    }
 
-        foreach ($definition->serviceDefinitions() as $serviceDefinition) {
-            $this->handleServiceDefinition($state, $serviceDefinition);
+    /**
+     * @param ContainerBuilder $containerBuilder
+     * @return array<non-empty-string, mixed>
+     */
+    final protected function parametersForServicePrepareToArray(
+        object                   $containerBuilder,
+        ContainerFactoryState    $state,
+        ServicePrepareDefinition $definition,
+    ) : array {
+        return $this->listOfInjectDefinitionsToArray(
+            $containerBuilder,
+            $state,
+            $state->injectDefinitionsForServicePrepareDefinition($definition)
+        );
+    }
+
+    /**
+     * @param ContainerBuilder $containerBuilder
+     * @return array<non-empty-string, mixed>
+     */
+    final protected function parametersForServiceDelegateToArray(
+        object                    $containerBuilder,
+        ContainerFactoryState     $state,
+        ServiceDelegateDefinition $definition,
+    ) : array {
+        return $this->listOfInjectDefinitionsToArray(
+            $containerBuilder,
+            $state,
+            $state->injectDefinitionsForServiceDelegateDefinition($definition)
+        );
+    }
+
+    /**
+     * @param IntermediaryContainer $container
+     * @param ServiceCollectorReference $reference
+     * @return list<object>|object
+     */
+    final protected function serviceCollectorReferenceToListOfServices(
+        object $container,
+        ContainerFactoryState $state,
+        InjectDefinition $definition,
+        ServiceCollectorReference $reference
+    ) : array|object {
+        $values = [];
+        foreach ($state->serviceDefinitions() as $serviceDefinition) {
+            if ($serviceDefinition->isAbstract() ||
+                $serviceDefinition->type()->equals($definition->service()) ||
+                !is_a($serviceDefinition->type()->name(), $reference->valueType->name(), true)
+            ) {
+                continue;
+            }
+
+            $values[] = $this->retrieveServiceFromIntermediaryContainer($container, $serviceDefinition);
         }
 
-        foreach ($definition->serviceDelegateDefinitions() as $serviceDelegateDefinition) {
-            $this->handleServiceDelegateDefinition($state, $serviceDelegateDefinition);
+        return $reference->listOf->toCollection($values);
+    }
+
+    /**
+     * @param ContainerBuilder $containerBuilder
+     * @param list<InjectDefinition> $definitions
+     * @return array<non-empty-string, mixed>
+     */
+    private function listOfInjectDefinitionsToArray(object $containerBuilder, ContainerFactoryState $state, array $definitions) : array {
+        $params = [];
+        foreach ($definitions as $injectDefinition) {
+            $injectParameterValue = $this->resolveParameterForInjectDefinition($containerBuilder, $state, $injectDefinition);
+            $params[$injectParameterValue->name] = $injectParameterValue->value;
         }
 
-        foreach ($definition->servicePrepareDefinitions() as $servicePrepareDefinition) {
-            $this->handleServicePrepareDefinition($state, $servicePrepareDefinition);
-        }
-
-        foreach ($definition->aliasDefinitions() as $aliasDefinition) {
-            $resolution = $this->aliasDefinitionResolver->resolveAlias($definition, $aliasDefinition->abstractService());
-            $this->handleAliasDefinition($state, $resolution);
-        }
-
-        foreach ($definition->injectDefinitions() as $injectDefinition) {
-            $this->handleInjectDefinition($state, $injectDefinition);
-        }
-
-        return $state;
+        return $params;
     }
 
     /**
@@ -92,50 +159,22 @@ abstract class AbstractContainerFactory implements ContainerFactory {
         $this->parameterStores[$parameterStore->name()] = $parameterStore;
     }
 
-    final protected function parameterStore(string $storeName) : ?ParameterStore {
-        return $this->parameterStores[$storeName] ?? null;
-    }
+    abstract protected function createAnnotatedContainer(ContainerFactoryState $state) : AnnotatedContainer;
 
-    final protected function injectDefinitionValue(InjectDefinition $definition) : mixed {
-        $value = $definition->value();
-        $store = $definition->storeName();
-        if ($store !== null) {
-            $parameterStore = $this->parameterStore($store);
-            if ($parameterStore === null) {
-                throw ParameterStoreNotFound::fromParameterStoreNotAddedToContainerFactory($store);
-            }
-            assert(is_string($value) && $value !== '');
+    /**
+     * @param ContainerBuilder $containerBuilder
+     */
+    abstract protected function resolveParameterForInjectDefinition(
+        object                $containerBuilder,
+        ContainerFactoryState $state,
+        InjectDefinition      $definition,
+    ) : InjectParameterValue;
 
-            /** @var mixed $value */
-            $value = $parameterStore->fetch($definition->type(), $value);
-        }
-
-        $type = $definition->type();
-        if ($value instanceof ListOf) {
-            $value = new ServiceCollectorReference(
-                $value,
-                $value->type(),
-                $type
-            );
-        } elseif ((class_exists($definition->type()->name()) || interface_exists($definition->type()->name())) && !is_a($definition->type()->name(), UnitEnum::class, true)) {
-            assert(is_string($value) && $value !== '');
-            $value = new ContainerReference($value, $type);
-        }
-
-        return $value;
-    }
-
-    abstract protected function containerFactoryState(ContainerDefinition $containerDefinition) : ContainerFactoryState;
-
-    abstract protected function handleServiceDefinition(ContainerFactoryState $state, ServiceDefinition $definition) : void;
-
-    abstract protected function handleAliasDefinition(ContainerFactoryState $state, AliasDefinitionResolution $resolution) : void;
-
-    abstract protected function handleServiceDelegateDefinition(ContainerFactoryState $state, ServiceDelegateDefinition $definition) : void;
-
-    abstract protected function handleServicePrepareDefinition(ContainerFactoryState $state, ServicePrepareDefinition $definition) : void;
-
-    abstract protected function handleInjectDefinition(ContainerFactoryState $state, InjectDefinition $definition) : void;
-
-    abstract protected function createAnnotatedContainer(ContainerFactoryState $state, Profiles $activeProfiles) : AnnotatedContainer;
+    /**
+     * @param IntermediaryContainer $container
+     */
+    abstract protected function retrieveServiceFromIntermediaryContainer(
+        object $container,
+        ServiceDefinition $definition
+    ) : object;
 }

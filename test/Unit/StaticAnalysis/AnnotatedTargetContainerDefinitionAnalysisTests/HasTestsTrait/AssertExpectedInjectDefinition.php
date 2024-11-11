@@ -29,7 +29,7 @@ final class AssertExpectedInjectDefinition {
     }
 
     private function getDefinitionsForService(ExpectedInject $expectedInject, ContainerDefinition $containerDefinition) : array {
-        $definitionsForService = array_filter($containerDefinition->injectDefinitions(), fn($injectDefinition) => $injectDefinition->class() === $expectedInject->service);
+        $definitionsForService = array_filter($containerDefinition->injectDefinitions(), fn($injectDefinition) => $injectDefinition->service() === $expectedInject->service);
         if (empty($definitionsForService)) {
             Assert::fail(sprintf(
                 'Could not find an InjectDefinition for %s in the provided ContainerDefinition.',
@@ -40,7 +40,7 @@ final class AssertExpectedInjectDefinition {
     }
 
     private function filterMethodName(ExpectedInject $expectedInject, array $injectDefinitions) : array {
-        $definitionsForInjectTarget = array_filter($injectDefinitions, fn($injectDefinition) => $injectDefinition->methodName() === $expectedInject->methodName);
+        $definitionsForInjectTarget = array_filter($injectDefinitions, fn($injectDefinition) => $injectDefinition->classMethodParameter()->methodName() === $expectedInject->methodName);
         if (empty($definitionsForInjectTarget)) {
             Assert::fail(sprintf(
                 'Could not find an InjectDefinition for method %s::%s.',
@@ -52,7 +52,7 @@ final class AssertExpectedInjectDefinition {
     }
 
     private function filterMethodParameter(ExpectedInject $expectedInject, array $injectDefinitions) : array {
-        $definitionsForParam = array_filter($injectDefinitions, fn($injectDefinition) => $injectDefinition->parameterName() === $expectedInject->tarname);
+        $definitionsForParam = array_filter($injectDefinitions, fn($injectDefinition) => $injectDefinition->classMethodParameter()->parameterName() === $expectedInject->tarname);
         if (empty($definitionsForParam)) {
             Assert::fail(sprintf(
                 'Could not find an InjectDefinition for parameter \'%s\' on method %s::%s.',
@@ -65,7 +65,7 @@ final class AssertExpectedInjectDefinition {
     }
 
     private function validateMethodType(ExpectedInject $expectedInject, array $injectDefinitions) : void {
-        $definitionsWithTypes = array_filter($injectDefinitions, static fn(InjectDefinition $injectDefinition): bool => $injectDefinition->type()->equals($expectedInject->type));
+        $definitionsWithTypes = array_filter($injectDefinitions, static fn(InjectDefinition $injectDefinition): bool => $injectDefinition->classMethodParameter()->type()->equals($expectedInject->type));
         if (empty($definitionsWithTypes)) {
             Assert::fail(sprintf(
                 'Could not find an InjectDefinition for parameter \'%s\' on method %s::%s with type \'%s\'.',

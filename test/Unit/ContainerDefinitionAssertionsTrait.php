@@ -68,7 +68,7 @@ trait ContainerDefinitionAssertionsTrait /** extends \PHPUnit\TestCase */ {
         foreach ($servicePrepareDefinitions as $servicePrepareDefinition) {
             $this->assertInstanceOf(ServicePrepareDefinition::class, $servicePrepareDefinition);
             $key = $servicePrepareDefinition->service()->name();
-            $actualMap[] = [$key, $servicePrepareDefinition->methodName()];
+            $actualMap[] = [$key, $servicePrepareDefinition->classMethod()->methodName()];
         }
 
         array_multisort($actualMap);

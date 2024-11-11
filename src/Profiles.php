@@ -6,6 +6,8 @@ use Cspray\AnnotatedContainer\Exception\InvalidProfiles;
 
 final class Profiles {
 
+    public const DEFAULT_PROFILE = 'default';
+
     /**
      * @var non-empty-list<non-empty-string> $profiles
      */
@@ -31,7 +33,7 @@ final class Profiles {
     }
 
     public static function defaultOnly() : self {
-        return new self(['default']);
+        return new self([self::DEFAULT_PROFILE]);
     }
 
     /**
@@ -74,6 +76,23 @@ final class Profiles {
      */
     public function isAnyActive(array $profiles) : bool {
         return count(array_intersect($this->profiles, $profiles)) >= 1;
+    }
+
+    public function priorityScore(array $profiles) : int {
+        if ($profiles === []) {
+            return -1;
+        }
+
+        if ($profiles === [self::DEFAULT_PROFILE]) {
+            return 0;
+        }
+
+        // we don't want to count the default profile if it is present
+        // only non-default active profiles increase the score
+        $active = array_diff($this->profiles, [self::DEFAULT_PROFILE]);
+        $profiles = array_diff($profiles, [self::DEFAULT_PROFILE]);
+
+        return count(array_intersect($active, $profiles));
     }
 
     /**

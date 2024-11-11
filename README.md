@@ -11,7 +11,7 @@ A Dependency Injection framework for creating an autowired, feature-rich, [PSR-1
 - Use Profiles to easily use different services in different runtimes
 - Create type-safe, highly flexible configuration objects
 - Easily include third-party services that cannot be easily annotated
-- Bring Your Own Container!
+- Support for a variety of different Dependency Injection containers
 
 ## Quick Start
 
@@ -70,18 +70,18 @@ Be sure to review the generated configuration! A "normal" Composer setup might r
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
-<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd">
+<annotatedContainer xmlns="https://annotated-container.cspray.io/schema/annotated-container.xsd" version="3.0">
   <scanDirectories>
     <source>
       <dir>src</dir>
       <dir>tests</dir>
     </source>
   </scanDirectories>
-  <cacheDir>.annotated-container-cache</cacheDir>
 </annotatedContainer>
 ```
 
-Now, bootstrap your Container in your app.
+Now, bootstrap your Container in your app. In this example, we're going to assume that you 
+have `php-di/php-di` installed.
 
 ```php
 <?php declare(strict_types=1);
@@ -92,6 +92,7 @@ require __DIR__ . '/vendor/autoload.php';
 use Cspray\AnnotatedContainer\Bootstrap\Bootstrap;
 use Cspray\AnnotatedContainer\Event\Emitter;
 use Cspray\AnnotatedContainer\Profiles;
+use Cspray\AnnotatedContainer\ContainerFactory\PhpDiContainerFactory;
 
 $emitter = new Emitter();
 
@@ -99,9 +100,9 @@ $emitter = new Emitter();
 
 // Include other active profiles in this list
 // If the only active profile is default you can call this method without any arguments
-$container = Bootstrap::from($emitter)->bootstrapContainer(
-    Profiles::fromList(['default'])
-);
+$container = Bootstrap::fromAnnotatedContainerConventions(
+    new PhpDiContainerFactory($emitter), $emitter
+)->bootstrapContainer(Profiles::fromList(['default']));
 
 $storage = $container->get(BlobStorage::class);     // instanceof FilesystemStorage
 ```

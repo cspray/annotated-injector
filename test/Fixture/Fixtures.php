@@ -180,4 +180,16 @@ final class Fixtures {
     public static function profileAwareServiceDelegate() : ProfileAwareServiceDelegateFixture {
         return new ProfileAwareServiceDelegateFixture();
     }
+
+    public static function prioritizedProfile() : PrioritizedProfileFixture {
+        return new PrioritizedProfileFixture();
+    }
+
+    public static function prioritizedProfileInject() : PrioritizedProfileInjectFixture {
+        return new PrioritizedProfileInjectFixture();
+    }
+
+    public static function prioritizedProfileInjectPrepare() : PrioritizedProfileInjectPrepareFixture {
+        return new PrioritizedProfileInjectPrepareFixture();
+    }
 }

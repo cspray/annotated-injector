@@ -14,7 +14,7 @@ interface ParameterStore {
     /**
      * The name of the store; Inject definitions that use this string in their from argument will use this ParameterStore.
      *
-     * @return string
+     * @return non-empty-string
      */
     public function name() : string;
 

@@ -116,4 +116,23 @@ class ProfilesTest extends TestCase {
 
         self::assertSame($expected, $profiles->toArray());
     }
+
+    public static function priorityScoreProvider() : array {
+        return [
+            'defaultOnly empty list' => [Profiles::defaultOnly(), [], -1],
+            'defaultOnly with default' => [Profiles::defaultOnly(), ['default'], 0],
+            'multiple profiles with just default' => [Profiles::fromList(['default', 'foo', 'bar']), ['default'], 0],
+            'multiple profiles with single non-default active' => [Profiles::fromList(['default', 'foo', 'bar']), ['default', 'foo'], 1],
+            'multiple profiles with multiple non-default active' => [Profiles::fromList(['default', 'foo', 'bar', 'baz']), ['default', 'foo', 'baz'], 2],
+        ];
+    }
+
+    #[DataProvider('priorityScoreProvider')]
+    public function testProfilesToScoreEmptyReturnsNegativeScore(
+        Profiles $profiles,
+        array $toScore,
+        int $expectedScore
+    ) : void {
+        self::assertSame($expectedScore, $profiles->priorityScore($toScore));
+    }
 }

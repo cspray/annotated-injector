@@ -2,27 +2,23 @@
 
 namespace Cspray\AnnotatedContainer\ContainerFactory;
 
+use Closure;
 use Cspray\AnnotatedContainer\AnnotatedContainer;
 use Cspray\AnnotatedContainer\Autowire\AutowireableFactory;
 use Cspray\AnnotatedContainer\Autowire\AutowireableInvoker;
 use Cspray\AnnotatedContainer\Autowire\AutowireableParameterSet;
-use Cspray\AnnotatedContainer\ContainerFactory\AliasResolution\AliasDefinitionResolution;
-use Cspray\AnnotatedContainer\ContainerFactory\AliasResolution\AliasDefinitionResolver;
-use Cspray\AnnotatedContainer\ContainerFactory\AliasResolution\StandardAliasDefinitionResolver;
-use Cspray\AnnotatedContainer\Definition\ConfigurationDefinition;
-use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
+use Cspray\AnnotatedContainer\ContainerFactory\State\ContainerFactoryState;
+use Cspray\AnnotatedContainer\ContainerFactory\State\ContainerReference;
+use Cspray\AnnotatedContainer\ContainerFactory\State\InjectParameterValue;
+use Cspray\AnnotatedContainer\ContainerFactory\State\ServiceCollectorReference;
+use Cspray\AnnotatedContainer\ContainerFactory\State\ValueFetchedFromParameterStore;
 use Cspray\AnnotatedContainer\Definition\InjectDefinition;
 use Cspray\AnnotatedContainer\Definition\ServiceDefinition;
-use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinition;
-use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinition;
-use Cspray\AnnotatedContainer\Event\ContainerFactoryEmitter;
 use Cspray\AnnotatedContainer\Exception\ServiceNotFound;
 use Cspray\AnnotatedContainer\Profiles;
-use Cspray\Typiphy\ObjectType;
+use Cspray\AnnotatedContainer\Reflection\Type;
 use Illuminate\Contracts\Container\Container;
 use function Cspray\AnnotatedContainer\Reflection\types;
-use function Cspray\Typiphy\arrayType;
-use function Cspray\Typiphy\objectType;
 
 // @codeCoverageIgnoreStart
 // phpcs:disable
@@ -32,196 +28,87 @@ if (!interface_exists(Container::class)) {
 // phpcs:enable
 // @codeCoverageIgnoreEnd
 
+/**
+ * @extends AbstractContainerFactory<Container, Container>
+ */
 final class IlluminateContainerFactory extends AbstractContainerFactory {
 
-    public function __construct(
-        ContainerFactoryEmitter $emitter,
-        private readonly Container $container = new \Illuminate\Container\Container(),
-        AliasDefinitionResolver $aliasDefinitionResolver = new StandardAliasDefinitionResolver(),
+    protected function createAnnotatedContainer(ContainerFactoryState $state) : AnnotatedContainer {
+        $container = new \Illuminate\Container\Container();
 
-    ) {
-        parent::__construct($emitter, $aliasDefinitionResolver);
-    }
-
-    protected function containerFactoryState(ContainerDefinition $containerDefinition) : ContainerFactoryState {
-        return new IlluminateContainerFactoryState($this->container, $containerDefinition);
-    }
-
-    protected function handleServiceDefinition(ContainerFactoryState $state, ServiceDefinition $definition) : void {
-        assert($state instanceof IlluminateContainerFactoryState);
-        if ($definition->isConcrete()) {
-            $state->addConcreteService($definition->type()->name());
-        } else {
-            $state->addAbstractService($definition->type()->name());
-        }
-        $name = $definition->name();
-        if ($name !== null) {
-            $state->addNamedService($definition->type()->name(), $name);
-        }
-    }
-
-    protected function handleAliasDefinition(ContainerFactoryState $state, AliasDefinitionResolution $resolution) : void {
-        assert($state instanceof IlluminateContainerFactoryState);
-        $definition = $resolution->aliasDefinition();
-        if ($definition !== null) {
-            $state->addAlias($definition->abstractService()->name(), $definition->concreteService()->name());
-        }
-    }
-
-    protected function handleServiceDelegateDefinition(ContainerFactoryState $state, ServiceDelegateDefinition $definition) : void {
-        assert($state instanceof IlluminateContainerFactoryState);
-
-        $reflectionMethod = new \ReflectionMethod($definition->delegateType()->name(), $definition->delegateMethod());
-        if ($reflectionMethod->isStatic()) {
-            $state->addStaticDelegate(
-                $definition->serviceType()->name(),
-                $definition->delegateType()->name(),
-                $definition->delegateMethod()
-            );
-        } else {
-            $state->addInstanceDelegate(
-                $definition->serviceType()->name(),
-                $definition->delegateType()->name(),
-                $definition->delegateMethod()
-            );
-        }
-    }
-
-    protected function handleServicePrepareDefinition(ContainerFactoryState $state, ServicePrepareDefinition $definition) : void {
-        assert($state instanceof IlluminateContainerFactoryState);
-        $state->addServicePrepare($definition->service()->name(), $definition->methodName());
-    }
-
-    protected function handleInjectDefinition(ContainerFactoryState $state, InjectDefinition $definition) : void {
-        assert($state instanceof IlluminateContainerFactoryState);
-        $state->addMethodInject(
-            $definition->class()->name(),
-            $definition->methodName(),
-            $definition->parameterName(),
-            $this->injectDefinitionValue($definition)
-        );
-    }
-
-    protected function createAnnotatedContainer(ContainerFactoryState $state, Profiles $activeProfiles) : AnnotatedContainer {
-        assert($state instanceof IlluminateContainerFactoryState);
-        $container = $state->container;
-
-
-        foreach ($state->aliases() as $abstract => $concrete) {
-            $container->singleton($abstract, $concrete);
-        }
-
-        foreach ($state->delegates() as $service => $delegateInfo) {
-            if ($delegateInfo['isStatic']) {
-                $target = $delegateInfo['delegateType'];
+        foreach ($state->serviceDefinitions() as $serviceDefinition) {
+            if ($serviceDefinition->isAbstract()) {
+                $aliasedType = $state->resolveAliasDefinitionForAbstractService($serviceDefinition);
+                if ($aliasedType !== null) {
+                    $container->singleton($serviceDefinition->type()->name(), $aliasedType->name());
+                }
             } else {
-                $target = $container->get($delegateInfo['delegateType']);
+                $container->singleton($serviceDefinition->type()->name());
             }
+
+            $name = $serviceDefinition->name();
+            if ($name !== null) {
+                $container->alias($serviceDefinition->type()->name(), $name);
+            }
+
+            foreach ($this->parametersForServiceConstructorToArray($container, $state, $serviceDefinition) as $key => $value) {
+                $container->when($serviceDefinition->type()->name())->needs($key)->give($value);
+            }
+
+            $servicePrepares = $state->servicePrepareDefinitionsForServiceDefinition($serviceDefinition);
+            if ($servicePrepares !== []) {
+                $container->afterResolving($serviceDefinition->type()->name(), function(object $object) use($state, $servicePrepares, $container) : void {
+                    foreach ($servicePrepares as $servicePrepare) {
+                        $container->call(
+                            [$object, $servicePrepare->classMethod()->methodName()],
+                            array_map(static fn(Closure $closure) => $closure(), $this->parametersForServicePrepareToArray($container, $state, $servicePrepare)),
+                        );
+                    }
+                });
+            }
+        }
+
+        foreach ($state->serviceDelegateDefinitions() as $serviceDelegateDefinition) {
             $container->singleton(
-                $service,
-                static function(Container $container) use($target, $delegateInfo) : object  {
-                    $object = $container->call([$target, $delegateInfo['delegateMethod']]);
-                    assert(is_object($object));
-                    return $object;
+                $serviceDelegateDefinition->service()->name(),
+                function (Container $container) use($serviceDelegateDefinition, $state) : object {
+                    if ($serviceDelegateDefinition->classMethod()->isStatic()) {
+                        $target = $serviceDelegateDefinition->classMethod()->class()->name();
+                    } else {
+                        $target = $container->get($serviceDelegateDefinition->classMethod()->class()->name());
+                    }
+
+                    return $container->call(
+                        [$target, $serviceDelegateDefinition->classMethod()->methodName()],
+                        array_map(static fn(Closure $closure) => $closure(), $this->parametersForServiceDelegateToArray($container, $state, $serviceDelegateDefinition)),
+                    );
                 }
             );
         }
 
-        foreach ($state->namedServices() as $service => $name) {
-            $container->alias($service, $name);
-        }
+        $container->instance(Profiles::class, $state->activeProfiles());
 
-        foreach ($state->concreteServices() as $service) {
-            $container->singleton($service);
-        }
-
-        foreach ($state->servicePrepares() as $service => $methods) {
-            $container->afterResolving($service, static function (object $created, Container $container) use($state, $service, $methods) {
-                foreach ($methods as $method) {
-                    /** @var array<non-empty-string, mixed> $params */
-                    $params = [];
-                    /**
-                     * @var mixed $value
-                     */
-                    foreach ($state->parametersForMethod($service, $method) as $param => $value) {
-                        /** @var mixed $resolvedValue */
-                        $resolvedValue = $value instanceof ContainerReference ? $container->get($value->name) : $value;
-                        $params[$param] = $resolvedValue;
-                    }
-                    $container->call([$created, $method], $params);
-                }
-            });
-        }
-
-
-        foreach ($state->methodInject() as $service => $methods) {
-            foreach ($methods as $method => $params) {
-                if ($method === '__construct') {
-                    /** @var mixed $value */
-                    foreach ($params as $param => $value) {
-                        if ($value instanceof ContainerReference) {
-                            $container->when($service)
-                                ->needs($value->type->name())
-                                ->give($value->name);
-                        } elseif ($value instanceof ServiceCollectorReference) {
-                            if ($value->collectionType === types()->array()) {
-                                $paramIdentifier = sprintf('$%s', $param);
-                            } else {
-                                $paramIdentifier = $value->collectionType->name();
-                            }
-
-                            $container->when($service)
-                                ->needs($paramIdentifier)
-                                ->give(function() use($state, $container, $value, $service): mixed {
-                                    $values = [];
-                                    foreach ($state->containerDefinition->serviceDefinitions() as $serviceDefinition) {
-                                        if ($serviceDefinition->isAbstract() || $serviceDefinition->type()->name() === $service) {
-                                            continue;
-                                        }
-
-                                        if (is_a($serviceDefinition->type()->name(), $value->valueType->name(), true)) {
-                                            $values[] = $container->get($serviceDefinition->type()->name());
-                                        }
-                                    }
-                                    return $value->listOf->toCollection($values);
-                                });
-                        } else {
-                            $container->when($service)
-                                ->needs(sprintf('$%s', $param))
-                                ->give(static fn() : mixed => $value);
-                        }
-                    }
-                }
-            }
-        }
-
-        foreach ($state->abstractServices() as $abstractService) {
-            $container->singletonIf($abstractService);
-        }
-
-        $container->instance(Profiles::class, $activeProfiles);
-
-        return new class($state) implements AnnotatedContainer {
+        return new class($container) implements AnnotatedContainer {
 
             public function __construct(
-                private readonly IlluminateContainerFactoryState $state,
+                private readonly Container $container,
             ) {
-                $this->state->container->instance(AutowireableFactory::class, $this);
-                $this->state->container->instance(AutowireableInvoker::class, $this);
+                $this->container->instance(AutowireableFactory::class, $this);
+                $this->container->instance(AutowireableInvoker::class, $this);
             }
 
             public function backingContainer() : Container {
-                return $this->state->container;
+                return $this->container;
             }
 
             public function make(string $classType, AutowireableParameterSet $parameters = null) : object {
-                $object = $this->state->container->make($classType, $this->resolvedParameters($parameters));
+                $object = $this->container->make($classType, $this->resolvedParameters($parameters));
                 assert($object instanceof $classType);
                 return $object;
             }
 
             public function invoke(callable $callable, AutowireableParameterSet $parameters = null) : mixed {
-                return $this->state->container->call($callable, $this->resolvedParameters($parameters));
+                return $this->container->call($callable, $this->resolvedParameters($parameters));
             }
 
             /**
@@ -234,10 +121,10 @@ final class IlluminateContainerFactory extends AbstractContainerFactory {
                     foreach ($parameters as $parameter) {
                         if ($parameter->isServiceIdentifier()) {
                             $parameterValue = $parameter->value();
-                            assert($parameterValue instanceof ObjectType);
+                            assert($parameterValue instanceof Type);
 
                             /** @psalm-var mixed $value */
-                            $value = $this->state->container->get($parameterValue->name());
+                            $value = $this->container->get($parameterValue->name());
                         } else {
                             /** @psalm-var mixed $value */
                             $value = $parameter->value();
@@ -261,13 +148,38 @@ final class IlluminateContainerFactory extends AbstractContainerFactory {
                 }
 
                 /** @var T|mixed $object */
-                $object = $this->state->container->get($id);
+                $object = $this->container->get($id);
                 return $object;
             }
 
             public function has(string $id) : bool {
-                return $this->state->container->has($id);
+                return $this->container->has($id);
             }
         };
+    }
+
+    protected function resolveParameterForInjectDefinition(object $containerBuilder, ContainerFactoryState $state, InjectDefinition $definition,) : InjectParameterValue {
+        $key = sprintf('%s', $definition->classMethodParameter()->parameterName());
+        if ($definition->classMethodParameter()->methodName() === '__construct') {
+            $key = '$' . $key;
+        }
+        $value = $definition->value();
+        if ($value instanceof ContainerReference) {
+            $key = $definition->classMethodParameter()->type()->name();
+            $value = fn() => $containerBuilder->get($value->name);
+        } elseif ($value instanceof ServiceCollectorReference) {
+            if (!$value->collectionType->equals(types()->array())) {
+                $key = $value->collectionType->name();
+            }
+            $value = fn() => $this->serviceCollectorReferenceToListOfServices($containerBuilder, $state, $definition, $value);
+        } else {
+            $value = fn() : mixed => $value instanceof ValueFetchedFromParameterStore ? $value->get() : $value;
+        }
+
+        return new InjectParameterValue($key, $value);
+    }
+
+    protected function retrieveServiceFromIntermediaryContainer(object $container, ServiceDefinition $definition) : object {
+        return $container->get($definition->type()->name());
     }
 }

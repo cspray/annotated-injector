@@ -67,7 +67,9 @@ TEXT;
     private function getConcreteServicesInstanceOf(ContainerDefinition $containerDefinition, ServiceDefinition $serviceDefinition) : Generator {
         foreach ($containerDefinition->serviceDefinitions() as $service) {
             if ($service->isConcrete()) {
-                if (is_subclass_of($service->type()->name(), $serviceDefinition->type()->name())) {
+                $serviceDefinitionType = $serviceDefinition->type()->name();
+                assert(class_exists($serviceDefinitionType));
+                if (is_subclass_of($service->type()->name(), $serviceDefinitionType)) {
                     yield $service;
                 }
             }

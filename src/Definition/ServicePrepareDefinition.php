@@ -19,12 +19,7 @@ interface ServicePrepareDefinition {
      */
     public function service() : Type;
 
-    /**
-     * The method that should be invoked on the Service.
-     *
-     * @return non-empty-string
-     */
-    public function methodName() : string;
+    public function classMethod() : ClassMethod;
 
     public function attribute() : ServicePrepareAttribute;
 }

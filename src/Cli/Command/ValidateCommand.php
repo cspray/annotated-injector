@@ -170,7 +170,7 @@ TEXT;
     }
 
     private function profiles(Input $input) : Profiles {
-        $inputProfiles = $input->option('profiles') ?? ['default'];
+        $inputProfiles = $input->option('profiles') ?? [Profiles::DEFAULT_PROFILE];
         if (is_bool($inputProfiles)) {
             throw ProfileNotString::fromNotString();
         }

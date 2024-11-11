@@ -26,7 +26,7 @@ trait HasServicePrepareDefinitionTestsTrait {
             fn(ServicePrepareDefinition $servicePrepareDefinition) => $servicePrepareDefinition->service() === $expectedServicePrepare->type
         );
         $prepareMethods = array_map(
-            fn(ServicePrepareDefinition $servicePrepareDefinition) => $servicePrepareDefinition->methodName(),
+            fn(ServicePrepareDefinition $servicePrepareDefinition) => $servicePrepareDefinition->classMethod()->methodName(),
             $preparesForService
         );
 

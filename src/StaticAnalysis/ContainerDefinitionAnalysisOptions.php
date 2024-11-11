@@ -12,7 +12,7 @@ interface ContainerDefinitionAnalysisOptions {
     /**
      * Return a list of directories to scan for annotated services.
      *
-     * @return list<string>
+     * @return list<non-empty-string>
      */
     public function scanDirectories() : array;
 

@@ -15,14 +15,14 @@ final class DuplicateServicePrepare implements LogicalConstraint {
     public function constraintViolations(ContainerDefinition $containerDefinition, Profiles $profiles) : LogicalConstraintViolationCollection {
         $violations = new LogicalConstraintViolationCollection();
 
-        /** @var array<non-empty-string, list<ServicePrepareAttribute|null>> $servicePrepareMap */
+        /** @var array<non-empty-string, list<ServicePrepareAttribute>> $servicePrepareMap */
         $servicePrepareMap = [];
 
         foreach ($containerDefinition->servicePrepareDefinitions() as $prepareDefinition) {
             $classMethod = sprintf(
                 '%s::%s',
                 $prepareDefinition->service()->name(),
-                $prepareDefinition->methodName()
+                $prepareDefinition->classMethod()->methodName()
             );
 
             $servicePrepareMap[$classMethod] ??= [];

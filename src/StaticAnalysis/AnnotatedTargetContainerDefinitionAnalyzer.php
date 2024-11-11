@@ -149,7 +149,7 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
         }
 
         foreach ($consumer['serviceDelegateDefinitions'] as $serviceDelegateDefinition) {
-            $serviceDef = $this->serviceDefinition($containerDefinitionBuilder, $serviceDelegateDefinition->serviceType());
+            $serviceDef = $this->serviceDefinition($containerDefinitionBuilder, $serviceDelegateDefinition->service());
 
             // We need to handle the scenario where a user is using Annotated Container with limited or no Attributes
             // In that use case the user is providing many ServiceDelegate attributes, we should not require manually
@@ -157,7 +157,7 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
             // to properly represent the state of the Container for tooling and analysis.
             if ($serviceDef === null) {
                 $impliedThroughDelegationServiceDefinition = definitionFactory()->serviceDefinitionFromObjectTypeAndAttribute(
-                    $serviceDelegateDefinition->serviceType(),
+                    $serviceDelegateDefinition->service(),
                     new Service()
                 );
                 $containerDefinitionBuilder = $containerDefinitionBuilder->withServiceDefinition(
@@ -170,7 +170,7 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
         $concretePrepareDefinitions = array_filter($consumer['servicePrepareDefinitions'], function (ServicePrepareDefinition $prepareDef) use ($containerDefinitionBuilder) {
             $serviceDef = $this->serviceDefinition($containerDefinitionBuilder, $prepareDef->service());
             if (is_null($serviceDef)) {
-                $exception = InvalidServicePrepare::fromClassNotService($prepareDef->service()->name(), $prepareDef->methodName());
+                $exception = InvalidServicePrepare::fromClassNotService($prepareDef->service()->name(), $prepareDef->classMethod()->methodName());
                 throw $exception;
             }
             return $serviceDef->isConcrete();
@@ -189,6 +189,7 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
             foreach ($abstractPrepareDefinitions as $abstractPrepareDefinition) {
                 $concreteServiceName = $concretePrepareDefinition->service()->name();
                 $abstractServiceName = $abstractPrepareDefinition->service()->name();
+                assert(class_exists($abstractServiceName));
                 if (is_subclass_of($concreteServiceName, $abstractServiceName)) {
                     $hasAbstractPrepare = true;
                     break;
@@ -278,6 +279,7 @@ final class AnnotatedTargetContainerDefinitionAnalyzer implements ContainerDefin
         foreach ($abstractTypes as $abstractType) {
             foreach ($concreteTypes as $concreteType) {
                 $abstractTypeString = $abstractType->name();
+                assert(class_exists($abstractTypeString));
                 if (is_subclass_of($concreteType->name(), $abstractTypeString)) {
                     $aliasDefinition = definitionFactory()->aliasDefinition($abstractType, $concreteType);
                     $containerDefinitionBuilder = $containerDefinitionBuilder->withAliasDefinition($aliasDefinition);

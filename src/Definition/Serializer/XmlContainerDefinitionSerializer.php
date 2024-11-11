@@ -122,7 +122,7 @@ final class XmlContainerDefinitionSerializer implements ContainerDefinitionSeria
                 $dom->createElementNS(self::XML_SCHEMA, 'type', $servicePrepareDefinition->service()->name())
             );
             $servicePrepareDefinitionNode->appendChild(
-                $dom->createElementNS(self::XML_SCHEMA, 'method', $servicePrepareDefinition->methodName())
+                $dom->createElementNS(self::XML_SCHEMA, 'method', $servicePrepareDefinition->classMethod()->methodName())
             );
 
             $servicePrepareDefinitionNode->appendChild(
@@ -144,13 +144,13 @@ final class XmlContainerDefinitionSerializer implements ContainerDefinitionSeria
             );
 
             $serviceDelegateDefinitionNode->appendChild(
-                $dom->createElementNS(self::XML_SCHEMA, 'service', $serviceDelegateDefinition->serviceType()->name())
+                $dom->createElementNS(self::XML_SCHEMA, 'service', $serviceDelegateDefinition->service()->name())
             );
             $serviceDelegateDefinitionNode->appendChild(
-                $dom->createElementNS(self::XML_SCHEMA, 'delegateType', $serviceDelegateDefinition->delegateType()->name())
+                $dom->createElementNS(self::XML_SCHEMA, 'delegateType', $serviceDelegateDefinition->classMethod()->class()->name())
             );
             $serviceDelegateDefinitionNode->appendChild(
-                $dom->createElementNS(self::XML_SCHEMA, 'delegateMethod', $serviceDelegateDefinition->delegateMethod())
+                $dom->createElementNS(self::XML_SCHEMA, 'delegateMethod', $serviceDelegateDefinition->classMethod()->methodName())
             );
             $serviceDelegateDefinitionNode->appendChild(
                 $dom->createElementNS(self::XML_SCHEMA, 'attribute', base64_encode(serialize($serviceDelegateDefinition->attribute())))
@@ -191,7 +191,7 @@ final class XmlContainerDefinitionSerializer implements ContainerDefinitionSeria
     }
 
     private function createAppropriateElementForValueType(DOMDocument $dom, InjectDefinition $injectDefinition) : DOMElement {
-        $valueType = $injectDefinition->type();
+        $valueType = $injectDefinition->classMethodParameter()->type();
         if ($valueType instanceof Type) {
             $valueTypeElement = $this->createTypeElement($dom, $valueType);
         } elseif ($valueType instanceof TypeUnion) {
@@ -243,16 +243,16 @@ final class XmlContainerDefinitionSerializer implements ContainerDefinitionSeria
         $dom = $root->ownerDocument;
 
         $root->appendChild(
-            $dom->createElementNS(self::XML_SCHEMA, 'class', $injectDefinition->class()->name())
+            $dom->createElementNS(self::XML_SCHEMA, 'class', $injectDefinition->classMethodParameter()->class()->name())
         );
 
-        $methodName = $injectDefinition->methodName();
+        $methodName = $injectDefinition->classMethodParameter()->methodName();
         $root->appendChild(
             $dom->createElementNS(self::XML_SCHEMA, 'method', $methodName)
         );
 
         $root->appendChild(
-            $dom->createElementNS(self::XML_SCHEMA, 'parameter', $injectDefinition->parameterName())
+            $dom->createElementNS(self::XML_SCHEMA, 'parameter', $injectDefinition->classMethodParameter()->parameterName())
         );
     }
 

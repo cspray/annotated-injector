@@ -927,7 +927,7 @@ XML;
         self::assertCount(1, $actual->servicePrepareDefinitions());
         $prepareDefinition = $actual->servicePrepareDefinitions()[0];
         self::assertSame(Fixtures::interfacePrepareServices()->fooInterface(), $prepareDefinition->service());
-        self::assertSame('setBar', $prepareDefinition->methodName());
+        self::assertSame('setBar', $prepareDefinition->classMethod()->methodName());
         self::assertEquals($attribute, $prepareDefinition->attribute());
     }
 
@@ -963,9 +963,9 @@ XML;
         self::assertCount(1, $actual->serviceDelegateDefinitions());
         $delegateDefinition = $actual->serviceDelegateDefinitions()[0];
 
-        self::assertSame(Fixtures::delegatedService()->serviceInterface(), $delegateDefinition->serviceType());
-        self::assertSame(Fixtures::delegatedService()->serviceFactory(), $delegateDefinition->delegateType());
-        self::assertSame('createService', $delegateDefinition->delegateMethod());
+        self::assertSame(Fixtures::delegatedService()->serviceInterface(), $delegateDefinition->service());
+        self::assertSame(Fixtures::delegatedService()->serviceFactory(), $delegateDefinition->classMethod()->class());
+        self::assertSame('createService', $delegateDefinition->classMethod()->methodName());
         self::assertEquals($attribute, $delegateDefinition->attribute());
     }
 
@@ -1006,12 +1006,12 @@ XML;
 
         self::assertSame(
             Fixtures::injectConstructorServices()->injectStringService(),
-            $injectDefinition->class()
+            $injectDefinition->service()
         );
         self::assertEquals($attribute, $injectDefinition->attribute());
-        self::assertSame('__construct', $injectDefinition->methodName());
-        self::assertSame('val', $injectDefinition->parameterName());
-        self::assertSame(types()->string(), $injectDefinition->type());
+        self::assertSame('__construct', $injectDefinition->classMethodParameter()->methodName());
+        self::assertSame('val', $injectDefinition->classMethodParameter()->parameterName());
+        self::assertSame(types()->string(), $injectDefinition->classMethodParameter()->type());
         self::assertSame('foobar', $injectDefinition->value());
         self::assertSame(['default'], $injectDefinition->profiles());
         self::assertNull($injectDefinition->storeName());
@@ -1054,12 +1054,12 @@ XML;
 
         self::assertSame(
             Fixtures::injectEnumConstructorServices()->enumInjector(),
-            $injectDefinition->class()
+            $injectDefinition->service()
         );
-        self::assertSame('__construct', $injectDefinition->methodName());
+        self::assertSame('__construct', $injectDefinition->classMethodParameter()->methodName());
         self::assertEquals($attribute, $injectDefinition->attribute());
-        self::assertSame('directions', $injectDefinition->parameterName());
-        self::assertSame(types()->class(CardinalDirections::class), $injectDefinition->type());
+        self::assertSame('directions', $injectDefinition->classMethodParameter()->parameterName());
+        self::assertSame(types()->class(CardinalDirections::class), $injectDefinition->classMethodParameter()->type());
         self::assertSame(CardinalDirections::West, $injectDefinition->value());
         self::assertSame(['default'], $injectDefinition->profiles());
         self::assertNull($injectDefinition->storeName());
@@ -1102,12 +1102,12 @@ XML;
 
         self::assertSame(
             Fixtures::injectCustomStoreServices()->scalarInjector(),
-            $injectDefinition->class()
+            $injectDefinition->service()
         );
-        self::assertSame('__construct', $injectDefinition->methodName());
+        self::assertSame('__construct', $injectDefinition->classMethodParameter()->methodName());
         self::assertEquals($attribute, $injectDefinition->attribute());
-        self::assertSame('key', $injectDefinition->parameterName());
-        self::assertSame(types()->string(), $injectDefinition->type());
+        self::assertSame('key', $injectDefinition->classMethodParameter()->parameterName());
+        self::assertSame(types()->string(), $injectDefinition->classMethodParameter()->type());
         self::assertSame('key', $injectDefinition->value());
         self::assertSame(['default'], $injectDefinition->profiles());
         self::assertSame('test-store', $injectDefinition->storeName());
@@ -1150,12 +1150,12 @@ XML;
 
         self::assertSame(
             Fixtures::injectConstructorServices()->injectStringService(),
-            $injectDefinition->class()
+            $injectDefinition->service()
         );
         self::assertEquals($attribute, $injectDefinition->attribute());
-        self::assertSame('__construct', $injectDefinition->methodName());
-        self::assertSame('val', $injectDefinition->parameterName());
-        self::assertSame(types()->string(), $injectDefinition->type());
+        self::assertSame('__construct', $injectDefinition->classMethodParameter()->methodName());
+        self::assertSame('val', $injectDefinition->classMethodParameter()->parameterName());
+        self::assertSame(types()->string(), $injectDefinition->classMethodParameter()->type());
         self::assertSame('annotated container', $injectDefinition->value());
         self::assertSame(['foo', 'baz'], $injectDefinition->profiles());
         self::assertNull($injectDefinition->storeName());
