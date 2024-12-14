@@ -23,28 +23,25 @@ use Cspray\AnnotatedContainer\Profiles;
  */
 abstract class AbstractContainerFactory implements ContainerFactory {
 
-    private readonly ?ContainerFactoryEmitter $emitter;
-
     /**
      * @var array<non-empty-string, ParameterStore>
      */
     private array $parameterStores = [];
 
     public function __construct(
-        ContainerFactoryEmitter $emitter,
+        private readonly ContainerFactoryEmitter $emitter,
         private readonly AliasDefinitionResolver $aliasDefinitionResolver = new StandardAliasDefinitionResolver(),
     ) {
         // Injecting environment variables is something we have supported since early versions.
         // We don't require adding this parameter store explicitly to continue providing this functionality
         // without the end-user having to change how they construct their ContainerFactory.
         $this->addParameterStore(new EnvironmentParameterStore());
-        $this->emitter = $emitter;
     }
 
     final public function createContainer(ContainerDefinition $containerDefinition, ContainerFactoryOptions $containerFactoryOptions = null) : AnnotatedContainer {
         $activeProfiles = $containerFactoryOptions?->profiles() ?? Profiles::defaultOnly();
 
-        $this->emitter?->emitBeforeContainerCreation($activeProfiles, $containerDefinition);
+        $this->emitter->emitBeforeContainerCreation($activeProfiles, $containerDefinition);
 
         $state = new ContainerFactoryState(
             new ProfilesAwareContainerDefinition($containerDefinition, $activeProfiles),
@@ -54,7 +51,7 @@ abstract class AbstractContainerFactory implements ContainerFactory {
         );
         $container = $this->createAnnotatedContainer($state);
 
-        $this->emitter?->emitAfterContainerCreation($activeProfiles, $containerDefinition, $container);
+        $this->emitter->emitAfterContainerCreation($activeProfiles, $containerDefinition, $container);
 
         return $container;
     }

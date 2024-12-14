@@ -98,13 +98,20 @@ $emitter = new Emitter();
 
 // Add whatever Listeners are required for your application
 
+// Create your Bootstrap, using your desired ContainerFactory implementation
+// The php-di/php-di library is the preferred implementation, demonstrated here
+$boostrap = Bootstrap::fromAnnotatedContainerConventions(
+    new PhpDiContainerFactory($emitter),
+    $emitter,
+);
+
 // Include other active profiles in this list
 // If the only active profile is default you can call this method without any arguments
-$container = Bootstrap::fromAnnotatedContainerConventions(
-    new PhpDiContainerFactory($emitter), $emitter
-)->bootstrapContainer(Profiles::fromList(['default']));
+$container = $bootstrap->bootstrapContainer(
+    Profiles::fromList(['default'])
+);
 
-$storage = $container->get(BlobStorage::class);     // instanceof FilesystemStorage
+$storage = $container->get(BlobStorage::class); // instanceof FilesystemStorage
 ```
 
 ## Installation

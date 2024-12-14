@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v3.0.0](https://github.com/cspray/annotated-container/tree/v3.0.0) - 2024-12-15
+
+The v3.0 release represents a substantial improvement in several areas of the project, but also includes several backwards compatability breaks; particularly if you were using container caching, providing Definitions via a DefinitionProvider, or utilizing the Bootstrap observer system.
+
+### Added
+
+### Changed
+
+### Removed
+
 ## [v2.4.0](https://github.com/cspray/annotated-container/tree/v2.4.0) - 2024-06-08
 
 ### Added
