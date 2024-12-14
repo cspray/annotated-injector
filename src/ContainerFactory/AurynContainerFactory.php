@@ -9,17 +9,16 @@ use Cspray\AnnotatedContainer\Autowire\AutowireableFactory;
 use Cspray\AnnotatedContainer\Autowire\AutowireableInvoker;
 use Cspray\AnnotatedContainer\Autowire\AutowireableParameter;
 use Cspray\AnnotatedContainer\Autowire\AutowireableParameterSet;
-use Cspray\AnnotatedContainer\ContainerFactory\AliasResolution\AliasDefinitionResolution;
-use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
+use Cspray\AnnotatedContainer\ContainerFactory\State\ContainerFactoryState;
+use Cspray\AnnotatedContainer\ContainerFactory\State\ContainerReference;
+use Cspray\AnnotatedContainer\ContainerFactory\State\InjectParameterValue;
+use Cspray\AnnotatedContainer\ContainerFactory\State\ServiceCollectorReference;
+use Cspray\AnnotatedContainer\ContainerFactory\State\ValueFetchedFromParameterStore;
 use Cspray\AnnotatedContainer\Definition\InjectDefinition;
 use Cspray\AnnotatedContainer\Definition\ServiceDefinition;
-use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinition;
-use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinition;
 use Cspray\AnnotatedContainer\Exception\ContainerException;
 use Cspray\AnnotatedContainer\Exception\ServiceNotFound;
 use Cspray\AnnotatedContainer\Profiles;
-use Cspray\Typiphy\ObjectType;
-use function Cspray\Typiphy\objectType;
 
 // @codeCoverageIgnoreStart
 // phpcs:disable
@@ -31,93 +30,26 @@ if (!class_exists(Injector::class)) {
 
 /**
  * A ContainerFactory that utilizes the rdlowrey/auryn Container as its backing implementation.
+ *
+ * @extends AbstractContainerFactory<Injector, Injector>
  */
 final class AurynContainerFactory extends AbstractContainerFactory implements ContainerFactory {
 
-    protected function containerFactoryState(ContainerDefinition $containerDefinition) : AurynContainerFactoryState {
-        return new AurynContainerFactoryState($containerDefinition);
-    }
+    protected function createAnnotatedContainer(ContainerFactoryState $state) : AnnotatedContainer {
+        $injector = new Injector();
 
-    protected function handleServiceDefinition(ContainerFactoryState $state, ServiceDefinition $definition) : void {
-        assert($state instanceof AurynContainerFactoryState);
-        $state->injector->share($definition->type()->name());
-        $name = $definition->name();
-        if ($name !== null) {
-            $state->addNameType($name, $definition->type());
-        }
-    }
+        $this->addServiceDefinitionsToInjector($state, $injector);
+        $this->addServiceDelegateDefinitionsToInjector($state, $injector);
 
-    protected function handleAliasDefinition(ContainerFactoryState $state, AliasDefinitionResolution $resolution) : void {
-        assert($state instanceof AurynContainerFactoryState);
-        $alias = $resolution->aliasDefinition();
-        if ($alias !== null) {
-            $state->injector->alias(
-                $alias->abstractService()->name(),
-                $alias->concreteService()->name()
-            );
-        }
-    }
-
-    protected function handleServiceDelegateDefinition(ContainerFactoryState $state, ServiceDelegateDefinition $definition) : void {
-        assert($state instanceof AurynContainerFactoryState);
-        $delegateType = $definition->delegateType()->name();
-        $delegateMethod = $definition->delegateMethod();
-
-        $parameters = $state->parametersForMethod($delegateType, $delegateMethod);
-        $state->injector->delegate(
-            $definition->serviceType()->name(),
-            static fn() : mixed => $state->injector->execute([$delegateType, $delegateMethod], $parameters)
-        );
-    }
-
-    protected function handleServicePrepareDefinition(ContainerFactoryState $state, ServicePrepareDefinition $definition) : void {
-        assert($state instanceof AurynContainerFactoryState);
-        $serviceType = $definition->service()->name();
-
-        $state->addServicePrepare($serviceType, $definition->methodName());
-    }
-
-    protected function handleInjectDefinition(ContainerFactoryState $state, InjectDefinition $definition) : void {
-        assert($state instanceof AurynContainerFactoryState);
-        $injectTargetType = $definition->class()->name();
-        $method = $definition->methodName();
-        $parameterName = $definition->parameterName();
-        /** @var mixed $value */
-        $value = $this->injectDefinitionValue($definition);
-
-        $state->addMethodInject($injectTargetType, $method, $parameterName, $value);
-    }
-
-    protected function createAnnotatedContainer(ContainerFactoryState $state, Profiles $activeProfiles) : AnnotatedContainer {
-        assert($state instanceof AurynContainerFactoryState);
-
-        foreach ($state->methodInject() as $service => $methods) {
-            if (array_key_exists('__construct', $methods)) {
-                $state->injector->define($service, $methods['__construct']);
-            }
-        }
-
-        foreach ($state->servicePrepares() as $serviceType => $methods) {
-            $state->injector->prepare(
-                $serviceType,
-                static function(object $object) use($state, $methods) : void {
-                    foreach ($methods as $method) {
-                        $params = $state->parametersForMethod($object::class, $method);
-                        $state->injector->execute([$object, $method], $params);
-                    }
-                }
-            );
-        }
-
-        return new class($state, $activeProfiles) implements AnnotatedContainer {
+        return new class($injector, $state) implements AnnotatedContainer {
 
             public function __construct(
-                private readonly AurynContainerFactoryState $state,
-                Profiles $activeProfiles
+                private readonly Injector $injector,
+                private readonly ContainerFactoryState $state,
             ) {
-                $state->injector->delegate(AutowireableFactory::class, fn() => $this);
-                $state->injector->delegate(AutowireableInvoker::class, fn() => $this);
-                $state->injector->delegate(Profiles::class, fn() => $activeProfiles);
+                $this->injector->delegate(AutowireableFactory::class, fn() => $this);
+                $this->injector->delegate(AutowireableInvoker::class, fn() => $this);
+                $this->injector->delegate(Profiles::class, fn() => $this->state->activeProfiles());
             }
 
             /**
@@ -133,13 +65,13 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
 
                     assert($id !== '');
 
-                    $namedType = $this->state->typeForName($id);
+                    $namedType = $this->state->typeForServiceName($id) ?? null;
                     if ($namedType !== null) {
                         $id = $namedType->name();
                     }
 
                     /** @var T|mixed $value */
-                    $value = $this->state->injector->make($id);
+                    $value = $this->injector->make($id);
                     return $value;
                 } catch (InjectionException $injectionException) {
                     throw ContainerException::fromCaughtThrowable($injectionException);
@@ -149,13 +81,13 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
             public function has(string $id): bool {
                 assert($id !== '');
 
-                $namedType = $this->state->typeForName($id);
+                $namedType = $this->state->typeForServiceName($id) ?? null;
                 if ($namedType !== null) {
                     return true;
                 }
 
                 $anyDefined = 0;
-                foreach ($this->state->injector->inspect($id) as $definitions) {
+                foreach ($this->injector->inspect($id) as $definitions) {
                     $anyDefined += count($definitions);
                 }
                 return $anyDefined > 0;
@@ -168,7 +100,7 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
              */
             public function make(string $classType, AutowireableParameterSet $parameters = null) : object {
                 /** @var T $object */
-                $object = $this->state->injector->make(
+                $object = $this->injector->make(
                     $classType,
                     $this->convertAutowireableParameterSet($parameters)
                 );
@@ -177,11 +109,11 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
             }
 
             public function backingContainer() : Injector {
-                return $this->state->injector;
+                return $this->injector;
             }
 
             public function invoke(callable $callable, AutowireableParameterSet $parameters = null) : mixed {
-                return $this->state->injector->execute(
+                return $this->injector->execute(
                     $callable,
                     $this->convertAutowireableParameterSet($parameters)
                 );
@@ -211,5 +143,79 @@ final class AurynContainerFactory extends AbstractContainerFactory implements Co
                 return $params;
             }
         };
+    }
+
+    private function addServiceDefinitionsToInjector(ContainerFactoryState $state, Injector $injector) : void {
+        foreach ($state->serviceDefinitions() as $serviceDefinition) {
+            $injector->share($serviceDefinition->type()->name());
+
+            if ($serviceDefinition->isAbstract()) {
+                $aliasedType = $state->resolveAliasDefinitionForAbstractService($serviceDefinition);
+                if ($aliasedType !== null) {
+                    $injector->alias($serviceDefinition->type()->name(), $aliasedType->name());
+                }
+            }
+
+            $constructorParams = $this->parametersForServiceConstructorToArray($injector, $state, $serviceDefinition);
+            if ($constructorParams !== []) {
+                $injector->define($serviceDefinition->type()->name(), $constructorParams);
+            }
+
+            $servicePrepares = $state->servicePrepareDefinitionsForServiceDefinition($serviceDefinition);
+            if ($servicePrepares !== []) {
+                $injector->prepare(
+                    $serviceDefinition->type()->name(),
+                    function(object $object) use($state, $injector, $servicePrepares) : void {
+                        foreach ($servicePrepares as $servicePrepareDefinition) {
+                            $injector->execute(
+                                [$object, $servicePrepareDefinition->classMethod()->methodName()],
+                                $this->parametersForServicePrepareToArray($injector, $state, $servicePrepareDefinition)
+                            );
+                        }
+                    }
+                );
+            }
+        }
+    }
+
+    private function addServiceDelegateDefinitionsToInjector(ContainerFactoryState $state, Injector $injector) : void {
+        foreach ($state->serviceDelegateDefinitions() as $serviceDelegateDefinition) {
+            $injector->delegate(
+                $serviceDelegateDefinition->service()->name(),
+                function() use($injector, $state, $serviceDelegateDefinition) : object {
+                    return $injector->execute(
+                        [$serviceDelegateDefinition->classMethod()->class()->name(), $serviceDelegateDefinition->classMethod()->methodName()],
+                        $this->parametersForServiceDelegateToArray($injector, $state, $serviceDelegateDefinition),
+                    );
+                }
+            );
+        }
+    }
+
+    protected function resolveParameterForInjectDefinition(
+        object                $containerBuilder,
+        ContainerFactoryState $state,
+        InjectDefinition      $definition,
+    ) : InjectParameterValue {
+        $key = $definition->classMethodParameter()->parameterName();
+        $value = $definition->value();
+        if ($value instanceof ContainerReference) {
+            $nameType = $state->typeForServiceName($value->name);
+            $value = $nameType === null ? $value->name : $nameType->name();
+        } elseif ($value instanceof ServiceCollectorReference) {
+            $key = '+' . $key;
+            $value = fn() => $this->serviceCollectorReferenceToListOfServices($containerBuilder, $state, $definition, $value);
+        } elseif ($value instanceof ValueFetchedFromParameterStore) {
+            $key = '+' . $key;
+            $value = static fn() : mixed => $value->get();
+        } else {
+            $key = ':' . $key;
+        }
+
+        return new InjectParameterValue($key, $value);
+    }
+
+    protected function retrieveServiceFromIntermediaryContainer(object $container, ServiceDefinition $definition) : object {
+        return $container->make($definition->type()->name());
     }
 }

@@ -3,6 +3,7 @@
 namespace Cspray\AnnotatedContainer\Unit\Reflection;
 
 use Closure;
+use Cspray\AnnotatedContainer\Exception\UnknownReflectionType;
 use Cspray\AnnotatedContainer\Reflection\Type;
 use Cspray\AnnotatedContainer\Reflection\TypeEqualityComparator;
 use Cspray\AnnotatedContainer\Reflection\TypeFactory;
@@ -373,6 +374,16 @@ final class TypeFactoryTest extends TestCase {
         $b = $bType($typeFactory);
 
         self::assertSame($expected, $a->equals($b));
+    }
+
+    public function testTypeFactoryFromReflectionNotCorrectTypeThrowsException() : void {
+        $typeFactory = new TypeFactory();
+        $reflectionType = $this->createMock(\ReflectionType::class);
+
+        $this->expectException(UnknownReflectionType::class);
+        $this->expectExceptionMessage('An unknown ReflectionType encountered, only ReflectionNamedType, ReflectionUnionType, and ReflectionIntersectionType are supported.');
+
+        $typeFactory->fromReflection($reflectionType);
     }
 
     private function reflectionTypeClass(): object {

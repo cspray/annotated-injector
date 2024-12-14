@@ -7,6 +7,7 @@ use Cspray\AnnotatedContainer\Attribute\ServiceAttribute;
 use Cspray\AnnotatedContainer\Attribute\ServiceDelegateAttribute;
 use Cspray\AnnotatedContainer\Attribute\ServicePrepareAttribute;
 use Cspray\AnnotatedContainer\Exception\InjectAttributeRequired;
+use Cspray\AnnotatedContainer\Exception\InvalidReflectionParameterForInjectDefinition;
 use Cspray\AnnotatedContainer\Exception\ServiceAttributeRequired;
 use Cspray\AnnotatedContainer\Exception\ServiceDelegateAttributeRequired;
 use Cspray\AnnotatedContainer\Exception\ServiceDelegateReturnsIntersectionType;
@@ -18,6 +19,7 @@ use Cspray\AnnotatedContainer\Exception\WrongTargetForInjectAttribute;
 use Cspray\AnnotatedContainer\Exception\WrongTargetForServiceAttribute;
 use Cspray\AnnotatedContainer\Exception\WrongTargetForServiceDelegateAttribute;
 use Cspray\AnnotatedContainer\Exception\WrongTargetForServicePrepareAttribute;
+use Cspray\AnnotatedContainer\Profiles;
 use Cspray\AnnotatedContainer\Reflection\Type;
 use Cspray\AnnotatedContainer\Reflection\TypeFactory;
 use Cspray\AnnotatedContainer\Reflection\TypeIntersect;
@@ -102,7 +104,7 @@ final class DefinitionFactory {
             public function profiles() : array {
                 $profiles = $this->attribute->profiles();
                 if ($profiles === []) {
-                    $profiles = ['default'];
+                    $profiles = [Profiles::DEFAULT_PROFILE];
                 }
 
                 return $profiles;
@@ -145,15 +147,10 @@ final class DefinitionFactory {
         string $method,
         ServicePrepareAttribute $attribute,
     ) : ServicePrepareDefinition {
-        return new class($objectType, $method, $attribute) implements ServicePrepareDefinition {
-            /**
-             * @param Type $service
-             * @param non-empty-string $method
-             * @param ServicePrepareAttribute $attribute
-             */
+        return new class($objectType, $this->classMethod($objectType, $method, false), $attribute) implements ServicePrepareDefinition {
             public function __construct(
                 private readonly Type $service,
-                private readonly string $method,
+                private readonly ClassMethod $classMethod,
                 private readonly ServicePrepareAttribute $attribute,
             ) {
             }
@@ -162,11 +159,8 @@ final class DefinitionFactory {
                 return $this->service;
             }
 
-            /**
-             * @return non-empty-string
-             */
-            public function methodName() : string {
-                return $this->method;
+            public function classMethod() : ClassMethod {
+                return $this->classMethod;
             }
 
             public function attribute() : ServicePrepareAttribute {
@@ -205,7 +199,9 @@ final class DefinitionFactory {
         string                   $delegateMethod,
         ServiceDelegateAttribute $attribute,
     ) : ServiceDelegateDefinition {
-        $reflection = new ReflectionMethod($delegateType->name(), $delegateMethod);
+        $name = $delegateType->name();
+        assert(class_exists($name));
+        $reflection = new ReflectionMethod($name, $delegateMethod);
 
         return $this->serviceDelegateDefinitionFromReflectionMethodAndAttribute($reflection, $attribute);
     }
@@ -242,36 +238,30 @@ final class DefinitionFactory {
         $serviceType = $this->typeFactory->class($returnTypeName);
 
         return new class(
-            $delegateType,
-            $delegateMethod,
             $serviceType,
+            $this->classMethod($delegateType, $delegateMethod, $reflection->isStatic()),
             $attribute
         ) implements ServiceDelegateDefinition {
 
             public function __construct(
-                private readonly Type $delegateType,
-                private readonly string $delegateMethod,
                 private readonly Type $serviceType,
+                private readonly ClassMethod $classMethod,
                 private readonly ServiceDelegateAttribute $attribute,
             ) {
             }
 
-            public function delegateType() : Type {
-                return $this->delegateType;
-            }
-
-            public function delegateMethod() : string {
-                return $this->delegateMethod;
-            }
-
-            public function serviceType() : Type {
+            public function service() : Type {
                 return $this->serviceType;
+            }
+
+            public function classMethod() : ClassMethod {
+                return $this->classMethod;
             }
 
             public function profiles() : array {
                 $profiles = $this->attribute->profiles();
                 if ($profiles === []) {
-                    $profiles = ['default'];
+                    $profiles = [Profiles::DEFAULT_PROFILE];
                 }
 
                 return $profiles;
@@ -301,7 +291,11 @@ final class DefinitionFactory {
         ReflectionParameter $reflection,
         InjectAttribute $attribute,
     ) : InjectDefinition {
-        $class = $this->typeFactory->class($reflection->getDeclaringClass()->getName());
+        $declaringClass = $reflection->getDeclaringClass();
+        if ($declaringClass === null) {
+            throw InvalidReflectionParameterForInjectDefinition::fromReflectionParameterHasNoDeclaringClass();
+        }
+        $class = $this->typeFactory->class($declaringClass->getName());
         $method = $reflection->getDeclaringFunction()->getName();
         $type = $this->typeFactory->fromReflection($reflection->getType());
         $parameter = $reflection->getName();
@@ -309,6 +303,14 @@ final class DefinitionFactory {
         return $this->injectDefinitionFromManualSetup($class, $method, $type, $parameter, $attribute);
     }
 
+    /**
+     * @param Type $service
+     * @param non-empty-string $method
+     * @param Type|TypeUnion|TypeIntersect $type
+     * @param non-empty-string $parameterName
+     * @param InjectAttribute $injectAttribute
+     * @return InjectDefinition
+     */
     public function injectDefinitionFromManualSetup(
         Type $service,
         string $method,
@@ -318,35 +320,29 @@ final class DefinitionFactory {
     ) : InjectDefinition {
         return new class(
             $service,
-            $method,
-            $type,
-            $parameterName,
+            $this->classMethodParameter(
+                $service,
+                $method,
+                $type,
+                $parameterName,
+                false
+            ),
             $injectAttribute,
         ) implements InjectDefinition {
 
             public function __construct(
-                private readonly Type $class,
-                private readonly string $method,
-                private readonly Type|TypeUnion|TypeIntersect $type,
-                private readonly string $parameter,
+                private readonly Type $service,
+                private readonly ClassMethodParameter $classMethodParameter,
                 private readonly InjectAttribute $attribute,
             ) {
             }
 
-            public function class() : Type {
-                return $this->class;
+            public function service() : Type {
+                return $this->service;
             }
 
-            public function methodName() : string {
-                return $this->method;
-            }
-
-            public function type() : Type|TypeUnion|TypeIntersect {
-                return $this->type;
-            }
-
-            public function parameterName() : string {
-                return $this->parameter;
+            public function classMethodParameter() : ClassMethodParameter {
+                return $this->classMethodParameter;
             }
 
             public function value() : mixed {
@@ -355,7 +351,7 @@ final class DefinitionFactory {
 
             public function profiles() : array {
                 $profiles = $this->attribute->profiles();
-                return $profiles === [] ? ['default'] : $profiles;
+                return $profiles === [] ? [Profiles::DEFAULT_PROFILE] : $profiles;
             }
 
             public function storeName() : ?string {
@@ -382,6 +378,75 @@ final class DefinitionFactory {
 
             public function concreteService() : Type {
                 return $this->concrete;
+            }
+        };
+    }
+
+    /**
+     * @param Type $class
+     * @param non-empty-string $method
+     * @return ClassMethod
+     */
+    private function classMethod(Type $class, string $method, bool $isStatic) : ClassMethod {
+        return new class($class, $method, $isStatic) implements ClassMethod {
+
+            public function __construct(
+                private readonly Type $class,
+                private readonly string $method,
+                private readonly bool $isStatic,
+            ) {
+            }
+
+            public function class() : Type {
+                return $this->class;
+            }
+
+            public function methodName() : string {
+                return $this->method;
+            }
+
+            public function isStatic() : bool {
+                return $this->isStatic;
+            }
+        };
+    }
+
+    private function classMethodParameter(
+        Type $class,
+        string $method,
+        Type|TypeUnion|TypeIntersect $type,
+        string $parameter,
+        bool $isStatic
+    ) : ClassMethodParameter {
+        return new class($class, $method, $type, $parameter, $isStatic) implements ClassMethodParameter {
+
+            public function __construct(
+                private readonly Type $class,
+                private readonly string $method,
+                private readonly Type|TypeUnion|TypeIntersect $type,
+                private readonly string $parameter,
+                private readonly bool $isStatic,
+            ) {
+            }
+
+            public function class() : Type {
+                return $this->class;
+            }
+
+            public function methodName() : string {
+                return $this->method;
+            }
+
+            public function type() : Type|TypeUnion|TypeIntersect {
+                return $this->type;
+            }
+
+            public function parameterName() : string {
+                return $this->parameter;
+            }
+
+            public function isStatic() : bool {
+                return $this->isStatic;
             }
         };
     }

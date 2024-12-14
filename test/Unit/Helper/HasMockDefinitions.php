@@ -7,6 +7,8 @@ use Cspray\AnnotatedContainer\Attribute\ServiceAttribute;
 use Cspray\AnnotatedContainer\Attribute\ServiceDelegateAttribute;
 use Cspray\AnnotatedContainer\Attribute\ServicePrepareAttribute;
 use Cspray\AnnotatedContainer\Definition\AliasDefinition;
+use Cspray\AnnotatedContainer\Definition\ClassMethod;
+use Cspray\AnnotatedContainer\Definition\ClassMethodParameter;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
 use Cspray\AnnotatedContainer\Definition\InjectDefinition;
 use Cspray\AnnotatedContainer\Definition\ServiceDefinition;
@@ -93,7 +95,12 @@ trait HasMockDefinitions {
     ) : ServicePrepareDefinition {
         $mock = $this->createMock(ServicePrepareDefinition::class);
         $mock->method('service')->willReturn($service);
-        $mock->method('methodName')->willReturn($method);
+        $classMethod = $this->createMock(ClassMethod::class);
+        $classMethod->method('class')->willReturn($service);
+        $classMethod->method('methodName')->willReturn($method);
+        $classMethod->method('isStatic')->willReturn(false);
+
+        $mock->method('classMethod')->willReturn($classMethod);
         $attribute = $this->createMock(ServicePrepareAttribute::class);
         $mock->method('attribute')->willReturn($attribute);
 
@@ -107,10 +114,15 @@ trait HasMockDefinitions {
         array $profiles = [],
     ) : ServiceDelegateDefinition {
         $mock = $this->createMock(ServiceDelegateDefinition::class);
-        $mock->method('delegateType')->willReturn($factory);
-        $mock->method('delegateMethod')->willReturn($method);
-        $mock->method('serviceType')->willReturn($service);
+        $classMethod = $this->createMock(ClassMethod::class);
+        $classMethod->method('class')->willReturn($factory);
+        $classMethod->method('methodName')->willReturn($method);
+        $classMethod->method('isStatic')->willReturn(false);
+
+        $mock->method('service')->willReturn($service);
         $mock->method('profiles')->willReturn($profiles);
+        $mock->method('classMethod')->willReturn($classMethod);
+
         $attribute = $this->createMock(ServiceDelegateAttribute::class);
         $attribute->method('profiles')->willReturn([]);
         $attribute->method('service')->willReturn(null);
@@ -137,10 +149,15 @@ trait HasMockDefinitions {
         ?string $store = null
     ) {
         $mock = $this->createMock(InjectDefinition::class);
-        $mock->method('class')->willReturn($service);
-        $mock->method('methodName')->willReturn($method);
-        $mock->method('parameterName')->willReturn($parameter);
-        $mock->method('type')->willReturn($type);
+        $mock->method('service')->willReturn($service);
+        $classMethod = $this->createMock(ClassMethodParameter::class);
+        $classMethod->method('class')->willReturn($service);
+        $classMethod->method('methodName')->willReturn($method);
+        $classMethod->method('parameterName')->willReturn($parameter);
+        $classMethod->method('type')->willReturn($type);
+        $classMethod->method('isStatic')->willReturn(false);
+
+        $mock->method('classMethodParameter')->willReturn($classMethod);
         $mock->method('value')->willReturn($value);
         $mock->method('profiles')->willReturn($profiles);
         $mock->method('storeName')->willReturn($store);

@@ -4,11 +4,17 @@ namespace Cspray\AnnotatedContainer\Internal;
 
 use Cspray\AnnotatedContainer\Attribute\ServiceAttribute;
 
-class ServiceFromFunctionalApi implements ServiceAttribute {
+final class ServiceFromFunctionalApi implements ServiceAttribute {
 
     public function __construct(
+        /**
+         * @var list<non-empty-string>
+         */
         private readonly array $profiles,
         private readonly bool $isPrimary,
+        /**
+         * @var ?non-empty-string
+         */
         private readonly ?string $name,
     ) {
     }

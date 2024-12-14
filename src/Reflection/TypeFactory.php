@@ -2,6 +2,7 @@
 
 namespace Cspray\AnnotatedContainer\Reflection;
 
+use Cspray\AnnotatedContainer\Exception\UnknownReflectionType;
 use ReflectionNamedType;
 use ReflectionType;
 
@@ -11,8 +12,7 @@ final class TypeFactory {
         if ($reflectionType === null) {
             return $this->mixed();
         } elseif ($reflectionType instanceof ReflectionNamedType) {
-            // if there is no name for the type it is implicitly mixed
-            $name = $reflectionType->getName() ?? 'mixed';
+            $name = $reflectionType->getName();
             $type = $this->fromName($name);
 
             if ($reflectionType->allowsNull() && $type !== $this->mixed() && $type !== $this->null()) {
@@ -33,13 +33,15 @@ final class TypeFactory {
                 $intersectTypes[] = $this->fromReflection($rt);
             }
             $type = $this->intersect(...$intersectTypes);
+        } else {
+            throw UnknownReflectionType::fromReflectionTypeInvalid();
         }
 
         return $type;
     }
 
     public function fromName(string $name) : Type {
-        return match ($name) {
+        $type = match ($name) {
             'array' => $this->array(),
             'bool' => $this->bool(),
             'float' => $this->float(),
@@ -52,75 +54,94 @@ final class TypeFactory {
             'static' => $this->static(),
             'string' => $this->string(),
             'void' => $this->void(),
-            default => $this->class($name),
+            default => null,
         };
+        if ($type === null) {
+            assert(class_exists($name));
+            $type = $this->class($name);
+        }
+
+        return $type;
     }
 
     public function array() : Type {
+        /** @var ?Type $type */
         static $type;
         return $type ??= $this->createType('array');
     }
 
     public function bool() : Type {
+        /** @var ?Type $type */
         static $type;
         return $type ??= $this->createType('bool');
     }
 
     /**
      * @param class-string $class
-     * @return self
+     * @return Type
      */
     public function class(string $class) : Type {
+        /** @var array<class-string, Type> $types */
         static $types = [];
         return $types[$class] ??= $this->createType($class);
     }
 
     public function float() : Type {
+        /** @var ?Type $type */
         static $type;
         return $type ??= $this->createType('float');
     }
 
     public function int() : Type {
+        /** @var ?Type $type */
         static $type;
         return $type ??= $this->createType('int');
     }
 
     public function mixed() : Type {
+        /** @var ?Type $type */
         static $type;
         return $type ??= $this->createType('mixed');
     }
 
     public function never() : Type {
+        /** @var ?Type $type */
         static $type;
         return $type ??= $this->createType('never');
     }
 
     public function null() : Type {
+        /** @var ?Type $type */
         static $type;
         return $type ??= $this->createType('null');
     }
 
     public function object() : Type {
+        /** @var ?Type $type */
         static $type;
         return $type ??= $this->createType('object');
     }
 
     public function self() : Type {
+        /** @var ?Type $type */
         static $type;
         return $type ??= $this->createType('self');
     }
 
     public function static() : Type {
+        /** @var ?Type $type */
         static $type;
         return $type ??= $this->createType('static');
     }
 
     public function string() : Type {
+        /** @var ?Type $type */
         static $type;
         return $type ??= $this->createType('string');
     }
 
     public function void() : Type {
+        /** @var ?Type $type */
         static $type;
         return $type ??= $this->createType('void');
     }
@@ -148,9 +169,16 @@ final class TypeFactory {
         );
     }
 
+    /**
+     * @param non-empty-string $typeName
+     * @return Type
+     */
     private function createType(string $typeName) : Type {
         return new class($typeName) implements Type {
             public function __construct(
+                /**
+                 * @var non-empty-string
+                 */
                 private readonly string $name
             ) {
             }
@@ -170,9 +198,15 @@ final class TypeFactory {
     }
 
     private function createTypeUnion(Type|TypeIntersect $one, Type|TypeIntersect $two, Type|TypeIntersect...$additional) : TypeUnion {
-        return new class([$one, $two, ...$additional]) implements TypeUnion {
+        return new class(array_values([$one, $two, ...$additional])) implements TypeUnion {
+            /**
+             * @var non-empty-string
+             */
             private readonly string $name;
             public function __construct(
+                /**
+                 * @var non-empty-list<Type|TypeIntersect>
+                 */
                 private readonly array $types
             ) {
                 $typeName = static fn(Type|TypeIntersect $type): string =>
@@ -185,7 +219,7 @@ final class TypeFactory {
             }
 
             /**
-             * @return list<Type|TypeIntersect>
+             * @return non-empty-list<Type|TypeIntersect>
              */
             public function types() : array {
                 return $this->types;
@@ -208,8 +242,11 @@ final class TypeFactory {
     }
 
     private function createTypeIntersect(Type $one, Type $two, Type...$additional) : TypeIntersect {
-        return new class([$one, $two, ...$additional]) implements TypeIntersect {
+        return new class(array_values([$one, $two, ...$additional])) implements TypeIntersect {
             public function __construct(
+                /**
+                 * @var non-empty-list<Type>
+                 */
                 private readonly array $types
             ) {
             }
@@ -221,6 +258,9 @@ final class TypeFactory {
                 );
             }
 
+            /**
+             * @return non-empty-list<Type>
+             */
             public function types() : array {
                 return $this->types;
             }

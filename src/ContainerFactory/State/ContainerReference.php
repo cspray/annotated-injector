@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Cspray\AnnotatedContainer\ContainerFactory;
+namespace Cspray\AnnotatedContainer\ContainerFactory\State;
 
 use Cspray\AnnotatedContainer\Reflection\Type;
 

@@ -14,11 +14,11 @@ use Cspray\AnnotatedContainer\Reflection\TypeUnion;
 interface InjectDefinition {
 
     /**
-     * Returns the type of the method parameter or property that is being injected into.
-     *
-     * @return Type|TypeUnion|TypeIntersect
+     * The class that has the method being injected into.
      */
-    public function type() : Type|TypeUnion|TypeIntersect;
+    public function service() : Type;
+
+    public function classMethodParameter() : ClassMethodParameter;
 
     /**
      * The value that should be injected or passed to a ParameterStore defined by getStoreName() to derive the value
@@ -43,21 +43,4 @@ interface InjectDefinition {
     public function storeName() : ?string;
 
     public function attribute() : InjectAttribute;
-
-    /**
-     * The class that has the method being injected into.
-     */
-    public function class() : Type;
-
-    /**
-     * @return non-empty-string
-     */
-    public function methodName() : string;
-
-    /**
-     * The name of the parameter or property that should have a value injected.
-     *
-     * @return non-empty-string
-     */
-    public function parameterName() : string;
 }

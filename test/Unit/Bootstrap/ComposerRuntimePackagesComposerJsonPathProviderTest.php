@@ -55,6 +55,7 @@ class ComposerRuntimePackagesComposerJsonPathProviderTest extends TestCase {
             $phpunitToolsDir . '/vendor/sebastian/recursion-context/composer.json',
             $phpunitToolsDir . '/vendor/sebastian/type/composer.json',
             $phpunitToolsDir . '/vendor/sebastian/version/composer.json',
+            $phpunitToolsDir . '/vendor/staabm/side-effects-detector/composer.json',
             $phpunitToolsDir . '/vendor/theseer/tokenizer/composer.json',
         ];
 

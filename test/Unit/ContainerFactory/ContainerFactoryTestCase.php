@@ -13,6 +13,7 @@ use Cspray\AnnotatedContainer\Definition\ContainerDefinitionBuilder;
 use Cspray\AnnotatedContainer\Definition\Serializer\XmlContainerDefinitionSerializer;
 use Cspray\AnnotatedContainer\Event\Emitter;
 use Cspray\AnnotatedContainer\Exception\InvalidAlias;
+use Cspray\AnnotatedContainer\Exception\MultipleInjectOnSameParameter;
 use Cspray\AnnotatedContainer\Exception\ParameterStoreNotFound;
 use Cspray\AnnotatedContainer\Profiles;
 use Cspray\AnnotatedContainer\Reflection\Type;
@@ -26,6 +27,8 @@ use Cspray\AnnotatedContainer\Unit\Helper\StubContainerFactoryListener;
 use Cspray\AnnotatedContainer\Unit\Helper\StubParameterStore;
 use Cspray\AnnotatedContainer\Fixture\Fixture;
 use Cspray\AnnotatedContainer\Fixture\Fixtures;
+use Cspray\AnnotatedContainer\Unit\LogicalErrorApps\MultipleInjectDefinition\InjectService;
+use Cspray\AnnotatedContainer\Unit\LogicalErrorApps\MultipleInjectPrepare\InjectServicePrepare;
 use Cspray\AnnotatedTarget\PhpParserAnnotatedTargetParser;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -542,5 +545,91 @@ abstract class ContainerFactoryTestCase extends TestCase {
         $service = $container->get(Fixtures::profileAwareServiceDelegate()->service()->name());
 
         self::assertSame($expected, $service->get());
+    }
+
+    public function testCreatingPrioritizedProfileWithOnlyDefaultHasCorrectServiceCreated() : void {
+        $container = $this->getContainer(Fixtures::prioritizedProfile()->getPath(), Profiles::defaultOnly());
+
+        $service = $container->get(Fixtures::prioritizedProfile()->fooInterface()->name());
+
+        self::assertInstanceOf(
+            Fixtures::prioritizedProfile()->defaultImplementation()->name(),
+            $service
+        );
+    }
+
+    public function testCreatingPrioritizedProfileWithSingleProfileHasCorrectServiceCreated() : void {
+        $container = $this->getContainer(Fixtures::prioritizedProfile()->getPath(), Profiles::fromList(['default', 'foo']));
+
+        $service = $container->get(Fixtures::prioritizedProfile()->fooInterface()->name());
+
+        self::assertInstanceOf(
+            Fixtures::prioritizedProfile()->fooImplementation()->name(),
+            $service
+        );
+    }
+
+    public function testCreatingPrioritizedProfileWithMultipleProfilesHasCorrectServiceCreated() : void {
+        $container = $this->getContainer(Fixtures::prioritizedProfile()->getPath(), Profiles::fromList(['default', 'baz', 'qux']));
+
+        $service = $container->get(Fixtures::prioritizedProfile()->fooInterface()->name());
+
+        self::assertInstanceOf(
+            Fixtures::prioritizedProfile()->bazQuxImplementation()->name(),
+            $service
+        );
+    }
+
+    public static function prioritizedProfileInjectProvider() : array {
+        return [
+            'default' => [Profiles::defaultOnly(), 'default'],
+            'foo' => [Profiles::fromList(['default', 'foo']), 'foo'],
+            'baz-qux' => [Profiles::fromList(['default', 'foo', 'baz', 'qux']), 'baz-qux'],
+        ];
+    }
+
+    #[DataProvider('prioritizedProfileInjectProvider')]
+    public function testCreatingServiceWithPrioritizedProfileInject(Profiles $profiles, string $expected) : void {
+        $container = $this->getContainer(Fixtures::prioritizedProfileInject()->getPath(), $profiles);
+
+        $service = $container->get(Fixtures::prioritizedProfileInject()->injector()->name());
+
+        self::assertSame($expected, $service->value);
+    }
+
+    #[DataProvider('prioritizedProfileInjectProvider')]
+    public function testCreatingServiceWithPrioritizedProfileInjectPrepare(Profiles $profiles, string $expected) : void {
+        $container = $this->getContainer(Fixtures::prioritizedProfileInjectPrepare()->getPath(), $profiles);
+
+        $service = $container->get(Fixtures::prioritizedProfileInjectPrepare()->injector()->name());
+
+        self::assertSame($expected, $service->value);
+    }
+
+    public function testCreatingServiceWithMultipleInjectOnConstructThrowsException() : void {
+        $this->expectException(MultipleInjectOnSameParameter::class);
+        $this->expectExceptionMessage('Multiple InjectDefinitions were found for ' . InjectService::class . '::__construct($value).');
+
+        $this->getContainer(__DIR__ . '/../LogicalErrorApps/MultipleInjectDefinition');
+    }
+
+    public function testCreatingServiceWithMultipleInjectOnServicePrepareThrowsException() : void {
+        $this->expectException(MultipleInjectOnSameParameter::class);
+        $this->expectExceptionMessage('Multiple InjectDefinitions were found for ' . InjectServicePrepare::class . '::setValue($value).');
+
+        $container = $this->getContainer(__DIR__ . '/../LogicalErrorApps/MultipleInjectPrepare');
+        $container->get(InjectServicePrepare::class);
+    }
+
+    public function testCreatingDelegatedServiceWithInstancedFactoryWithInjectDefinition() : void {
+        $container = $this->getContainer(__DIR__ . '/../../Fixture/DelegatedServiceWithInjectedParameter');
+
+        $service = $container->get(\Cspray\AnnotatedContainer\Fixture\DelegatedServiceWithInjectedParameter\ServiceInterface::class);
+
+        self::assertInstanceOf(
+            \Cspray\AnnotatedContainer\Fixture\DelegatedServiceWithInjectedParameter\FooService::class,
+            $service
+        );
+        self::assertSame('my injected value', $service->value);
     }
 }

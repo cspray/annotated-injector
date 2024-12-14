@@ -4,12 +4,14 @@ namespace Cspray\AnnotatedContainer\ContainerFactory\AliasResolution;
 
 use Cspray\AnnotatedContainer\Definition\AliasDefinition;
 use Cspray\AnnotatedContainer\Definition\ContainerDefinition;
+use Cspray\AnnotatedContainer\Profiles;
 use Cspray\AnnotatedContainer\Reflection\Type;
 
 final class StandardAliasDefinitionResolver implements AliasDefinitionResolver {
 
     public function resolveAlias(
         ContainerDefinition $containerDefinition,
+        Profiles $profiles,
         Type $abstractService
     ) : AliasDefinitionResolution {
         if ($this->isServiceDelegate($containerDefinition, $abstractService)) {
@@ -40,7 +42,22 @@ final class StandardAliasDefinitionResolver implements AliasDefinitionResolver {
                     $definition = $primaryAliases[0];
                     $reason = AliasResolutionReason::ConcreteServiceIsPrimary;
                 } elseif (count($primaryAliases) === 0) {
-                    $reason = AliasResolutionReason::MultipleConcreteService;
+                    $prioritizedServices = [];
+                    foreach ($aliases as $alias) {
+                        $priorityScore = $profiles->priorityScore(
+                            $this->profilesForServiceDefinition($containerDefinition, $alias->concreteService())
+                        );
+                        $prioritizedServices[$priorityScore] ??= [];
+                        $prioritizedServices[$priorityScore][] = $alias;
+                    }
+                    $highestScore = max(array_keys($prioritizedServices));
+
+                    if (count($prioritizedServices[$highestScore]) === 1) {
+                        $reason = AliasResolutionReason::ConcreteServiceHasPrioritizedProfile;
+                        $definition = $prioritizedServices[$highestScore][0];
+                    } else {
+                        $reason = AliasResolutionReason::MultipleConcreteService;
+                    }
                 } else {
                     $reason = AliasResolutionReason::MultiplePrimaryService;
                 }
@@ -70,7 +87,7 @@ final class StandardAliasDefinitionResolver implements AliasDefinitionResolver {
 
     private function isServiceDelegate(ContainerDefinition $containerDefinition, Type $service) : bool {
         foreach ($containerDefinition->serviceDelegateDefinitions() as $serviceDelegateDefinition) {
-            if ($serviceDelegateDefinition->serviceType()->name() === $service->name()) {
+            if ($serviceDelegateDefinition->service()->equals($service)) {
                 return true;
             }
         }
@@ -89,5 +106,15 @@ final class StandardAliasDefinitionResolver implements AliasDefinitionResolver {
             }
         }
         return $names;
+    }
+
+    private function profilesForServiceDefinition(ContainerDefinition $containerDefinition, Type $service) : array {
+        foreach ($containerDefinition->serviceDefinitions() as $serviceDefinition) {
+            if ($serviceDefinition->type()->equals($service)) {
+                return $serviceDefinition->profiles();
+            }
+        }
+
+        return [];
     }
 }

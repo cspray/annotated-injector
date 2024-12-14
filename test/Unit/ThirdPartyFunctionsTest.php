@@ -57,18 +57,18 @@ class ThirdPartyFunctionsTest extends TestCase {
     public function testServiceDelegateDefinition() {
         $serviceDelegateDefinition = serviceDelegate(Fixtures::delegatedService()->serviceFactory(), 'createService');
 
-        $this->assertSame(Fixtures::delegatedService()->serviceInterface()->name(), $serviceDelegateDefinition->serviceType()->name());
-        $this->assertSame(Fixtures::delegatedService()->serviceFactory()->name(), $serviceDelegateDefinition->delegateType()->name());
-        $this->assertSame('createService', $serviceDelegateDefinition->delegateMethod());
+        $this->assertSame(Fixtures::delegatedService()->serviceInterface()->name(), $serviceDelegateDefinition->service()->name());
+        $this->assertSame(Fixtures::delegatedService()->serviceFactory()->name(), $serviceDelegateDefinition->classMethod()->class()->name());
+        $this->assertSame('createService', $serviceDelegateDefinition->classMethod()->methodName());
         $this->assertSame(['default'], $serviceDelegateDefinition->profiles());
     }
 
     public function testServiceDelegateDefinitionWithExplicitProfiles() : void {
         $serviceDelegateDefinition = serviceDelegate(Fixtures::delegatedService()->serviceFactory(), 'createService', ['the', 'love', 'plug']);
 
-        $this->assertSame(Fixtures::delegatedService()->serviceInterface()->name(), $serviceDelegateDefinition->serviceType()->name());
-        $this->assertSame(Fixtures::delegatedService()->serviceFactory()->name(), $serviceDelegateDefinition->delegateType()->name());
-        $this->assertSame('createService', $serviceDelegateDefinition->delegateMethod());
+        $this->assertSame(Fixtures::delegatedService()->serviceInterface()->name(), $serviceDelegateDefinition->service()->name());
+        $this->assertSame(Fixtures::delegatedService()->serviceFactory()->name(), $serviceDelegateDefinition->classMethod()->class()->name());
+        $this->assertSame('createService', $serviceDelegateDefinition->classMethod()->methodName());
         $this->assertSame(['the', 'love', 'plug'], $serviceDelegateDefinition->profiles());
     }
 
@@ -89,10 +89,12 @@ class ThirdPartyFunctionsTest extends TestCase {
             42
         );
 
-        $this->assertSame(Fixtures::injectConstructorServices()->injectFloatService(), $inject->class());
-        $this->assertSame('__construct', $inject->methodName());
-        $this->assertSame('dessert', $inject->parameterName());
-        $this->assertSame(types()->int(), $inject->type());
+        $this->assertSame(Fixtures::injectConstructorServices()->injectFloatService(), $inject->service());
+        $this->assertSame(Fixtures::injectConstructorServices()->injectFloatService(), $inject->classMethodParameter()->class());
+        $this->assertSame('__construct', $inject->classMethodParameter()->methodName());
+        $this->assertSame('dessert', $inject->classMethodParameter()->parameterName());
+        $this->assertSame(types()->int(), $inject->classMethodParameter()->type());
+        $this->assertFalse($inject->classMethodParameter()->isStatic());
         $this->assertSame(42, $inject->value());
         $this->assertSame(['default'], $inject->profiles());
         $this->assertNull($inject->storeName());

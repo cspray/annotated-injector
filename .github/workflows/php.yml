@@ -64,7 +64,7 @@ jobs:
         run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
       - name: Composer (Annotated Container)
         run: composer install
-      - name: Composer (Static Analysis Tools)
+      - name: Composer (Code Linting)
         run: cd tools/labrador-cs && composer install
       - name: Code Linting
         run: phpcs -q --standard=./tools/labrador-cs/vendor/cspray/labrador-coding-standard/ruleset.xml --exclude=Generic.Files.LineLength --report=checkstyle src test | cs2pr

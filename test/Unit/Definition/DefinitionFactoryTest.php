@@ -3,6 +3,7 @@
 namespace Cspray\AnnotatedContainer\Unit\Definition;
 
 use Closure;
+use Cspray\AnnotatedContainer\Attribute\Inject;
 use Cspray\AnnotatedContainer\Attribute\InjectAttribute;
 use Cspray\AnnotatedContainer\Attribute\ServiceAttribute;
 use Cspray\AnnotatedContainer\Attribute\ServiceDelegateAttribute;
@@ -13,6 +14,7 @@ use Cspray\AnnotatedContainer\Definition\ServiceDefinition;
 use Cspray\AnnotatedContainer\Definition\ServiceDelegateDefinition;
 use Cspray\AnnotatedContainer\Definition\ServicePrepareDefinition;
 use Cspray\AnnotatedContainer\Exception\InjectAttributeRequired;
+use Cspray\AnnotatedContainer\Exception\InvalidReflectionParameterForInjectDefinition;
 use Cspray\AnnotatedContainer\Exception\ServiceAttributeRequired;
 use Cspray\AnnotatedContainer\Exception\ServiceDelegateAttributeRequired;
 use Cspray\AnnotatedContainer\Exception\ServiceDelegateReturnsIntersectionType;
@@ -406,14 +408,11 @@ final class DefinitionFactoryTest extends TestCase {
         $attribute = $this->createMock(ServicePrepareAttribute::class);
         $definition = ($definitionCreator->bindTo($this, $this))($attribute);
 
-        self::assertSame(
-            types()->class(LoggerAwareInterface::class),
-            $definition->service()
-        );
-        self::assertSame(
-            'setLogger',
-            $definition->methodName()
-        );
+        self::assertInstanceOf(ServicePrepareDefinition::class, $definition);
+        self::assertSame(types()->class(LoggerAwareInterface::class), $definition->service());
+        self::assertSame(types()->class(LoggerAwareInterface::class), $definition->classMethod()->class());
+        self::assertSame('setLogger', $definition->classMethod()->methodName());
+        self::assertFalse($definition->classMethod()->isStatic());
         self::assertSame($attribute, $definition->attribute());
     }
 
@@ -638,22 +637,12 @@ final class DefinitionFactoryTest extends TestCase {
 
         $definition = ($definitionCreator->bindTo($this, $this))($attribute);
 
-        self::assertSame(
-            Fixtures::delegatedService()->serviceInterface(),
-            $definition->serviceType()
-        );
-        self::assertSame(
-            Fixtures::delegatedService()->serviceFactory(),
-            $definition->delegateType()
-        );
-        self::assertSame(
-            'createService',
-            $definition->delegateMethod(),
-        );
-        self::assertSame(
-            ['default'],
-            $definition->profiles(),
-        );
+        self::assertInstanceOf(ServiceDelegateDefinition::class, $definition);
+        self::assertSame(Fixtures::delegatedService()->serviceInterface(), $definition->service());
+        self::assertSame(Fixtures::delegatedService()->serviceFactory(), $definition->classMethod()->class());
+        self::assertSame('createService', $definition->classMethod()->methodName());
+        self::assertFalse($definition->classMethod()->isStatic());
+        self::assertSame(['default'], $definition->profiles());
         self::assertSame($attribute, $definition->attribute());
     }
 
@@ -668,22 +657,11 @@ final class DefinitionFactoryTest extends TestCase {
             $attribute
         );
 
-        self::assertSame(
-            Fixtures::thirdPartyKitchenSink()->nonAnnotatedService(),
-            $definition->serviceType()
-        );
-        self::assertSame(
-            Fixtures::thirdPartyKitchenSink()->nonAnnotatedService(),
-            $definition->delegateType()
-        );
-        self::assertSame(
-            'create',
-            $definition->delegateMethod(),
-        );
-        self::assertSame(
-            ['default'],
-            $definition->profiles(),
-        );
+        self::assertSame(Fixtures::thirdPartyKitchenSink()->nonAnnotatedService(), $definition->service());
+        self::assertSame(Fixtures::thirdPartyKitchenSink()->nonAnnotatedService(), $definition->classMethod()->class());
+        self::assertSame('create', $definition->classMethod()->methodName());
+        self::assertTrue($definition->classMethod()->isStatic());
+        self::assertSame(['default'], $definition->profiles());
         self::assertSame($attribute, $definition->attribute());
     }
 
@@ -698,22 +676,12 @@ final class DefinitionFactoryTest extends TestCase {
 
         $definition = ($definitionCreator->bindTo($this, $this))($attribute);
 
-        self::assertSame(
-            Fixtures::delegatedService()->serviceInterface(),
-            $definition->serviceType()
-        );
-        self::assertSame(
-            Fixtures::delegatedService()->serviceFactory(),
-            $definition->delegateType()
-        );
-        self::assertSame(
-            'createService',
-            $definition->delegateMethod(),
-        );
-        self::assertSame(
-            ['drip', 'hippopotamus', 'chameleon'],
-            $definition->profiles(),
-        );
+        self::assertInstanceOf(ServiceDelegateDefinition::class, $definition);
+        self::assertSame(Fixtures::delegatedService()->serviceInterface(), $definition->service());
+        self::assertSame(Fixtures::delegatedService()->serviceFactory(), $definition->classMethod()->class());
+        self::assertSame('createService', $definition->classMethod()->methodName());
+        self::assertFalse($definition->classMethod()->isStatic());
+        self::assertSame(['drip', 'hippopotamus', 'chameleon'], $definition->profiles());
         self::assertSame($attribute, $definition->attribute());
     }
 
@@ -1259,15 +1227,17 @@ final class DefinitionFactoryTest extends TestCase {
 
         $definition = ($definitionCreator->bindTo($this, $this))($attribute);
 
-        self::assertSame($service, $definition->class());
-        self::assertSame('__construct', $definition->methodName());
-        self::assertSame($parameterName, $definition->parameterName());
+        self::assertInstanceOf(InjectDefinition::class, $definition);
+        self::assertSame($service, $definition->service());
+        self::assertSame($service, $definition->classMethodParameter()->class());
+        self::assertSame('__construct', $definition->classMethodParameter()->methodName());
+        self::assertSame($parameterName, $definition->classMethodParameter()->parameterName());
         if ($type instanceof Type) {
-            self::assertSame($type, $definition->type());
+            self::assertSame($type, $definition->classMethodParameter()->type());
         } else {
-            self::assertSame($type->types(), $definition->type()->types());
+            self::assertSame($type->types(), $definition->classMethodParameter()->type()->types());
         }
-
+        self::assertFalse($definition->classMethodParameter()->isStatic());
         self::assertSame($value, $definition->value());
         self::assertSame(['default'], $definition->profiles());
         self::assertNull($definition->storeName());
@@ -1312,10 +1282,13 @@ final class DefinitionFactoryTest extends TestCase {
 
         $definition = ($definitionCreator->bindTo($this, $this))($attribute);
 
-        self::assertSame($service, $definition->class());
-        self::assertSame('__construct', $definition->methodName());
-        self::assertSame('values', $definition->parameterName());
-        self::assertSame(types()->array(), $definition->type());
+        self::assertInstanceOf(InjectDefinition::class, $definition);
+        self::assertSame($service, $definition->service());
+        self::assertSame($service, $definition->classMethodParameter()->class());
+        self::assertSame('__construct', $definition->classMethodParameter()->methodName());
+        self::assertSame('values', $definition->classMethodParameter()->parameterName());
+        self::assertSame(types()->array(), $definition->classMethodParameter()->type());
+        self::assertFalse($definition->classMethodParameter()->isStatic());
         self::assertSame(['foo', 'bar'], $definition->value());
         self::assertSame(['test'], $definition->profiles());
         self::assertNull($definition->storeName());
@@ -1337,14 +1310,26 @@ final class DefinitionFactoryTest extends TestCase {
 
         $definition = ($definitionCreator->bindTo($this, $this))($attribute);
 
-        self::assertSame($service, $definition->class());
-        self::assertSame('__construct', $definition->methodName());
-        self::assertSame('values', $definition->parameterName());
-        self::assertSame(types()->array(), $definition->type());
+        self::assertInstanceOf(InjectDefinition::class, $definition);
+        self::assertSame($service, $definition->service());
+        self::assertSame($service, $definition->classMethodParameter()->class());
+        self::assertSame('__construct', $definition->classMethodParameter()->methodName());
+        self::assertSame('values', $definition->classMethodParameter()->parameterName());
+        self::assertSame(types()->array(), $definition->classMethodParameter()->type());
+        self::assertFalse($definition->classMethodParameter()->isStatic());
         self::assertSame(['foo', 'bar'], $definition->value());
         self::assertSame(['default'], $definition->profiles());
         self::assertSame('some store name', $definition->storeName());
         self::assertSame($attribute, $definition->attribute());
+    }
+
+    public function testInjectDefinitionFromReflectionParameterWithNoDeclaringClassThrowsException() : void {
+        $reflectionParameter = (new \ReflectionFunction('strlen'))->getParameters()[0];
+
+        $this->expectException(InvalidReflectionParameterForInjectDefinition::class);
+        $this->expectExceptionMessage('A ReflectionParameter used to create an InjectDefinition MUST contain a declaring class.');
+
+        $this->subject->injectDefinitionFromReflectionParameterAndAttribute($reflectionParameter, new Inject('value'));
     }
 
     public function testAliasDefinition() : void {

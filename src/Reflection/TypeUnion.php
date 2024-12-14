@@ -10,7 +10,7 @@ interface TypeUnion extends TypeEqualityComparator {
     public function name() : string;
 
     /**
-     * @return list<Type|TypeIntersect>
+     * @return non-empty-list<Type|TypeIntersect>
      */
     public function types() : array;
 }
