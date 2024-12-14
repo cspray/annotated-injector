@@ -155,17 +155,14 @@ final class DefinitionFactory {
             ) {
             }
 
-            #[Override]
             public function service() : Type {
                 return $this->service;
             }
 
-            #[Override]
             public function classMethod() : ClassMethod {
                 return $this->classMethod;
             }
 
-            #[Override]
             public function attribute() : ServicePrepareAttribute {
                 return $this->attribute;
             }
@@ -253,12 +250,10 @@ final class DefinitionFactory {
             ) {
             }
 
-            #[Override]
             public function service() : Type {
                 return $this->serviceType;
             }
 
-            #[Override]
             public function classMethod() : ClassMethod {
                 return $this->classMethod;
             }
@@ -342,33 +337,27 @@ final class DefinitionFactory {
             ) {
             }
 
-            #[Override]
             public function service() : Type {
                 return $this->service;
             }
 
-            #[Override]
             public function classMethodParameter() : ClassMethodParameter {
                 return $this->classMethodParameter;
             }
 
-            #[Override]
             public function value() : mixed {
                 return $this->attribute->value();
             }
 
-            #[Override]
             public function profiles() : array {
                 $profiles = $this->attribute->profiles();
                 return $profiles === [] ? [Profiles::DEFAULT_PROFILE] : $profiles;
             }
 
-            #[Override]
             public function storeName() : ?string {
                 return $this->attribute->from();
             }
 
-            #[Override]
             public function attribute() : InjectAttribute {
                 return $this->attribute;
             }
