@@ -25,7 +25,6 @@ use Cspray\AnnotatedContainer\Reflection\TypeFactory;
 use Cspray\AnnotatedContainer\Reflection\TypeIntersect;
 use Cspray\AnnotatedContainer\Reflection\TypeUnion;
 use Cspray\AnnotatedTarget\AnnotatedTarget;
-use Override;
 use ReflectionClass;
 use ReflectionIntersectionType;
 use ReflectionMethod;
@@ -400,12 +399,12 @@ final class DefinitionFactory {
      * @return ClassMethod
      */
     private function classMethod(Type $class, string $method, bool $isStatic) : ClassMethod {
-        return new readonly class($class, $method, $isStatic) implements ClassMethod {
+        return new class($class, $method, $isStatic) implements ClassMethod {
 
             public function __construct(
-                private Type $class,
-                private string $method,
-                private bool $isStatic,
+                private readonly Type $class,
+                private readonly string $method,
+                private readonly bool $isStatic,
             ) {
             }
 
@@ -430,14 +429,14 @@ final class DefinitionFactory {
         string $parameter,
         bool $isStatic
     ) : ClassMethodParameter {
-        return new readonly class($class, $method, $type, $parameter, $isStatic) implements ClassMethodParameter {
+        return new class($class, $method, $type, $parameter, $isStatic) implements ClassMethodParameter {
 
             public function __construct(
-                private Type $class,
-                private string $method,
-                private Type|TypeUnion|TypeIntersect $type,
-                private string $parameter,
-                private bool $isStatic,
+                private readonly Type $class,
+                private readonly string $method,
+                private readonly Type|TypeUnion|TypeIntersect $type,
+                private readonly string $parameter,
+                private readonly bool $isStatic,
             ) {
             }
 
